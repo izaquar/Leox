@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title></title>
+<style type="text/css">
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+  
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="document">
+
+
+<!-- rst3: filename: html\whitepapers.html -->
+<!-- February, 2006 -->
+<p><a class="reference" href="theory.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="plugins.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="chapter-11-white-papers" name="chapter-11-white-papers">Chapter 11: White Papers</a></h1>
+<p>I wrote the first two white papers soon after discovering Python.
+The conclusions in these papers have remained largely unchanged.
+I wrote the third in November 2004, and rewrote it in February 2006.</p>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#chapter-11-white-papers" id="id1" name="id1">Chapter 11: White Papers</a><ul>
+<li><a class="reference" href="#tk-is-the-future-of-leo" id="id2" name="id2">Tk is the future of Leo</a></li>
+<li><a class="reference" href="#why-i-like-python" id="id3" name="id3">Why I like Python</a><ul>
+<li><a class="reference" href="#clarity" id="id4" name="id4">Clarity</a></li>
+<li><a class="reference" href="#power" id="id5" name="id5">Power</a></li>
+<li><a class="reference" href="#safety" id="id6" name="id6">Safety</a></li>
+<li><a class="reference" href="#speed" id="id7" name="id7">Speed</a></li>
+<li><a class="reference" href="#conclusions" id="id8" name="id8">Conclusions</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#why-leo-is-special" id="id9" name="id9">Why Leo is special</a><ul>
+<li><a class="reference" href="#you-can-execute-python-scripts-directly-from-anywhere-in-a-leo-outline" id="id10" name="id10">1. You can execute Python scripts directly from anywhere in a Leo outline</a></li>
+<li><a class="reference" href="#leo-s-outlines-are-the-perfect-tool-for-organizing-scripts" id="id11" name="id11">2. Leo's outlines are the perfect tool for organizing scripts</a></li>
+<li><a class="reference" href="#scripts-can-access-the-structure-of-leo-s-outlines" id="id12" name="id12">3. Scripts can access the structure of Leo's outlines</a></li>
+<li><a class="reference" href="#leo-s-nodes-naturally-separate-data-from-meta-data" id="id13" name="id13">4. Leo's nodes naturally separate data from meta-data</a></li>
+<li><a class="reference" href="#leo-is-the-ultimate-platform-for-unit-testing" id="id14" name="id14">5. Leo is the ultimate platform for unit testing</a></li>
+<li><a class="reference" href="#leo-is-the-ultimate-platform-for-finding-and-changing-text" id="id15" name="id15">6. Leo is the ultimate platform for finding and changing text.</a></li>
+<li><a class="reference" href="#leo-outlines-are-the-ultimate-filing-cabinet" id="id16" name="id16">7. Leo outlines are the ultimate filing cabinet</a></li>
+<li><a class="reference" href="#script-buttons" id="id17" name="id17">8: Script buttons</a></li>
+<li><a class="reference" href="#the-rst3-plugin" id="id18" name="id18">9: The rst3 plugin</a></li>
+<li><a class="reference" href="#conclusion" id="id19" name="id19">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- External links... -->
+<!-- Relative links... -->
+<!-- WARNING: image targets may not have upper case letters! -->
+<div class="section">
+<h2><a class="toc-backref" href="#id2" id="tk-is-the-future-of-leo" name="tk-is-the-future-of-leo">Tk is the future of Leo</a></h2>
+<p>The more I look at Tk, the more convinced I am that Python + Tk (aka Tkinter)
+is, by far, the best way to go with Leo. I now have Open Source code for tree
+widgets and splitter windows, and have intensely studied how to modify that code
+for use in Leo. It is clear, even at this early date, that this code will
+provide a very pleasant base on which to build Leo.</p>
+<p>The tree code is based on code in <tt class="docutils literal"><span class="pre">IDLE</span></tt>, the Python IDE. This code is simple,
+good and plenty fast enough. The tree code draws directly to a Tk canvas object.
+The look and feel matches Windows exactly. It would be trivial to use Mac
+triangle icons instead of the Windows plus and minus icons. It would also be
+trivial to modify the look and feel for Linux.</p>
+<p>The tree widget code solves several intractable problems with <tt class="docutils literal"><span class="pre">wxTreeCtrl</span></tt>.
+Moving nodes becomes trivial. Bugs in <tt class="docutils literal"><span class="pre">wxTreeCtrl</span></tt> involving editing and
+redrawing disappear. Using Python/Tk code simplifies the vnode class, and having
+access to the vnode class simplifies and speeds up the tree widget code. It will
+now be possible to bind keystrokes properly; this simply can not be done in
+<tt class="docutils literal"><span class="pre">wxWindows</span></tt>. The tree widget code shows just how trivial the Windows native
+tree control is. The Tk canvas is a splendid example of higher-level code being
+superior, in every way, to lower level code.</p>
+<p>Another big win comes from using the Tk text widget. This widget is
+extraordinarily powerful. The only text control that rivals it is the
+<tt class="docutils literal"><span class="pre">MacOS/Yellow</span> <span class="pre">Box</span></tt> text control. Indeed, the Tk text widget does everything that
+Leo could possibly want. One can even embed images in text.</p>
+<p>In short, using Tk for Leo will be fast enough and will greatly increase what is
+possible in Leo while at the same time greatly simplifying Leo's code. I am
+about to convert Leo from wxPython to Python + Tk.
+Edward K. Ream, November 4, 2001</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="why-i-like-python" name="why-i-like-python">Why I like Python</a></h2>
+<p>I've known for a while that Python was interesting; I attended a Python
+conference last year and added Python support to Leo. But last week I got that
+Python is something truly remarkable. I wanted to convert Leo from wxWindows to
+wxPython, so I began work on c2py, a Python script that would help convert from
+C++ syntax to Python. While doing so, I had an Aha experience. Python is more
+than an incremental improvement over Smalltalk or C++ or objective-C; it is
+&quot;something completely different&quot;. The rest of this post tries to explain this
+difference.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id4" id="clarity" name="clarity">Clarity</a></h3>
+<p>What struck me first as I converted C++ code to Python is how much less blah,
+blah, blah there is in Python. No braces, no stupid semicolons and most
+importantly, <em>no declarations</em>. No more pointless distinctions between
+<tt class="docutils literal"><span class="pre">const</span></tt>, <tt class="docutils literal"><span class="pre">char</span> <span class="pre">*</span></tt>, <tt class="docutils literal"><span class="pre">char</span> <span class="pre">const</span> <span class="pre">*</span></tt>, <tt class="docutils literal"><span class="pre">char</span> <span class="pre">*</span></tt> and <tt class="docutils literal"><span class="pre">wxString</span></tt>.
+No more wondering whether a variable should be <tt class="docutils literal"><span class="pre">signed</span></tt>, <tt class="docutils literal"><span class="pre">unsigned</span></tt>, <tt class="docutils literal"><span class="pre">short</span></tt> or <tt class="docutils literal"><span class="pre">long</span></tt>.</p>
+<p>Declarations add clutter, declarations are never obviously right and
+declarations don't prevent memory allocation tragedies. Declarations also hinder
+prototyping. In C++, if I change the type of something I must change all related
+declarations; this can be a huge and dangerous task. With Python, I can change
+the type of an object without changing the code at all! It's no accident that
+Leo's new log pane was created first in Python.</p>
+<p>Functions returning tuples are a &quot;minor&quot; feature with a huge impact on code
+clarity. No more passing pointers to data, no more defining (and allocating and
+deallocating) temporary structs to hold multiple values.</p>
+<p>Python can't check declarations because there aren't any. However, there is a
+really nifty tool called Pychecker that does many of the checks typically done
+by compilers. See <a class="reference" href="http://pychecker.sourceforge.net/">pychecker</a> for details.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id5" id="power" name="power">Power</a></h3>
+<p>Python is much more powerful than C++, not because Python has more features, but
+because Python needs <em>less</em> features. Some examples:</p>
+<ul class="simple">
+<li>Python does everything that the C++ Standard Template Library (STL) does,
+without any of the blah, blah, blah needed by STL.
+No fuss, no muss, no code bloat.</li>
+<li>Python's slicing mechanism is very powerful and applies to any sequence (string, list or tuple).
+Python's string library does more with far less functions because slices replace many functions
+typically found in other string libraries.</li>
+<li>Writing dict = {} creates a dictionary (hash table).
+Hash tables can contain anything, including lists and other hash tables.</li>
+<li>Python's special functions,  <tt class="docutils literal"><span class="pre">__init__</span></tt>, <tt class="docutils literal"><span class="pre">__del__</span></tt>, <tt class="docutils literal"><span class="pre">__repr__</span></tt>, <tt class="docutils literal"><span class="pre">__cmp__</span></tt>, etc.
+are an elegant way to handle any special need that might arise.</li>
+</ul>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id6" id="safety" name="safety">Safety</a></h3>
+<p>Before using Python I never fully realized how difficult and dangerous memory allocation is in C++.
+Try doing:</p>
+<pre class="literal-block">
+aList[i:j] = list(aString)
+</pre>
+<p>in C.  You will write about 20 lines of C code.
+Any error in this code will create a memory allocation crash or leak.</p>
+<p>Python is fundamentally safe. C++ is fundamentally unsafe. When I am using
+Python I am free from worry and anxiety. When I am using C++ I must be
+constantly &quot;on guard.&quot; A momentary lapse can create a hard-to-find pointer bug.
+With Python, almost nothing serious can ever go wrong, so I can work late at
+night, or after a beer. The Python debugger is always available. If an exception
+occurs, the debugger/interpreter tells me just what went wrong. I don't have to
+plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can
+keep right on going even after a crash!</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id7" id="speed" name="speed">Speed</a></h3>
+<p>Python has almost all the speed of C. Other interpretive environments such as
+icon and Smalltalk have clarity, power and safety similar to Python. What makes
+Python unique is its seamless way of making C code look like Python code.
+Python executes at essentially the speed of C code because most Python modules
+are written in C. The overhead in calling such modules is negligible. Moreover,
+if code is too slow, one can always create a C module to do the job.</p>
+<p>In fact, Python encourages optimization by moving to higher levels of
+expression. For example, Leo's Open command reads an XML file. If this command
+is too slow I can use Python's XML parser module. This will speed up Leo while
+at the same time raising the level of the code.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id8" id="conclusions" name="conclusions">Conclusions</a></h3>
+<p>Little of Python is completely new. What stands out is the superb engineering
+judgment evident in Python's design. Python is extremely powerful, yet small,
+simple and elegant. Python allows me to express my intentions clearly and at the
+highest possible level.</p>
+<p>The only hope of making Leo all it can be is to use the best possible tools. I
+believe Python (possibly with Tkinter) will allow me to add, at long last, the
+new features that Leo should have.</p>
+<p>Edward K. Ream, October 25, 2001.  P.S., September, 2005:</p>
+<p>Four years of experience have only added to my admiration for Python. Leo could
+not possible be what it is today without Python.</p>
+</div>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="why-leo-is-special" name="why-leo-is-special">Why Leo is special</a></h2>
+<p>This white paper originally appeared in November 2003 as a series of postings to comp.lang.python.
+Many features have been added since then.
+I rewrote this paper in February 2006.</p>
+<p>Those who use Leo know that it is a superb environment for
+programming, authoring and managing data and project.
+Leo's power comes from combining just two basic elements:</p>
+<ul class="simple">
+<li>The organization power of outlines, including clones.</li>
+<li>The power and simplicity of the Python language.</li>
+</ul>
+<p>This paper explains in detail how combining these two features can, in fact,
+create immense and largely unexpected power and flexibility.
+To summarize:</p>
+<ul class="simple">
+<li>Outlines with clones are a superb filing cabinet for organizing text,
+including programs and scripts, or in fact any other information.
+This is the obvious aspect of outlines, but it is by no means the most powerful.</li>
+<li>Scripts can be composed of multiple nodes using noweb markup.
+Not only do outlines organize scripts, but scripts can be composed of outlines.
+In other words, Leo can <em>compose</em> scripts by concatenating descendant nodes and sections.
+Leo uses the noweb markup language to compose scripts in a flexible manner.</li>
+<li>Outline nodes split text, including programs and scripts, into <em>easily accessible</em>, discreet parts.
+Scripts may access nodes and their headlines and body text without any parsing.</li>
+<li>Nodes provide an easy associating the <em>description</em> of data with the data itself.
+Indeed, headlines naturally describe the node's body text.
+Leo's users have discovered many ways to take advantage of the unification of data and its description.</li>
+<li>Programs may treat nodes as <em>separate objects</em>, no matter what data the nodes contain.
+Because nodes are truly separate objects,
+it becomes easy and natural to define new <em>operations</em> on those objects,
+<strong>based on the description of those outline found in the node's headline</strong>.</li>
+</ul>
+<p>The combination of these features created a chain reaction of creative uses for outlines.
+The result has been an explosion of new ideas and capabilities.</p>
+<p>Leo supports the following kinds of 'special' nodes:
+&#64;test, &#64;suite, &#64;script, &#64;url, &#64;button, &#64;button timer, &#64;rst, &#64;command, etc.
+Each of these kinds of nodes defines new objects and new operations on those objects.
+The following paragraph show how Leo's users can use these new objects and their operations</p>
+<p>Scripting</p>
+<ul class="simple">
+<li>The execute script command executes the body text of the presently selected node
+in an environment containing three variables: <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt>.
+Thus, all scripts have full and <em>easy</em> access to all data in the outline containing the script.</li>
+<li>The scripting plugin creates support for script nodes.
+We can treat a node as a script, and <em>apply that script to any other part of an outline</em>.
+This is called 'bringing scripts to data'.
+Leo's users can do this using script buttons as follows.
+Any &#64;button node creates a script button in Leo's icon area.
+The name of the button is the node's headline; the script is the node's body text.
+The user can also create new script buttons using the 'Script Button' button.
+Pressing the 'Script Button' button creates a new script button,
+just as if the presently selected node were an &#64;button node.
+Bringing scripts to data is an immensely powerful and useful feature:
+it has eliminated the need for Leo's previous script-find features.</li>
+<li>&#64;command nodes create new minibuffer commands, complete with keyboard shortcuts.
+The headline defines the command name and an optional keyboard shortcut;
+the body text defines the command.</li>
+</ul>
+<p>Unit testing</p>
+<ul class="simple">
+<li>We can treat a node as an individual unit test,
+and <em>automatically</em> create a subclass of UnitTest.TestCase for the script in that node.
+This is Leo's &#64;test node feature.
+Leo will convert the body text of any &#64;test node into a unit tests.</li>
+<li>Similarly, &#64;suite nodes create suites of unit tests using the script in the &#64;suite node.</li>
+<li>A unit test can get test data from any node in the outline in which it resides.
+Thus, outlines can contain not only unit tests, but the data for those tests.</li>
+</ul>
+<p>Text formatting</p>
+<ul class="simple">
+<li>The rst3 plugin creates support for &#64;rst nodes.
+&#64;rst trees use outline structure to create document structure.
+This is a revolution in organizing documents.
+Full details [ref]</li>
+</ul>
+<p>Organizing data</p>
+<ul class="simple">
+<li>&#64;url nodes contain references to web addresses, including files on a local disk.
+Double-clicking an &#64;url node opens a web browser on the given URL.</li>
+</ul>
+<p>Plugins</p>
+<ul class="simple">
+<li>Plugins support many other kinds of user-defined objects and their associated operations.
+Some examples are &#64;view, &#64;read-only, &#64;folder, &#64;produce, &#64;run, &#64;startfile, etc.
+Writing plugins is easy.
+Python makes the programming as easy as possible;
+and Leo provides plugins with easy access to outlines and their data.</li>
+</ul>
+<div class="section">
+<h3><a class="toc-backref" href="#id10" id="you-can-execute-python-scripts-directly-from-anywhere-in-a-leo-outline" name="you-can-execute-python-scripts-directly-from-anywhere-in-a-leo-outline">1. You can execute Python scripts directly from anywhere in a Leo outline</a></h3>
+<p>The body text of any Leo node may contain a Python script.
+The Execute Script commands executes this script in a in an environment,
+that predefines three variables: <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt>.
+These variables allow easy access to all the data in the present outline.
+For example: the following script prints all the node of the
+outline in which the script is embedded:</p>
+<pre class="literal-block">
+for p in c.allNodes_iter():
+    indent = ' '*p.level()
+    print '%s + %s' % (indent,p.headString()) # print the node's headline.
+    print p.bodyString() # print the node's body.
+</pre>
+<p>For that matter, scripts can access any data anywhere on your hard drive, or all
+the data available on the web, for that matter. You knew that, but this
+&quot;innocent&quot; fact will be important later.</p>
+<p><strong>Result 1</strong>:  Leo is a great environment in which to write Python scripts.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id11" id="leo-s-outlines-are-the-perfect-tool-for-organizing-scripts" name="leo-s-outlines-are-the-perfect-tool-for-organizing-scripts">2. Leo's outlines are the perfect tool for organizing scripts</a></h3>
+<p>Leo's outline can organize any text (or other data for that matter).</p>
+<p><strong>Result 2</strong>:  Leo is a great way to organize standalone scripts.</p>
+<p>This seemingly simple result will turn out to have important implications.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id12" id="scripts-can-access-the-structure-of-leo-s-outlines" name="scripts-can-access-the-structure-of-leo-s-outlines">3. Scripts can access the structure of Leo's outlines</a></h3>
+<p>As shown in the example above, scripts may get access to the
+headline or body text of any node in a Leo outline.  Therefore, scripts may
+use the <em>structure</em> of the outline to gain access to</p>
+<ol class="loweralpha simple">
+<li>other scripts,</li>
+<li>fragments of code for exec or eval or</li>
+<li>other data.</li>
+</ol>
+<p><strong>Result 3</strong>: Scripts have can treat outline structure as first-class data.</p>
+<p>The first &quot;big&quot; reason why the combination of Python &amp; Leo is spectacular.
+It gets better...</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id13" id="leo-s-nodes-naturally-separate-data-from-meta-data" name="leo-s-nodes-naturally-separate-data-from-meta-data">4. Leo's nodes naturally separate data from meta-data</a></h3>
+<p>The body text of a node is the perfect place data itself (including other
+scripts).  The headline of the node is the perfect place to <em>describe</em> the
+data.  That is, headlines are a natural place for meta-data.  Scripts can
+use this meta-data in many creative ways.</p>
+<p><strong>Result 4</strong>: Scripts have easy access to user-definable meta-data.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id14" id="leo-is-the-ultimate-platform-for-unit-testing" name="leo-is-the-ultimate-platform-for-unit-testing">5. Leo is the ultimate platform for unit testing</a></h3>
+<p>I first saw the power of results 2, 3 and 4 when creating unit tests for Leo.
+Indeed, the body text of a node is the perfect place for putting regression test
+data. Headlines describe the data, which is exactly what is needed for
+organizing tests. Indeed, I use a script to create regression tests based on the
+structure of the outline of the children of the node containing the script (!)</p>
+<p>For example, I run the following script to create and run unit tests of
+Leo's colorizer:</p>
+<pre class="literal-block">
+import unittest,leoTest
+suite = leoTest.makeColorSuite(&quot;colorizerTests&quot;,&quot;tempNode&quot;)
+runner = unittest.TextTestRunner()
+runner.run(suite)
+</pre>
+<p>This works as follows:  the arguments to makeColorSuite tell it to look up
+the tree for of an ancestor of the present node (the node containing this
+script) for a node whose headline is &quot;colorizerTests&quot;.  makeColorSuite then
+looks for children of <em>that</em> node for nodes containing test data.  The node
+whose headline is &quot;tempNode&quot; is used by the colorizer during the tests.
+Here is the actual code of makeColorSuite:</p>
+<pre class="literal-block">
+def makeColorSuite(testParentHeadline,tempHeadline):
+    &quot;&quot;&quot;Create a colorizer test for every descendant of testParentHeadline.&quot;&quot;&quot;
+    u = testUtils() ; c = top() ; v = c.currentVnode()
+    root = u.findRootNode(v)
+    temp_v = u.findNodeInTree(root,tempHeadline)
+    vList = u.findSubnodesOf(testParentHeadline)
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+    for v in vList:
+        test = colorTestCase(c,v,temp_v)
+        suite.addTest(test)
+    return suite
+</pre>
+<p>The power and simplicity of this code is breathtaking.  All that is required
+are two utility routines, findNodeInTree and findSubnodesOf that find
+various nodes in an outline based on the outline structure and the headlines
+of the nodes:</p>
+<ul class="simple">
+<li>findNodeInTree(root,tempHeadline) returns the node in the entire tree
+contain the current node whose headline is tempHeadline.</li>
+<li>u.findSubnodesOf(testParentHeadline) returns a list of all children of the
+node whose name is testParentHeadline.</li>
+</ul>
+<p>In short, it is absolutely trivial for a script embedded in a Leo outline to
+generate unit tests based on the data in the outline in which the script is
+embedded!</p>
+<p>Notice, please, what does <em>not</em> have to be done:</p>
+<ol class="upperalpha simple">
+<li>No unit tests are created statically: everything is driven by data (the
+outline itself)</li>
+<li>No Python test data is created <em>at all</em>.   Before I saw this approach, I
+was putting text for the syntax-coloring text in Python strings and passing
+those strings to the regression tests.  Now, the <em>unchanged</em> data in the
+body text of nodes becomes the regression test data.</li>
+</ol>
+<p>C.  There is no need to mark meta-data as separate from test data: headlines
+are naturally distinct from body text.</p>
+<p>We see now that Reasons 2, 3 and 4 are a lot more potent than they might
+appear at first.  Indeed, Leo plus Python is the ultimate merging of code,
+structure and data.   Scripts can use data organized in outlines.  Outlines
+organize scripts.  Outlines (particularly their structure) are <em>data</em> for
+scripts.  Outlines contains metadata for scripts.  Outlines naturally keep
+data and meta-data separate.</p>
+<p>Please notice, this discussion merely hints at all the games that scripts
+could play with outline structure.  Just for example, scripts can easily
+insert, delete and reorganize nodes.  And the uses to which outline
+structure may be put are practically unlimited, as we shall see later...</p>
+<p>Let's turn now to a completely separate topic...</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id15" id="leo-is-the-ultimate-platform-for-finding-and-changing-text" name="leo-is-the-ultimate-platform-for-finding-and-changing-text">6. Leo is the ultimate platform for finding and changing text.</a></h3>
+<p>A few days ago I have added a script-based option to Leo's Find/Change
+panel.  For more than 30 years I have been disgusted with tools like regular
+expressions.  Calling re powerful is an utter joke; it's way too complex and
+way too wimpy.  Script-based find-change is infinitely more powerful.
+Instead of containing find text or change <em>text</em>, Leo's Find/Change panel
+may contains find or change <em>scripts</em>.  This becomes possible because scripts
+have complete access to both the structure of the outline and all of Leo's
+code.</p>
+<p>It all works so smoothly:   The find script is responsible for traversing
+the tree and for highlighting the found text or otherwise indicating to the
+change script what the found text was.  Leo dedicates a Python dict called
+app.searchDict for communication between the search script and the change
+script.  The change script is responsible for:</p>
+<ul class="simple">
+<li>changing the text, typically by using c.setBodyString(p,newText), and</li>
+<li>implementing undo, typically by calling c.frame.onBodyChanged(p,&quot;Change&quot;,oldText=oldText).</li>
+</ul>
+<p>Some details:</p>
+<ul class="simple">
+<li>When executing the search and change scripts when the user selects the Find
+All or Change All commands, Leo executes the find or change scripts repeatedly
+only if app.searchDict.get(&quot;continue&quot;) evaluates to True. Otherwise these
+scripts are only executed once. Otherwise, scripts can use app.searchDict as
+they please.</li>
+<li>For simplicity, most find and change scripts will ignore settings in the Find
+Panel like &quot;whole word&quot;, &quot;pattern match&quot;, and &quot;reverse&quot;: the scripts know what
+to do! However, these settings are available to the scripts via ivars such as
+c.whole_word_flag, etc. if desired.</li>
+<li>Either the find and change scripts may use Python's re module. For example,
+the find script could set app.searchDict[&quot;m&quot;] to the match object returned by
+re's match method. The change script would then compute the result, change the
+text and set the undo info as usual.</li>
+</ul>
+<p>In effect, Leo's Find/Change panel becomes a new platform for running
+scripts interactively.  Leo now has all the find/change capability of
+pattern matching languages like Snobol and Icon, using the capabilities of
+the plain Python language.  Moreover, Leo can deliver these capabilities
+interactively or not depending which buttons you push in Leo's Find/Change
+panel.</p>
+<p>One last point.  As I mentioned much earlier, there is no reason to confine
+the find and change scripts to operate on data only within a Leo outline.
+These scripts could as easily traverse your file system as the Leo outline.
+But notice: scripts could pull data from the file system into the outline so
+that you can see the effects of changes as the scripts operate.  Again, this
+can all happen interactively if you like.</p>
+<p>No, one more last point.  It's convenient to defined an initScriptFind
+utility very similar to the makeColorSuite utility, used like this:</p>
+<pre class="literal-block">
+# Initialize Leo's find panel using the named children of this node.
+from leoGlobals import *
+initScriptFind(&quot;Find script&quot;,&quot;Change script&quot;)
+# Start searching at the top.
+top().selectVnode(c.rootVnode())
+</pre>
+<p>Put the search script in a child node called &quot;Find script&quot; (no quotes), put
+the change script in a child node called &quot;Change script&quot;, execute this
+script and the following happens:</p>
+<ul class="simple">
+<li>The body text of &quot;Find script&quot; node gets put in the find text of Leo's Find/Change dialog.</li>
+<li>The body text of &quot;Change script&quot; node gets put in the find text of Leo's Find/Change dialog.</li>
+<li>The Script Find radio buttons gets selected, as does the Script Change checkbox.</li>
+<li>The root of the outline becomes the selected node.</li>
+</ul>
+<p>Presto!  Leo is ready for a script search.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id16" id="leo-outlines-are-the-ultimate-filing-cabinet" name="leo-outlines-are-the-ultimate-filing-cabinet">7. Leo outlines are the ultimate filing cabinet</a></h3>
+<p>One more feature greatly expands the generality and power of
+Leo's outlines combined with Python.  Plugins may now attach arbitrary data
+to any node of a Leo outline.  This is done merely by &quot;injecting&quot; an ivar
+called  unknownAttributes ivar into Leo's fundamental vnode or tnode objects
+(or adding items to the unknownAttributes dict if it already exists).  The
+unknownAttributes ivar should be a Python dictionary whose keys are xml
+attribute names and whose values are the values of those attributes.</p>
+<p>When writing a file, Leo will write &quot;foreign&quot; attributes in the &lt;v&gt; or &lt;t&gt;
+xml elements of Leo's .leo file if the corresponding vnode or tnode contains
+this unknownAttributes ivar.  Similarly, Leo will create an
+unknownAttributes ivar for a vnode or tnode if the corresponding &lt;v&gt; or &lt;t&gt;
+element contains an attribute not normally used by Leo.  Leo performs the
+standard xml escapes when writing unknown attributes, so plugins can put
+<em>anything</em> in the unknownAttributes dictionary.  In particular, plugins may
+put xml in v.unknownAttributes or t.unknownAttributes.</p>
+<p>This means, for example, that plugins may add anything that can be
+represented by xml (and that is <em>everything</em>) in any node of a Leo outline.
+In effect, Leo's file format is now completely extensible.  BTW, plugins can
+override any aspect of Leo's behavior, so not only can Leo passively accept
+the data in &quot;extended&quot; .leo files, but plugins can extend Leo to <em>use</em> this
+data!</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id17" id="script-buttons" name="script-buttons">8: Script buttons</a></h3>
+<p>Script buttons are a quick way of automating any task.  Extremely useful.
+See the <a class="reference" href="plugins.html#mod-scripting">Scripting plugin</a> for details.</p>
+<p>Leo's core provides additional support for &#64;test, &#64;suite, &#64;timer nodes.
+For details, see the documentation for <a class="reference" href="scripting.html#test-and-suite-nodes">test buttons</a>.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id18" id="the-rst3-plugin" name="the-rst3-plugin">9: The rst3 plugin</a></h3>
+<p>See the documentation for the <a class="reference" href="rstplugin3.html">Rst3 plugin</a> for details.</p>
+</div>
+<div class="section">
+<h3><a class="toc-backref" href="#id19" id="conclusion" name="conclusion">Conclusion</a></h3>
+<p>All the power of Leo derives directly from the power, flexibility and
+dynamism of Python.  But making structure explicit as Leo outlines do adds
+an important new dimension, literally and figuratively, to Python.
+Moreover, Leo's Find/Change dialog creates a new environment from which to
+run Python scripts. At long last the full power of the unification of code
+and data is becoming apparent.</p>
+<hr class="docutils" />
+<p><a class="reference" href="theory.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="plugins.html"><img alt="next" src="arrow_rt.gif" /></a></p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

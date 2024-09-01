@@ -1,0 +1,953 @@
+\documentclass[10pt,a4paper,english]{article}
+\usepackage{babel}
+\usepackage{ae}
+\usepackage{aeguill}
+\usepackage{shortvrb}
+\usepackage[latin1]{inputenc}
+\usepackage{tabularx}
+\usepackage{longtable}
+\setlength{\extrarowheight}{2pt}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{ifthen}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage[DIV12]{typearea}
+%% generator Docutils: http://docutils.sourceforge.net/
+\newlength{\admonitionwidth}
+\setlength{\admonitionwidth}{0.9\textwidth}
+\newlength{\docinfowidth}
+\setlength{\docinfowidth}{0.9\textwidth}
+\newlength{\locallinewidth}
+\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
+\newenvironment{optionlist}[1]
+{\begin{list}{}
+  {\setlength{\labelwidth}{#1}
+   \setlength{\rightmargin}{1cm}
+   \setlength{\leftmargin}{\rightmargin}
+   \addtolength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}{\optionlistlabel}}
+}{\end{list}}
+\newlength{\lineblockindentation}
+\setlength{\lineblockindentation}{2.5em}
+\newenvironment{lineblock}[1]
+{\begin{list}{}
+  {\setlength{\partopsep}{\parskip}
+   \addtolength{\partopsep}{\baselineskip}
+   \topsep0pt\itemsep0.15\baselineskip\parsep0pt
+   \leftmargin#1}
+ \raggedright}
+{\end{list}}
+% begin: floats for footnotes tweaking.
+\setlength{\floatsep}{0.5em}
+\setlength{\textfloatsep}{\fill}
+\addtolength{\textfloatsep}{3em}
+\renewcommand{\textfraction}{0.5}
+\renewcommand{\topfraction}{0.5}
+\renewcommand{\bottomfraction}{0.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+% end floats for footnotes
+% some commands, that could be overwritten in the style file.
+\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
+\newcommand{\titlereference}[1]{\textsl{#1}}
+% end of "some commands"
+\input{..\doc\default.css}
+\title{}
+\author{}
+\date{}
+\raggedbottom
+\begin{document}
+
+\setlength{\locallinewidth}{\linewidth}
+% rst3: filename: html\intro.tex 
+
+\href{\#back}{\includegraphics{arrow_lt.gif}} \href{\#home}{\includegraphics{leo.gif}} \href{\#next}{\includegraphics{arrow_rt.gif}}
+
+
+%___________________________________________________________________________
+
+\hypertarget{chapter-2-a-tutorial-introduction-to-leo}{}
+\pdfbookmark[0]{Chapter 2: A Tutorial Introduction to Leo}{chapter-2-a-tutorial-introduction-to-leo}
+\section*{Chapter 2: A Tutorial Introduction to Leo}
+
+This tutorial shows you Leo's basic features.
+These features are simple to use, yet they interact with each other in powerful ways.
+All Leo's features relate in some way to \href{\#leo-s-main-window}{outlines}.
+Indeed, \href{\#outline-structure-is-significant-everywhere}{outline structure is significant everywhere}.
+
+\href{\#quick-start-for-programmers}{Quick start for programmers} contains the heart of this chapter.
+It briefly describes everything a Python programmer needs to know in order to understand Leo's source code.
+\href{\#good-style-and-bad-sections-vs-others}{Good style and bad} answers common question about when to use the features described in the \href{\#quick-start-for-programmers}{quickstart}.
+The section \href{\#scripting-leo}{Scripting Leo} is an introduction to scripting Leo with Python.
+For full details, see \href{scripting.html}{Chapter 7: Scripting Leo with Python}.
+\hypertarget{contents}{}
+\pdfbookmark[0]{Contents}{contents}
+\subsubsection*{~\hfill Contents\hfill ~}
+\begin{list}{}{}
+\item {} \href{\#chapter-2-a-tutorial-introduction-to-leo}{Chapter 2: A Tutorial Introduction to Leo}
+\begin{list}{}{}
+\item {} \href{\#introduction}{Introduction}
+\begin{list}{}{}
+\item {} \href{\#leo-s-main-window}{Leo's main window}
+
+\item {} \href{\#using-leo-as-an-outliner}{Using Leo as an outliner}
+
+\end{list}
+
+\item {} \href{\#key-features-of-leo}{Key features of Leo}
+\begin{list}{}{}
+\item {} \href{\#derived-files}{Derived files}
+
+\item {} \href{\#clones-views}{Clones {\&} views}
+
+\item {} \href{\#outline-structure-is-significant-everywhere}{Outline structure is significant everywhere}
+
+\item {} \href{\#leo-directives}{Leo directives}
+
+\end{list}
+
+\item {} \href{\#leo-for-programmers}{Leo for Programmers}
+\begin{list}{}{}
+\item {} \href{\#quick-start-for-programmers}{Quick start for programmers}
+
+\item {} \href{\#beginner-s-reference-guide}{Beginner`s reference guide}
+\begin{list}{}{}
+\item {} \href{\#syntax-of-section-names}{Syntax of section names}
+
+\item {} \href{\#code-and-doc-parts}{Code and doc parts}
+
+\item {} \href{\#directives-for-programming}{Directives for programming}
+
+\item {} \href{\#orphan-nodes}{Orphan nodes}
+
+\item {} \href{\#sentinel-lines}{Sentinel lines}
+
+\item {} \href{\#leo-and-literate-programming}{Leo and literate programming}
+
+\end{list}
+
+\item {} \href{\#good-style-and-bad-sections-vs-others}{Good style and bad:  sections vs. @others}
+
+\item {} \href{\#scripting-leo}{Scripting Leo}
+
+\item {} \href{\#plugins-settings}{Plugins {\&} settings}
+
+\item {} \href{\#further-study}{Further study}
+
+\end{list}
+
+\end{list}
+
+\end{list}
+
+% Links used in this document... 
+% ----- External references. 
+% ----- Relative links.... 
+% ----- References to other chapters. 
+% ----- References to the glossary 
+% WARNING: image targets may not have upper case letters! 
+
+
+%___________________________________________________________________________
+
+\hypertarget{introduction}{}
+\pdfbookmark[1]{Introduction}{introduction}
+\subsection*{Introduction}
+
+\textbf{Important}: please \href{install.html}{install Leo} before reading this tutorial,
+If you have any problem, please do ask for help on \href{http://sourceforge.net/forum/forum.php?forum_id=10227}{Leo's help forum}.
+
+Now that you have Leo installed, please \href{install.html\#running-leo}{launch Leo}.
+You should see Leo's main window, something like this:
+\textbf{Note}: the actual contents of the icon area at the top depends on what plugins are active.
+
+\includegraphics{PCWindow.gif}
+
+
+%___________________________________________________________________________
+
+\hypertarget{leo-s-main-window}{}
+\pdfbookmark[2]{Leo's main window}{leo-s-main-window}
+\subsubsection*{Leo's main window}
+
+The main window represents an entire project and is stored in a single \textbf{Leo file},
+a file with a .leo extension.
+As you can see, the main window contains three panes:
+the \textbf{outline pane} at the top left,
+the \textbf{log pane} at the top right, and the \textbf{body pane} at the bottom.
+The window also contains an \textbf{icon area} at the very top and a \textbf{status area} at the very bottom.
+\begin{description}
+%[visit_definition_list_item]
+\item[{Outline pane {\&} nodes}] %[visit_definition]
+
+The outline pane shows your project as an outline.
+The outline contains all your project's data.
+An outline consists of \textbf{nodes}.
+Nodes have two parts, a \textbf{headline} and \textbf{body text}.
+The outline pane shows headlines.
+\textbf{Selecting a headline selects the entire node}; the node's body text appears in the body pane.
+The \textbf{icon box} is a small icon directly to the left of the headline text.
+If a node contains children, a smaller icon appears to the left of the icon box.
+This icon contains a \texttt{+} or \texttt{-} symbol.
+Clicking this \textbf{expansion box} expands or contracts the node.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{Body pane}] %[visit_definition]
+
+The body pane contains the body text of the node selected in the outline pane.
+You can control how Leo shows body text using \href{\#leo-directives}{Leo directives} and \href{\#plugins-settings}{settings}.
+For example, directives specify whether to syntax color the body text and whether to wrap the text.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{Log pane}] %[visit_definition]
+
+The log pane contains informational messages from Leo.
+\href{\#scripting-leo}{Scripts} and \href{\#plugins-settings}{plugins} may also write message to the log pane.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{Icon area}] %[visit_definition]
+
+Depending on what plugins are enabled,
+the icon area may contain buttons and other widgets that extend what Leo can do.
+The scripting plugin makes it easy to add buttons to the icon area.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{Status area}] %[visit_definition]
+
+The status area shows the line and column containing the body text's cursor.
+Other information may follow.
+Usually this is the \textbf{UNL} (Uniform Node Location) that describes the path in the outline
+to the selected node.
+Please select nodes at several levels of the outline to see how the UNL changes.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+
+Now that we are familiar with Leo's main window,
+let's see how to use Leo as a simple outliner.
+
+
+%___________________________________________________________________________
+
+\hypertarget{using-leo-as-an-outliner}{}
+\pdfbookmark[2]{Using Leo as an outliner}{using-leo-as-an-outliner}
+\subsubsection*{Using Leo as an outliner}
+
+You can use Leo as fairly typical outliner. Play around with some of the
+commands from the Outline menu:
+\begin{itemize}
+\item {} 
+Click the expansion box of \href{glossary.html\#nodes}{nodes} to show and hide their children.
+
+\item {} 
+The \texttt{Insert Node} \href{commands.html}{command} inserts a new headline into the outline.
+
+\item {} 
+The \texttt{Delete Node} \href{commands.html}{command} deletes a headline and all its children.
+
+\item {} 
+The \texttt{Move Up}, \texttt{Move Down}, \texttt{Move Left} and \texttt{Move Right} \href{commands.html}{commands} move the currently selected node,
+along with all its descendants.
+
+\item {} 
+The \texttt{Promote} \href{commands.html}{command} makes all the \href{glossary.html\#child}{children} of a headline siblings of the headline.
+The \texttt{Demote} \href{commands.html}{command} makes all following \href{glossary.html\#siblings}{siblings} of a headline children of the headline.
+
+\item {} 
+You can cut, copy and paste entire \href{glossary.html\#nodes}{nodes} (including their descendants) with
+the Cut Node, Copy Node and Paste Node \href{commands.html}{commands}.
+
+\item {} 
+We'll discuss the \texttt{Clone Node} \href{commands.html}{command} in the next section.
+
+\end{itemize}
+
+You enter \href{glossary.html\#body-text}{body text} for any node by selecting the node's headline in the
+outline pane and then typing in the body pane. Leo has a full range of \href{commands.html\#the-edit-menu}{editing
+commands} that apply to the body pane.
+
+
+%___________________________________________________________________________
+
+\hypertarget{key-features-of-leo}{}
+\pdfbookmark[1]{Key features of Leo}{key-features-of-leo}
+\subsection*{Key features of Leo}
+
+So far we have discussed features that Leo shares with other editors and outliners.
+The following sections explain what makes Leo unique.
+
+
+%___________________________________________________________________________
+
+\hypertarget{derived-files}{}
+\pdfbookmark[2]{Derived files}{derived-files}
+\subsubsection*{Derived files}
+
+You don't have to store all outline data in Leo (.leo) files.
+Leo allows you to store outline data in external files called \textbf{derived files}.
+This is useful for creating programming files, documentation files such as LaTeX files, and web pages.
+
+\textbf{Important}:
+You can edit \href{\#derived-files}{derived files} outside of Leo.
+Leo will update the outline to reflect those changes when Leo next opens the \href{\#leo-s-main-window}{outline}.
+
+It is easy to create derived files; just put \texttt{@thin} \emph{filename} in a \href{glossary.html\#headline}{headline}.
+That creates an \textbf{@thin node}.
+The \textbf{@thin tree} (the \texttt{@thin} node and all its descendants) corresponds to the derived file \emph{filename}.
+Leo writes a \href{\#derived-files}{derived file} corresponding to the \texttt{@thin} tree to your hard drive when Leo saves your outline (.leo file).
+When opening a .leo file, Leo reads all the \href{\#derived-files}{derived files} corresponding to \texttt{@thin} nodes in the \href{\#leo-s-main-window}{outline}.
+
+\textbf{Note}: you can \texttt{@file} instead of \texttt{@thin} to create derived files.
+\texttt{@thin} is more friendly to CVS and other Source Code Control Systems.
+This tutorial only discusses \href{glossary.html\#thin}{@thin} \href{glossary.html\#nodes}{nodes}.
+A good rule of thumb is to use \href{glossary.html\#thin}{@thin} \href{glossary.html\#nodes}{nodes} unless you have a specific reason to do otherwise.
+See \href{directives.html}{Chapter 4: Writing Programs in Leo} for a full discussions of the various ways of creating \href{\#derived-files}{derived files}.
+
+\textbf{Important}:
+You must tell Leo the order in which to write data from the \texttt{@thin} tree to the \href{\#derived-files}{derived file}.
+The simplest way to specify the contents of a derived file is to insert:
+\begin{quote}{\ttfamily \raggedright \noindent
+@all
+}\end{quote}
+
+in the body text of the \href{glossary.html\#thin}{@thin} \href{glossary.html\#node}{node}.
+\texttt{@all} is a Leo \href{\#leo-directives}{directive}.
+
+When writing a \href{\#derived-files}{derived file}, Leo writes the \href{glossary.html\#body-text}{body text} of the \href{glossary.html\#thin}{@thin} \href{glossary.html\#node}{node},
+replacing the \texttt{@all} directive by the \href{glossary.html\#body-text}{body text} of all the \href{glossary.html\#descendant}{descendant} \href{glossary.html\#nodes}{nodes} in \textbf{outline order},
+the order that nodes appear on the screen when all nodes are expanded.
+\href{\#leo-for-programmers}{Leo for Programmers} discusses other, more flexible, ways of creating derived files from \href{glossary.html\#thin}{@thin} trees.
+\textbf{Note}: Leo copies headlines to the derived file as comments.
+This means that \href{glossary.html\#headlines}{headlines} do not affect the meaning of \href{\#derived-files}{derived files} and
+you can use \href{glossary.html\#headlines}{headlines} to contain whatever data you wish.
+Usually, \href{glossary.html\#headlines}{headlines} describe what's in the node.
+
+
+%___________________________________________________________________________
+
+\hypertarget{clones-views}{}
+\pdfbookmark[2]{Clones {\&} views}{clones-views}
+\subsubsection*{Clones {\&} views}
+
+A \textbf{cloned node} is a copy of a \href{glossary.html\#node}{node} that changes when the original changes.
+Changes to the \href{glossary.html\#child}{children}, \href{glossary.html\#grandchildren}{grandchildren}, etc. of a node are simultaneously made
+to the corresponding nodes contained in all cloned nodes. A small red arrow in
+icon boxes marks clones.
+
+Please take a few moments to experiment with clones. Start with a single node,
+say a \href{glossary.html\#node}{node} whose \href{glossary.html\#headline}{headline} is A. Clone node A using the \texttt{Clone Node} \href{commands.html}{command}
+in Leo's Outline menu. Both clones are identical; there is no distinction
+between the original node and any of its clones.
+
+Type some text into the body of either node A. The same text appears in the
+bodies of all other \href{glossary.html\#clones}{clones} of A. Now insert a node, say B, as a child of any of
+the A nodes. All the A nodes now have a B child. See what happens if you clone
+B. See what happens if you insert, delete or move nodes that are \href{glossary.html\#child}{children} of A.
+Verify that when the second-to-last cloned node is deleted the last cloned node
+becomes a regular node again.
+
+Clones are much more than a cute feature. \textbf{Clones allow multiple views of data
+to exist within a single outline}. The ability to create multiple views of data
+is crucial; you don't have to try to decide what is the 'correct' view of data.
+You can create as many views as you like, each tailored exactly to the task at hand.
+
+To create a new view of the data, just create any \emph{ordinary} node. This node
+will \emph{represent} the new view. Let us call it a \textbf{view node.} Now just put any
+nodes that are related to the view as descendant nodes of your view node. Let us
+call the descendants of the view nodes the \textbf{components} of the view. Component
+nodes are typically clones of other nodes in the outline. This is what gives the
+view its power: a view can contain nodes gathered from all over the outline.
+However, it is also sometimes useful to add non-cloned nodes as components of
+views.
+
+For example, when I begin to fix a bug I first create a view node to represent
+the bug. I then create a component node (not cloned) that contains the original
+bug report. I may also create other non-cloned nodes to contain notes and
+documentation. Next, I go looking throughout Leo's code for nodes that relate in
+some way to the bug. When I find such a node I clone it and move one of the
+clones so it becomes a component of the view node for the bug. \textbf{Note}: I can
+organize the components of the view node as I please. In particular, I can
+create \textbf{organizer nodes} whose only purpose is to contain groups of component
+nodes. In other words, the full power of Leo outlines is available within view
+nodes.
+
+\textbf{Important}: Once I have created the view of the bug, I can concentrate \emph{only}
+on that view. In particular, I can fix code by changing \emph{component} nodes.
+Because the code nodes are cloned, any changes I make to a component node also
+get made to the other cloned nodes throughout the outline. In effect, my view
+node for the bug lets me work only on the nodes of the outline that are directly
+related to the bug. In other words, the view nodes lets me focus \emph{only} on the
+task at hand, and lets me ignore all other details.
+
+Clones are the basis for Leo's project management capabilities. Indeed, the
+ability to create multiple views of a project is most helpful.
+
+
+%___________________________________________________________________________
+
+\hypertarget{outline-structure-is-significant-everywhere}{}
+\pdfbookmark[2]{Outline structure is significant everywhere}{outline-structure-is-significant-everywhere}
+\subsubsection*{Outline structure is significant everywhere}
+
+So far we have been focusing on Leo's outline pane: creating and \href{glossary.html\#clone}{cloning} \href{glossary.html\#nodes}{nodes}.
+In fact, \emph{outline structure affects all aspects of Leo}.
+For example:
+\begin{itemize}
+\item {} 
+As mentioned earlier, body text can contain \href{\#leo-directives}{Leo directives} that control how Leo works.
+By default, a Leo directive applies to a node and all its \href{glossary.html\#descendants}{descendants},
+but a Leo directive in a descendant node can \textbf{override} a directive in an \href{glossary.html\#ancestor}{ancestor} node.
+
+\item {} 
+Programs in \href{glossary.html\#body-text}{body text} can contain optional markup consisting of \href{glossary.html\#section}{sections} and section \href{glossary.html\#references}{references}.
+(See \href{\#quick-start-for-programmers}{Quick start for programmers} for details.)
+Leo outlines limits the visibility of such sections:
+\href{glossary.html\#section}{sections} must be defined in a node descending from the node containing the \href{glossary.html\#section-reference}{section reference}.
+
+\item {} 
+You can organize scripts and programs using outlines, and scripts can use
+outline structure to access data. \href{\#plugins-settings}{Plugins} and \href{\#scripting-leo}{scripts} often confine their
+effects to the presently selected outline.
+
+\end{itemize}
+
+
+%___________________________________________________________________________
+
+\hypertarget{leo-directives}{}
+\pdfbookmark[2]{Leo directives}{leo-directives}
+\subsubsection*{Leo directives}
+
+Leo directives control such things as syntax coloring, line wrapping within the body pane and the width of tabs.
+Leo directives start with '@' in the leftmost column, followed by the name of the directive.  Some examples:
+\begin{quote}{\ttfamily \raggedright \noindent
+@language~python~\\
+@tabwidth~-4~\\
+@wrap~\\
+@nowrap~\\
+@color~\\
+@nocolor~\\
+@killcolor
+}\end{quote}
+
+The following directives are useful for non-programmers;
+\href{\#directives-for-programming}{Directives for programming} lists the directives used for computer programming.
+\begin{itemize}
+\item {} 
+\textbf{@color}, \textbf{@nocolor} and \textbf{@killcolor} control syntax coloring.
+
+\item {} 
+\textbf{@language} sets the language used for syntax coloring.
+
+\item {} 
+\textbf{@tabwidth} sets the width of tabs.
+Negative tab widths cause Leo to convert tabs to spaces
+(highly recommended for Python programming.)
+
+\item {} 
+\textbf{@wrap} and \textbf{@nowrap} enable or disable line wrapping the Leo's body pane.
+
+\end{itemize}
+
+\textbf{Note}:
+You can mix \texttt{@nocolor} and \texttt{@color} directives in a single \href{glossary.html\#node}{node},
+but these directives apply to \href{glossary.html\#descendant}{descendant} nodes only if they are \textbf{unambiguous}, that is,
+only if the ancestor node contains exactly one \texttt{@color} or \texttt{@nocolor} directive.
+
+
+%___________________________________________________________________________
+
+\hypertarget{leo-for-programmers}{}
+\pdfbookmark[1]{Leo for Programmers}{leo-for-programmers}
+\subsection*{Leo for Programmers}
+
+The previous sections have discussed the basics of Leo.
+\emph{Non-programmers can stop reading this tutorial now}!
+
+The following sections tell how to create derived files that contain computer
+programs. Yes, you could create program files using the \texttt{@all} directive, but
+the following section explain how you can take advantage of \textbf{power-user}
+features designed specifically for computer programmers. Even if you don't read
+manuals, please read the following short \href{\#quick-start-for-programmers}{Quick start for programmers} section.
+
+
+%___________________________________________________________________________
+
+\hypertarget{quick-start-for-programmers}{}
+\pdfbookmark[2]{Quick start for programmers}{quick-start-for-programmers}
+\subsubsection*{Quick start for programmers}
+
+\href{glossary.html\#thin-trees}{@thin trees} create \href{\#derived-files}{derived files} containing your program.
+Within \texttt{@thin trees} you can write \emph{functional pseudo-code}, like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~imports~>{}>~~(in~body~text)
+}\end{quote}
+
+This is a \textbf{reference} to a \textbf{section} called \texttt{<{}< imports >{}>}.
+When writing a \href{\#derived-files}{derived file},
+Leo replaces all section references by their definition.
+You define sections with \textbf{section definition nodes}.
+A section definition node is a \href{glossary.html\#node}{node} whose \href{glossary.html\#headline}{headline} starts with a \href{glossary.html\#section-name}{section name}:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~imports~>{}>~~~(in~a~headline)
+}\end{quote}
+
+The \href{glossary.html\#body-text}{body text} of this \href{glossary.html\#node}{node} is its definition.  For example:
+\begin{quote}{\ttfamily \raggedright \noindent
+import~leoGlobals~as~g~\\
+import~sys
+}\end{quote}
+
+As you can see, \href{glossary.html\#section-definitions}{section definitions} can be \emph{fragments} of code;
+they don't have to be complete functions or methods.
+
+\textbf{Notes}:
+\begin{itemize}
+\item {} 
+\href{glossary.html\#section-definition-nodes}{Section definition nodes} must be \href{glossary.html\#descendants}{descendants} of the \href{glossary.html\#node}{node} containing the \href{glossary.html\#section-reference}{section reference}.
+Leo's syntax colorer underlines undefined \href{glossary.html\#section-references}{section references}.
+
+\item {} 
+\href{glossary.html\#section-definitions}{Section definitions} may contain references to other \href{glossary.html\#section}{sections}.
+
+\item {} 
+The \textbf{@others} \href{\#leo-directives}{directive} is a special kind of \href{glossary.html\#section-reference}{section reference}.
+Leo replaces the \texttt{@others} directive by the body text of all \href{glossary.html\#descendant}{descendant} \href{glossary.html\#nodes}{nodes}
+\emph{except} \href{glossary.html\#section-definition-nodes}{section definition nodes}.
+That's how \texttt{@others} got its name.
+For example, the \href{glossary.html\#root}{root node} of Python \href{\#derived-files}{derived files} typically is something like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~docstring~>{}>~\\
+<{}<~imports~>{}>~\\
+@others
+}\end{quote}
+
+The \href{\#derived-files}{derived file} will contain the docstring, followed by the imports, followed by the
+the body text of all other nodes in the \texttt{@file} tree, in \href{glossary.html\#outline-order}{outline order}.
+
+\item {} 
+A \href{\#derived-files}{derived file} may contain multiple \texttt{@others} \href{\#leo-directives}{directives}: Each
+\texttt{@others} directive expands to the body text of all \href{glossary.html\#descendant}{descendant} \href{glossary.html\#nodes}{nodes},
+excluding any nodes (and \emph{their} descendants) that contain other \texttt{@others}
+\href{\#leo-directives}{directives}. In practice, using \texttt{@others} is easy.
+
+\item {} 
+You may precede \href{glossary.html\#section-references}{section references} (including the \texttt{@others} \href{\#leo-directives}{directive})
+with whitespace. When expanding the section references, Leo inserts the
+preceding whitespace before every expanded line. For example, the following
+will work properly in Python:
+\begin{quote}{\ttfamily \raggedright \noindent
+if~path:~\\
+~~~~<{}<~create~or~recreate~temp~file~as~needed~>{}>
+}\end{quote}
+
+\end{itemize}
+
+\emph{You now know enough to understand Leo's source code}.  Hurray!
+The following sections discuss some relatively minor details.
+However, I recommend reading \href{\#good-style-and-bad-sections-vs-others}{Good style and bad};
+you might save yourself some extra work.
+
+
+%___________________________________________________________________________
+
+\hypertarget{beginner-s-reference-guide}{}
+\pdfbookmark[2]{Beginner`s reference guide}{beginner-s-reference-guide}
+\subsubsection*{Beginner`s reference guide}
+
+This section covers all the details of programming with Leo that beginners are likely to need.
+\href{directives.html}{Chapter 4: Writing Programs in Leo} is the full reference guide.
+I recommend avoiding that chapter until you have been programming with Leo for some time.
+
+
+%___________________________________________________________________________
+
+\hypertarget{syntax-of-section-names}{}
+\pdfbookmark[3]{Syntax of section names}{syntax-of-section-names}
+\subsubsection*{Syntax of section names}
+
+A section name has the form:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~any~text~>{}>
+}\end{quote}
+
+\titlereference{Any text} is just that: \emph{any} sequence of text not containing '{\textgreater}{\textgreater}'.  For example:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~initialize~ivars~>{}>
+}\end{quote}
+
+Leo ignores case and whitespace in section names, so the following are all equivalent:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~Peanut~Butter~{\&}~Jelly~>{}>~\\
+<{}<~peanut~butter{\&}jelly~>{}>~\\
+<{}<peanut~butter~{\&}~jelly>{}>~\\
+<{}<peanutbutter{\&}jelly>{}>~\\
+<{}<PEANUTBUTTER{\&}JELLY>{}>
+}\end{quote}
+
+When \texttt{<{}<} and \texttt{>{}>} are not paired on a line,
+they are treated as ordinary \texttt{<{}<} and \texttt{>{}>} characters.
+Leo has \emph{no} escape mechanism for section names.
+That is, paired \texttt{<{}<} and \texttt{>{}>} characters on the same line always denote a section name,
+\emph{even within comments and strings}.
+This means that \texttt{<{}<} and \texttt{>{}>} characters that do not delimit a section name must be placed on separate lines.
+In practice, this requirement seldom causes problems.
+
+The syntax of section names is based on Norman Ramsey's \href{http://www.eecs.harvard.edu/~nr/noweb/}{noweb} markup language,
+but without noweb's escape conventions.
+Eliminating these escape conventions may seem odd,
+but it has turned out to be one of the best design decisions I ever made.
+
+
+%___________________________________________________________________________
+
+\hypertarget{code-and-doc-parts}{}
+\pdfbookmark[3]{Code and doc parts}{code-and-doc-parts}
+\subsubsection*{Code and doc parts}
+
+\textbf{Doc parts} are blocks of text that Leo treats as comments.
+Leo syntax colors doc parts as comments,
+and Leo converts doc parts into comments in derived files.
+Doc parts start with an \texttt{@} directive and continue until
+an \texttt{@c} directive or the end of the body text.
+For example:
+\begin{quote}{\ttfamily \raggedright \noindent
+@~This~is~a~comment~in~a~doc~part.~\\
+Doc~parts~can~span~multiple~lines.~\\
+The~next~line~ends~the~doc~part~\\
+@c
+}\end{quote}
+
+Doc parts are entirely optional;
+you could simply use comments in the language specified by the \texttt{@language} \href{\#leo-directives}{directive}.
+Using doc parts for lengthy comments is convenient, however.
+Not only do you not need to specify comment delimiters,
+but Leo breaks doc parts into lines automatically.
+The \texttt{@pagewidth} directive specifies the width of those lines.
+
+\textbf{Notes}:
+\begin{itemize}
+\item {} 
+In body text, everything not in a doc part is in a \textbf{code part}.
+If a node does not contain a doc part, the entire body text is a code part.
+
+\item {} 
+\texttt{@doc} is a synonym for \texttt{@} and \texttt{@code} is a synonym for \texttt{@c}.
+However, \texttt{@} and \texttt{@c} are preferred.
+
+\item {} 
+A doc part of the form:
+\begin{quote}{\ttfamily \raggedright \noindent
+@~{\%}def~identifiers
+}\end{quote}
+
+\end{itemize}
+
+declares that the preceding code part contains the list of identifiers.
+Whitespace separate the identifiers; everything else is taken to be the
+identifiers. This construct is a convention of the \href{http://www.eecs.harvard.edu/~nr/noweb/}{noweb} language, and will be
+of use \emph{only} for those who want to create .nw output files for use with the
+official \href{http://www.eecs.harvard.edu/~nr/noweb/}{noweb} system.
+
+
+%___________________________________________________________________________
+
+\hypertarget{directives-for-programming}{}
+\pdfbookmark[3]{Directives for programming}{directives-for-programming}
+\subsubsection*{Directives for programming}
+
+The following directives are commonly used by Leo programmers.
+See \href{directives.html}{Chapter 4: Writing Programs in Leo} for full details.
+\begin{itemize}
+\item {} 
+\textbf{@} Starts doc parts (and ends code parts).
+
+\item {} 
+\textbf{@all} Copies \emph{all} descendant nodes to the derived file.
+
+\item {} 
+\textbf{@c} Starts code parts (and ends doc parts).
+
+\item {} 
+\textbf{@encoding} Sets the Unicode encoding used in derived files.
+
+\item {} 
+\textbf{@first} Forces lines to appear before the first sentinel of a derived file.
+
+\item {} 
+\textbf{@language} Sets the language used for syntax coloring \textbf{and} sets the comment delimiters
+used in sentinel lines and in doc parts.
+
+\item {} 
+\textbf{@last} Forces lines to appear after the last sentinel of a derived file.
+
+\item {} 
+\textbf{@lineending} Specifies the line ending to be used in derived files.
+
+\item {} 
+\textbf{@others} Copies all nodes \emph{except section definition nodes} to the derived file.
+
+\item {} 
+\textbf{@pagewidth} Sets the page width used to break doc parts into lines.
+
+\item {} 
+\textbf{@path} Sets the path to be prepended to filenames in descendant \texttt{@file} nodes.
+
+\end{itemize}
+
+\textbf{Important}:
+Leo treats lines starting with \texttt{@} as a normal code line unless the \texttt{@} starts a Leo directive.
+In particular, Leo will output Python decorators correctly, provided the name of the decorator is not a Leo directive.
+
+
+%___________________________________________________________________________
+
+\hypertarget{orphan-nodes}{}
+\pdfbookmark[3]{Orphan nodes}{orphan-nodes}
+\subsubsection*{Orphan nodes}
+
+An \textbf{orphan node} is a descendant of an \href{glossary.html\#thin}{@thin} \href{glossary.html\#node}{node} that will not be copied
+to the \href{\#derived-files}{derived file}. Orphan nodes can arise because an \href{glossary.html\#thin}{@thin} tree has no
+\texttt{@others} or \texttt{@all} directives. Sections that are defined but not used also
+create orphan nodes. Leo issues a warning when attempting to write an \href{glossary.html\#thin}{@thin}
+tree containing orphan nodes, and does not save the derived file. Instead Leo
+saves the information in the \href{glossary.html\#thin}{@thin} tree in the .leo file. No information is
+lost; Leo will load the \href{glossary.html\#thin}{@thin} tree from the .leo file the next time Leo
+opens the .leo file.
+
+
+%___________________________________________________________________________
+
+\hypertarget{sentinel-lines}{}
+\pdfbookmark[3]{Sentinel lines}{sentinel-lines}
+\subsubsection*{Sentinel lines}
+
+When writing \href{\#derived-files}{derived files}, Leo stores information about the outline
+structure in special comments called \textbf{sentinel lines}. Sentinel lines are
+comment lines with '@' following the comment delimiter. For example, here are
+some actual sentinel line for the derived file containing Python code:
+\begin{quote}{\ttfamily \raggedright \noindent
+{\#}@+leo-ver=4-thin~\\
+{\#}@+node:ekr.20031218072017.2794:@thin~leoColor.py~\\
+{\#}@@language~python~\\
+{\#}@@tabwidth~-4~\\
+{\#}@@pagewidth~80~\\
+{\#}@-node:ekr.20031218072017.2794:@thin~leoColor.py~\\
+{\#}@-leo
+}\end{quote}
+
+\textbf{You must not change sentinel lines} when editing a \href{\#derived-files}{derived file} in another
+editor! Doing so will corrupt the derived file and make it impossible for Leo to
+read it normally. If you do accidentally alter a sentinel line, don't panic!
+Leo's \texttt{Import Derived File} \href{commands.html}{command} can recover information from corrupted
+derived files.
+
+The main difference between \href{glossary.html\#file}{@file} trees, \href{glossary.html\#thin}{@thin} trees (and other kinds of trees that create derived files)
+is the kind of sentinel lines that Leo writes:
+\begin{itemize}
+\item {} 
+Sentinels in files derived from \href{glossary.html\#thin}{@thin} reduce spurious cvs conflicts by
+marking each node with unique, unchanging \textbf{timestamp} as shown above.
+
+\item {} 
+Sentinels in files derived from \href{glossary.html\#file}{@file} are as friendly as possible for human readers.
+
+\item {} 
+Files derived from \href{glossary.html\#nosent}{@nosent} have no sentinels at all.
+\textbf{Important}: without sentinels Leo can not automatically update
+\texttt{@nosent} trees from changes made in external editors.
+
+\end{itemize}
+
+\href{directives.html}{Chapter 4: Writing Programs in Leo} discusses the various ways of creating derived files.
+This is a highly complex subject: you should ignore these details at first.
+Just use \texttt{@thin} to create your \href{\#derived-files}{derived files}.
+
+
+%___________________________________________________________________________
+
+\hypertarget{leo-and-literate-programming}{}
+\pdfbookmark[3]{Leo and literate programming}{leo-and-literate-programming}
+\subsubsection*{Leo and literate programming}
+
+Leo can support a style of programming similar to \href{http://www.literateprogramming.com/}{Literate Programming} (LP).
+LP has a bad reputation in some quarters. That's too bad; Leo fixes all the
+problems with traditional LP. See \href{design.html}{Chapter 6: Leo and Literate Programming} in
+\href{leo_TOC.html}{Leo's Users Guide} for more details. \emph{Please} don't let the words 'Literate
+Programming' get in the way of your using Leo effectively. That would be \emph{your}
+mistake, and a big one.
+
+
+%___________________________________________________________________________
+
+\hypertarget{good-style-and-bad-sections-vs-others}{}
+\pdfbookmark[2]{Good style and bad:  sections vs. @others}{good-style-and-bad-sections-vs-others}
+\subsubsection*{Good style and bad:  sections vs. @others}
+
+Newcomers to Leo frequently ask when to use the \href{glossary.html\#others}{@others} \href{\#leo-directives}{directive} and when
+to use \href{glossary.html\#section}{sections}. It is good style to use \href{glossary.html\#section-references}{section references} only when the
+order of text within a \href{\#derived-files}{derived file} matters. For example, Python programmers
+put docstrings and imports at the start of files. So the \href{glossary.html\#body-text}{body text} of
+\href{glossary.html\#file}{@file} nodes typically look something like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+<{}<~docstring~>{}>~\\
+@language~python~\\
+@tabwidth~-4~\\
+<{}<~imports~>{}>~\\
+@others
+}\end{quote}
+
+This ensures that the docstring is first in the file, followed by imports,
+followed by everything else. Note that the order in which functions are defined
+in a file, or methods defined within a class, typically does \emph{not} matter. Thus,
+it is good style to define classes like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+class~myClass:~\\
+~~~~~~<{}<~class~attributes~>{}>~\\
+~~~~~~@others
+}\end{quote}
+
+It would be bad style to define a class like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+class~myClass:~\\
+~~~~~~<{}<~class~attributes~>{}>~\\
+~~~~~~<{}<~method~1~>{}>~\\
+~~~~~~<{}<~method~2~>{}>~\\
+~~~~~~...
+}\end{quote}
+
+Not only does this over-specify the order in which methods are defined, but it
+requires lots of extra typing. Not only must you add a line for each method, but
+headlines must contain section names such as {\textless}{\textless} method 1 {\textgreater}{\textgreater}, {\textless}{\textless}method 2{\textgreater}{\textgreater}, etc.
+When using \texttt{@others} it is good style simply to put the name of each method in
+the headline.
+
+A few more words about style:
+\begin{itemize}
+\item {} 
+It is good style to \textbf{put each class, function or method in its own node}.
+This makes it easy to see the shape of your code.
+
+\item {} 
+It is good style to use \href{glossary.html\#organizer-nodes}{organizer nodes} to group related functions or methods.
+An organizer node has no content except maybe for comments.
+Like this:
+\begin{quote}{\ttfamily \raggedright \noindent
++~myClass~\\
+~~~~+~birth~and~death~\\
+~~~~~~~~+~{\_}{\_}init{\_}{\_}~\\
+~~~~~~~~etc.~\\
+~~~~+~getters~\\
+~~~~~~~~etc.~\\
+~~~~+~setters~\\
+~~~~~~~~etc.~\\
+~~~~+~misc~methods~\\
+~~~~~~~~etc.
+}\end{quote}
+
+(In this notation, '+' denotes a headline.)
+This organization is far superior to using hideous comments like:
+\begin{quote}{\ttfamily \raggedright \noindent
+{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}~\\
+{\#}~Getters~{\#}~\\
+{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}{\#}
+}\end{quote}
+
+\item {} 
+It is bad style to use \href{glossary.html\#others}{@others} in \href{glossary.html\#organizer-nodes}{organizer nodes}.
+There is no need to do so.
+
+\item {} 
+It is bad style to use \href{glossary.html\#others}{@others} when order does matter.
+The reason is that it is very easy to move nodes in a tree by mistake,
+say by alphabetizing nodes.
+One wants to make the meaning of a derived file immune from such movements.
+
+\end{itemize}
+
+One last word about style. The world won't end if you happen to use bad style by
+mistake: you just might cause a bit more work for yourself than was strictly
+necessary. Feel free to invent your own style of using Leo. Still, it would be
+wise to ``know the rules before you break them.''
+
+
+%___________________________________________________________________________
+
+\hypertarget{scripting-leo}{}
+\pdfbookmark[2]{Scripting Leo}{scripting-leo}
+\subsubsection*{Scripting Leo}
+
+Leo is fully scriptable using the Python language.
+\textbf{Leo can execute any body text as a Python script}.
+To run the entire body text as a script, simply choose the node and execute the \texttt{Execute Script} \href{commands.html}{command}.
+If text is selected, the \texttt{Execute Script} \href{commands.html}{command} will run just the selected text as the script.
+
+The \texttt{Execute Script} \href{commands.html}{command} \textbf{preprocesses} the script before executing it.
+Leo preprocesses scripts in exactly the same way that Leo writes derived files.
+That is,
+\textbf{Leo expands section references and processes @others directives} before executing the script.
+This allows you to use all of Leo's normal capabilities to organize your scripts.
+\textbf{Note}: \texttt{test.leo} contains dozens of examples of using Leo outline structure to organize stand-alone scripts.
+
+Your Python scripts can easily access data in an outline.  For example, the following script will print all the headlines in an outline:
+\begin{quote}{\ttfamily \raggedright \noindent
+for~p~in~c.allNodes{\_}iter():~\\
+~~~~print~'~'*p.level(),p.headString()
+}\end{quote}
+
+Your scripts can use outline structure to avoid having to parse data.
+With a little forethought you can arrange outlines to make scripts easier to write.
+The example above is only the beginning of what scripts can do.
+See \href{scripting.html}{Chapter 7: Scripting Leo with Python} for a complete discussion of scripting.
+
+
+%___________________________________________________________________________
+
+\hypertarget{plugins-settings}{}
+\pdfbookmark[2]{Plugins {\&} settings}{plugins-settings}
+\subsubsection*{Plugins {\&} settings}
+
+\textbf{Plugins} are Python modules that change how Leo works, yet are not part of Leo's core code.
+Leo's user have contributed dozens of plugins that have extended Leo's capabilities in many new directions.
+The file \texttt{leoPlugins.leo} contains all plugins that are included in Leo distributions.
+
+Plugins and other parts of Leo can get options from \textbf{@settings} trees,
+outlines whose headline is \texttt{@settings}. When opening a .leo file, Leo looks
+for \texttt{@settings} trees in the outline being opened and also in various
+\texttt{leoSettings.leo} files. \texttt{@settings} trees allow plugins to get options without
+any further support from Leo's core code. For a full discussion of
+\texttt{@settings} trees, see \href{customizing.html}{Chapter 8: Settings, Modes and Key Bindings}.
+
+
+%___________________________________________________________________________
+
+\hypertarget{further-study}{}
+\pdfbookmark[2]{Further study}{further-study}
+\subsubsection*{Further study}
+
+\texttt{LeoPy.leo} (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
+It provides hundreds of examples of everything discussed here.
+This file will repay close study.
+For full details on all aspects of Leo see \texttt{LeoDocs.leo} or \href{leo_TOC.html}{Leo's Users Guide}.
+
+
+%___________________________________________________________________________
+\hspace*{\fill}\hrulefill\hspace*{\fill}
+
+
+\href{\#back}{\includegraphics{arrow_lt.gif}} \href{\#home}{\includegraphics{leo.gif}} \href{\#next}{\includegraphics{arrow_rt.gif}}
+
+\end{document}

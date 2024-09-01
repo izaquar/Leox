@@ -1,0 +1,68 @@
+accent = '#FF8800'
+info =  '#FF4422'
+warning = '#FF4422'
+error = '#FF4422'
+
+keyword = "#A5A5FF"
+string = '#22BB88'
+directive = '#A5A5FF'
+comment = '#777777'
+
+split_bar_color = "#8080B0"
+scrollbar_width = 12
+
+#Tkinter default options-----------------------------
+
+*background = '#08090A'
+*foreground = '#FFF0F0'
+
+#*background = '#e8e8FF'
+#*foreground = '#08090A'
+
+*Font = ('arial', 10,'normal','roman')
+
+*selectBackground = shade(0.4)
+*selectForeground = shade(0.05)
+*insertBackground = shade(0.8)
+
+*highlightBackground = background
+*highlightColor = accent
+*highlightThickness = 0
+
+
+*borderColor = foreground
+
+#Tkinter class default options-------------------------
+
+*Button*relief = 'groove'
+#*Scrollbar*width = 0
+
+#*Menu*BorderWidth = 5
+*Menu*Background = shade(0.3)
+Checkbutton*selectcolor = foreground
+
+
+#Tkinter default options by widget name----------------
+
+
+*logtext.font = ('courier', 12,'normal','roman')
+
+*nodetext.font = ('consolas', 14,'normal','roman')
+#*nodetext.Foreground = '#AAD4FA'
+*bodytext.font = ('consolas', 12,'normal','roman')
+#*bodytext.Foreground = '#9AC4FA'
+
+#'#8AB4F5'
+
+
+
+
+
+
+
+    
+    
+
+
+
+

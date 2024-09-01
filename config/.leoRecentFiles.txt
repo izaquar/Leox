@@ -1,0 +1,16 @@
+C:\Users\Alex\Desktop\test.leox
+C:\void\dev\prog\Leox\config\leoSettings.leo
+C:\void\dev\prog\esp32\void_esp32.leox
+C:\void\dev\prog\esp32\suntun_display\spi_lcd_touch\void_lcd.leox
+C:\void\dev\prog\Leox_dev\config\leoSettings.leo
+C:\void\dev\prog\esp32\usbipd-esp32.leox
+C:\Users\Alex\Desktop\void_esp32\void_esp32.leox
+C:\void\dev\prog\esp32\usbipd-esp32\usbipd-esp32.leox
+C:\Users\Alex\Desktop\void_esp32\usbipd-esp32\usbipd-esp32.leox
+C:\Users\Alex\Desktop\void_esp32\suntun_display\spi_lcd_touch\void_lcd.leox
+C:\Users\Alex\Desktop\void_esp32\suntun_display\spi_lcd_touch\void_lcd.leo
+C:\void\dev\prog\Leox_dev\src\tork_xcc_test\Tork.leox
+C:\void\sdk\Leo\config\leoSettings.leo
+C:\void\dev\prog\void_esp32\void_esp32.leox
+C:\New folder3\fdmv\journal.leo
+C:\void\dev\prog\Leox_dev\src\tork_xcc_test\Tork.leo
