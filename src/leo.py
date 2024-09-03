@@ -356,7 +356,7 @@ def profile ():
 #@-node:ekr.20031218072017.2607:profile
 #@-others
 
-cwdlog = file("cwd.log","w")
+#cwdlog = file("cwd.log","w")
 
 if __name__ == "__main__":
     #print sys.argv
@@ -379,10 +379,10 @@ if __name__ == "__main__":
         exe_dir,exe_name = os.getcwd(),sys.argv[0]
         run()
         
-    cwdlog.write(str(sys.argv))
-    cwdlog.write("\n"+exe_dir+"\n")
-    cwdlog.write(exe_name)
+#    cwdlog.write(str(sys.argv))
+#    cwdlog.write("\n"+exe_dir+"\n")
+#    cwdlog.write(exe_name)
 
-cwdlog.close()
+#cwdlog.close()
 #@-node:ekr.20031218072017.2605:@thin leo.py 
 #@-leo
