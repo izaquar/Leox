@@ -2,7 +2,7 @@
 
 # Leox - Literate Editor with Outlines and X C Compiler plugins
 
-{include} VERSION.MD
+
 
 
 Leox is based on Leo 4.4.2.1 final (2006) from Edward K. Ream and the xcc plugins by myself. It is a personal customisation with lots of improvements and ui modernisation. Some unused features have been stripped out and/or deactivated.
