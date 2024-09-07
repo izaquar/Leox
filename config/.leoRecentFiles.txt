@@ -1,4 +1,5 @@
 C:\Users\Alex\Desktop\test.leox
+C:\void\dev\prog\Leox\doc\LeoDocs.leo
 C:\void\dev\prog\Leox\config\leoSettings.leo
 C:\void\dev\prog\esp32\void_esp32.leox
 C:\void\dev\prog\esp32\suntun_display\spi_lcd_touch\void_lcd.leox

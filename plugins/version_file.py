@@ -41,7 +41,7 @@ def on_save(tag,keywords):
     while v:
         h = v.headString()
         if g.match_word(h,0,"@version"):
-            updateVersionFile(h[9:])
+            updateVersionFile(h[9:],c.frame.openDirectory)
             
         v = v.threadNext()
     
@@ -82,12 +82,22 @@ def XupdateVersionFile(filename):
 #@nonl
 #@-node:AGP.20240902191425:XupdateVersionFile()
 #@+node:AGP.20240903161242:updateVersionFile()
-def updateVersionFile(filename):
+def updateVersionFile(filename,opendir):
     #print "update version",filename
     #path = os.path
     #vdir = path.split(filename)[0]
     f = filename
+    oldcwd = os.getcwd()
+    if opendir != "":
+        os.chdir(opendir)
+    else:
+        return
+        
     try:
+        
+        #print os.getcwd(),opendir
+        
+        
         vfile = open(f,"r+")
         version = vfile.readlines()
         if len(version) > 1:    return#error
@@ -110,6 +120,7 @@ def updateVersionFile(filename):
     except IOError,e:
         pass#g.es(e,color="red") #silently fail
         
+    os.chdir(oldcwd)
 #@nonl
 #@-node:AGP.20240903161242:updateVersionFile()
 #@-others

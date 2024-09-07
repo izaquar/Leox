@@ -447,7 +447,7 @@ def on_headkey2 (tag,keywords):
     v = keywords.get("v")
     h = v.headString()
     ch = keywords.get("ch")
-    print "read nodes onheadkey2"
+    #print "read nodes onheadkey2"
     #g.trace(repr(ch))
 
     if ch == '\r' and g.match_word(h,0,"@read"):

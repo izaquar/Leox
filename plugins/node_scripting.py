@@ -107,7 +107,7 @@ import leoGlobals as g
 import leoPlugins
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
+#Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
 import os
 import string
@@ -657,8 +657,8 @@ class scriptingController:
     
         self.buttonsDict[b] = truncatedText
         
-        if statusLine:
-            self.createBalloon(b,statusLine)
+        #if statusLine:
+        #    self.createBalloon(b,statusLine)
     
         if sys.platform == "win32":
             width = int(len(truncatedText))# * 0.9)

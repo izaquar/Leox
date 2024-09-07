@@ -1537,7 +1537,7 @@ class baseFileCommands:
         #@nl
         if t:
             s = self.getEscapedString()
-            t.setTnodeText(s,encoding=self.leo_file_encoding)
+            t.setTnodeText(s,encoding=self.leo_file_encoding,loading=True)
             if mod != "": t.mod = mod
         else:
             g.es("no tnode with index: %s.  The text will be discarded" % str(index))

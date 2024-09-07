@@ -84,7 +84,7 @@ node_colors.py
 #print_cp.py
 #quicksearch.py #integrated in leo.py
 #rClick.py
-read_only_nodes.py
+read_nodes.py
 #rowcol.py
 #run_nodes.py
 #s_menu.py

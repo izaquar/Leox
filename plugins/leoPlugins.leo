@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.296875">
-	<global_window_position top="60" left="10" height="773" width="1526"/>
+<globals body_outline_ratio="0.291666666667">
+	<global_window_position top="60" left="10" height="773" width="1536"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -44,7 +44,7 @@
 </v>
 </v>
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
-<v t="EKR.20040517090508"><vh>  Enable plugins by changing pluginsManager.txt or using plugin_manager plugin</vh>
+<v t="EKR.20040517090508" a="E"><vh>  Enable plugins by changing pluginsManager.txt or using plugin_manager plugin</vh>
 <v t="edream.120603093808" tnodeList="edream.120603093808"><vh>@nosent pluginsManager.txt</vh></v>
 </v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
@@ -1097,7 +1097,7 @@
 <v t="ekr.20060530091119.2"><vh>@url http://www.jedit.org/42docs/users-guide/writing-modes-part.html</vh></v>
 <v t="ekr.20060530091119.20"><vh>@thin __jEdit_colorizer__.py</vh></v>
 </v>
-<v t="edream.110203113231.872"><vh>Nodes...</vh>
+<v t="edream.110203113231.872" a="E"><vh>Nodes...</vh>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@thin at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@thin at_view.py</vh></v>
@@ -1105,7 +1105,7 @@
 <v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
 <v t="mork.20041018091414.1"><vh>@thin fastGotoNode.py</vh></v>
 <v t="ekr.20050301095332"><vh>@thin mod_labels.py</vh></v>
-<v t="edream.110203113231.876"><vh>@thin read_nodes.py</vh></v>
+<v t="edream.110203113231.876" a="E"><vh>@thin read_nodes.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@thin run_nodes.py</vh></v>
 <v t="ekr.20060831165821"><vh>@thin slideshow.py</vh></v>
 <v t="ekr.20040828103325"><vh>@thin startfile.py</vh></v>
@@ -1688,8 +1688,9 @@ marks="AGP.20230317140108,AGP.20230316112635.1,AGP.20230214111049.91,AGP.2023021
 <v t="AGP.20230207163742" a="M"
 marks="AGP.20230207163742.15,AGP.20230207163742.58,AGP.20230207163742.64,"><vh>@thin node_colors.py</vh></v>
 <v t="AGP.20230208000543" a="M"><vh>@thin body_rclick.py</vh></v>
-<v t="AGP.20230214092456"><vh>@thin node_scripting.py</vh></v>
-<v t="AGP.20240831123716" a="E"><vh>@thin keywords_nodes.py</vh></v>
+<v t="AGP.20230214092456"
+expanded="AGP.20230214092456.6,AGP.20230214092456.22,"><vh>@thin node_scripting.py</vh></v>
+<v t="AGP.20240831123716"><vh>@thin keywords_nodes.py</vh></v>
 <v t="AGP.20240902191147" a="E"
 marks="AGP.20240902191425,AGP.20240903161242,"><vh>@thin version_file.py</vh></v>
 </v>
@@ -5052,7 +5053,7 @@ node_colors.py
 #print_cp.py
 #quicksearch.py #integrated in leo.py
 #rClick.py
-read_only_nodes.py
+read_nodes.py
 #rowcol.py
 #run_nodes.py
 #s_menu.py

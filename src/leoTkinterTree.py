@@ -2190,9 +2190,9 @@ class leoTkinterTree (leoFrame.leoTree):
             finally:
                 c.endUpdate(scroll=False) # New in 4.4.1
                 
-                #if changed:    #agp moded and put at end of func
-                #    if self.stayInTreeAfterEditHeadline:
-                #        c.treeWantsFocus()
+                if changed:    #agp moded and put at end of func
+                    if self.stayInTreeAfterEditHeadline:
+                        c.treeWantsFocus()
                 #    else:
                 #        c.bodyWantsFocusNow()
         
@@ -2217,8 +2217,8 @@ class leoTkinterTree (leoFrame.leoTree):
            
         if self.true_enter and not self.stayInTreeAfterEditHeadline:
             c.bodyWantsFocusNow()
-        else:
-            c.treeWantsFocus()
+        #else:
+        #    c.treeWantsFocus()
                 
         self.true_enter = False
     #@-node:ekr.20040803072955.91:onHeadChanged

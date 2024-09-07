@@ -354,7 +354,7 @@ class tnode (baseTnode):
     #@+node:ekr.20031218072017.1485:setTnodeText
     # This sets the text in the tnode from the given string.
     
-    def setTnodeText (self,s,encoding="utf-8"):
+    def setTnodeText (self,s,encoding="utf-8",loading=False):
         
         """Set the body text of a tnode to the given string."""
         
@@ -372,11 +372,11 @@ class tnode (baseTnode):
                 s = s.rstrip()
     
         self.bodyString = s
-        if g.c.loading == False:
+        
+        if loading == False:
             self.mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
-        #if g.c.loading == False:
-        #    g.SetUAModStamp(self)
-        # g.trace(repr(s))
+        
+    #@nonl
     #@-node:ekr.20031218072017.1485:setTnodeText
     #@+node:ekr.20031218072017.1486:setSelection
     def setSelection (self,start,length):

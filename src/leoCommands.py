@@ -5561,6 +5561,7 @@ class baseCommands:
         
     def treeWantsFocus(self):
         c = self ; tree = c.frame.tree
+        #g.print_stack()
         c.request_focus(tree and tree.canvas)
         
     def widgetWantsFocus(self,w):
@@ -6316,6 +6317,7 @@ class baseCommands:
         # Keep the body text in the tnode up-to-date.
         if v.t.bodyString != s:
             v.setTnodeText(s)
+            
             v.t.setSelection(0,0)
             p.setDirty()
             if not c.isChanged():
