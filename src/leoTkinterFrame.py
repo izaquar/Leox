@@ -212,13 +212,13 @@ class SearchBox(leoFind.leoFind):
         c.frame.searchbox = self
         
         self.changebox = cb = History(c,toolbar)
-        
+        cb.bind("<MouseWheel>",c.frame.TopMouseWheel)
         
         self.tolabel = Tk.Label(toolbar,text="To")#,font=c.frame.iconbarfont)
         
         
         self.searchbox = sb = History(c,toolbar)   
-        
+        sb.bind("<MouseWheel>",c.frame.TopMouseWheel)
         #sb.bind("<Key>", self.onKey)
         sb.bind("<Button-3>", self.onRightClick)
         

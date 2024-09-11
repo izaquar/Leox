@@ -220,7 +220,7 @@ class tkinterGui(leoGui.leoGui):
             self.root = root = Tk.Tk()
             #Pmw.initialise(self.root)
         
-        from ctypes import windll,byref,c_int
+        #from ctypes import windll,byref,c_int
         from binascii import unhexlify
         wid = g.app.gui.root.winfo_id()
         

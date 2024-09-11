@@ -6859,18 +6859,19 @@ class ParserClass:
             
             w = None
             
-            if head.endswith(";") or head.endswith(">"):#put in source
+            if head.endswith(";") or head.endswith("$"):#put in source ">"
                 w = p.SOURCE
                 
-                if head.endswith("<>"): #put in both
-                    if p.BIFILE:
-                        w = p.BOTH
-                        head = head[:-2]
+            elif head.endswith("%"): #put in both "<>"
+                if p.BIFILE:
+                    w = p.BOTH
                 else:        
-                    head = head[:-1]
+                    w = p.SOURCE # same as p.HEADER when BIFILE is True
+                
+                head = head[:-1]
                 
                 
-            elif head.endswith("<"):
+            elif head.endswith("#"):    #enforce header "<"
                 head = head[0:-1]
                 w = p.HEADER
             
@@ -7044,8 +7045,9 @@ class ParserClass:
             
             spec,ret,name,params,pure,dest,ctors = self.Groups = p.CURRENT_FUNC_MO = mo
             
-            TO_SRC = ";" in dest[0] or ">" in dest[0]
-            DO_DEC = not "!" in dest[0]# ! mean the function is not declared, only defined in src, main()!
+            # # is same as nothing for func
+            TO_SRC = ";" in dest[0] or "%" in dest[0]
+            DO_DEC = not "!" in dest[0] and not "$" in dest[0]# ! mean the function is not declared, only defined in src, main()!
             IS_PURE = pure[0] != ""     #function only declared
             
             node = p.CURRENT_NODE
@@ -7293,6 +7295,10 @@ class ParserClass:
                 spec = (head[:class_s],0,class_s)
                 name_s = class_s+6		
                 dest_s = head.find(";",name_s)
+                
+                if dest_s == -1:
+                    dest_s = head.find("$",name_s)
+                    
                 inst_s = head.find("!",name_s)
                 base_s = head.find(":",name_s)
                 
@@ -9122,7 +9128,17 @@ class SeekErrorClass(ParserClass):
         self.SEEK_EXT = ext
         self.FOUND_NODE = None
         self.FOUND_INDEX = "1."+col
-        self.OnStart = self.OnStartSeek
+        #self.OnStart = self.OnStartSeek
+        
+        if self.DECLARE_IN_HDR:
+            self.HEADER.write = self.SeekDec
+        else:
+            self.HEADER.write = self.SeekDef
+        
+        if self.DEFINE_IN_SRC:
+            self.SOURCE.write = self.SeekDef
+        else:
+            self.SOURCE.write = self.SeekDec
         
         if self.Parse() == False and self.FOUND_NODE:
             cc.GoToNode(self.FOUND_NODE,self.FOUND_INDEX,tagcolor=color)

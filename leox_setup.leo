@@ -2,7 +2,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.335286458333">
+<globals body_outline_ratio="0.207077326343">
 	<global_window_position top="29" left="10" height="774" width="1526"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -2747,11 +2747,12 @@ Leox is based on Leo 4.4.2.1 final (2006) from Edward K. Ream and the xcc plugin
 
 Leox is used to edit and build all code ranging from assembly to python. The xcc plugins can run a variety of compiler and/or tools and integrate c/c++ syntaxe in the outline thus reducing typing redundancy and facilitating the dispatch of code destination between header and source. The outline allow the code to be structured efficiently.
 
-And yep Leox require Python 2.7!
+And yep Leox require &lt;a href="https://www.python.org/downloads/release/python-2718/"&gt;Python 2.7.18&lt;/a&gt;!
+
 
 Tweak regleox.bat to suite your setup.
 
-Rename existing .leo files to .leox tu use in Leox.
+Rename existing .leo files to .leox to use in Leox.
 
 </t>
 <t tx="AGP.20240903172839"></t>

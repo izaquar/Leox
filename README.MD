@@ -8,9 +8,10 @@ Leox is based on Leo 4.4.2.1 final (2006) from Edward K. Ream and the xcc plugin
 
 Leox is used to edit and build all code ranging from assembly to python. The xcc plugins can run a variety of compiler and/or tools and integrate c/c++ syntaxe in the outline thus reducing typing redundancy and facilitating the dispatch of code destination between header and source. The outline allow the code to be structured efficiently.
 
-And yep Leox require Python 2.7!
+And yep Leox require <a href="https://www.python.org/downloads/release/python-2718/">Python 2.7.18</a>!
+
 
 Tweak regleox.bat to suite your setup.
 
-Rename existing .leo files to .leox tu use in Leox.
+Rename existing .leo files to .leox to use in Leox.
 

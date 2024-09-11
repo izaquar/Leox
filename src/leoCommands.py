@@ -492,8 +492,8 @@ class baseCommands:
     
         fileName = g.app.gui.runOpenFileDialog(
             title = "Open",
-            filetypes = [("Leo files","*.leo"), ("All files","*")],
-            defaultextension = ".leo")
+            filetypes = [("Leox files","*.leox"),("Leo files","*.leo"), ("All files","*")],
+            defaultextension = ".leox")
         c.bringToFront()
     
         ok = False
@@ -803,8 +803,8 @@ class baseCommands:
             fileName = g.app.gui.runSaveFileDialog(
                 initialfile = c.mFileName,
                 title="Save",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+                filetypes=[("Leox files","*.leox"),("Leo files", "*.leo")],
+                defaultextension=".leox")
             c.bringToFront()
     
             if fileName:
@@ -834,8 +834,8 @@ class baseCommands:
         fileName = g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
+            filetypes=[("Leox files","*.leox"),("Leo files", "*.leo")],
+            defaultextension=".leox")
         c.bringToFront()
     
         if fileName:
@@ -867,8 +867,8 @@ class baseCommands:
         fileName = g.app.gui.runSaveFileDialog(
             initialfile = c.mFileName,
             title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
+            filetypes=[("Leox files","*.leox"),("Leo files", "*.leo")],
+            defaultextension=".leox")
         c.bringToFront()
     
         if fileName:

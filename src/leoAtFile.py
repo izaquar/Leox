@@ -2759,6 +2759,13 @@ class atFile:
             fileName = g.os_path_join(at.default_directory,fileName)
             at.targetFileName = g.os_path_normpath(fileName)
             path = g.os_path_dirname(at.targetFileName)
+            
+            if path and not g.os_path_exists(path):
+                try:
+                    os.makedirs(path)
+                except:
+                    pass
+            
             if not path or not g.os_path_exists(path):
                 at.writeError("path does not exist: " + path)
                 return
