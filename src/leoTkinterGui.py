@@ -23,6 +23,7 @@ import os
 import string
 import sys
 import Tkinter as Tk
+import ctypes
 #Pmw = g.importExtension('Pmw',    pluginName='leoTkinterGui',verbose=True)
 
 
@@ -632,6 +633,8 @@ class tkinterGui(leoGui.leoGui):
         if self.bitmap != None:
             # We don't need PIL or tkicon: this is tk 8.3.4 or greater.
             try:
+                myappid = u'tkinter.python.leox'
+                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
                 w.wm_iconbitmap(self.bitmap)
             except:
                 self.bitmap = None

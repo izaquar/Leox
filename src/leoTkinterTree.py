@@ -2954,9 +2954,13 @@ class leoTkinterTree (leoFrame.leoTree):
         #c.frame.StatusLabel.config(text=p.headString())
         if hasattr(p.t,"mod"):
             mod = p.t.mod.split(".")
-            ts = mod[1]
-            ms = "  modified by %s on %s/%s/%s at %s:%s:%s" % (mod[0],ts[6:8],ts[4:6],ts[0:4],ts[8:10],ts[10:12],ts[12:14])
-            c.frame.StatusLabel.config(text=ms)
+            if len(mod) > 1:
+                ts = mod[1]
+                ms = "  modified by %s on %s/%s/%s at %s:%s:%s" % (mod[0],ts[6:8],ts[4:6],ts[0:4],ts[8:10],ts[10:12],ts[12:14])
+                c.frame.StatusLabel.config(text=ms)
+            else:
+                c.frame.StatusLabel.config(text="Statusless")
+            
         
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
