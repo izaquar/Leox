@@ -1,10 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20230214111049:@thin xcc_nodes.py
+#@+leo-ver=4
+#@+node:@file xcc_nodes.py
 """Integrate C/C++ compiler and debugger in a node."""
 
 #@<< About this plugin >>
-#@+middle:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.2:<< About this plugin >>
+#@+node:<< About this plugin >>
 #@@nocolor
 #@+at 			
 #@nonl
@@ -124,12 +123,10 @@
 # - by Alexis Gendron Paquette
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.2:<< About this plugin >>
-#@-middle:AGP.20230214111049.1:Documentation
+#@-node:<< About this plugin >>
 #@nl
 #@<< version history >>
-#@+middle:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.3:<< version history >>
+#@+node:<< version history >>
 #@@nocolor
 #@+at
 # 
@@ -161,12 +158,10 @@
 # - Lot of other improvement.
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.3:<< version history >>
-#@-middle:AGP.20230214111049.1:Documentation
+#@-node:<< version history >>
 #@nl
 #@<< what I did >>
-#@+middle:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.4:<< what I did >>
+#@+node:<< what I did >>
 #@@nocolor
 #@+at
 # 
@@ -260,12 +255,10 @@
 # * There does not seem to be any definition of ExtractLines.
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.4:<< what I did >>
-#@-middle:AGP.20230214111049.1:Documentation
+#@-node:<< what I did >>
 #@nl
 #@<< what was redid/undid >>
-#@+middle:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.5:<< what was redid/undid >>
+#@+node:<< what was redid/undid >>
 #@@nocolor
 #@+at
 # 
@@ -283,11 +276,10 @@
 # Problems" node that follow.
 # 
 #@-at
-#@-node:AGP.20230214111049.5:<< what was redid/undid >>
-#@-middle:AGP.20230214111049.1:Documentation
+#@-node:<< what was redid/undid >>
 #@nl
 #@<< imports >>
-#@+node:AGP.20230214111049.12:<< imports >>
+#@+node:<< imports >>
 # from leoPlugins import *
 # from leoGlobals import *
 import leoPlugins
@@ -303,16 +295,16 @@ import pickle,base64,zlib
 #import ttk
 from PIL import Image,ImageTk,ImageOps
 #@nonl
-#@-node:AGP.20230214111049.12:<< imports >>
+#@-node:<< imports >>
 #@nl
 
 controllers = {}
 
 if 1: # To be replaced by ivars
     #@    << globals >>
-    #@+node:AGP.20230214111049.13:<< globals >>
+    #@+node:<< globals >>
     #@+others
-    #@+node:AGP.20230214111049.14:Icons
+    #@+node:Icons
     #binary mapping: 00 0000 (6bit)MSB->LSB
     # b0:mark
     # b1:doc
@@ -326,64 +318,64 @@ if 1: # To be replaced by ivars
     
     FUNC_MARK = 0
     CLASS_MARK = 16
-    #@+node:AGP.20230214111049.15:Go
+    #@+node:Go
     Go_e = "S\'x\\xdam\\x8e\\xcbn\\x830\\x14D\\xf7\\xfcLk \\xb2\\xbc\\xe8\\xe2\\xda@\\xc4\\xd32\\xe0\\x90.!J\\xa1\\x04\\x02\\x04K\\x80\\xbf\\xbeV\\xd6\\x1d\\xe9\\xe8\\x8cf5\\xf9\\xe7p\\xe6\\xde\\xd0\\xf9\\x00\\x02R\\x01\\xc0\\x9b\\xbb\\xa3\\xf0\\xfdd@\\nWH5\\x95\\xe9\\x956\\xd6+\\xe6\\x844\\xdcl|\\xbf]\\x03\\xfd\\xb2\\t\\xc16r\\x96j \\xa7\\xe3f\\xe9\\xb9\\x90\\xea\\xfbH\\xb1[\\xf8\\xfa\\xa90v2\\xadG\\xf5\\xc2v\\xd6\\x7f\\x18\\x88\\x01\\x8d\\xaa\\xef\\x83\\xb9v\\x1es\\xdc\\xc1?a\\xdb[\\xd6\\xfb\\x11@X\\t(\\x19\\xdd\\xc35\\xa6\\xd4\\x83)\\x8d\\x1fG\\xeb\\x8a\\x98uB\\xa2K\\xd2\\xb5\\xc0#\\xf8\\xcd\\xe5xI\\x8ap\\x95\\xb1\\xdf\\x8b\\x15_\\x9eT\\xf8\\xac\\xf4X\\\'\\xd7\\xf9,\\xc0\\x92u\\x11\\xc0\\x81\\xf2i\\xd8\\xdbtIR\\xdaJw\\x9aD\\xbb\\xf1(b%\"\\xf5\\x02b\\x8b\\x7f\\x80n\\xa2E]\\xe1f~\\x00\\xe0\\xad_\\xd6\\x1f\\x96\\x88[)\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.15:Go
-    #@+node:AGP.20230214111049.16:StepIn
+    #@-node:Go
+    #@+node:StepIn
     StepIn_e = "S\'x\\xda\\x95\\xd0Ms\\x820\\x10\\x06\\xe0;\\x7f\\xa5\\x17\\x15\\xa6\\x0e\\x87\\x1e6\\x100|\\x9a\\xa4\\x0c\\xda\\x9bP\\x0b\\x02\\x82\"\\x18\\xf0\\xd77\\xe1\\xdaS3\\xf3dg\\x92\\xec\\xbb3a\\xab\\xc6\\x8d\\xed\\xa6\\xc4\\x00\\x14\\xa2\\x04 \\xce\\xae\\xfa\\x98\\x9d\\xf5a{^\\x0f\\xdbTy\\r\\x99\\x12+S\\xbe\\x95R\\xf3)\\r\\xd9\\xc6|J\\xb2\\xae\\xe5\\x93\\xb5\\xa6\\xb6\\xfe\\xb4\\x19n\\xa7\\xb4QZo\\xce\\x95\\xc6\\xe3\\x89Ry<\\xac\\xc8\\xac\\xe0\\x92\\xf0\\xc52I\\xca\\xf5\\xe1\\x95\\xeb\\xd1\\xe2\\xa4G\\xbd&sTV\\x7f\\xdcD\\x95\\x92\\xaa\\x84\\xfa\\xe6\\xf3\\xfaf\\xd1\\xda\\xb3h\\x85\\xa7\\x90\\xab\\x03\\x99\\xc3\\xea/\\x97\\x01\\xc5P\\x10\\x0b\\xfe.\\r\\xfe\\xb3,\\xb1\\x94\\xe5K\\x00H\\x05\\xb0\\xb7\\xd0D\\x1e>\\x02{\\xee\\xb8v\\x7f \\x01\\xc4A\\x05\\x159\\x8f^\\xd4\\xe8\\xb8+\\xef\\xcfQ5O\\x06\\xd0\\x10\\x17yq\\xddU\\xc4H(B(\\x19-\\x87N\\x82\\xcb\\x8e\\x82\\xf8c\\x8f\\x8aU\\xe8\\x072\\x9b\\x89\\x1d\\x08m\\x15\\xbb\\xc8f\\xc2\\xb7\\xf6\\xcc\\xeb.\\x07\\x84\\xcb\\x90\\xec\\x03Q\\xd0\\xb1\\xa4\\x989\\xf7\\x9f\\x16\\xdek,\\x1b>\\x9b\\xef\\xc0\\xb6\\x8f\\x1d=\\xc4\\xed\\xe5M\\x0e\\xe1\\x8c^Z\\xe4|\\xd2 j\\x10\\x1a\\xf8.\\xd3J\\xd1\\xcd\\x1e\\xb2\\rJb\\xd4\\x82i:\\x85 `?>\\xb4_\\xa4j\\x9b\\xc9\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.16:StepIn
-    #@+node:AGP.20230214111049.17:StepOver
+    #@-node:StepIn
+    #@+node:StepOver
     StepOver_e = "S\'x\\xda\\x95\\xd0Mo\\x830\\x0c\\x06\\xe0;\\xbf\\xa6|hh\\x87\\x1e\\x9c\\x10h`@\\x03\\xed(\\xbbA\\x86\\xc2\\x97J\\x05l\\x01~\\xfdHw\\x9f\\xb4Wz\\xec\\x8b-YN\\x0e\\xbd\\x17;}M\\x00\\x18DW\\x80\\xc8\\xae\\xf4\\xd9\\xce\\x94m.\\x95XY\\xb8\\xad\\xb8\\xca7\\xbf\\xed\\xb2We.\\rE\\xdfGuM\\x95\\xb1\\xccf\\xe5Q\\x18\\xf3\\xb8{\\x14Y\\xaf\\xdc\\x83\\x8c\\xdf\\xfd\\x95\\xf7\\xfez\\xed\\xe9\\x1a\\xb6t%5M\\x9f*s\\xb6+3\\xda\\xf8\\xae0#\\xb56j\\xb9\\xfe\\xbbz\\xed\\xfdTI\\xbbG\\x90v>f\\xed\\xf0\\x12\\xb7d\\t\\x93\\xee\\xc3K\\x80\\x11\\x10\\x14\\xc3\\xdf\\xd1\\xe0?\\xc1\\xf2\\xd9\\x9e/\\x01\\xa0\\x8d\\x847\\x8c\\x16:\\x05\\x08\\xe1uJ\\xb5\\xb1\\xc3IN]$\\x98\\x90\\\'\\x1f\\xa4\\xcc\\xc3\\xc0\\x850\\x8c\\x9a\\xba\\xa6A\\xec\\x92U\\xcf\\xc0At\\x10\\x11r\\x93\\xeb\\x019\\xc8bS\\x02\\x08\\x1f\\x863\\x96\\xcc\\xea.\\x1e\\x08\\xbd8a4hy\\x00\\x143\\xdf\\xee\\xef\\xb5\\xe0\\xd4\\xa3h\\xab\\x9c\\xf2\\xaba\\xef\\x1e\\xc6\\x84I\\xcag!\\xac\\x98\\x9cH\\xcbo\\x13\\x069Y\\xa9?b\\x03\\xce\\xedV[\\xc5%\\xac\\x97O\\xc2\\xb1!)\\xb9]4Q\\x87\\xab\\xe77\\xc2\\xca\\xf4\\xb30\\xf9\\xdb~\"\\xc4\\xf2x\\xd4~\\x00\\\'\\xed\\x9a\\xd0\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.17:StepOver
-    #@+node:AGP.20230214111049.18:StepOut
+    #@-node:StepOver
+    #@+node:StepOut
     StepOut_e = "S\"x\\xda\\x95\\xd0\\xddn\\x820\\x14\\xc0\\xf1{\\x9eF\\xc5\\x8c\\xedb\\x17\\xa7\\xa5`a\\x80\\x05;\\xd4;As\\xca\\x87\\x9bQ\\x94\\x8f\\xa7_\\xcb\\x1b\\xac\\xc9/\'9i\\xfeM\\x9a.Z?q[\\xc5\\x00\\x04\\xc4\\x12 )\\xae\\xf6\\xb3\\xb8\\xd8\\x9dsYvNnL]a$\\xc6P:\\xda\\xde{\\x95\\xf9\\x87\\xd1\\x15\\xab\\x8f\\x97\\xa6\\xe7\\xd2\\xd2\\xf7\\x96\\xc6\\xbd\\xc8;\\xe3vZiy\\xab\\x95?\\xc18k\\x83L\\xd6A\\x16\\xd5|\\x8c\\x14\\x1f\\x99\\xe2\\xd9\\xec\\xb2N\\x9d\\xf9U\\xad\\xb4\\xbb\\xc9*\\xedx2Nv|\\xd7\\x9d\\xd9a\\x15\\xd7F~\\x8duV\\x97\\x9a[\\x985\\x01\\x15\\xf5\\xef[R\\xb3!\\xca\\xccB\\xf7\\xd2\\xe6\\xe8\\xa7 \\x18 \\xa7\\x00`\\xc1\\x7f\\x0e\\xed\\xe71\\x7f\\t\\x00o\\x01\\xb6\\x94\\x0c\\\\\\xfa\\xd4E\\xc4\\xad\\xa5\\xb7\\x04\\x9b\\xfc\\x8b\\x02\\xde7A\\x8f\\xb8\\x90\\xa17E\\xef\\x8ce=6\\x8c\\xd0\\x1d[\\xec<\\xa2\\xb8\\xdc\\x10w|\\x84\\x02\\xf0\\xb6\\xe0\\xd2S4F\\xeaUp8\\xd1\\xe8\\x8ar\\x98\\xa0\\xea\\xad\\xa6<\\xb9(\\x90\\x9d_J\\x08\\xdf\\x150\\x9e/\\xacI\\x15J\\x97\\xba4\\x0f\\xfdjI c>\\xfb\\xe6\\x9b\\xfd/\\x0e\\x870\\x8a\\x08*2$\\x10\\x9c\\xf91\\xc3*>$t\\xbf\\x86\\xeaL,2\\xae\\xc6M\\xa3{O\\x07H\\xfa\\x90\\x94\\xef\\xa0/]_\\xb1\\xf2\\x8b\\xa0\\x80\\xa4\\xff\\xfc\\xb4\\xfe\\x00\\xd4\\xc7\\xa1 \"\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.18:StepOut
-    #@+node:AGP.20230214111049.19:Pause
+    #@-node:StepOut
+    #@+node:Pause
     Pause_e = "S\'x\\xda\\x95\\xceKn\\x830\\x18\\x04\\xe0=\\x97i\\xf3t\\xba\\xc8\\xe2\\xb7\\t\\xc6N\\xb0e\\x08\\x02\\x96\\x85\\x02\\x86:\\x84\\x14Wn9}Q{\\x82\\x8e\\xf4I\\xb3\\x19i\\xe2gC\\xa5o\\xf4\\t@A\\xa4\\x00\\x04\\xaa7\\x16e+[f\\xbb\\xc5f1\\xdbR.]\\xce\\x13Z\\xe4\\xc1\\xcb!\\x0f\\xd0>3\\x03OR\\xc3\\x92\\x93\\t-\\xeaC1{\\x9a\\x8a\\xfeim?\\xea\\xb5\\xedM\\xc0\\x93\\xda\\xc1\\xffC\\xfeF\\xde\\xef#\\x00V(\\x10\\x04\\x7f\\xb1\\xe9\\xec\\xe3\\xd6U\\xb9\\x0c}\\xd82B\\xb4\\xdaJ\\xca\\xaf\\xeeN\\x19&8m8\\xef\\x8aT\\xf9\\xb4\\xd3\\xd3%}\\xcc\\xf7(\\x13\\xac\\xed\\xa2\\xc6\\x80\\xday\\xef\\xcc\\x07\\x03\\xac\\xba\\xc9\\x98\\x1d\\x1e\\x82\\xde\\xba\\xd1\\x0e\\xda\\xb1\\xf4\\xbb\\x91\\xe6Z]\\xe2\\xcf\\xbe(h\\x89\\xc1\\x9d\\x13\\xdc\\xb7N\\x91\\x81\\x8c\\x8e\\xbf\\xd11~\\x8d\\x08\\x80t\\xc7\\xa3\\xf7\\x03\\xce\\xc7^\\x95\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.19:Pause
-    #@+node:AGP.20230214111049.20:Stop
+    #@-node:Pause
+    #@+node:Stop
     Stop_e = "S\'x\\xda-\\x8c\\xc1\\x8e\\x820\\x14E\\xf7\\xfc\\x8c\\xa2\\x18\\xdc\\xb8x\\x14h\\x0b%\\x0e4LSv`\\xb4O@t\\xa4\\x19\\x18\\xbe~&d\\xee\\xe2\\x9c\\xe4,n\\xb1\\xed\\xe99\\xec1\\x02\\xc8Ad\\x00\\xe7\\xe6\\xb1\\xb7\\xfe\\xd5\\xb5\\xbeZl\\xa3\\x96\\xaf\\x9d}\\xd5\\xaal\\xd9_\\xdc\\xdb\\xb7>\\x1eR~\\xf9$\\xb4q\\t\\xbdx3\\x88\\xed\\x0b\\xfe\\xe7\\xac$\\xd3\\xaa\\xf5\\x10\\x80\\xab\\x1c\\x18\\tf>\\xa6a`&\\x9d\\xb0\\xb8\\xe5\\x1d\\xa5\\x811Z\\x8b\\x04y\\xa78\\x18\\x8c\\xde\\xb5\\x91P\\xd6\\t\\xbd\\xe3\\xc4\\xaa\\xef\\xc9s\\xb2Z\\x02\\xc8l\\xb8\\xde\\x97\\xaa\\x93\\x85\\xe8\\xe4\\xb8A\\x94\\xba|T\\xa2_2\\x16\\xc5$\\x7f\\xa6\\xb7\\x8f\\xc1\\xe0\\x0f13X\\x8a\\x05F&\\x1eZ\\xe9Y\\x1a\\x00\\x84\\xe3\\xc9\\xf9\\x05\\x1a\\x01HO\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.20:Stop
-    #@+node:AGP.20230214111049.21:Doc
+    #@-node:Stop
+    #@+node:Doc
     DocData = "S\'x\\xda\\xcd\\x92\\xb9\\x92\\x9b@\\x00Ds~E\\x01\\x08\\x81\\x80\\xc0\\xc1\\x0c\\x83Y\\x0e\\x89C \\xa1\\xcd\\xc4\\xc2\\x0c \\x98\\x11\\xe2\\xe6\\xeb\\x17\\xdb\\xa1S\\x07~U/\\xe9\\xea\\xea\\xa8C\\xa16=T\\x17\\x06\\x00\\x01\\xf0\\xee\\x008^\\xf58\\xde\\xea\\xd4-\\x8f\\xd8\\x1d4\\xfc\\x165\\xac\"\\x987\\x19\\xdf=s\\xb0\\xa7\"\\x9boM+IMH\\xedGQ\\xbene%\\xe7u\\x9d\\xb6\\nG\\\\q\\xf7\\xcb\"=\\xee\\n\\xc7)\\x9f\\xeez\\xe9\\\\\\xff\\xb3\\xef\\x10(5\\x14T\\\'\\xecQ5\\r\\xeb\\xaf$l\\xd4*\\xa6*\\x7f\\xa5\\x19J\\x9a\\x8c&4[\\xcbFM\\x02\\xf65&L=|r\\xed\\x19E\\xac\\xe3\\x83\\xae\\xa7q\\x9f\\xe1`\\xec\\x15<\\xf6>a9\\xda\\xa4m?\\xbc\\xbb\\xa1K\\xbd\\xa5\\x1b\\xbd\\xe5\\x8c\\xfd\\xa9G\\xde\\xac\\xa5\\xde\\x9c\\\'\\xcd\\xb4\\x1b\\x87)\\x7f\\xb7\\x8b\\x8f\\xe6\\x15\\xa3\\x99[\\x87\\x8a\\x89y\\xc5\\x0e~z8\\x0c\\xca \\xe7\\xfc(\\xf3\\x95,c*\\xcb\\xe3&?*\\n\\x9f\\x8a*^Uu<h\\x1a\\xbf\\x817\\\'\\xf0\\x17\\x1c\\xf8\\x87\\xfc\\xa7c\\xfa\\xf4g\\xec\\xf7-\\x00\\xb0(\\x81X\\x87\\xb3\\xd59\\x10\\x92%\\x16\\r#\\x9a\\xeeq`\\x932\\x0c^\\x1e\\n\\xee\\xad\\x0e\\xcd\\xc86\\x12\\x9bLS|:Y\\x86eR\\x07\\x11\\x89\\xc5\\xd0\\xac\\xe4\\x85\\xdb\\xeb\\x15`V\\x1e\\xd4\\x936X&,\\x8c&\\xf6\\xcc\\t\\xdc\\xe0\\xc7\\xf3%\\x03\\xd3o\\xa2k$\\xf5\\x91-,8x\\n\\xf6\\xaa\\xb0H~.\\xe9\\xa5\\x11Z\\xf7L\\x04\\xa7\\xbeT\\x11[\\x1f\\x1f\\xee \\xca\\x9ct,\\x9d\\x97\\x11\\xf2W\\x8bL\\xda\\x1d\\x18\\xfa\\xbc\\\'\\xf0gI\\x80d!c\\xbb\\xd1X\\x97P\\xb2\\x80\\x0e\\x88`\\xdcO[\\x1e\\x07\\x16\\x03af\\x19%`.,\\xa0\\x1e\\xfb\\x0e\\xd9\\x1a\\xa8\\xfb\\xc1}\\x03\\xa7@\\xeb\\x92\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.21:Doc
-    #@+node:AGP.20230214111049.22:Watch
+    #@-node:Doc
+    #@+node:Watch
     WatchData = "S\"x\\xda\\x95\\x90\\xdbr\\x820\\x10@\\xdf\\xf9\\x1a\\xc1Z\\xea\\xe3&\\x86\\x8b\\x96\\x8bf\\x18\\x8coBk \\xa4B!\\x8a\\xc9\\xd77\\xfa\\x07\\xdd\\x99\\xb3g\\xf7ewg\\x0f\\x0b\\x19f\\x1b\\xd9\\x10\\x80=\\xa4\\x05@Z\\x95\\xae\\xaaJ\\xa3\\xaa\\xec\\xc9\\xa3\\xf633\\xf9\\xd6\\xc7\\xcc\\x9d\\xfc\\xc0:p\\xa7c`,\\xf7\\xca\\xd6\\xa3\\xb7\\xbeW\\xdeZ\\x9d\\xbd\\xb5\\xb3\\xfc-\\xd7\\x16w5h\\x0bu\\xfdwO\\x8d\'\\xad\\xcco)\\x07F\\xe5\\xaa\\xd7\\xd2\\xf4T.\\x07Z\\x8fL\\xd7\\x8a\\xd1\\xfa~\\xd2\\x85\\xdc\\xd2\\xe2j\\x11\\xb1NDL\\x9f\\x10\\xe7\\x99\\x9a\\xe8Fd\\x94\\x91\\xe1x#\\xc2\\xfaj\\xfb&R~\\x13\\xa5\\xbe\\xb0X\\x9b\\xefejjO\\x99&T\\xe3\\xd9\\x1d\\x04\\xf3\\xd2\\xb3]g\\xb1\\x13\\xbbaG9\\x80\\x03\\xff\\t<\\xbf\\xf4z\\t@\\xdc\\x00D\\x18=\\x18\\xdbm\\x10\\x9f\\x07\\xe2\\xf4\\xb8El\\xda\\xda\\xe6\\xab,\\x82\\x16b\\x12F\\x98\\x7f\\x04|\\x143#\\x04\\x03\\x97\\x19N\\xda>\\xee>\\xa3\\x96s\\x9d$-\\xdbw1A\\xb3j\\xcfR\\xac\\x12\\xa0!\\xc6\\xec\\x92#~p\\xdeB\\x84\\x10]L\\xb7X\\xf3\\xbe\\xc8s\\x01\\x8f\\xe2\\x07o\\x0eo\\xfdq#`\\x9f\\x07!\\x1cz\\x8d\\n>\\xbb\\xdd\\xe5\\xb3y\\xef\\x92,Ar\\xde\\xdez\\xd4\\xa4\\xa5)\\xc7\\x92\\x04\\xdfWx\\xd4\\x1d:9\\xdcey\\x84\\x16{{\\xba\\xef\\xfc\\x01\\xdb\\xb2\\x9a\\xfc\"\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.22:Watch
-    #@+node:AGP.20230214111049.23:Config
+    #@-node:Watch
+    #@+node:Config
     ConfigData = "S\'x\\xdaU\\xce\\xc1r\\x820\\x14\\x85\\xe1=O\\x03\\xd6\\x11\\xbb\\xbc\\t\\x84\\x06\\x0c\\x99@-\\xda\\x1d\\xa4N\\x10(j\\xc9\\x10\\xe0\\xe9k\\xd8yg\\xbe\\xb9\\x9b\\x7fq2\\xb7\\x8bx\\xd0\\xd5!\\x80\\x00&\\x00R\\xff\\xe2i\\xbf\\xf0tU,\\xba\\xe2\\xd6$}\\x8b\\x8c\\xf2D\\xa6\\xa7Q\\x16\\xefc\\xb5\\xb1l\\xe6\\xfd\\x95\\x1bm9\\xf7\\xb2\\xe8\\xfa\\xa4\\x90}<\\xaf::\\xb3\\x86\\xcea\\xfd\\xa1\\xfd\\xcb[\\xba\\xc8\\xb5K\\x9b\\xb3g\\xcb8?\\xb6\\xf7$W\\xf0z\\xd8\\xac\\xcfY\\x17\\x01\\xd0\\n \\xc68S7\\x16\\x802\\x8a\\xd0\\x01\\x1b\\x8a\\tF\\x8aR\\xce@\\x18N\\x00+\\x97\\x8a\\x14\\xc0$1\\xa0\\xba\\x1d\\xcaC-\\xdc\\x9c#\\x04\\xfbG\\x19\\xd57\\xe7\\xf8\\x0b(@\\xed\\x105\\x0b=3\\x1ev\\x8a\\xf5\\x15\\xc1\\xd0\\xee\\xd1!\\x80t\\xc74R\\xe2Hq\\x8f\\x94\\xfb\\xc5\\xae`\"\\x81\\x82O\\xd3d\\xd1\\xf5[\\xe5\\x12=\\xa6\\xed\\xcf)\\x84m\\xbb\\x1b\\x03\\xe7\\xb9\\xd8w\\xfe\\x01*\\x83e%\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.23:Config
-    #@+node:AGP.20230214111049.24:Prompt
+    #@-node:Config
+    #@+node:Prompt
     Prompt_e = "S\'x\\xda\\xad\\x90\\xcdn\\xab0\\x14\\x84\\xf7\\xbcJ\\x16\\xb9I\\xdbp\\xbb\\xe8\\xe2p\\xb0\\x8d\\xe1\\xf2\\xe3:\\xb4%;\\x12r\\r\\x86\\x14Zh\\x0cy\\xfa\\x92\\xf6\\t*\\xf5\\x93F\\xa3\\x91F\\xb3\\x98\\xc7?\\r\\x8b\\xdd\\xa6d\\x02\\x04D)@\\xb2\\x9c\\xf9\\x7fs\\xbfX\\x9e\\xed\\xc5\\xfet7\\xd8\\xc7\\x9ba\\xff\\xbc\\x9au\\xe9\\xed\\xf8\\xd2\\xbf\\xd0\\xf1\\x1a\\xf3\\xe7\\xa6\\xdbM\\x87W\\x7f:4|\\n5\\x97\\xc4*\\xbdk;\\xba\\x1c\\xd6\\xc3{>+[\\x0f:[G:[us\\xdd\\x97i\\xdd\\x05\\xb2\\xf6Q\\xe8v\\x13W\\xd7@J.\\x00\\x96c\\xbdc\\x8f \\x08(\\x8e\\xf0\\x8d\\x05\\xbf\\xc8\\xcf\\xc6\\xd0|\\xd9\\xd7%\\x00\\xfcm>\\x86\\xc5\\x0e\\xf4\\x81\\xeb(\\xa3\\xa8\\x85\\xf5\\x96\\xf7\\x01E\\x18y%\\xbb\\x91\\xf7G\\xdfE\\tSq\\xaeD\\x9f\\\'\\x9e\\x1e\\xf9G\\xd1\\x18q\\x9b\\\'\\xbe\\xae\\xc8S\\xd6Om\\x9b\\xba\\x1e:w\\xf1\\xae6\\x1da\\xa1\\x87\\x08\\xe2%\\xacn-\\x11\"\\xbaXli\\x0b\\xdc\\xb4\\x1c\\xdc1\\x13E\"D{@\\x07+\\x88\\\\L\\x03\\xf5\\x11zP\\xf6\\x9b\\xfd+(Ch\\xdaH\\xf8k\\xc3vl\\x81q45\\x8bC\\xbd\\x19d\\xce-TNU\\x94\\xda@J\\xa8\\xae)U\\\'\\xf8\\x97)BOR\\xaf\\xa0\\xdb\\xf9\\xf5\\xe2]\\x9d\\x19$|\\xb4\\x03\\xc5\\x02R\\x95\\xfc\\xb8]\\x0b\\x15I\\x80\\xd8<<X\\x9fJ\\x0f\\xa2\\xed\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.24:Prompt
-    #@+node:AGP.20230214111049.25:Xcmd
+    #@-node:Prompt
+    #@+node:Xcmd
     Xcmd_icon = "S\'x\\xda\\xcd\\x93\\xc1r\\xa30\\x0c\\x86\\xef\\xbcJ/\\x01\\x9a\\xd0\\x1cz\\xb0\\xc1\\x10C\\x81\\x05J\\x13\\xb8\\x81\\xc3\\xd8\\x0b\\x9e\\xe2\\x82\\x13\\xc0O_g{\\xd8\\x17\\xd8\\xc3j\\xe6\\x9b_\\xd6H\\xb2\\xc7#\\xe5;\\x1e\\xa4\\x1eg\\x08\\x80\\x0c\\xa4\\x15\\x00I{V\\xb2M\\x1f\\xac\\xd76\\xbd\\x13\\\'U\\xb3\\x93\\xae\\xe4\\xe2\\x9b\\xb3\\xe3\\xdf\\xb5\\xaa\\xf9p\\xbc\\xb7\\xfa<YG\\xd9\\x9c\\x8f\\xb6\\xd8\\xcc\\xbd(L\\xc39Xrj,)\\xeaM*QH\\xfb\\xcb\\xe2\\x9f\\xe1\\xc6e\\xb5q5\\x16\\xdc\\xfe:\\x13\\x1enD\\xd4\\x05\\x99\\xaa\\x8d\\xc8z+\\xfb\\xb0(9\\xde\\xe2\\xfet\\x8b\\xc5%\\x8du\\x1cu\\xf6\\r\\x19\\xfc\\x94\"q\\xb9\\xa1>\\xb8!Q\\xe5NgK\\x87\\x9d\\xa4Cl\\xa9\\x88\\x9d\\xa8NC,\\xa9X U\\xf7s\\xefT\\x99\\xe1\\xc4\\x83\\xa4\\xafL\\xd1w\\x1a\\xad\\xcd\\x03\\xe3\\xcc\\xc3\\xa6\\xd1N\\xc9\\xc3B\\xfbE9\\x88(\\x1b\\xc2H\\xab\\xabU\\x83\\x0fi?j\\xd0\\x1a\\x17\\x88aM\\x90\\x0fu\\x90\\x83\\xcc\\x05\\x14\\xbb\\xe0\\xaf\\x19\\xe0\\x1f\\xda\\x7f\\xda\\xcc]~\\x9a\\xfd\\x19\\x0b\\x00\\xf0\\xb4\\x00\\xdf\\x85+\\x9e#\\x08A&\\x9b\\x05RH_\\x12H3>\\xe6>\\xa4\\x00\\x07\\xa1G\\x8f\\xedG\\xe0R]\\x05\\xa1\\x07\"\\x0f\\xe4\\x85\\x88\\x8a\\x14\\xb2}e\\x88\\x18R\\x1c\\xc7\\x1e\\xed\\x8f\\x91\\xf9\\xa9\\x7f4\\xab|\\x98\\x8d\\xbb\\xbb\\x9bc\\x11\\xd3\\xc4\\xdd\\xb2\\\'\\x9d\\xd2d\\xbf\\xdf\\xa1W~\\x90\\xc3\\xa9\\xcf\\xc7h\\x08\\xd0\\xaef\\xfe\\xe8\\xaf\\xf8\\xb9\\xc1\\xfe;&A\\xbff\\x06\\x9a\\x0b\\xfd\\x8c\\xeb\\xf8\\xe21\\xbaC\\xf5/Lc\\xf6\\xe4\\xc3\\x9c\\xa0(wwQ\\xb4\\x87\\xacZ(AtH\\x0e\\xee\\t\\xb65~\\x03@1k\\x80eF\\x94\\x17\\xe2\\xf3\\xe7\\xc5e\\xac c\\x07\\x0c\\xa4\\xac7\\x0c\\xebg0_=\\xba\\x0c\\x11|,\\xc2\\xf2\\xfaj|\\x03\\x12!\\xf4\\x1d\'\np0\n."
     #@nonl
-    #@-node:AGP.20230214111049.25:Xcmd
-    #@-node:AGP.20230214111049.14:Icons
-    #@+node:AGP.20230214111049.26:Colors
+    #@-node:Xcmd
+    #@-node:Icons
+    #@+node:Colors
     ErrorColor = "#%02x%02x%02x" % (255,200,200)
     BreakColor = "#%02x%02x%02x" % (200,200,255)
     LineNumColor = "#%02x%02x%02x" % (200,200,255)
     RegExpFgColor = "#%02x%02x%02x" % (0,0,255)
     VarSupBgColor = "#%02x%02x%02x" % (255,230,230)
     #@nonl
-    #@-node:AGP.20230214111049.26:Colors
+    #@-node:Colors
     #@-others
     
     path_sym = "\\"
     #@nonl
-    #@-node:AGP.20230214111049.13:<< globals >>
+    #@-node:<< globals >>
     #@nl
 
 #@@language python
@@ -392,8 +384,8 @@ if 1: # To be replaced by ivars
 __version__ = "0.5"
 
 #@+others
-#@+node:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.6:Known Flaws
+#@+node:Documentation
+#@+node:Known Flaws
 #@@nocolor
 #@+at 
 # 
@@ -412,8 +404,8 @@ __version__ = "0.5"
 # - Untested on Linux, see linPause and aPause functions.
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.6:Known Flaws
-#@+node:AGP.20230214111049.7:Future Features
+#@-node:Known Flaws
+#@+node:Future Features
 #@@nocolor
 #@+at
 # 
@@ -430,8 +422,8 @@ __version__ = "0.5"
 #     Task:
 #         Apart from those defined by the corresponding regular	expression,
 #@-at
-#@-node:AGP.20230214111049.7:Future Features
-#@+node:AGP.20230214111049.8:Tracing Problems
+#@-node:Future Features
+#@+node:Tracing Problems
 #@+at
 # -the g.trace func seem to randomly crash:
 # ----------------------------------------------------------------------------------------
@@ -472,8 +464,8 @@ __version__ = "0.5"
 #         in WatcherClass.Show & Hide
 # - All g.trace occurence were commented out
 #@-at
-#@-node:AGP.20230214111049.8:Tracing Problems
-#@+node:AGP.20230214111049.9:XCC Explanation
+#@-node:Tracing Problems
+#@+node:XCC Explanation
 #@+at
 # UNFINISHED
 # 
@@ -503,7 +495,7 @@ __version__ = "0.5"
 # 
 # 
 #@-at
-#@+node:AGP.20230214111049.10:The Three Distinctive Nodes
+#@+node:The Three Distinctive Nodes
 #@+at
 # Amongst the members of the controllerclass, SELECTED_NODE, ACTIVE_NODE and 
 # CHILD_NODE are some valuable and cherished companions. Hence they are great 
@@ -511,8 +503,8 @@ __version__ = "0.5"
 # matter is to make vigilant awareness of the nameless trinity.
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.10:The Three Distinctive Nodes
-#@+node:AGP.20230214111049.11:The Parser
+#@-node:The Three Distinctive Nodes
+#@+node:The Parser
 #@+at
 # The ParserClass is one of the core component of the plugin, it run a set of 
 # syntactic rules on the child nodes headlines. When a rule trigger, it 
@@ -529,11 +521,11 @@ __version__ = "0.5"
 # own.
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.11:The Parser
-#@-node:AGP.20230214111049.9:XCC Explanation
-#@-node:AGP.20230214111049.1:Documentation
-#@+node:AGP.20230214111049.27:Module level
-#@+node:AGP.20230214111049.28:init
+#@-node:The Parser
+#@-node:XCC Explanation
+#@-node:Documentation
+#@+node:Module level
+#@+node:init
 def init ():
     
     data = (
@@ -544,9 +536,11 @@ def init ():
         ("idle",            OnIdle),
         ("command2",        OnCommand2),
         ("bodydclick2",     OnBodyDoubleClick),
-        ("bodykey2",        OnBodyKey2),
+        #("bodykey2",        OnBodyKey2),
         ("headkey2",        OnHeadKey2),
+        ("bodychanged",            OnBodyChanged),
         ("end1",            OnQuit),
+        
     )
     
     for hook,f in data:
@@ -557,9 +551,9 @@ def init ():
     return True
 
 
-#@-node:AGP.20230214111049.28:init
-#@+node:AGP.20230214111049.29:Module-level event handlers
-#@+node:AGP.20230214111049.30:OnCreate
+#@-node:init
+#@+node:Module-level event handlers
+#@+node:OnCreate
 def OnCreate(tag,keywords):
     try:
         c = keywords.get("c")
@@ -568,8 +562,8 @@ def OnCreate(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.30:OnCreate
-#@+node:AGP.20230214111049.31:OnStart2 (No longer used)
+#@-node:OnCreate
+#@+node:OnStart2 (No longer used)
 if 0:
     def OnStart2(tag,keywords):
         try:
@@ -582,8 +576,8 @@ if 0:
         except Exception,e:
             TraceBack()
 #@nonl
-#@-node:AGP.20230214111049.31:OnStart2 (No longer used)
-#@+node:AGP.20230214111049.32:OnSelect2
+#@-node:OnStart2 (No longer used)
+#@+node:OnSelect2
 def OnSelect2(tag,keywords):
     try:
         global controllers
@@ -593,8 +587,8 @@ def OnSelect2(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.32:OnSelect2
-#@+node:AGP.20230214111049.33:OnIdle
+#@-node:OnSelect2
+#@+node:OnIdle
 def OnIdle(tag,keywords):
     try:
         global controllers
@@ -605,8 +599,8 @@ def OnIdle(tag,keywords):
         g.disableIdleTimeHook()
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.33:OnIdle
-#@+node:AGP.20230214111049.34:OnCommand2
+#@-node:OnIdle
+#@+node:OnCommand2
 def OnCommand2(tag,keywords):
     try:
         global controllers
@@ -616,8 +610,8 @@ def OnCommand2(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.34:OnCommand2
-#@+node:AGP.20230214111049.35:OnBodyDoubleClick
+#@-node:OnCommand2
+#@+node:OnBodyDoubleClick
 def OnBodyDoubleClick(tag,keywords):
     try:
         global controllers
@@ -627,8 +621,8 @@ def OnBodyDoubleClick(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.35:OnBodyDoubleClick
-#@+node:AGP.20230214111049.36:OnBodyKey2
+#@-node:OnBodyDoubleClick
+#@+node:OnBodyKey2
 def OnBodyKey2(tag,keywords):
     try:
         global controllers
@@ -638,8 +632,19 @@ def OnBodyKey2(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.36:OnBodyKey2
-#@+node:AGP.20230214111049.37:OnHeadKey2
+#@-node:OnBodyKey2
+#@+node:OnBodyChanged
+def OnBodyChanged(tag,keywords):
+    try:
+        global controllers
+        c = keywords.get("c")
+        cc = controllers.get(c)
+        cc and cc.onBodyChanged(keywords)
+    except Exception:
+        g.es_exception()
+#@nonl
+#@-node:OnBodyChanged
+#@+node:OnHeadKey2
 def OnHeadKey2(tag,keywords):
     try:
         global controllers
@@ -649,8 +654,8 @@ def OnHeadKey2(tag,keywords):
     except Exception:
         TraceBack()
 #@nonl
-#@-node:AGP.20230214111049.37:OnHeadKey2
-#@+node:AGP.20230214111049.38:OnQuit
+#@-node:OnHeadKey2
+#@+node:OnQuit
 def OnQuit(tag,keywords):
     try:
         global controllers
@@ -660,8 +665,8 @@ def OnQuit(tag,keywords):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230214111049.38:OnQuit
-#@+node:AGP.20230316112635:OnSave1
+#@-node:OnQuit
+#@+node:OnSave1
 def OnSave1(tag,kw):
     try:
         global controllers
@@ -671,9 +676,9 @@ def OnSave1(tag,kw):
     except Exception:
         g.es_exception()
 #@nonl
-#@-node:AGP.20230316112635:OnSave1
-#@-node:AGP.20230214111049.29:Module-level event handlers
-#@+node:AGP.20230214111049.39:pause & helpers
+#@-node:OnSave1
+#@-node:Module-level event handlers
+#@+node:pause & helpers
 def pause (pid):
     
     if os.name == "nt":
@@ -681,7 +686,7 @@ def pause (pid):
     else:
         linPause(pid)
 #@nonl
-#@+node:AGP.20230214111049.40:winPause
+#@+node:winPause
 def winPause(pid):
     
 	import ctypes
@@ -693,32 +698,32 @@ def winPause(pid):
 	if ctypes.windll.Kernel32.DebugBreakProcess(hp) == 0:
 		return Warning("xcc: ","Unable to break into the target!")
 #@nonl
-#@-node:AGP.20230214111049.40:winPause
-#@+node:AGP.20230214111049.41:linPause
+#@-node:winPause
+#@+node:linPause
 def linPause(pid):	# theorical way to do it, untested!
 
 	import signal
 	os.kill(pid,signal.SIGINT)
 #@nonl
-#@-node:AGP.20230214111049.41:linPause
-#@-node:AGP.20230214111049.39:pause & helpers
-#@+node:AGP.20230214111049.42:Helpers
-#@+node:AGP.20230214111049.43:StrToBool
+#@-node:linPause
+#@-node:pause & helpers
+#@+node:Helpers
+#@+node:StrToBool
 def StrToBool(str,value="True"):
     if str == value:
         return True
     return False
 #@nonl
-#@-node:AGP.20230214111049.43:StrToBool
-#@+node:AGP.20230214111049.44:AddText
+#@-node:StrToBool
+#@+node:AddText
 def AddText(text,node):
 
 	node.setBodyString(node.bodyString()+text)
 	l,c = LeoBody.index("end").split(".")
 	LeoBody.see(l+".0")
 #@nonl
-#@-node:AGP.20230214111049.44:AddText
-#@+node:AGP.20230214111049.45:CompressIcon
+#@-node:AddText
+#@+node:CompressIcon
 #@+at
 # # Encode to base64, zip the data in a string and finally pickle it to be 
 # free from illegal char
@@ -765,8 +770,8 @@ def AddText(text,node):
 # 	g.es(str(e))
 #@-at
 #@nonl
-#@-node:AGP.20230214111049.45:CompressIcon
-#@+node:AGP.20230214111049.46:DecompressIcon
+#@-node:CompressIcon
+#@+node:DecompressIcon
 def DecompressIcon(data):
 	try:
 		#unpickle
@@ -775,13 +780,13 @@ def DecompressIcon(data):
 		return zlib.decompress(zdata)	#return a base64
 	except Exception:
 		Traceback()
-#@-node:AGP.20230214111049.46:DecompressIcon
-#@+node:AGP.20230214111049.47:Error
+#@-node:DecompressIcon
+#@+node:Error
 def Error(module,error):
 	g.es(module,newline = False,color = "blue")
 	g.es(error,color = "red")
-#@-node:AGP.20230214111049.47:Error
-#@+node:AGP.20230214111049.48:GetDictKey
+#@-node:Error
+#@+node:GetDictKey
 def GetDictKey(dic,key,create=False,init=""):
         if key in dic:
             return dic[key]
@@ -792,8 +797,8 @@ def GetDictKey(dic,key,create=False,init=""):
             else:
                 return None
 #@nonl
-#@-node:AGP.20230214111049.48:GetDictKey
-#@+node:AGP.20230214111049.49:GetNodePath
+#@-node:GetDictKey
+#@+node:GetNodePath
 def GetNodePath(node,_as="->"):
 
 	path = []
@@ -803,8 +808,8 @@ def GetNodePath(node,_as="->"):
 	path.append(node.headString())
 	return ''.join(path)
 #@nonl
-#@-node:AGP.20230214111049.49:GetNodePath
-#@+node:AGP.20230214111049.50:GetXccNode
+#@-node:GetNodePath
+#@+node:GetXccNode
 def GetXccNode(node):
 
 	for p in node.parents_iter():
@@ -813,22 +818,22 @@ def GetXccNode(node):
 			return p
 	
 	return None
-#@-node:AGP.20230214111049.50:GetXccNode
-#@+node:AGP.20230214111049.51:ImportFiles
+#@-node:GetXccNode
+#@+node:ImportFiles
 def ImportFiles():
 
 	Warning("TODO: ","Add import code in ImportFiles function!")
 #@nonl
-#@-node:AGP.20230214111049.51:ImportFiles
-#@+node:AGP.20230214111049.52:IsXcc
+#@-node:ImportFiles
+#@+node:IsXcc
 def IsXcc(node):
 
 	if node.headString()[0:5] == "@xcc ":
 		return True
 	else:
 		return False
-#@-node:AGP.20230214111049.52:IsXcc
-#@+node:AGP.20230214111049.53:HasXccDict
+#@-node:IsXcc
+#@+node:HasXccDict
 def HasXccDict(v):
     if hasattr(v,"unknownAttributes"):
         if "xcc_cfg" in v.unknownAttributes:
@@ -836,14 +841,14 @@ def HasXccDict(v):
                 
     return False
 #@nonl
-#@-node:AGP.20230214111049.53:HasXccDict
-#@+node:AGP.20230214111049.54:Message
+#@-node:HasXccDict
+#@+node:Message
 def Message(module,warning):
 
 	g.es(module,newline = False,color = "blue")
 	g.es(warning)
-#@-node:AGP.20230214111049.54:Message
-#@+node:AGP.20230214111049.55:TraceBack
+#@-node:Message
+#@+node:TraceBack
 def TraceBack():
         typ,val,tb = sys.exc_info()
         lines = traceback.format_exception(typ,val,tb)
@@ -853,15 +858,15 @@ def TraceBack():
             
 TraceBack = g.es_exception
 #@nonl
-#@-node:AGP.20230214111049.55:TraceBack
-#@+node:AGP.20230214111049.56:Warning
+#@-node:TraceBack
+#@+node:Warning
 def Warning(module,warning):
 
 	g.es(module,newline = False,color = "blue")
 	g.es(warning,color = "orange")
 #@nonl
-#@-node:AGP.20230214111049.56:Warning
-#@+node:AGP.20230317140108:GetAtOthersLayout()
+#@-node:Warning
+#@+node:GetAtOthersLayout()
 def GetAtOthersLayout(node):
     cc = self.cc
     #if cc.CREATE_DOC == "True":
@@ -901,12 +906,15 @@ def GetAtOthersLayout(node):
         
         self.TabWrite( cbt[-1].splitlines(True), w )    #write the final chunk
 #@nonl
-#@-node:AGP.20230317140108:GetAtOthersLayout()
-#@+node:AGP.20230214111049.57:C++ parsing
-#@+node:AGP.20230214111049.58:SplitFunc
+#@-node:GetAtOthersLayout()
+#@+node:C++ parsing
+#@+node:SplitFunc
 def SplitFunc(head):
     params_e = head.rfind(")")
     if params_e > -1:
+        params_s = head.find("(",0,params_e)
+        if params_s == -1:
+            return None
         
         #process possible base class constructor initialisation
         head = head.replace("::",";;")
@@ -922,6 +930,7 @@ def SplitFunc(head):
         
         #extract dest from ctors and append to head
         if ctors != "":
+            ctors = ":"+ctors   #
             p_e = ctors.rfind(")")
             head += ctors[p_e+1:]
             ctors = ctors[:p_e+1]
@@ -985,8 +994,8 @@ def SplitFunc(head):
             return r
     return None
 #@nonl
-#@-node:AGP.20230214111049.58:SplitFunc
-#@+node:AGP.20230214111049.59:SplitParams
+#@-node:SplitFunc
+#@+node:SplitParams
 def SplitParams(params):
     params = params.strip("()")
     plist = params.split()
@@ -1017,16 +1026,16 @@ def SplitParams(params):
     return plist
             
 #@nonl
-#@-node:AGP.20230214111049.59:SplitParams
-#@-node:AGP.20230214111049.57:C++ parsing
-#@-node:AGP.20230214111049.42:Helpers
-#@-node:AGP.20230214111049.27:Module level
-#@+node:AGP.20230214111049.60:Classes
-#@+node:AGP.20230214111049.61:class controllerClass
+#@-node:SplitParams
+#@-node:C++ parsing
+#@-node:Helpers
+#@-node:Module level
+#@+node:Classes
+#@+node:class controllerClass
 class controllerClass:
 
     #@    @+others
-    #@+node:AGP.20230214111049.62:__init__
+    #@+node:__init__
     def __init__ (self,c):
         
         self.c = c
@@ -1034,7 +1043,7 @@ class controllerClass:
         self.goingto = False
         
         #@    @+others
-        #@+node:AGP.20230214111049.63:Xcc Core
+        #@+node:Xcc Core
         self.XCC_INITED = False
         
         self.ACTIVE_NODE = None
@@ -1050,10 +1059,12 @@ class controllerClass:
         self.CHILD_LINE = None
         self.CHILD_EXT = None
         
+        self.RULES = ParserClass.CPPRULES(self)
+        
         self.Parser = None
         #@nonl
-        #@-node:AGP.20230214111049.63:Xcc Core
-        #@+node:AGP.20230214111049.64:Browse Info
+        #@-node:Xcc Core
+        #@+node:Browse Info
         self.NAME = ""
         self.EXT = ""
         self.HDR_EXT = ""
@@ -1066,14 +1077,14 @@ class controllerClass:
         self.PARSE_ERROR_NODE = None
         self.CPPEXTS = ["h","cpp","c","dll","lib","exe"]
         #@nonl
-        #@-node:AGP.20230214111049.64:Browse Info
-        #@+node:AGP.20230214111049.65:Write Info
+        #@-node:Browse Info
+        #@+node:Write Info
         self.CWD = os.getcwd().replace("\\",path_sym)
         self.CMT = "//"
         self.CREATE_DOC = "False"
         #@nonl
-        #@-node:AGP.20230214111049.65:Write Info
-        #@+node:AGP.20230214111049.66:Compile Info
+        #@-node:Write Info
+        #@+node:Compile Info
         self.FIRST_ERROR = False
         self.CPL = {}
         self.COMPILE = False
@@ -1088,8 +1099,8 @@ class controllerClass:
         
         self.EOL = ""
         #@nonl
-        #@-node:AGP.20230214111049.66:Compile Info
-        #@+node:AGP.20230214111049.67:Debug Info
+        #@-node:Compile Info
+        #@+node:Debug Info
         self.DBG = None
         
         self.DEBUGGER = ""
@@ -1111,28 +1122,28 @@ class controllerClass:
         self.OutBuff = ""
         self.ErrBuff = ""
         #@nonl
-        #@-node:AGP.20230214111049.67:Debug Info
-        #@+node:AGP.20230214111049.68:Execute Info
+        #@-node:Debug Info
+        #@+node:Execute Info
         self.EXE = None
         #@nonl
-        #@-node:AGP.20230214111049.68:Execute Info
-        #@+node:AGP.20230214111049.69:Options
+        #@-node:Execute Info
+        #@+node:Options
         self.FILTER_OUTPUT = False
         self.VERBOSE = False
         self.OPTS = {}
         #@nonl
-        #@-node:AGP.20230214111049.69:Options
-        #@+node:AGP.20230214111049.70:Code Decorations
-        self.CLASS_HDR = self.CMT+5*"------------------"+"\n"
+        #@-node:Options
+        #@+node:Code Decorations
+        self.CLASS_HDR = self.CMT+5*"------------------"#+"\n"
         self.CLASS_OPN = "{\n"
         self.CLASS_END = "};\n"
             
-        self.FUNC_HDR = self.CMT+5*"------------------"+"\n"
+        self.FUNC_HDR = self.CMT+5*"------------------"#+"\n"
         self.FUNC_OPN = "{\n"
-        self.FUNC_END = "}\n"
+        self.FUNC_END = "};\n"
         #@nonl
-        #@-node:AGP.20230214111049.70:Code Decorations
-        #@+node:AGP.20230214111049.71:Leo's Controls shortcut
+        #@-node:Code Decorations
+        #@+node:Leo's Controls shortcut
         
         self.LeoTop = c
         self.LeoFrame = c.frame	
@@ -1145,21 +1156,21 @@ class controllerClass:
         self.LeoFont = self.LeoBodyText["font"]
         self.LeoWrap = self.LeoBodyText["wrap"]
         #@nonl
-        #@-node:AGP.20230214111049.71:Leo's Controls shortcut
-        #@+node:AGP.20230214111049.72:Widgets
+        #@-node:Leo's Controls shortcut
+        #@+node:Widgets
         self.Config = ConfigClass(self)
         self.BreakBar = BreakbarClass(self)
         self.Dasm = DasmClass(self)
         self.Watcher = WatcherClass(self)
         self.DocEdit = DocEditClass(self)
         self.ToolBar = ToolbarClass(self) # must be created after BreakBar.
-        #@-node:AGP.20230214111049.72:Widgets
+        #@-node:Widgets
         #@-others
         g.enableIdleTimeHook(idleTimeDelay=100)
     #@nonl
-    #@-node:AGP.20230214111049.62:__init__
-    #@+node:AGP.20230214111049.73:Event handlers
-    #@+node:AGP.20230214111049.74:onSelect
+    #@-node:__init__
+    #@+node:Event handlers
+    #@+node:onSelect
     def onSelect(self):    
         cc = self
         p = cc.c.currentPosition()
@@ -1180,16 +1191,16 @@ class controllerClass:
                 cc.sSelect()
             
     #@nonl
-    #@-node:AGP.20230214111049.74:onSelect
-    #@+node:AGP.20230214111049.75:onIdle
+    #@-node:onSelect
+    #@+node:onIdle
     def onIdle(self):
     
         cc = self
         cc.UpdateProcess()
         cc.BreakBar.IdleUpdate()
     #@nonl
-    #@-node:AGP.20230214111049.75:onIdle
-    #@+node:AGP.20230214111049.76:onCommand2
+    #@-node:onIdle
+    #@+node:onCommand2
     def onCommand2(self,keywords):
         cc = self
         label = keywords.get("label")
@@ -1198,8 +1209,8 @@ class controllerClass:
             if cc.SELECTED_NODE:
                 cc.BreakBar.bodychanged = True
     #@nonl
-    #@-node:AGP.20230214111049.76:onCommand2
-    #@+node:AGP.20230214111049.77:onBodyDoubleClick
+    #@-node:onCommand2
+    #@+node:onBodyDoubleClick
     def onBodyDoubleClick(self):
     
         cc = self
@@ -1207,19 +1218,39 @@ class controllerClass:
         if cc.SELECTED_NODE == cc.c.currentPosition():
             cc.sGoToError()
     #@nonl
-    #@-node:AGP.20230214111049.77:onBodyDoubleClick
-    #@+node:AGP.20230214111049.78:onBodyKey2
+    #@-node:onBodyDoubleClick
+    #@+node:onBodyKey2
     def onBodyKey2(self,keywords):   
         cc = self
         ch = keywords.get("ch")    
         
         cc.LeoBodyText.tag_delete("xcc_error")
-            
+        
+        print "bodykey2"
+        print keywords
+        
         if cc.CHILD_NODE and ch == "\n":
-            cc.BreakBar.BreaksFromTags()
+            cc.BreakBar.SyncLineNumbers()
+            #cc.BreakBar.BreaksFromTags()
     #@nonl
-    #@-node:AGP.20230214111049.78:onBodyKey2
-    #@+node:AGP.20230214111049.79:onHeadKey2
+    #@-node:onBodyKey2
+    #@+node:onBodyChanged
+    def onBodyChanged(self,keywords):   
+        cc = self
+        #ch = keywords.get("ch")
+        #print keywords
+        
+        oldText = keywords.get("oldText")
+        newText = keywords.get("newText")
+        
+        if cc.CHILD_NODE and oldText.count("\n") != newText.count("\n"):# and ch == "\n":
+            
+            cc.LeoBodyText.tag_delete("xcc_error")
+            cc.BreakBar.SyncLineNumbers()
+            #cc.BreakBar.BreaksFromTags()
+    #@nonl
+    #@-node:onBodyChanged
+    #@+node:onHeadKey2
     def onHeadKey2(self,keywords):    
         cc = self
         p = cc.c.currentPosition()
@@ -1253,8 +1284,8 @@ class controllerClass:
             #cc.sSelect(p2)
                 #cc.cSelect(p)
     #@nonl
-    #@-node:AGP.20230214111049.79:onHeadKey2
-    #@+node:AGP.20230214111049.80:onQuit
+    #@-node:onHeadKey2
+    #@+node:onQuit
     def onQuit(self):    
         cc = self
       
@@ -1264,10 +1295,10 @@ class controllerClass:
             while cc.ACTIVE_NODE:
                 cc.UpdateProcess()
     #@nonl
-    #@-node:AGP.20230214111049.80:onQuit
-    #@-node:AGP.20230214111049.73:Event handlers
-    #@+node:AGP.20230214111049.81:Utility
-    #@+node:AGP.20230214111049.82:GoToNode
+    #@-node:onQuit
+    #@-node:Event handlers
+    #@+node:Utility
+    #@+node:GoToNode
     def GoToNode(self,node,index=None,tagcolor=None):
         
         if not node or self.goingto: return
@@ -1283,20 +1314,24 @@ class controllerClass:
         c.selectPosition(node)
         c.endUpdate()
     
-        if index is None: return
-        w.mark_set("insert",index)
-        w.see(index)
+        if index == None:
+            display = self.BreakBar.display
+            display.tag_add("xcc_error","1.0","1.end")
+            display.tag_config("xcc_error",background="#660000")
+        else:
+        
+            w.mark_set("insert",index)
+            w.see(index)
     
-        if tagcolor is None: return 
-        l,c = w.index("insert").split(".")
-        w.tag_add("xcc_error",l+".0",l+".end")
-        w.tag_config("xcc_error",background=tagcolor)
-        w.tag_raise("xcc_error")
+            if tagcolor != None:
+                l,c = w.index("insert").split(".")
+                w.tag_add("xcc_error",l+".0",l+".end")
+                w.tag_config("xcc_error",background="#660000")
+                w.tag_raise("xcc_error")
         
         self.goingto = False
-    #@nonl
-    #@-node:AGP.20230214111049.82:GoToNode
-    #@+node:AGP.20230214111049.83:UpdateProcess
+    #@-node:GoToNode
+    #@+node:UpdateProcess
     def UpdateProcess(self):
         
         #g.trace(ProcessClass.List)
@@ -1315,8 +1350,8 @@ class controllerClass:
                     if not ProcessClass.List[0].Open():
                         ProcessClass.List = [] #reset
     #@nonl
-    #@-node:AGP.20230214111049.83:UpdateProcess
-    #@+node:AGP.20230214111049.84:ReplaceVars
+    #@-node:UpdateProcess
+    #@+node:ReplaceVars
     def ReplaceVars(self,exp):
     	exp = exp.replace("_NAME_",self.NAME)
     	exp = exp.replace("_EXT_",self.OUTEXT)
@@ -1332,8 +1367,8 @@ class controllerClass:
     	return exp
     	
     #@nonl
-    #@-node:AGP.20230214111049.84:ReplaceVars
-    #@+node:AGP.20230214111049.85:GetUnknownAttributes
+    #@-node:ReplaceVars
+    #@+node:GetUnknownAttributes
     def GetUnknownAttributes(self,vnode,create = False):
     
     	if hasattr(vnode,"unknownAttributes") != True:
@@ -1343,8 +1378,8 @@ class controllerClass:
     			return None
     	return vnode.unknownAttributes
     #@nonl
-    #@-node:AGP.20230214111049.85:GetUnknownAttributes
-    #@+node:AGP.20230214111049.86:HideWidgets
+    #@-node:GetUnknownAttributes
+    #@+node:HideWidgets
     def HideWidgets(self):
         if self.Config.visible:
             self.Config.Hide()
@@ -1358,9 +1393,10 @@ class controllerClass:
         if self.Dasm.visible:
             self.Dasm.Hide()
     #@nonl
-    #@-node:AGP.20230214111049.86:HideWidgets
-    #@+node:AGP.20230316112635.1:CleanXccDicts
+    #@-node:HideWidgets
+    #@+node:CleanXccDicts
     def CleanXccDicts(self):
+        return
         cnt = 0
         for p in self.c.allNodes_iter(): 
             ua = self.GetUnknownAttributes(p.v)
@@ -1370,10 +1406,10 @@ class controllerClass:
         
         g.es("xcc: dropped %d empty dictionaries" % cnt)
     #@nonl
-    #@-node:AGP.20230316112635.1:CleanXccDicts
-    #@-node:AGP.20230214111049.81:Utility
-    #@+node:AGP.20230214111049.87:Child Node Funcs
-    #@+node:AGP.20230214111049.88:cIs
+    #@-node:CleanXccDicts
+    #@-node:Utility
+    #@+node:Child Node Funcs
+    #@+node:cIs
     def cIs(self,node):
     
         for p in node.parents_iter():
@@ -1381,8 +1417,8 @@ class controllerClass:
                 return True	
         return False
     #@nonl
-    #@-node:AGP.20230214111049.88:cIs
-    #@+node:AGP.20230214111049.89:cSet
+    #@-node:cIs
+    #@+node:cSet
     def cSet(self,name,value,node=None):    
         cc = self
         if node == None:
@@ -1403,8 +1439,8 @@ class controllerClass:
                 
             cfg[name] = value
             
-    #@-node:AGP.20230214111049.89:cSet
-    #@+node:AGP.20230214111049.90:cGet
+    #@-node:cSet
+    #@+node:cGet
     def cGet(self,name,init="",node=None):
         
         cc = self
@@ -1429,8 +1465,8 @@ class controllerClass:
                 
         return init
     #@nonl
-    #@-node:AGP.20230214111049.90:cGet
-    #@+node:AGP.20230214111049.91:cSelect
+    #@-node:cGet
+    #@+node:cSelect
     def cSelect(self,node=None):
         
         cc = self
@@ -1449,7 +1485,8 @@ class controllerClass:
                 
                 
                 
-                loc = LocatorClass(cc,cc.CHILD_NODE,1)
+                #ParserClass.CPPRULES()
+                self.locator = loc = LocatorClass(cc,cc.RULES,cc.CHILD_NODE,1)
                 cc.CHILD_EXT = loc.FOUND_FILE_EXT
                 cc.CHILD_LINE = loc.FOUND_FILE_LINE								
                 
@@ -1476,8 +1513,8 @@ class controllerClass:
             cc.CHILD_LINE = None
             cc.CHILD_EXT = None
     #@nonl
-    #@-node:AGP.20230214111049.91:cSelect
-    #@+node:AGP.20230214111049.92:cGetDict
+    #@-node:cSelect
+    #@+node:cGetDict
     def cGetDict(self,node=None,create=False):#Get xcc child dict alias "xcc_child_cfg" in ua	
         #the func must return the CHILD_NODE dict if node == None
         cc = self
@@ -1498,24 +1535,10 @@ class controllerClass:
             v.unknownAttributes["xcc_child_cfg"] = {}    
                 
         return v.unknownAttributes.get("xcc_child_cfg")
-    #@-node:AGP.20230214111049.92:cGetDict
-    #@-node:AGP.20230214111049.87:Child Node Funcs
-    #@+node:AGP.20230214111049.93:Selected Node Funcs
-    #@+node:AGP.20230214111049.94:sGatherInfo NOT CALLED
-    #@+node:AGP.20230214111049.95:Head
-    #@-node:AGP.20230214111049.95:Head
-    #@+node:AGP.20230214111049.96:Dicts
-    #@-node:AGP.20230214111049.96:Dicts
-    #@+node:AGP.20230214111049.97:File Creation
-    #@-node:AGP.20230214111049.97:File Creation
-    #@+node:AGP.20230214111049.98:Compilation
-    #@-node:AGP.20230214111049.98:Compilation
-    #@+node:AGP.20230214111049.99:Execution
-    #@-node:AGP.20230214111049.99:Execution
-    #@+node:AGP.20230214111049.100:Debugging
-    #@-node:AGP.20230214111049.100:Debugging
-    #@-node:AGP.20230214111049.94:sGatherInfo NOT CALLED
-    #@+node:AGP.20230214111049.101:sExtractHeadInfo
+    #@-node:cGetDict
+    #@-node:Child Node Funcs
+    #@+node:Selected Node Funcs
+    #@+node:sExtractHeadInfo
     def sExtractHeadInfo (self):
         
         cc = self
@@ -1534,8 +1557,8 @@ class controllerClass:
         theDir = g.choose(path,cc.CWD+"/"+path,cc.CWD)
         cc.sSet("ABS_PATH",theDir)
     #@nonl
-    #@-node:AGP.20230214111049.101:sExtractHeadInfo
-    #@+node:AGP.20230214111049.102:sGetBrowseInfo
+    #@-node:sExtractHeadInfo
+    #@+node:sGetBrowseInfo
     def sGetBrowseInfo (self):
         cc = self
         
@@ -1584,8 +1607,8 @@ class controllerClass:
         if cc.EXT == "":
             cc.EXT = cc.BIN_EXT
     #@nonl
-    #@-node:AGP.20230214111049.102:sGetBrowseInfo
-    #@+node:AGP.20230214111049.103:sGetWriteInfo
+    #@-node:sGetBrowseInfo
+    #@+node:sGetWriteInfo
     def sGetWriteInfo(self):
         
         cc = self
@@ -1626,13 +1649,13 @@ class controllerClass:
         except Exception as e:
             Error("xcc :sGetWriteInfo()",e)
         
-        self.CLASS_HDR = self.CMT+5*"------------------"+"\n"
-        self.FUNC_HDR = self.CMT+5*"------------------"+"\n"
+        #self.CLASS_HDR = self.CMT+5*"------------------"+"\n"
+        #self.FUNC_HDR = self.CMT+5*"------------------"+"\n"
         
         return True
     #@nonl
-    #@-node:AGP.20230214111049.103:sGetWriteInfo
-    #@+node:AGP.20230214111049.104:sGetCompileInfo
+    #@-node:sGetWriteInfo
+    #@+node:sGetCompileInfo
     def sGetCompileInfo(self):
         
         cc = self
@@ -1654,8 +1677,8 @@ class controllerClass:
         return True
     
     
-    #@-node:AGP.20230214111049.104:sGetCompileInfo
-    #@+node:AGP.20230214111049.105:sGetDebugInfo
+    #@-node:sGetCompileInfo
+    #@+node:sGetDebugInfo
     def sGetDebugInfo(self):
         
         cc = self
@@ -1667,8 +1690,8 @@ class controllerClass:
         else:
             return Error("xcc: ","No debugger defined!")
     #@nonl
-    #@-node:AGP.20230214111049.105:sGetDebugInfo
-    #@+node:AGP.20230214111049.106:sGetExecInfo
+    #@-node:sGetDebugInfo
+    #@+node:sGetExecInfo
     def sGetExecInfo(self):
         
         cc = self
@@ -1676,8 +1699,8 @@ class controllerClass:
         cc.EXE = cc.sGet("Executable")		
         return True
     #@nonl
-    #@-node:AGP.20230214111049.106:sGetExecInfo
-    #@+node:AGP.20230214111049.107:sGoToError
+    #@-node:sGetExecInfo
+    #@+node:sGoToError
     def sGoToError(self,e=None):#if e==None, retreive current body line
         
         cc = self
@@ -1721,10 +1744,10 @@ class controllerClass:
             
                 name,ext = os.path.splitext(file)
                 if name == cc.NAME:
-                    SeekErrorClass(cc,int(line),ext.replace(".",""),color=ErrorColor)
+                    SeekErrorClass(cc,cc.RULES,int(line),ext.replace(".",""),color=ErrorColor)
     #@nonl
-    #@-node:AGP.20230214111049.107:sGoToError
-    #@+node:AGP.20230214111049.108:sGo
+    #@-node:sGoToError
+    #@+node:sGo
     def sGo(self):	#this is where the selected node also become the active node
     
         cc = self
@@ -1783,15 +1806,15 @@ class controllerClass:
         return True
     
     
-    #@-node:AGP.20230214111049.108:sGo
-    #@+node:AGP.20230214111049.109:sSet
+    #@-node:sGo
+    #@+node:sSet
     def sSet (self,name,value):
         
         cc = self
     
         cc.SELECTED_DICT [name] = value
-    #@-node:AGP.20230214111049.109:sSet
-    #@+node:AGP.20230214111049.110:sGet
+    #@-node:sSet
+    #@+node:sGet
     def sGet(self,name,init=""):
         
         cc = self
@@ -1801,8 +1824,8 @@ class controllerClass:
     
         return cc.SELECTED_DICT[name]
     #@nonl
-    #@-node:AGP.20230214111049.110:sGet
-    #@+node:AGP.20230214111049.111:sIsDict
+    #@-node:sGet
+    #@+node:sIsDict
     def sIsDict(self):
         
         cc = self
@@ -1814,8 +1837,8 @@ class controllerClass:
         
         return hasattr(v,"unknownAttributes") and "xcc_cfg" in v.unknownAttributes
     #@nonl
-    #@-node:AGP.20230214111049.111:sIsDict
-    #@+node:AGP.20230214111049.112:sGetDict
+    #@-node:sIsDict
+    #@+node:sGetDict
     def sGetDict(self): # Get xcc parent dict alias "xcc_cfg" in ua
     
         cc = self
@@ -1834,8 +1857,8 @@ class controllerClass:
             v.unknownAttributes["xcc_cfg"] = d = {}
             return d
     #@nonl
-    #@-node:AGP.20230214111049.112:sGetDict
-    #@+node:AGP.20230214111049.113:sInitDict
+    #@-node:sGetDict
+    #@+node:sInitDict
     def sInitDict(self):
         
         cc = self
@@ -1848,8 +1871,8 @@ class controllerClass:
     
     
     
-    #@-node:AGP.20230214111049.113:sInitDict
-    #@+node:AGP.20230214111049.114:sSelect
+    #@-node:sInitDict
+    #@+node:sSelect
     def sSelect(self,node=None):
         
         cc = self ; c = cc.c
@@ -1873,8 +1896,8 @@ class controllerClass:
             cc.SELECTED_NODE = None
             cc.SELECTED_DICT = None
     #@nonl
-    #@-node:AGP.20230214111049.114:sSelect
-    #@+node:AGP.20230214111049.115:sSync
+    #@-node:sSelect
+    #@+node:sSync
     def sSync(self):
         
         cc = self
@@ -1885,8 +1908,8 @@ class controllerClass:
         
         cc.CHILD_DICT = cc.cGetDict()
     #@nonl
-    #@-node:AGP.20230214111049.115:sSync
-    #@+node:AGP.20230214111049.116:sShow
+    #@-node:sSync
+    #@+node:sShow
     def sShow(self):
         
         cc = self
@@ -1924,8 +1947,8 @@ class controllerClass:
         cc.LeoBodyText.pack(fill="both",expand=1)
         cc.LeoBodyText.config(wrap='none')
         
-    #@-node:AGP.20230214111049.116:sShow
-    #@+node:AGP.20230214111049.117:sHide
+    #@-node:sShow
+    #@+node:sHide
     def sHide(self):
         
         cc = self
@@ -1942,14 +1965,14 @@ class controllerClass:
         if cc.DocEdit.visible:
             cc.DocEdit.Hide()
     #@nonl
-    #@-node:AGP.20230214111049.117:sHide
-    #@+node:AGP.20230214111049.118:sSetText
+    #@-node:sHide
+    #@+node:sSetText
     def sSetText(self,text=""):
         
         cc = self
         cc.c.setBodyString(cc.SELECTED_NODE,text)
-    #@-node:AGP.20230214111049.118:sSetText
-    #@+node:AGP.20230214111049.119:sAddText
+    #@-node:sSetText
+    #@+node:sAddText
     def sAddText(self,text):
         
         cc = self
@@ -1960,17 +1983,17 @@ class controllerClass:
             l,c = cc.LeoBodyText.index("end").split(".")
             cc.LeoBodyText.see(l+".0")
     #@nonl
-    #@-node:AGP.20230214111049.119:sAddText
-    #@-node:AGP.20230214111049.93:Selected Node Funcs
-    #@+node:AGP.20230214111049.120:Active Node Funcs
-    #@+node:AGP.20230214111049.121:aSet
+    #@-node:sAddText
+    #@-node:Selected Node Funcs
+    #@+node:Active Node Funcs
+    #@+node:aSet
     def aSet(self,name,value):
         
         cc = self
         
         cc.ACTIVE_DICT[name] = value
-    #@-node:AGP.20230214111049.121:aSet
-    #@+node:AGP.20230214111049.122:aGet
+    #@-node:aSet
+    #@+node:aGet
     def aGet(self,name,init=""):
         
         cc = self
@@ -1979,8 +2002,8 @@ class controllerClass:
             cc.aSet(name,init)
     
         return cc.ACTIVE_DICT[name]
-    #@-node:AGP.20230214111049.122:aGet
-    #@+node:AGP.20230214111049.123:aGetDict
+    #@-node:aGet
+    #@+node:aGetDict
     def aGetDict(self):
         
         '''Get xcc parent dict alias "xcc_cfg" in uA.'''
@@ -1999,8 +2022,8 @@ class controllerClass:
         
         return v.unknownAttributes.get("xcc_cfg")
     #@nonl
-    #@-node:AGP.20230214111049.123:aGetDict
-    #@+node:AGP.20230214111049.124:aGo
+    #@-node:aGetDict
+    #@+node:aGo
     def aGo(self):
         
         #g.trace()
@@ -2014,8 +2037,8 @@ class controllerClass:
                 cc.LeoBodyText.tag_delete("xcc_error")
                 cc.ToolBar.DisableStep()
     #@nonl
-    #@-node:AGP.20230214111049.124:aGo
-    #@+node:AGP.20230214111049.125:aStop
+    #@-node:aGo
+    #@+node:aStop
     def aStop(self):
         try:
             cc = self
@@ -2036,8 +2059,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.125:aStop
-    #@+node:AGP.20230214111049.126:aStepIn
+    #@-node:aStop
+    #@+node:aStepIn
     def aStepIn(self):
         try:
             cc = self
@@ -2055,8 +2078,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.126:aStepIn
-    #@+node:AGP.20230214111049.127:aStepOver
+    #@-node:aStepIn
+    #@+node:aStepOver
     def aStepOver(self):
         try:
             cc = self
@@ -2073,8 +2096,8 @@ class controllerClass:
                 cc.DBG_TASK.append(QueryGoTaskClass(cc))
         except Exception:
             g.es_exception()
-    #@-node:AGP.20230214111049.127:aStepOver
-    #@+node:AGP.20230214111049.128:aStepOut
+    #@-node:aStepOver
+    #@+node:aStepOut
     def aStepOut(self):
         try:
             cc = self
@@ -2092,8 +2115,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.128:aStepOut
-    #@+node:AGP.20230214111049.129:aPause
+    #@-node:aStepOut
+    #@+node:aPause
     def aPause(self):
         try:
             cc = self
@@ -2106,8 +2129,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.129:aPause
-    #@+node:AGP.20230214111049.130:aWrite
+    #@-node:aPause
+    #@+node:aWrite
     def aWrite(self,text):
         
         cc = self
@@ -2133,8 +2156,8 @@ class controllerClass:
         if cc.DEBUG and cc.EXECUTE:
             cc.ToolBar.HideInput()
     #@nonl
-    #@-node:AGP.20230214111049.130:aWrite
-    #@+node:AGP.20230214111049.131:aSelect
+    #@-node:aWrite
+    #@+node:aSelect
     def aSelect(self,node=None):
         
         cc = self
@@ -2142,8 +2165,8 @@ class controllerClass:
         cc.ACTIVE_NODE = node
         cc.ACTIVE_DICT = cc.aGetDict()
     #@nonl
-    #@-node:AGP.20230214111049.131:aSelect
-    #@+node:AGP.20230214111049.132:aSetText
+    #@-node:aSelect
+    #@+node:aSetText
     def aSetText(self,text=""):
         
         cc = self
@@ -2151,8 +2174,8 @@ class controllerClass:
         if cc.ACTIVE_NODE:
             cc.c.setBodyString(ACTIVE_NODE,text)
     #@nonl
-    #@-node:AGP.20230214111049.132:aSetText
-    #@+node:AGP.20230214111049.133:aAddText
+    #@-node:aSetText
+    #@+node:aAddText
     def aAddText(self,text):
         
         cc = self
@@ -2164,28 +2187,28 @@ class controllerClass:
                 l,c = cc.LeoBodyText.index("end").split(".")
                 cc.LeoBodyText.see(l+".0")
     #@nonl
-    #@-node:AGP.20230214111049.133:aAddText
-    #@-node:AGP.20230214111049.120:Active Node Funcs
-    #@+node:AGP.20230214111049.134:Action Funcs
-    #@+node:AGP.20230214111049.135:ParseTree
+    #@-node:aAddText
+    #@-node:Active Node Funcs
+    #@+node:Action Funcs
+    #@+node:ParseTree
     def ParseTree(self):
         p = ParserClass(self)
         p.Parse()
     #@nonl
-    #@-node:AGP.20230214111049.135:ParseTree
-    #@+node:AGP.20230214111049.136:CreateFiles
+    #@-node:ParseTree
+    #@+node:CreateFiles
     def CreateFiles(self):
     
         cc = self
         #g.trace(cc.OPTS)
         
         if cc.OPTS.get("Create files") == "True":
-            return WriterClass(cc).Result
+            return WriterClass(cc,cc.RULES).Result
         else:
             return None
     #@nonl
-    #@-node:AGP.20230214111049.136:CreateFiles
-    #@+node:AGP.20230214111049.137:Compile
+    #@-node:CreateFiles
+    #@+node:Compile
     def Compile(self):
         cc = self
         
@@ -2204,8 +2227,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.137:Compile
-    #@+node:AGP.20230214111049.138:CplCmd
+    #@-node:Compile
+    #@+node:CplCmd
     def CplCmd(self):
         
         cc = self
@@ -2219,7 +2242,7 @@ class controllerClass:
         cmd = cc.ReplaceVars(cmd.replace("\n"," ").strip())
         
         #@    @+others
-        #@+node:AGP.20230214111049.139:_INCPATHS_
+        #@+node:_INCPATHS_
         s = cc.CPL.get("Include path")
         if s:
             sym = s
@@ -2230,8 +2253,8 @@ class controllerClass:
                     cc.INCPATHS += " "+sym+"\""+p+"\""
             cmd = cmd.replace("_INCPATHS_",cc.INCPATHS.strip())
         #@nonl
-        #@-node:AGP.20230214111049.139:_INCPATHS_
-        #@+node:AGP.20230214111049.140:_LIBPATHS_
+        #@-node:_INCPATHS_
+        #@+node:_LIBPATHS_
         s = cc.LKR.get("Library path")
         if s:
             sym = s
@@ -2242,8 +2265,8 @@ class controllerClass:
                     cc.LIBPATHS += " "+sym+"\""+p+"\""
             cmd = cmd.replace("_LIBPATHS_",cc.LIBPATHS.strip())
         #@nonl
-        #@-node:AGP.20230214111049.140:_LIBPATHS_
-        #@+node:AGP.20230214111049.141:_LIBRARIES_
+        #@-node:_LIBPATHS_
+        #@+node:_LIBRARIES_
         s = cc.LKR.get("Use library")
         if s:
             sym = s
@@ -2254,8 +2277,8 @@ class controllerClass:
                     cc.LIBRARIES += " "+sym+"\""+l+"\""
             cmd = cmd.replace("_LIBRARIES_",cc.LIBRARIES.strip())
         #@nonl
-        #@-node:AGP.20230214111049.141:_LIBRARIES_
-        #@+node:AGP.20230214111049.142:_BUILD_
+        #@-node:_LIBRARIES_
+        #@+node:_BUILD_
         if cc.OUTEXT == "dll":
             s = cc.LKR.get("Build dll")
         else:
@@ -2263,14 +2286,14 @@ class controllerClass:
             
         if s: cmd = cmd.replace("_BUILD_",s)
         #@nonl
-        #@-node:AGP.20230214111049.142:_BUILD_
+        #@-node:_BUILD_
         #@-others
         
         return cmd
     
     
-    #@-node:AGP.20230214111049.138:CplCmd
-    #@+node:AGP.20230214111049.143:Link
+    #@-node:CplCmd
+    #@+node:Link
     def Link(self):
         cc = self
         
@@ -2289,8 +2312,8 @@ class controllerClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.143:Link
-    #@+node:AGP.20230214111049.144:LkrCmd
+    #@-node:Link
+    #@+node:LkrCmd
     def LkrCmd(self):
         
         #g.trace()
@@ -2306,7 +2329,7 @@ class controllerClass:
         cmd = cc.ReplaceVars(cmd.replace("\n"," ").strip())
         
         #@    @+others
-        #@+node:AGP.20230214111049.145:_LIBPATHS_
+        #@+node:_LIBPATHS_
         s = cc.LKR.get("Library path",'')
         if s:
             sym = s
@@ -2317,8 +2340,8 @@ class controllerClass:
                     cc.LIBPATHS += " "+sym+"\""+p+"\""
             cmd = cmd.replace("_LIBPATHS_",cc.LIBPATHS.strip())
         #@nonl
-        #@-node:AGP.20230214111049.145:_LIBPATHS_
-        #@+node:AGP.20230214111049.146:_LIBRARIES_
+        #@-node:_LIBPATHS_
+        #@+node:_LIBRARIES_
         s = cc.LKR.get("Use library")
         if s:
             sym = s
@@ -2329,8 +2352,8 @@ class controllerClass:
                     cc.LIBRARIES += " "+sym+"\""+l+"\""
             cmd = cmd.replace("_LIBRARIES_",cc.LIBRARIES.strip())
         #@nonl
-        #@-node:AGP.20230214111049.146:_LIBRARIES_
-        #@+node:AGP.20230214111049.147:_BUILD_
+        #@-node:_LIBRARIES_
+        #@+node:_BUILD_
         if cc.OUTEXT == "exe":
             s = cc.LKR.get("Build exe")
             if s: cmd = cmd.replace("_BUILD_",s)
@@ -2339,14 +2362,14 @@ class controllerClass:
             s = cc.LKR.get("Build dll")
             if s: cmd = cmd.replace("_BUILD_",s)
         #@nonl
-        #@-node:AGP.20230214111049.147:_BUILD_
+        #@-node:_BUILD_
         #@-others
     
         return cmd
     
     
-    #@-node:AGP.20230214111049.144:LkrCmd
-    #@+node:AGP.20230214111049.148:Debug
+    #@-node:LkrCmd
+    #@+node:Debug
     def Debug(self):
         
         cc = self
@@ -2363,8 +2386,8 @@ class controllerClass:
             return ProcessClass.QueueProcess(process)
         return False
     #@nonl
-    #@-node:AGP.20230214111049.148:Debug
-    #@+node:AGP.20230214111049.149:DbgCmd
+    #@-node:Debug
+    #@+node:DbgCmd
     def DbgCmd(self):
         
         cc = self
@@ -2375,8 +2398,8 @@ class controllerClass:
         #g.trace(repr(cmd))
         return cmd
     #@nonl
-    #@-node:AGP.20230214111049.149:DbgCmd
-    #@+node:AGP.20230214111049.150:Execute
+    #@-node:DbgCmd
+    #@+node:Execute
     def Execute(self):    
         #g.trace()
         
@@ -2399,8 +2422,8 @@ class controllerClass:
             process = ProcessClass(cc,cc.SELECTED_NODE,cmd,args,spawn=True)
     
         return ProcessClass.QueueProcess(process)
-    #@-node:AGP.20230214111049.150:Execute
-    #@+node:AGP.20230214111049.151:RunTool
+    #@-node:Execute
+    #@+node:RunTool
     def RunTool(self,cc,cmdl):
         ca = cmdl.split("@",1)
         if len(ca) == 1: 
@@ -2421,10 +2444,10 @@ class controllerClass:
                 
         return ProcessClass.QueueProcess(process)
     #@nonl
-    #@-node:AGP.20230214111049.151:RunTool
-    #@-node:AGP.20230214111049.134:Action Funcs
-    #@+node:AGP.20230214111049.152:Compiler Events
-    #@+node:AGP.20230214111049.153:CplStart
+    #@-node:RunTool
+    #@-node:Action Funcs
+    #@+node:Compiler Events
+    #@+node:CplStart
     def CplStart(self):
         cc = self
         cc.OutBuff = ""
@@ -2445,8 +2468,8 @@ class controllerClass:
         text += "\""+("="*60)+"\n"
         
         cc.aAddText(text)
-    #@-node:AGP.20230214111049.153:CplStart
-    #@+node:AGP.20230214111049.154:CplOut
+    #@-node:CplStart
+    #@+node:CplOut
     def CplOut(self,text):
         cc = self
         cc.OutBuff += text
@@ -2476,8 +2499,8 @@ class controllerClass:
                 
         cc.aAddText(text)
     
-    #@-node:AGP.20230214111049.154:CplOut
-    #@+node:AGP.20230214111049.155:CplErr
+    #@-node:CplOut
+    #@+node:CplErr
     def CplErr(self,text):
         cc = self    
         cc.ErrBuff += text
@@ -2501,8 +2524,8 @@ class controllerClass:
                 
         cc.aAddText(text)
     #@nonl
-    #@-node:AGP.20230214111049.155:CplErr
-    #@+node:AGP.20230214111049.156:CplEnd
+    #@-node:CplErr
+    #@+node:CplEnd
     def CplEnd(self,exitcode):
         
         cc = self
@@ -2525,10 +2548,10 @@ class controllerClass:
         cc.aAddText(text)
         cc.aSelect()
     #@nonl
-    #@-node:AGP.20230214111049.156:CplEnd
-    #@-node:AGP.20230214111049.152:Compiler Events
-    #@+node:AGP.20230214111049.157:Linker Events
-    #@+node:AGP.20230214111049.158:LkrStart
+    #@-node:CplEnd
+    #@-node:Compiler Events
+    #@+node:Linker Events
+    #@+node:LkrStart
     def LkrStart(self):
         
         #g.trace()
@@ -2548,8 +2571,8 @@ class controllerClass:
         
         cc.aAddText(text)
     
-    #@-node:AGP.20230214111049.158:LkrStart
-    #@+node:AGP.20230214111049.159:LkrOut
+    #@-node:LkrStart
+    #@+node:LkrOut
     def LkrOut(self,text):
         
         cc = self
@@ -2575,8 +2598,8 @@ class controllerClass:
                 
         cc.aAddText(text)
     
-    #@-node:AGP.20230214111049.159:LkrOut
-    #@+node:AGP.20230214111049.160:LkrErr
+    #@-node:LkrOut
+    #@+node:LkrErr
     def LkrErr(self,text):
         
         cc = self
@@ -2594,8 +2617,8 @@ class controllerClass:
                         
         cc.aAddText(text)
     #@nonl
-    #@-node:AGP.20230214111049.160:LkrErr
-    #@+node:AGP.20230214111049.161:LkrEnd
+    #@-node:LkrErr
+    #@+node:LkrEnd
     def LkrEnd(self,exitcode):
         
         #g.trace(repr(exitcode))
@@ -2615,10 +2638,10 @@ class controllerClass:
         cc.aAddText(text)
         cc.aSelect()
     #@nonl
-    #@-node:AGP.20230214111049.161:LkrEnd
-    #@-node:AGP.20230214111049.157:Linker Events
-    #@+node:AGP.20230214111049.162:Debugger Events
-    #@+node:AGP.20230214111049.163:DbgStart
+    #@-node:LkrEnd
+    #@-node:Linker Events
+    #@+node:Debugger Events
+    #@+node:DbgStart
     def DbgStart(self):
     
         #g.trace()
@@ -2655,8 +2678,8 @@ class controllerClass:
         BreakTaskClass(cc)
         DbgTaskClass(cc,cc.DBG["Continue"])
     #@nonl
-    #@-node:AGP.20230214111049.163:DbgStart
-    #@+node:AGP.20230214111049.164:DbgOut
+    #@-node:DbgStart
+    #@+node:DbgOut
     def DbgOut(self,text):
         
         #g.trace(repr(text))
@@ -2703,8 +2726,8 @@ class controllerClass:
         if cc.DBG_PROMPT:
             cc.ToolBar.ShowInput()
     #@nonl
-    #@-node:AGP.20230214111049.164:DbgOut
-    #@+node:AGP.20230214111049.165:DbgErr
+    #@-node:DbgOut
+    #@+node:DbgErr
     def DbgErr(self,text):
         
         #g.trace(repr(text))
@@ -2723,8 +2746,8 @@ class controllerClass:
                         
         cc.aAddText(text)
     #@nonl
-    #@-node:AGP.20230214111049.165:DbgErr
-    #@+node:AGP.20230214111049.166:DbgEnd
+    #@-node:DbgErr
+    #@+node:DbgEnd
     def DbgEnd(self,exitcode):
     
         cc = self
@@ -2745,10 +2768,10 @@ class controllerClass:
         cc.LeoBodyText.tag_delete("xcc_error")	
         cc.TARGET_PID = ""
         cc.aSelect()
-    #@-node:AGP.20230214111049.166:DbgEnd
-    #@-node:AGP.20230214111049.162:Debugger Events
-    #@+node:AGP.20230214111049.167:Program Events
-    #@+node:AGP.20230214111049.168:ProgStart
+    #@-node:DbgEnd
+    #@-node:Debugger Events
+    #@+node:Program Events
+    #@+node:ProgStart
     def ProgStart(self):
         
         #g.trace()
@@ -2769,8 +2792,8 @@ class controllerClass:
         
         cc.ToolBar.ShowInput()
     #@nonl
-    #@-node:AGP.20230214111049.168:ProgStart
-    #@+node:AGP.20230214111049.169:ProgOut
+    #@-node:ProgStart
+    #@+node:ProgOut
     def ProgOut(self,text):
         
         #g.trace(repr(text))
@@ -2792,8 +2815,8 @@ class controllerClass:
         cc.OutBuff = ""
         cc.aAddText(text)
     #@nonl
-    #@-node:AGP.20230214111049.169:ProgOut
-    #@+node:AGP.20230214111049.170:ProgErr
+    #@-node:ProgOut
+    #@+node:ProgErr
     def ProgErr(self,text):
         
         #g.trace(repr(text))
@@ -2814,8 +2837,8 @@ class controllerClass:
         cc.ErrBuff = ""
         cc.aAddText(text)
     #@nonl
-    #@-node:AGP.20230214111049.170:ProgErr
-    #@+node:AGP.20230214111049.171:ProgEnd
+    #@-node:ProgErr
+    #@+node:ProgEnd
     def ProgEnd(self,exitcode):
         
         cc = self
@@ -2831,16 +2854,16 @@ class controllerClass:
         cc.ACTIVE_PROCESS = None
         cc.aSelect()
     #@nonl
-    #@-node:AGP.20230214111049.171:ProgEnd
-    #@-node:AGP.20230214111049.167:Program Events
+    #@-node:ProgEnd
+    #@-node:Program Events
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.61:class controllerClass
-#@+node:AGP.20230214111049.172:Debugger task classes
-#@+node:AGP.20230214111049.173:DbgTaskClass
+#@-node:class controllerClass
+#@+node:Debugger task classes
+#@+node:DbgTaskClass
 class DbgTaskClass:
     #@    @+others
-    #@+node:AGP.20230214111049.174:__init__
+    #@+node:__init__
     def __init__(self,cc,cmd,index=None):
         
         self.cc = cc
@@ -2851,8 +2874,8 @@ class DbgTaskClass:
         else:
             cc.DBG_SD.append(self.Send)
     #@nonl
-    #@-node:AGP.20230214111049.174:__init__
-    #@+node:AGP.20230214111049.175:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         
         cc = self.cc
@@ -2861,25 +2884,25 @@ class DbgTaskClass:
             cc.aWrite(self.Command)
         cc.DBG_SD.remove(self.Send)
     #@nonl
-    #@-node:AGP.20230214111049.175:Send
+    #@-node:Send
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.173:DbgTaskClass
-#@+node:AGP.20230214111049.176:OutputTaskClass
+#@-node:DbgTaskClass
+#@+node:OutputTaskClass
 class OutputTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.177:__init__
+    #@+node:__init__
     def __init__(self,cc):
     
         self.cc = cc
         cc.DBG_RD.append(self.Receive)
     #@nonl
-    #@-node:AGP.20230214111049.177:__init__
-    #@+node:AGP.20230214111049.178:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         pass	#we just receive
-    #@-node:AGP.20230214111049.178:Send
-    #@+node:AGP.20230214111049.179:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         
         cc = self.cc
@@ -2892,15 +2915,15 @@ class OutputTaskClass(DbgTaskClass):
                 if cc.OPTS["Filter output"] == "False":
                     cc.aAddText("\" "+line)
     #@nonl
-    #@-node:AGP.20230214111049.179:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.176:OutputTaskClass
-#@+node:AGP.20230214111049.180:TargetPidTaskClass
+#@-node:OutputTaskClass
+#@+node:TargetPidTaskClass
 class TargetPidTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.181:__init__
+    #@+node:__init__
     def __init__(self,cc):
         
         self.cc = cc
@@ -2909,8 +2932,8 @@ class TargetPidTaskClass(DbgTaskClass):
         self.PidTask = cc.ReplaceVars(cc.DBG.get("Target pid task"))
         self.FindPid = cc.ReplaceVars(cc.DBG.get("Find pid"))
     #@nonl
-    #@-node:AGP.20230214111049.181:__init__
-    #@+node:AGP.20230214111049.182:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         cc = self.cc
         if self.PidTask != "":		
@@ -2922,8 +2945,8 @@ class TargetPidTaskClass(DbgTaskClass):
             Warning("xcc: ","Target pid task is undefined!")
     
     
-    #@-node:AGP.20230214111049.182:Send
-    #@+node:AGP.20230214111049.183:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
        
         cc = self.cc
@@ -2940,15 +2963,15 @@ class TargetPidTaskClass(DbgTaskClass):
         else:
             cc.DBG_RD.remove(self.Receive)
     #@nonl
-    #@-node:AGP.20230214111049.183:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.180:TargetPidTaskClass
-#@+node:AGP.20230214111049.184:BreakTaskClass
+#@-node:TargetPidTaskClass
+#@+node:BreakTaskClass
 class BreakTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.185:__init__
+    #@+node:__init__
     def __init__(self,cc):
         
         self.cc = cc
@@ -2971,8 +2994,8 @@ class BreakTaskClass(DbgTaskClass):
         else:
             Warning("xcc: ","No break detection expression defined!")
     #@nonl
-    #@-node:AGP.20230214111049.185:__init__
-    #@+node:AGP.20230214111049.186:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         cc = self.cc
         if len(self.Breaks) > 0:
@@ -2985,8 +3008,8 @@ class BreakTaskClass(DbgTaskClass):
             cc.DBG_SD.remove(self.Send)
             cc.DBG_RD.append(self.Receive)
     
-    #@-node:AGP.20230214111049.186:Send
-    #@+node:AGP.20230214111049.187:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         
         cc = self.cc
@@ -3012,15 +3035,15 @@ class BreakTaskClass(DbgTaskClass):
                 cc.ToolBar.EnableStep()						
                 return
     #@nonl
-    #@-node:AGP.20230214111049.187:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.184:BreakTaskClass
-#@+node:AGP.20230214111049.188:RegExpTaskClass
+#@-node:BreakTaskClass
+#@+node:RegExpTaskClass
 class RegExpTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.189:__init__
+    #@+node:__init__
     def __init__(self,cc):
         
         self.cc = cc
@@ -3030,15 +3053,15 @@ class RegExpTaskClass(DbgTaskClass):
         self.Task = cc.ReplaceVars(cc.DBG.get("Task",'')).splitlines()
         self.on = False	
     #@nonl
-    #@-node:AGP.20230214111049.189:__init__
-    #@+node:AGP.20230214111049.190:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         pass	#receive only
     
     
     
-    #@-node:AGP.20230214111049.190:Send
-    #@+node:AGP.20230214111049.191:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         
         cc = self.cc
@@ -3056,15 +3079,15 @@ class RegExpTaskClass(DbgTaskClass):
                 self.on = False
             i += 1
     #@nonl
-    #@-node:AGP.20230214111049.191:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.188:RegExpTaskClass
-#@+node:AGP.20230214111049.192:WatchTaskClass
+#@-node:RegExpTaskClass
+#@+node:WatchTaskClass
 class WatchTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.193:__init__
+    #@+node:__init__
     def __init__(self,cc,index=0):
         
         self.cc = cc
@@ -3085,8 +3108,8 @@ class WatchTaskClass(DbgTaskClass):
         
         self.nl = ""
         self.Inited = False
-    #@-node:AGP.20230214111049.193:__init__
-    #@+node:AGP.20230214111049.194:Cancel
+    #@-node:__init__
+    #@+node:Cancel
     def Cancel(self):
         cc = self.cc
         if self.Send in cc.DBG_SD:
@@ -3099,8 +3122,8 @@ class WatchTaskClass(DbgTaskClass):
         cc.Watcher.Watching = False
         cc.WATCH_TASK = None
     
-    #@-node:AGP.20230214111049.194:Cancel
-    #@+node:AGP.20230214111049.195:Send
+    #@-node:Cancel
+    #@+node:Send
     def Send(self):
         cc = self.cc
         if len(self.Lines) > 0:
@@ -3117,15 +3140,15 @@ class WatchTaskClass(DbgTaskClass):
             self.Buffer = ""
             self.Count += 1
     #@nonl
-    #@-node:AGP.20230214111049.195:Send
-    #@+node:AGP.20230214111049.196:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         cc = self.cc
         if cc.DBG_PROMPT == False:		
             self.Buffer += line
     #@nonl
-    #@-node:AGP.20230214111049.196:Receive
-    #@+node:AGP.20230214111049.197:OnPrompt
+    #@-node:Receive
+    #@+node:OnPrompt
     def OnPrompt(self):
         cc = self.cc
         
@@ -3158,15 +3181,15 @@ class WatchTaskClass(DbgTaskClass):
         cc.PROMPT_RD.remove(self.OnPrompt)	
         cc.DBG_RD.remove(self.Receive)
     
-    #@-node:AGP.20230214111049.197:OnPrompt
+    #@-node:OnPrompt
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.192:WatchTaskClass
-#@+node:AGP.20230214111049.198:DasmTaskClass
+#@-node:WatchTaskClass
+#@+node:DasmTaskClass
 class DasmTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.199:__init__
+    #@+node:__init__
     def __init__(self,cc,index=0):
         
         self.cc = cc
@@ -3177,8 +3200,8 @@ class DasmTaskClass(DbgTaskClass):
         cc.DBG_SD.append(self.Send)
         
         self.Inited = False
-    #@-node:AGP.20230214111049.199:__init__
-    #@+node:AGP.20230214111049.200:Cancel
+    #@-node:__init__
+    #@+node:Cancel
     def Cancel(self):
         cc = self.cc
         if self.Send in cc.DBG_SD:
@@ -3191,8 +3214,8 @@ class DasmTaskClass(DbgTaskClass):
         self.Watching = False
         cc.WATCH_TASK = None
     
-    #@-node:AGP.20230214111049.200:Cancel
-    #@+node:AGP.20230214111049.201:Send
+    #@-node:Cancel
+    #@+node:Send
     def Send(self):
         cc = self.cc    
         cc.aWrite(cc.DBG["X cmd"])
@@ -3201,16 +3224,16 @@ class DasmTaskClass(DbgTaskClass):
         cc.PROMPT_RD.append(self.OnPrompt)
         self.Buffer = ""
     #@nonl
-    #@-node:AGP.20230214111049.201:Send
-    #@+node:AGP.20230214111049.202:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         cc = self.cc
         if cc.DBG_PROMPT == False:	
             self.Buffer += line
             
     #@nonl
-    #@-node:AGP.20230214111049.202:Receive
-    #@+node:AGP.20230214111049.203:OnPrompt
+    #@-node:Receive
+    #@+node:OnPrompt
     def OnPrompt(self):
         cc = self.cc
         
@@ -3226,16 +3249,16 @@ class DasmTaskClass(DbgTaskClass):
         t.config(state='disabled')
         g.es("xcmd2")
     
-    #@-node:AGP.20230214111049.203:OnPrompt
+    #@-node:OnPrompt
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.198:DasmTaskClass
-#@+node:AGP.20230214111049.204:QueryGoTaskClass
+#@-node:DasmTaskClass
+#@+node:QueryGoTaskClass
 class QueryGoTaskClass(DbgTaskClass):
 
     #@    @+others
-    #@+node:AGP.20230214111049.205:__init__
+    #@+node:__init__
     def __init__(self,cc,index=None):
         
         self.cc = cc
@@ -3249,8 +3272,8 @@ class QueryGoTaskClass(DbgTaskClass):
         else:
             cc.DBG_SD.append(self.Send)
     #@nonl
-    #@-node:AGP.20230214111049.205:__init__
-    #@+node:AGP.20230214111049.206:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         
         cc = self.cc
@@ -3258,8 +3281,8 @@ class QueryGoTaskClass(DbgTaskClass):
         cc.DBG_SD.remove(self.Send)
         cc.DBG_RD.append(self.Receive)
     #@nonl
-    #@-node:AGP.20230214111049.206:Send
-    #@+node:AGP.20230214111049.207:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
     
         cc = self.cc
@@ -3286,15 +3309,15 @@ class QueryGoTaskClass(DbgTaskClass):
         else:
             cc.DBG_RD.remove(self.Receive)
                 
-    #@-node:AGP.20230214111049.207:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.204:QueryGoTaskClass
-#@+node:AGP.20230214111049.208:BreakIdTaskClass
+#@-node:QueryGoTaskClass
+#@+node:BreakIdTaskClass
 class BreakIdTaskClass(DbgTaskClass):
     #@    @+others
-    #@+node:AGP.20230214111049.209:__init__
+    #@+node:__init__
     def __init__(self,cc,b,index=0):
         
         self.cc = cc
@@ -3312,16 +3335,16 @@ class BreakIdTaskClass(DbgTaskClass):
             else:
                 Warning("xcc: ","Break Identification task is undefined!")
     #@nonl
-    #@-node:AGP.20230214111049.209:__init__
-    #@+node:AGP.20230214111049.210:Send
+    #@-node:__init__
+    #@+node:Send
     def Send(self):
         cc = self.cc
         cc.aWrite(self.ListBreaks)
         cc.DBG_SD.remove(self.Send)
         cc.DBG_RD.append(self.Receive)
     
-    #@-node:AGP.20230214111049.210:Send
-    #@+node:AGP.20230214111049.211:Receive
+    #@-node:Send
+    #@+node:Receive
     def Receive(self,line):
         
         cc = self.cc
@@ -3342,13 +3365,13 @@ class BreakIdTaskClass(DbgTaskClass):
             cc.DBG_RD.remove(self.Receive)
                 
     #@nonl
-    #@-node:AGP.20230214111049.211:Receive
+    #@-node:Receive
     #@-others
     
 #@nonl
-#@-node:AGP.20230214111049.208:BreakIdTaskClass
-#@-node:AGP.20230214111049.172:Debugger task classes
-#@+node:AGP.20230214111049.212:class ProcessClass
+#@-node:BreakIdTaskClass
+#@-node:Debugger task classes
+#@+node:class ProcessClass
 class ProcessClass:
     List=[]
     if os.name == "dos" or os.name == "nt":
@@ -3356,11 +3379,11 @@ class ProcessClass:
     else:
         Encoding = "utf-8"
     #@    @+others
-    #@+node:AGP.20230214111049.213:class ReadingThreadClass
+    #@+node:class ReadingThreadClass
     class ReadingThreadClass(threading.Thread):
     
         #@    @+others
-        #@+node:AGP.20230214111049.214:__init__
+        #@+node:__init__
         def __init__(self):
         
             threading.Thread.__init__(self)
@@ -3368,8 +3391,8 @@ class ProcessClass:
             self.Lock = thread.allocate_lock()
             self.Buffer = ""
         #@nonl
-        #@-node:AGP.20230214111049.214:__init__
-        #@+node:AGP.20230214111049.215:run
+        #@-node:__init__
+        #@+node:run
         def run(self):
             try:
                 s=self.File.read(1)
@@ -3382,8 +3405,8 @@ class ProcessClass:
             except IOError, ioerr:
                 self.Buffer = self.Buffer +"\n"+ "[@run] ioerror :"+str(ioerr)
         #@nonl
-        #@-node:AGP.20230214111049.215:run
-        #@+node:AGP.20230214111049.216:Update
+        #@-node:run
+        #@+node:Update
         def Update(self,func):
         
             ret = True
@@ -3399,11 +3422,11 @@ class ProcessClass:
             return ret
         
         
-        #@-node:AGP.20230214111049.216:Update
+        #@-node:Update
         #@-others
     #@nonl
-    #@-node:AGP.20230214111049.213:class ReadingThreadClass
-    #@+node:AGP.20230214111049.217:__init__
+    #@-node:class ReadingThreadClass
+    #@+node:__init__
     def __init__(self,cc,node,filename,args,start=None,out=None,err=None,end=None,spawn=False):
     
         self.cc = cc
@@ -3422,8 +3445,8 @@ class ProcessClass:
         self.OnEnd = end
         
         self.Kill = False
-    #@-node:AGP.20230214111049.217:__init__
-    #@+node:AGP.20230214111049.218:Open
+    #@-node:__init__
+    #@+node:Open
     def Open(self):
         
         cc = self.cc
@@ -3463,8 +3486,8 @@ class ProcessClass:
         cc.LeoTop.redraw()
         return True
     #@nonl
-    #@-node:AGP.20230214111049.218:Open
-    #@+node:AGP.20230214111049.219:Close
+    #@-node:Open
+    #@+node:Close
     def Close(self):
         
         cc = self.cc
@@ -3484,8 +3507,8 @@ class ProcessClass:
         
         return exitcode
     #@nonl
-    #@-node:AGP.20230214111049.219:Close
-    #@+node:AGP.20230214111049.220:Update
+    #@-node:Close
+    #@+node:Update
     def Update(self):
     
         if not self.OutThread or not self.ErrThread:
@@ -3498,8 +3521,8 @@ class ProcessClass:
         
         return self.OutThread.Update(self.Output) or self.ErrThread.Update(self.Error)
     #@nonl
-    #@-node:AGP.20230214111049.220:Update
-    #@+node:AGP.20230214111049.221:QueueProcess
+    #@-node:Update
+    #@+node:QueueProcess
     def QueueProcess(p):
         if len(ProcessClass.List) == 0:
             ok = p.Open()
@@ -3511,15 +3534,15 @@ class ProcessClass:
             ProcessClass.List.append(p)
             return True
     #@nonl
-    #@-node:AGP.20230214111049.221:QueueProcess
+    #@-node:QueueProcess
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.212:class ProcessClass
-#@+node:AGP.20230214111049.222:Widget classes
-#@+node:AGP.20230214111049.223:class ConfigClass
+#@-node:class ProcessClass
+#@+node:Widget classes
+#@+node:class ConfigClass
 class ConfigClass:
     #@    @+others
-    #@+node:AGP.20230214111049.224:  __init__
+    #@+node:  __init__
     def __init__(self,cc):
         
         self.cc = cc
@@ -3565,34 +3588,35 @@ class ConfigClass:
         self.BreakTags = {}
         self.visible = False
     #@nonl
-    #@-node:AGP.20230214111049.224:  __init__
-    #@+node:AGP.20230214111049.225:  class PageClass
+    #@-node:  __init__
+    #@+node:  class PageClass
     class PageClass(Tk.Canvas):
         #@    @+others
-        #@+node:AGP.20230214111049.226:class CHECK
+        #@+node:class CHECK
         class CHECK:
             #@    @+others
-            #@+node:AGP.20230214111049.227:__init__
+            #@+node:__init__
             def __init__(self,master,n,x=0,y=0,dpd=[]):
                 self.dpd = dpd
                 self.Check = Tk.StringVar()
                 self.Name = n
                 c = self.c = Tk.Checkbutton(master,text=n,onvalue="True",offvalue="False",
-                                            variable=self.Check,command=self.UpdDpd,bg=master["bg"])
+                                            variable=self.Check,command=self.UpdDpd,bg=master["bg"],
+                                            selectcolor=master["bg"])
                 master.create_window(x,y,anchor='nw',window=c)
-                c['selectcolor']=c['bg']
+                #c['selectcolor']=c['bg']
             #@nonl
-            #@-node:AGP.20230214111049.227:__init__
-            #@+node:AGP.20230214111049.228:Get
+            #@-node:__init__
+            #@+node:Get
             def Get(self):
                 return self.Check.get()
-            #@-node:AGP.20230214111049.228:Get
-            #@+node:AGP.20230214111049.229:Set
+            #@-node:Get
+            #@+node:Set
             def Set(self,value):
                 self.Check.set(value)
                 self.UpdDpd()
-            #@-node:AGP.20230214111049.229:Set
-            #@+node:AGP.20230214111049.230:UpdDpd
+            #@-node:Set
+            #@+node:UpdDpd
             def UpdDpd(self):
                 if self.Check.get() == "True":
                     for d in self.dpd:
@@ -3601,13 +3625,13 @@ class ConfigClass:
                     for d in self.dpd:
                         d.config(state="disabled")
             #@nonl
-            #@-node:AGP.20230214111049.230:UpdDpd
+            #@-node:UpdDpd
             #@-others
-        #@-node:AGP.20230214111049.226:class CHECK
-        #@+node:AGP.20230214111049.231:class ENTRY
+        #@-node:class CHECK
+        #@+node:class ENTRY
         class ENTRY:
             #@    @+others
-            #@+node:AGP.20230214111049.232:__init__
+            #@+node:__init__
             def __init__(self,c,n,w=500,h=20,e=1,a='nw',x=0,y=0,re=False,vs=False):
                 self.Name = n
                 
@@ -3619,22 +3643,22 @@ class ConfigClass:
                 self.Entry = Tk.Entry(mf,width=1,bg=bg)#,bg=bg)
                 self.Entry.pack(side="right",fill="x",expand=e)
                 l = Tk.Label(mf,text=n+":",bg=bg).pack(side="right")#,fg=fg
-            #@-node:AGP.20230214111049.232:__init__
-            #@+node:AGP.20230214111049.233:Get
+            #@-node:__init__
+            #@+node:Get
             def Get(self):
                 return self.Entry.get()
-            #@-node:AGP.20230214111049.233:Get
-            #@+node:AGP.20230214111049.234:Set
+            #@-node:Get
+            #@+node:Set
             def Set(self,text):
                 self.Entry.delete(0,'end')
                 self.Entry.insert('end',text)
-            #@-node:AGP.20230214111049.234:Set
+            #@-node:Set
             #@-others
-        #@-node:AGP.20230214111049.231:class ENTRY
-        #@+node:AGP.20230214111049.235:class TEXT
+        #@-node:class ENTRY
+        #@+node:class TEXT
         class TEXT:
             #@    @+others
-            #@+node:AGP.20230214111049.236:__init__
+            #@+node:__init__
             def __init__(self,c,n,w=500,h=100,a='nw',x=0,y=0,re=False,vs=False):#text are 3 column wide
                 
                 self.Name = n
@@ -3650,8 +3674,8 @@ class ConfigClass:
                 
                 self.Text = Tk.Text(mf,bg=g.theme['shade'](0.05))
                 self.Text.pack(side="top",fill="x",expand=1)
-            #@-node:AGP.20230214111049.236:__init__
-            #@+node:AGP.20230214111049.237:Get
+            #@-node:__init__
+            #@+node:Get
             def Get(self):
                 s = self.Text.get(1.0,'end')
                 lines = s.splitlines()
@@ -3660,18 +3684,18 @@ class ConfigClass:
                     if l != "":
                         res += l+"\n"
                 return res
-            #@-node:AGP.20230214111049.237:Get
-            #@+node:AGP.20230214111049.238:Set
+            #@-node:Get
+            #@+node:Set
             def Set(self,text):
                 self.Text.delete(1.0,'end')
                 self.Text.insert('end',text)
-            #@-node:AGP.20230214111049.238:Set
+            #@-node:Set
             #@-others
-        #@-node:AGP.20230214111049.235:class TEXT
-        #@+node:AGP.20230214111049.239:class LABEL
+        #@-node:class TEXT
+        #@+node:class LABEL
         class LABEL:
             #@    @+others
-            #@+node:AGP.20230214111049.240:__init__
+            #@+node:__init__
             def __init__(self,c,text,w=175,h=22,e=1,a='nw',x=0,y=0,color="#%02x%02x%02x" % (150,150,150)):
                 bg=c["bg"]
                 self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w,bg=bg)
@@ -3681,13 +3705,13 @@ class ConfigClass:
                 self.ID = c.create_window(x,y,anchor=a,window=self.Label)
                 
             #@nonl
-            #@-node:AGP.20230214111049.240:__init__
+            #@-node:__init__
             #@-others
-        #@-node:AGP.20230214111049.239:class LABEL
-        #@+node:AGP.20230214111049.241:class HELP
+        #@-node:class LABEL
+        #@+node:class HELP
         class HELP(Tk.Button):
             #@    @+others
-            #@+node:AGP.20230214111049.242:__init__
+            #@+node:__init__
             def __init__(self,c,buttontext="Help",boxtitle="Help",msg="!",x=5,y=0):
                 
                 self.Title = boxtitle
@@ -3695,16 +3719,16 @@ class ConfigClass:
                 Tk.Button.__init__(self,c,text=buttontext,command=self.Help,bg=c["bg"])
                 self.ID = c.create_window(x,y,anchor='nw',window=self)
             #@nonl
-            #@-node:AGP.20230214111049.242:__init__
-            #@+node:AGP.20230214111049.243:Help
+            #@-node:__init__
+            #@+node:Help
             def Help(self):
                 tkMessageBox.showinfo(self.Title,self.Message)
             #@nonl
-            #@-node:AGP.20230214111049.243:Help
+            #@-node:Help
             #@-others
         #@nonl
-        #@-node:AGP.20230214111049.241:class HELP
-        #@+node:AGP.20230214111049.244:__init__
+        #@-node:class HELP
+        #@+node:__init__
         def __init__(self,cc,name):
             
             self.cc = cc
@@ -3732,19 +3756,19 @@ class ConfigClass:
             
             
         #@nonl
-        #@-node:AGP.20230214111049.244:__init__
-        #@+node:AGP.20230214111049.245:AddObject
+        #@-node:__init__
+        #@+node:AddObject
         def AddObject(self,o):
         
             if o != None:
                 self.Objects.append(o)
                 self.X,self.Y,self.W,self.H = self.bbox('all')
-        #@-node:AGP.20230214111049.245:AddObject
-        #@+node:AGP.20230214111049.246:BBox
+        #@-node:AddObject
+        #@+node:BBox
         def BBox(self):
             self.X,self.Y,self.W,self.H = self.bbox('all')
-        #@-node:AGP.20230214111049.246:BBox
-        #@+node:AGP.20230214111049.247:AddSep
+        #@-node:BBox
+        #@+node:AddSep
         def AddSep(self,length=None,color="black"):
         
             if length == None:
@@ -3752,12 +3776,12 @@ class ConfigClass:
             
             self.create_line(5,self.H+4,length+5,self.H+4,fill=g.theme['shade'](0.4))
             self.H += 10
-        #@-node:AGP.20230214111049.247:AddSep
-        #@+node:AGP.20230214111049.248:CreateObjects
+        #@-node:AddSep
+        #@+node:CreateObjects
         def CreateObjects(self,master):#must overide
             pass
-        #@-node:AGP.20230214111049.248:CreateObjects
-        #@+node:AGP.20230214111049.249:SaveObjects
+        #@-node:CreateObjects
+        #@+node:SaveObjects
         def SaveObjects(self,pd=None):
             
             cc = self.cc
@@ -3767,8 +3791,8 @@ class ConfigClass:
             
             for o in self.Objects:
                 pd[o.Name] = o.Get()
-        #@-node:AGP.20230214111049.249:SaveObjects
-        #@+node:AGP.20230214111049.250:LoadObjects
+        #@-node:SaveObjects
+        #@+node:LoadObjects
         def LoadObjects(self,pd=None):	
         
             cc = self.cc
@@ -3783,8 +3807,8 @@ class ConfigClass:
                 else:
                     o.Set(pd[o.Name])
         #@nonl
-        #@-node:AGP.20230214111049.250:LoadObjects
-        #@+node:AGP.20230214111049.251:ClearObjects
+        #@-node:LoadObjects
+        #@+node:ClearObjects
         def ClearObjects(self,value=""):
             for o in self.Objects:
                 if o.Name == "Build sequence":
@@ -3792,8 +3816,8 @@ class ConfigClass:
                 else:
                     o.Set(value)
         #@nonl
-        #@-node:AGP.20230214111049.251:ClearObjects
-        #@+node:AGP.20230214111049.252:Hide
+        #@-node:ClearObjects
+        #@+node:Hide
         def Hide(self):
             
             cc = self.cc
@@ -3805,8 +3829,8 @@ class ConfigClass:
             cc.LeoYBodyBar.command=cc.LeoBodyText.yview
             cc.LeoBodyText.config(yscrollcommand=cc.LeoYBodyBar.set)
         #@nonl
-        #@-node:AGP.20230214111049.252:Hide
-        #@+node:AGP.20230214111049.253:Show
+        #@-node:Hide
+        #@+node:Show
         def Show(self):
             
             cc = self.cc
@@ -3825,28 +3849,28 @@ class ConfigClass:
             cc.LeoYBodyBar.command=self.yview
             cc.LeoYBodyBar.pack(side="right",fill="y")
             self.pack(expand=1,fill="both")
-        #@-node:AGP.20230214111049.253:Show
+        #@-node:Show
         #@-others
-    #@-node:AGP.20230214111049.225:  class PageClass
-    #@+node:AGP.20230214111049.254: class CodePageClass
-    #@+node:AGP.20230214111049.255:__init__
-    #@-node:AGP.20230214111049.255:__init__
-    #@+node:AGP.20230214111049.256:CreateObjects
-    #@+node:AGP.20230214111049.257:Entries
-    #@-node:AGP.20230214111049.257:Entries
-    #@-node:AGP.20230214111049.256:CreateObjects
-    #@-node:AGP.20230214111049.254: class CodePageClass
-    #@+node:AGP.20230214111049.258: class CplPageClass
+    #@-node:  class PageClass
+    #@+node: class CodePageClass
+    #@+node:__init__
+    #@-node:__init__
+    #@+node:CreateObjects
+    #@+node:Entries
+    #@-node:Entries
+    #@-node:CreateObjects
+    #@-node: class CodePageClass
+    #@+node: class CplPageClass
     class CplPageClass(PageClass):
         #@    @+others
-        #@+node:AGP.20230214111049.259:__init__
+        #@+node:__init__
         def __init__(self,cc):
             
             self.cc = cc
             ConfigClass.PageClass.__init__(self,cc,"Compiler")
         #@nonl
-        #@-node:AGP.20230214111049.259:__init__
-        #@+node:AGP.20230214111049.260:Browse
+        #@-node:__init__
+        #@+node:Browse
         def Browse(self):
             try:
                 for o in self.Objects:
@@ -3865,8 +3889,8 @@ class ConfigClass:
             except Exception:
                 g.es_exception
         #@nonl
-        #@-node:AGP.20230214111049.260:Browse
-        #@+node:AGP.20230214111049.261:AddPath
+        #@-node:Browse
+        #@+node:AddPath
         def AddPath(self,name):
             try:
                 d = tkFileDialog.askdirectory()
@@ -3888,15 +3912,15 @@ class ConfigClass:
             except Exception:
                 g.es_exception
         #@nonl
-        #@-node:AGP.20230214111049.261:AddPath
-        #@+node:AGP.20230214111049.262:CreateObjects
+        #@-node:AddPath
+        #@+node:CreateObjects
         def CreateObjects(self,master): #must overide
             
             px,py,pw,hpx,hpw,epx = self.layout
             bg = master['bg']
             
             #@    @+others
-            #@+node:AGP.20230214111049.263:Executable
+            #@+node:Executable
             x=10
             y=10
             text_w = 350
@@ -3907,8 +3931,8 @@ class ConfigClass:
             b = Tk.Button(master,text=" ...",command=self.Browse,bg=bg)
             master.create_window(epx,self.Y-2,anchor='nw',window=b)
             #@nonl
-            #@-node:AGP.20230214111049.263:Executable
-            #@+node:AGP.20230214111049.264:Arguments
+            #@-node:Executable
+            #@+node:Arguments
             self.AddSep()
             #-------------------------------------------------
             
@@ -3921,8 +3945,8 @@ class ConfigClass:
             self.HELP(master,boxtitle="Debug arguments info",msg=CplDebugArgumentsHelp,x=epx,y=self.H+20)
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.264:Arguments
-            #@+node:AGP.20230214111049.265:Paths
+            #@-node:Arguments
+            #@+node:Paths
             self.AddSep()
             #-------------------------------------------------------------
             b = Tk.Button(master,text="Browse",command=lambda:self.AddPath("Include search paths"),bg=bg)
@@ -3931,8 +3955,8 @@ class ConfigClass:
             self.HELP(master,boxtitle="Include search paths info",msg=IncludeSearchPathsHelp, x=epx, y=self.H+20)
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.265:Paths
-            #@+node:AGP.20230214111049.266:Symbols
+            #@-node:Paths
+            #@+node:Symbols
             ww =19
             self.AddSep()
             #------------------------------------------------------
@@ -3949,32 +3973,32 @@ class ConfigClass:
             self.AddObject(e1)
             self.AddObject(e2)
             #@nonl
-            #@-node:AGP.20230214111049.266:Symbols
-            #@+node:AGP.20230214111049.267:Error Detection
+            #@-node:Symbols
+            #@+node:Error Detection
             # ------------------
             self.AddSep()
             e = self.ENTRY(master,"Error detection",x=px,y=self.H,re=True)
             self.HELP(master,boxtitle="Error detection info",msg=CplArgumentsHelp,x=epx,y=self.H)
             self.AddObject(e)
             #@nonl
-            #@-node:AGP.20230214111049.267:Error Detection
+            #@-node:Error Detection
             #@-others
         
         
         
-        #@-node:AGP.20230214111049.262:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.258: class CplPageClass
-    #@+node:AGP.20230214111049.268: class DbgPageClass
+    #@-node: class CplPageClass
+    #@+node: class DbgPageClass
     class DbgPageClass(PageClass):
         #@    @+others
-        #@+node:AGP.20230214111049.269:__init__
+        #@+node:__init__
         def __init__(self,cc):
             
             self.cc = cc
             ConfigClass.PageClass.__init__(self,cc,"Debugger")
-        #@-node:AGP.20230214111049.269:__init__
-        #@+node:AGP.20230214111049.270:Browse
+        #@-node:__init__
+        #@+node:Browse
         def Browse(self):
             try:
                 for o in self.Objects:
@@ -3994,14 +4018,14 @@ class ConfigClass:
             except Exception:
                 g.es_exception()
         #@nonl
-        #@-node:AGP.20230214111049.270:Browse
-        #@+node:AGP.20230214111049.271:CreateObjects
+        #@-node:Browse
+        #@+node:CreateObjects
         def CreateObjects(self,master):#must overide
         
             px,py,pw,hpx,hpw,epx = self.layout
             bg = master['bg']
             #@    @+others
-            #@+node:AGP.20230214111049.272:Executable
+            #@+node:Executable
             x=10
             y=10
             text_w = 350
@@ -4011,15 +4035,15 @@ class ConfigClass:
             self.AddObject(self.ENTRY(master,"Debugger",x=px,y=5,h=20))
             b = Tk.Button(master,text=" ...",command=self.Browse,bg=bg)
             master.create_window(epx,self.Y-2,anchor='nw',window=b)	
-            #@-node:AGP.20230214111049.272:Executable
-            #@+node:AGP.20230214111049.273:Arguments
+            #@-node:Executable
+            #@+node:Arguments
             self.AddSep()
             t1 = self.TEXT(master,"Arguments",x=px,y=self.H,vs=True)
             self.HELP(master,boxtitle="Arguments info",msg=DbgArgumentsHelp,x=epx,y=self.H+20)
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.273:Arguments
-            #@+node:AGP.20230214111049.274:Piping
+            #@-node:Arguments
+            #@+node:Piping
             self.AddSep()
             e1 = self.ENTRY(master,"Prompt pattern",x=5,y=self.H,w=hpw,re=True) 
             e2 = self.ENTRY(master,"Pipe eol",x=hpx,y=self.H, w=hpw)
@@ -4028,8 +4052,8 @@ class ConfigClass:
             self.AddObject(e1)
             self.AddObject(e2)
             #@nonl
-            #@-node:AGP.20230214111049.274:Piping
-            #@+node:AGP.20230214111049.275:Symbols
+            #@-node:Piping
+            #@+node:Symbols
             ww =19
                 
             self.AddSep()
@@ -4063,8 +4087,8 @@ class ConfigClass:
             self.AddObject(e1)
             self.AddObject(e2)
             #@nonl
-            #@-node:AGP.20230214111049.275:Symbols
-            #@+node:AGP.20230214111049.276:Startup Task
+            #@-node:Symbols
+            #@+node:Startup Task
             #------------------------------------------------------
             self.AddSep()
             t1 = self.TEXT(master,"Startup task",x=px,y=self.H,vs=True)
@@ -4073,8 +4097,8 @@ class ConfigClass:
             
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.276:Startup Task
-            #@+node:AGP.20230214111049.277:Target PID
+            #@-node:Startup Task
+            #@+node:Target PID
             # ------------------
             self.AddSep()
             e = self.ENTRY(master,"Target pid task",x=px,y=self.H,vs=True)
@@ -4085,8 +4109,8 @@ class ConfigClass:
             e = self.ENTRY(master,"Find pid",x=px,y=self.H,re=True,vs=True)
             self.AddObject(e)
             #@nonl
-            #@-node:AGP.20230214111049.277:Target PID
-            #@+node:AGP.20230214111049.278:Break info
+            #@-node:Target PID
+            #@+node:Break info
             #------------------------------------------------------
             self.AddSep()
             self.HELP(master,boxtitle="Break detection info",msg=DbgBreakDetectionHelp,x=epx,y=self.H+20)
@@ -4112,8 +4136,8 @@ class ConfigClass:
             e = self.ENTRY(master,"Find location",x=px,y=self.H,re=True,vs=True)
             self.AddObject(e)
             #@nonl
-            #@-node:AGP.20230214111049.278:Break info
-            #@+node:AGP.20230214111049.279:Misc RE
+            #@-node:Break info
+            #@+node:Misc RE
             #-------------------------------------------------------------
             self.AddSep()
             t1 = self.TEXT(master,"Regular expression",x=px,y=self.H,w=hpw,re=True,vs=True)
@@ -4122,21 +4146,21 @@ class ConfigClass:
             self.AddObject(t1)
             self.AddObject(t2)
             #@nonl
-            #@-node:AGP.20230214111049.279:Misc RE
+            #@-node:Misc RE
             #@-others
-        #@-node:AGP.20230214111049.271:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.268: class DbgPageClass
-    #@+node:AGP.20230214111049.280: class ExePageClass
+    #@-node: class DbgPageClass
+    #@+node: class ExePageClass
     class ExePageClass(PageClass):
         #@    @+others
-        #@+node:AGP.20230214111049.281:__init__
+        #@+node:__init__
         def __init__(self,cc):
             
             self.cc = cc
             ConfigClass.PageClass.__init__(self,cc,"Executable")
-        #@-node:AGP.20230214111049.281:__init__
-        #@+node:AGP.20230214111049.282:CreateObjects
+        #@-node:__init__
+        #@+node:CreateObjects
         def CreateObjects(self,master):#must overide
             bd=self["background"]
             x=10
@@ -4149,47 +4173,47 @@ class ConfigClass:
             
             
             #@    @+others
-            #@+node:AGP.20230214111049.283:Args
+            #@+node:Args
             self.AddObject(self.TEXT(master,"Execution arguments",x=px,y=5))
             
-            #@-node:AGP.20230214111049.283:Args
-            #@+node:AGP.20230214111049.284:Dll Caller
+            #@-node:Args
+            #@+node:Dll Caller
             #self.AddSep()
             #e1 = self.ENTRY(master,"Dll caller",x=5,y=self.H,w=280,h=20)
             #b = Tk.Button(master,text="Browse...",width=10,default='disabled')
             #master.create_window(self.X+285,self.H,width=60,height=20,anchor='nw',window=b)
             #self.AddObject(e1)
             #@nonl
-            #@-node:AGP.20230214111049.284:Dll Caller
-            #@+node:AGP.20230214111049.285:Piping
+            #@-node:Dll Caller
+            #@+node:Piping
             self.AddSep()
             self.AddObject(self.ENTRY(master,"Pipe eol",x=px,y=self.H))
             #@nonl
-            #@-node:AGP.20230214111049.285:Piping
+            #@-node:Piping
             #@-others
             self.create_line(0,self.H+5,self.W+1,self.H+5)
         #@nonl
-        #@-node:AGP.20230214111049.282:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.280: class ExePageClass
-    #@+node:AGP.20230214111049.286: class OptPageClass
+    #@-node: class ExePageClass
+    #@+node: class OptPageClass
     class OptPageClass(PageClass):
     
         #@    @+others
-        #@+node:AGP.20230214111049.287:__init__
+        #@+node:__init__
         def __init__(self,cc,cfgc):
             
             self.cc = cc
             self.cfgc = cfgc
             ConfigClass.PageClass.__init__(self,cc,"Options")
-        #@-node:AGP.20230214111049.287:__init__
-        #@+node:AGP.20230214111049.288:CreateObjects
+        #@-node:__init__
+        #@+node:CreateObjects
         def CreateObjects(self,master): # must overide
             
             px,py,pw,hpx,hpw,epx = self.layout
             bg = master['bg']
             #@    @+others
-            #@+node:AGP.20230214111049.289:Actions Switches
+            #@+node:Actions Switches
             s1 = self.CHECK(master,"Create files",x=px,y=self.H)
             self.AddObject(s1)
             
@@ -4203,10 +4227,10 @@ class ConfigClass:
             
             s1.dpd = [s2.c,s3.c,s4.c]
             #@nonl
-            #@-node:AGP.20230214111049.289:Actions Switches
-            #@+node:AGP.20230214111049.290:Import
-            #@-node:AGP.20230214111049.290:Import
-            #@+node:AGP.20230214111049.291:Build
+            #@-node:Actions Switches
+            #@+node:Import
+            #@-node:Import
+            #@+node:Build
             self.AddSep(length=pw)
             s1 = self.CHECK(master,"Build",x=px,y=self.H)
             s2 = self.CHECK(master,"Seek first error",x=hpx,y=self.H)
@@ -4222,8 +4246,8 @@ class ConfigClass:
             self.H = self.H+5
             
             
-            #@-node:AGP.20230214111049.291:Build
-            #@+node:AGP.20230214111049.292:Execution
+            #@-node:Build
+            #@+node:Execution
             self.AddSep(length=pw)
             s1 = self.CHECK(master,"Execute",x=px,y=self.H)
             s2 = self.CHECK(master,"Connect to pipe",x=100,y=self.H)
@@ -4238,14 +4262,14 @@ class ConfigClass:
             
             
             
-            #@-node:AGP.20230214111049.292:Execution
-            #@+node:AGP.20230214111049.293:Output opts
+            #@-node:Execution
+            #@+node:Output opts
             self.AddSep(pw)
             self.AddObject(self.CHECK(master,"Xcc verbose",x=px,y=self.H))
             self.AddObject(self.CHECK(master,"Filter output",x=px,y=self.H))
             #@nonl
-            #@-node:AGP.20230214111049.293:Output opts
-            #@+node:AGP.20230214111049.294:Load/Save
+            #@-node:Output opts
+            #@+node:Load/Save
             
              #Load button
             
@@ -4261,25 +4285,25 @@ class ConfigClass:
             #b = Tk.Button(master,text="Wrap to pyton",command=self.cfgc.WrapToPython)
             #master.create_window(140,self.H+10,anchor='nw',window=b)
             #@nonl
-            #@-node:AGP.20230214111049.294:Load/Save
+            #@-node:Load/Save
             #@-others
         
             self.AddSep()
         #@nonl
-        #@-node:AGP.20230214111049.288:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.286: class OptPageClass
-    #@+node:AGP.20230214111049.306: class LkrPageClass
+    #@-node: class OptPageClass
+    #@+node: class LkrPageClass
     class LkrPageClass(PageClass):
         #@    @+others
-        #@+node:AGP.20230214111049.307:__init__
+        #@+node:__init__
         def __init__(self,cc):
             
             self.cc = cc
             ConfigClass.PageClass.__init__(self,cc,"Linker")
         #@nonl
-        #@-node:AGP.20230214111049.307:__init__
-        #@+node:AGP.20230214111049.308:Browse
+        #@-node:__init__
+        #@+node:Browse
         def Browse(self):
             try:
                 for o in self.Objects:
@@ -4298,8 +4322,8 @@ class ConfigClass:
             except Exception:
                 g.es_exception()
         #@nonl
-        #@-node:AGP.20230214111049.308:Browse
-        #@+node:AGP.20230214111049.309:AddPath
+        #@-node:Browse
+        #@+node:AddPath
         def AddPath(self,name):
             try:
                 d = tkFileDialog.askdirectory()
@@ -4321,14 +4345,14 @@ class ConfigClass:
             except Exception:
                 g.es_exception
         #@nonl
-        #@-node:AGP.20230214111049.309:AddPath
-        #@+node:AGP.20230214111049.310:CreateObjects
+        #@-node:AddPath
+        #@+node:CreateObjects
         def CreateObjects(self,master): #must overide
         
             px,py,pw,hpx,hpw,epx = self.layout
             bg = master['bg']
             #@    @+others
-            #@+node:AGP.20230214111049.311:Executable
+            #@+node:Executable
             x=10
             y=10
             text_w = 350
@@ -4339,8 +4363,8 @@ class ConfigClass:
             b = Tk.Button(master,text=" ...",command=self.Browse,bg=bg)
             master.create_window(epx,self.Y-2,anchor='nw',window=b)
             #@nonl
-            #@-node:AGP.20230214111049.311:Executable
-            #@+node:AGP.20230214111049.312:Arguments
+            #@-node:Executable
+            #@+node:Arguments
             self.AddSep()
             #-------------------------------------------------
             
@@ -4353,8 +4377,8 @@ class ConfigClass:
             self.HELP(master,boxtitle="Debug arguments info",msg=CplDebugArgumentsHelp,x=epx,y=self.H+20)
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.312:Arguments
-            #@+node:AGP.20230214111049.313:Paths
+            #@-node:Arguments
+            #@+node:Paths
             self.AddSep()
             
             #-------------------------------------------------------------
@@ -4369,8 +4393,8 @@ class ConfigClass:
             self.HELP(master,boxtitle="Used libraries info",msg=UsedLibrariesHelp,x=epx,y=self.H+20)
             self.AddObject(t1)
             #@nonl
-            #@-node:AGP.20230214111049.313:Paths
-            #@+node:AGP.20230214111049.314:Symbols
+            #@-node:Paths
+            #@+node:Symbols
             ww =19
             self.AddSep()
             #------------------------------------------------------
@@ -4395,39 +4419,39 @@ class ConfigClass:
             self.AddObject(e1)
             self.AddObject(e2)
             #@nonl
-            #@-node:AGP.20230214111049.314:Symbols
-            #@+node:AGP.20230214111049.315:Error Detection
+            #@-node:Symbols
+            #@+node:Error Detection
             # ------------------
             self.AddSep()
             e = self.ENTRY(master,"Error detection",x=5,y=self.H,w=350,re=True)
             self.HELP(master,boxtitle="Error detection info",msg=CplArgumentsHelp,x=epx,y=self.H)
             self.AddObject(e)
             #@nonl
-            #@-node:AGP.20230214111049.315:Error Detection
+            #@-node:Error Detection
             #@-others
         
         
         
-        #@-node:AGP.20230214111049.310:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.306: class LkrPageClass
-    #@+node:AGP.20230214111049.316: class LangPageClass
+    #@-node: class LkrPageClass
+    #@+node: class LangPageClass
     class LangPageClass(PageClass):
     
         #@    @+others
-        #@+node:AGP.20230214111049.317:__init__
+        #@+node:__init__
         def __init__(self,cc):
             
             self.cc = cc
             ConfigClass.PageClass.__init__(self,cc,"Language")
-        #@-node:AGP.20230214111049.317:__init__
-        #@+node:AGP.20230214111049.318:CreateObjects
+        #@-node:__init__
+        #@+node:CreateObjects
         def CreateObjects(self,master): # must overide
         
             px,py,pw,hpx,hpw,epx = self.layout
             
             #@    @+others
-            #@+node:AGP.20230214111049.319:Language
+            #@+node:Language
             e1 = self.ENTRY(master,"Language",x=px,y=15,w=hpw)
             e2 = self.ENTRY(master,"Comment symbol",x=hpx,y=15,w=hpw)
             self.AddObject(e1)
@@ -4453,15 +4477,15 @@ class ConfigClass:
             e2 = self.ENTRY(master,"Class closing",x=px,y=self.H,w=hpw)
             self.AddObject(e2)
             #@nonl
-            #@-node:AGP.20230214111049.319:Language
+            #@-node:Language
             #@-others
         
             self.AddSep(length=self.W)
         #@nonl
-        #@-node:AGP.20230214111049.318:CreateObjects
+        #@-node:CreateObjects
         #@-others
-    #@-node:AGP.20230214111049.316: class LangPageClass
-    #@+node:AGP.20230214111049.295:AddPages
+    #@-node: class LangPageClass
+    #@+node:AddPages
     def AddPages(self):
         
         cc = self.cc
@@ -4474,13 +4498,13 @@ class ConfigClass:
         self.Pages.append(self.LangPageClass(cc))
         #self.Pages.append(self.CodePageClass(cc))
     #@nonl
-    #@-node:AGP.20230214111049.295:AddPages
-    #@+node:AGP.20230214111049.296:Apply
+    #@-node:AddPages
+    #@+node:Apply
     def Apply(self):
         self.SaveToNode()
         self.Hide()
-    #@-node:AGP.20230214111049.296:Apply
-    #@+node:AGP.20230214111049.297:ClearConfig
+    #@-node:Apply
+    #@+node:ClearConfig
     def ClearConfig(self):
         self.Title.delete(0,'end')
         self.Title.insert('end',"BLANK_CONFIG")
@@ -4489,24 +4513,24 @@ class ConfigClass:
                 p.ClearObjects("False")
             else:
                 p.ClearObjects()
-    #@-node:AGP.20230214111049.297:ClearConfig
-    #@+node:AGP.20230214111049.298:GetButton
+    #@-node:ClearConfig
+    #@+node:GetButton
     def GetButton(self,name):
     
         for b in self.Buttons:
             if b and b["text"] == name:
                 return b
     #@nonl
-    #@-node:AGP.20230214111049.298:GetButton
-    #@+node:AGP.20230214111049.299:GetPage
+    #@-node:GetButton
+    #@+node:GetPage
     def GetPage(self,name):
         
         for p in self.Pages:
             if p and p.name == name:
                 return p
     #@nonl
-    #@-node:AGP.20230214111049.299:GetPage
-    #@+node:AGP.20230214111049.300:Hide
+    #@-node:GetPage
+    #@+node:Hide
     def Hide(self,save=True):
         try:
             cc = self.cc
@@ -4532,8 +4556,8 @@ class ConfigClass:
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.300:Hide
-    #@+node:AGP.20230214111049.301:LoadFromFile
+    #@-node:Hide
+    #@+node:LoadFromFile
     def LoadFromFile(self):
         try:
             ft = ('XCC Config files', '.xcc'),
@@ -4577,8 +4601,8 @@ class ConfigClass:
     
     
     
-    #@-node:AGP.20230214111049.301:LoadFromFile
-    #@+node:AGP.20230214111049.302:LoadFromNode
+    #@-node:LoadFromFile
+    #@+node:LoadFromNode
     def LoadFromNode(self):
     
         cc = self.cc
@@ -4589,8 +4613,8 @@ class ConfigClass:
             if p:
                 p.LoadObjects()
     #@nonl
-    #@-node:AGP.20230214111049.302:LoadFromNode
-    #@+node:AGP.20230214111049.303:SaveToFile
+    #@-node:LoadFromNode
+    #@+node:SaveToFile
     def SaveToFile(self):
         try:
             
@@ -4637,8 +4661,8 @@ class ConfigClass:
     
     
     
-    #@-node:AGP.20230214111049.303:SaveToFile
-    #@+node:AGP.20230214111049.304:SaveToNode
+    #@-node:SaveToFile
+    #@+node:SaveToNode
     def SaveToNode(self):
         
         cc = self.cc
@@ -4648,8 +4672,8 @@ class ConfigClass:
         for p in self.Pages:
             p and p.SaveObjects()
     #@nonl
-    #@-node:AGP.20230214111049.304:SaveToNode
-    #@+node:AGP.20230214111049.305:Show
+    #@-node:SaveToNode
+    #@+node:Show
     def Show(self):
         try:
             cc = self.cc
@@ -4672,15 +4696,15 @@ class ConfigClass:
         except Exception:
             TraceBack()
     
-    #@-node:AGP.20230214111049.305:Show
+    #@-node:Show
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.223:class ConfigClass
-#@+node:AGP.20230214111049.321:class ToolbarClass
+#@-node:class ConfigClass
+#@+node:class ToolbarClass
 class ToolbarClass(Tk.Frame):
     
     #@    @+others
-    #@+node:AGP.20230214111049.322:__init__
+    #@+node:__init__
     def __init__(self,cc):    
         self.cc = cc
         
@@ -4825,8 +4849,8 @@ class ToolbarClass(Tk.Frame):
         #self.Display = Tk.Text(self.DisplayFrame,height=1,relief='flat',fg=fgcolor,bg=cc.BreakBar["bg"],font=cc.LeoFont,state='disabled')
         #self.Display.pack(side="left",fill="x",expand=1)
         os.chdir(oldwd)
-    #@-node:AGP.20230214111049.322:__init__
-    #@+node:AGP.20230214111049.323:Go
+    #@-node:__init__
+    #@+node:Go
     def Go(self):    
         try:
             cc = self.cc
@@ -4843,8 +4867,8 @@ class ToolbarClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.323:Go
-    #@+node:AGP.20230214111049.324:Hide
+    #@-node:Go
+    #@+node:Hide
     def Hide(self):
     
         cc = self.cc
@@ -4853,8 +4877,8 @@ class ToolbarClass(Tk.Frame):
         if cc.Watcher.visible:
             cc.Watcher.Hide()
     #@nonl
-    #@-node:AGP.20230214111049.324:Hide
-    #@+node:AGP.20230214111049.325:Show
+    #@-node:Hide
+    #@+node:Show
     def Show(self):
     
         cc = self.cc    
@@ -4864,8 +4888,8 @@ class ToolbarClass(Tk.Frame):
         if cc.Watcher.visible:
             cc.Watcher.Show()
     #@nonl
-    #@-node:AGP.20230214111049.325:Show
-    #@+node:AGP.20230214111049.326:OnKey
+    #@-node:Show
+    #@+node:OnKey
     def OnKey(self,event=None):
         
         cc = self.cc
@@ -4875,16 +4899,16 @@ class ToolbarClass(Tk.Frame):
                 cc.aWrite(self.DbgEntry.get().replace("\n",""))
                 self.DbgEntry.delete(0,'end')
     #@nonl
-    #@-node:AGP.20230214111049.326:OnKey
-    #@+node:AGP.20230214111049.327:EnableStep
+    #@-node:OnKey
+    #@+node:EnableStep
     def EnableStep(self):
     
         self.StepButton["state"] = 'normal'
         self.StepInButton["state"] = 'normal'
         self.StepOutButton["state"] = 'normal'
     #@nonl
-    #@-node:AGP.20230214111049.327:EnableStep
-    #@+node:AGP.20230214111049.328:DisableStep
+    #@-node:EnableStep
+    #@+node:DisableStep
     def DisableStep(self):
     
         self.StepButton["state"] = 'disabled'
@@ -4896,20 +4920,25 @@ class ToolbarClass(Tk.Frame):
         self.StepOutButton["state"] = 'disabled'
         #self.StepOutButton["image"] = self.StepOut_d
     #@nonl
-    #@-node:AGP.20230214111049.328:DisableStep
-    #@+node:AGP.20230214111049.329:SyncDisplayToChild
-    def SyncDisplayToChild(self,loc):
+    #@-node:DisableStep
+    #@+node:XSyncDisplayToChild
+    def XSyncDisplayToChild(self,loc):
         
         cc = self.cc
-        self.Display["cursor"] = ""
-        self.Display.unbind("<Button-1>")
-        self.Spacer["state"] = 'normal'
+        
+        display = self.Display
+        spacer = self.Spacer
+        
+        display["cursor"] = ""
+        display.unbind("<Button-1>")
+        
+        spacer["state"] = 'normal'
         #self.Spacer.pack(side="left")
         
         if cc.BreakBar.visible:
-            self.Spacer["width"] = int(cc.BreakBar["width"])+1
+            spacer["width"] = int(cc.BreakBar["width"])+1
         else:
-            self.Spacer["width"] = 4
+            spacer["width"] = 4
         
         hline = None
         
@@ -4937,9 +4966,9 @@ class ToolbarClass(Tk.Frame):
                 bfm = "'"
         
         
-        self.Spacer.delete(1.0,'end')
-        self.Spacer.insert('insert'," "+bext)
-        self.Spacer["state"] = 'disabled'
+        spacer.delete(1.0,'end')
+        spacer.insert('insert'," "+bext)
+        spacer["state"] = 'disabled'
         
         disp = hline+" : " ; _as = ""
         for c in loc.CLASS_LIST:
@@ -4950,21 +4979,24 @@ class ToolbarClass(Tk.Frame):
             off = len(disp)
             disp += cc.CHILD_NODE.headString()	
         
-        self.Display["state"] = 'normal'
-        self.Display.delete(1.0,'end')
-        self.Display.tag_delete("marking")
-        self.Display.insert("insert",disp)
+        
+        
+        display["state"] = 'normal'
+        display.delete(1.0,'end')
+        display.tag_delete("xcc_error")
+        display.tag_delete("marking")
+        display.insert("insert",disp)
         
         if loc.CURRENT_RULE == "func":
             spec,ret,name,params,pure,dest,ctors = loc.CURRENT_MO
             
             v,s,e = spec
             if v != "":
-                self.Display.tag_add("marking","1."+str(s+off),"1."+str(e+off))
+                display.tag_add("marking","1."+str(s+off),"1."+str(e+off))
             
             v,s,e = ret
             if s != -1 and e != -1:
-                self.Display.tag_add("marking","1."+str(s+off),"1."+str(e+off))		
+                display.tag_add("marking","1."+str(s+off),"1."+str(e+off))		
             
             params,s,e = params
             if params != "()":
@@ -4974,17 +5006,17 @@ class ToolbarClass(Tk.Frame):
                     pmo = re.search("[( ]*(?P<TYPE>.+) +(?P<NAME>[^) ]+)[ )]*",p)
                     if pmo != None:
                         s2,e2 = pmo.span("TYPE")
-                        self.Display.tag_add("marking","1."+str(s+off+s2-1),"1."+str(s+off+(e2-s2)))
+                        display.tag_add("marking","1."+str(s+off+s2-1),"1."+str(s+off+(e2-s2)))
                         off += len(p)+1
                         
         
         if loc.CURRENT_RULE == "doc":
-            self.Display.insert("insert",loc.DocName())
+            display.insert("insert",loc.DocName())
             
-        self.Display.tag_config("marking",foreground="#7575e5")
-        self.Display["state"] = 'disabled'
-    #@-node:AGP.20230214111049.329:SyncDisplayToChild
-    #@+node:AGP.20230214111049.330:SyncDisplayToError
+        display.tag_config("marking",foreground="#7575e5")
+        display["state"] = 'disabled'
+    #@-node:XSyncDisplayToChild
+    #@+node:SyncDisplayToError
     def SyncDisplayToError(self):
         cc = self.cc
         
@@ -5011,26 +5043,26 @@ class ToolbarClass(Tk.Frame):
         self.Display["cursor"] = "hand2"
         self.Display.bind("<Button-1>",self.OnErrorLeftClick)
     
-    #@-node:AGP.20230214111049.330:SyncDisplayToError
-    #@+node:AGP.20230214111049.331:SetError
+    #@-node:SyncDisplayToError
+    #@+node:SetError
     def SetError(self,err,node=None):
         
         self.cc.PARSE_ERROR = err
         self.cc.PARSE_ERROR_NODE = node
     #@nonl
-    #@-node:AGP.20230214111049.331:SetError
-    #@+node:AGP.20230214111049.332:OnErrorLeftClick
+    #@-node:SetError
+    #@+node:OnErrorLeftClick
     def OnErrorLeftClick(self,event):
         
         self.cc.GoToNode(self.cc.PARSE_ERROR_NODE)
     #@nonl
-    #@-node:AGP.20230214111049.332:OnErrorLeftClick
-    #@+node:AGP.20230214111049.333:HideInput
+    #@-node:OnErrorLeftClick
+    #@+node:HideInput
     def HideInput(self):
         self.PromptButton.pack_forget()
         self.DbgEntry.pack_forget()
-    #@-node:AGP.20230214111049.333:HideInput
-    #@+node:AGP.20230214111049.334:ShowInput
+    #@-node:HideInput
+    #@+node:ShowInput
     def ShowInput(self):
         
         #self.ConfigButton.pack_forget()
@@ -5042,8 +5074,8 @@ class ToolbarClass(Tk.Frame):
         #self.ConfigButton.pack(side="right")
         #self.WatchButton.pack(side="right")
     #@nonl
-    #@-node:AGP.20230214111049.334:ShowInput
-    #@+node:AGP.20230214111049.335:Refresh
+    #@-node:ShowInput
+    #@+node:Refresh
     def Refresh(self):
         try:
             cc = self.cc
@@ -5058,15 +5090,15 @@ class ToolbarClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.335:Refresh
+    #@-node:Refresh
     #@-others
 
-#@-node:AGP.20230214111049.321:class ToolbarClass
-#@+node:AGP.20230214111049.336:class WatcherClass
+#@-node:class ToolbarClass
+#@+node:class WatcherClass
 class WatcherClass(Tk.Frame):
 
     #@    @+others
-    #@+node:AGP.20230214111049.337:__init__
+    #@+node:__init__
     def __init__(self,cc):
        
         self.cc = cc
@@ -5120,8 +5152,8 @@ class WatcherClass(Tk.Frame):
         self.InBox.bind("<Button-1>",self.OnLeftClick)
         self.OutBox.bind("<Button-1>",self.OnLeftClick)
     #@nonl
-    #@-node:AGP.20230214111049.337:__init__
-    #@+node:AGP.20230214111049.338:OnEditKey
+    #@-node:__init__
+    #@+node:OnEditKey
     def OnEditKey(self,event):
         
         cc = self.cc
@@ -5147,8 +5179,8 @@ class WatcherClass(Tk.Frame):
                 WatchTaskClass(cc)
                 cc.DbgOut("")
     #@nonl
-    #@-node:AGP.20230214111049.338:OnEditKey
-    #@+node:AGP.20230214111049.339:OnLeftClick
+    #@-node:OnEditKey
+    #@+node:OnLeftClick
     def OnLeftClick(self,event):
        
         if self.InBox.get(1.0,'end').replace("\n",""):
@@ -5164,8 +5196,8 @@ class WatcherClass(Tk.Frame):
             self.OutBox.tag_add("current",l+".0",l+".end")
             self.OutBox.tag_config("current",background=BreakColor)
     #@nonl
-    #@-node:AGP.20230214111049.339:OnLeftClick
-    #@+node:AGP.20230214111049.340:OnDelete
+    #@-node:OnLeftClick
+    #@+node:OnDelete
     def OnDelete(self,event):
         if "current" in self.InBox.tag_names():
             ib = self.InBox ; ob = self.OutBox
@@ -5190,14 +5222,14 @@ class WatcherClass(Tk.Frame):
             ib.config(state='disabled')
             ob.config(state='disabled')
     #@nonl
-    #@-node:AGP.20230214111049.340:OnDelete
-    #@+node:AGP.20230214111049.341:yview
+    #@-node:OnDelete
+    #@+node:yview
     def yview(self, *args):
         apply(self.InBox.yview,args)
         apply(self.OutBox.yview,args)
     #@nonl
-    #@-node:AGP.20230214111049.341:yview
-    #@+node:AGP.20230214111049.342:Hide
+    #@-node:yview
+    #@+node:Hide
     def Hide(self):
         try:
             cc = self.cc
@@ -5207,8 +5239,8 @@ class WatcherClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.342:Hide
-    #@+node:AGP.20230214111049.343:Show
+    #@-node:Hide
+    #@+node:Show
     def Show(self):
         try:
             cc = self.cc
@@ -5237,8 +5269,8 @@ class WatcherClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.343:Show
-    #@+node:AGP.20230214111049.344:Sync
+    #@-node:Show
+    #@+node:Sync
     def Sync(self):
         
         cc = self.cc
@@ -5264,14 +5296,14 @@ class WatcherClass(Tk.Frame):
             self.InBox.config(state='disabled')
             self.OutBox.config(state='disabled')
     #@nonl
-    #@-node:AGP.20230214111049.344:Sync
+    #@-node:Sync
     #@-others
-#@-node:AGP.20230214111049.336:class WatcherClass
-#@+node:AGP.20230214111049.345:class DasmClass
+#@-node:class WatcherClass
+#@+node:class DasmClass
 class DasmClass(Tk.Frame):
 
     #@    @+others
-    #@+node:AGP.20230214111049.346:__init__
+    #@+node:__init__
     def __init__(self,cc):
        
         self.cc = cc
@@ -5299,8 +5331,8 @@ class DasmClass(Tk.Frame):
         self.XBar.config(command=self.DasmText.xview)
         self.YBar.config(command=self.DasmText.yview)
     #@nonl
-    #@-node:AGP.20230214111049.346:__init__
-    #@+node:AGP.20230214111049.347:Hide
+    #@-node:__init__
+    #@+node:Hide
     def Hide(self):
         try:
             cc = self.cc
@@ -5310,8 +5342,8 @@ class DasmClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.347:Hide
-    #@+node:AGP.20230214111049.348:Show
+    #@-node:Hide
+    #@+node:Show
     def Show(self):
         try:
             cc = self.cc
@@ -5340,8 +5372,8 @@ class DasmClass(Tk.Frame):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.348:Show
-    #@+node:AGP.20230214111049.349:Sync
+    #@-node:Show
+    #@+node:Sync
     def Sync(self):
         
         cc = self.cc
@@ -5360,91 +5392,92 @@ class DasmClass(Tk.Frame):
         
             self.DasmText.config(state='disabled')
     #@nonl
-    #@-node:AGP.20230214111049.349:Sync
+    #@-node:Sync
     #@-others
-#@-node:AGP.20230214111049.345:class DasmClass
-#@+node:AGP.20230214111049.350:class BreakbarClass
+#@-node:class DasmClass
+#@+node:class BreakbarClass
 class BreakbarClass(Tk.Text):
 
     #@    @+others
-    #@+node:AGP.20230214111049.351:__init__
+    #@+node:__init__
     def __init__(self,cc):
         
         self.cc = cc
         self.bodychanged = False	
         self.visible = False
         
-        
+        """
         lbc = cc.LeoBodyText.winfo_rgb(cc.LeoBodyText["bg"])	
         lbc = red, green, blue = lbc[0]/256, lbc[1]/256, lbc[2]/256
         pred,pgreen,pblue = [-1,1][red<128],[-1,1][green<128],[-1,1][blue<128]
+        """
         
-        #coff = 20
-        #colors = red+pred*coff, green+pgreen*coff, blue+pblue*coff
-        #bgcolor = self.bgcolor = "#%02x%02x%02x" % colors
-        bgcolor = self.bgcolor = g.theme['shade'](0.1)
-        #print bgcolor
-        #coff = 30
-        #colors = red+pred*coff, green+pgreen*coff, blue+pblue*coff
-        #bg_dark  = "#%02x%02x%02x" % colors
+        shade = g.theme['shade']
+        bgcolor = self.bgcolor = shade(0.1)    
+        bg_dark = shade(0.05)
         
-        bg_dark = g.theme['shade'](0.05)
-        
-        #coff = 10
-        #r,g,b = colors
-        #colors = 255-r,255-g,255-b
-        
-        #colors = red+pred*coff, green+pgreen*coff, blue+pblue*coff
-        
-        #fgcolor = self.fgcolor = "#%02x%02x%02x" % colors
-        fgcolor = self.fgcolor = g.theme['shade'](0.5)
+        fgcolor = self.fgcolor = shade(0.5)
         #print fgcolor
         
         bparent = cc.LeoBodyParent
         bbd = cc.LeoBodyText["bd"]
-        bfont = cc.LeoFont
-        bpady = cc.LeoBodyText["pady"]
-        padx = 5
+        
+        
         #this is the header bar
-        Tk.Text.__init__(self, bparent, bd=bbd, bg=bgcolor, fg=fgcolor, relief='flat', setgrid=0, font=bfont, padx=padx,pady=bpady, wrap='none',
-            selectbackground = self.bgcolor,
-            selectforeground = self.fgcolor,
-            cursor="hand2",
-            name='sidebar',
-            width=4)
+        body = cc.LeoBodyText
         
-        self.source_bar = Tk.Text(bparent, bd=bbd, bg=bgcolor, fg=fgcolor, relief='flat', setgrid=0, font=bfont, padx=padx,pady=bpady, wrap='none',
-            selectbackground = self.bgcolor,
-            selectforeground = self.fgcolor,
-            cursor="hand2",
-            name='sidebar2',
-            width=4)
+        opt = {
+            'bd':body["bd"],
+            'bg':bgcolor,
+            'fg':fgcolor,
+            'relief':'flat',
+            'setgrid':0,
+            'font':cc.LeoFont,
+            'padx':1,
+            'pady':body["pady"],
+            'wrap':'none',
+            'selectbackground':self.bgcolor,
+            'selectforeground':self.fgcolor,
+            'cursor':"hand2",
+            'width':4,
+            'height':1
+        }
+        opt['name']='sidebar'
+        Tk.Text.__init__(self, bparent,**opt)
+        
+        opt['bg'] = shade(0.08)
+        opt['fg'] = shade(0.4)
+        
+        opt['name']='sidebar2'
+        self.source_bar = Tk.Text(bparent, **opt)
         
         
-        head_bar= self.head_bar = Tk.Frame(bparent)
+        head_frame= self.head_frame = Tk.Frame(bparent,height=24)
         
-        #bbd = 2
-        #pady=1
-        self.display = Tk.Text(head_bar, bd=bbd, bg=bg_dark, fg=g.theme['shade'](0.7), relief='flat', setgrid=0, font=bfont, padx=padx,pady=bpady, wrap='none',
-            height=1,
-            state='disabled')
+        opt['name'] = 'display'
+        opt['bg'] = shade(0.05)
+        opt['state'] = 'disabled'
+        opt['pady'] = 2
+        opt['padx'] = body["padx"]
+        
+        self.display = Tk.Text(head_frame, **opt)
+        
+        opt['padx'] = 1
+        opt['bg'] = bgcolor
+        del opt['name']
+        del opt['state']
+        
+        opt['bg'] = shade(0.1)
+        opt['fg'] = shade(0.5)
+        self.hdr_side = Tk.Text(head_frame, **opt)
+        
+        opt['bg'] = shade(0.08)
+        opt['fg'] = shade(0.4)
+        self.src_side = Tk.Text(head_frame,  **opt)
             
-        self.hdr_line = Tk.Text(head_bar, bd=bbd, bg=bgcolor, fg=fgcolor, relief='flat', setgrid=0, font=bfont, padx=padx,pady=bpady, wrap='none',
-            height=1,
-            width=4,
-            #state='disabled'
-            )
-            
-        self.src_line = Tk.Text(head_bar, bd=bbd, bg=bgcolor, fg=fgcolor, relief='flat', setgrid=0, font=bfont, padx=padx,pady=bpady, wrap='none',
-            height=1,width=4,
-            #state='disabled'
-            )
-            
-        self.hdr_line.pack(side="left")
-        self.display.pack(side="left",fill="x",expand=1)
-        self.src_line.pack(side="right")
-        
-        #self.Display.pack(side="top",fill="x",expand=1)
+        self.hdr_side.pack(side="left")
+        self.src_side.pack(side="right")
+        self.display.pack(side="left")#,fill="x",expand=1)
         
         self.leowrap = cc.LeoBodyText["wrap"]
         #self.bind("<Button-1>",self.OnLeftClick)
@@ -5454,10 +5487,10 @@ class BreakbarClass(Tk.Text):
         cc.LeoBodyText.pack_forget()
         cc.LeoXBodyBar.pack(side="bottom", fill="x")
         cc.LeoBodyText.pack(expand=1, fill="both")
-    #@nonl
-    #@-node:AGP.20230214111049.351:__init__
-    #@+node:AGP.20230214111049.352:Scrollbar funcs
-    #@+node:AGP.20230214111049.353:yview
+    
+    #@-node:__init__
+    #@+node:Scrollbar funcs
+    #@+node:yview
     def yview(self,cmd=None,arg1=None,arg2=None):
         cc = self.cc ; w = cc.LeoBodyText
         #g.es("yview")
@@ -5473,8 +5506,8 @@ class BreakbarClass(Tk.Text):
                     self.source_bar.yview(cmd,arg1)
         else:
             return w.yview()
-    #@-node:AGP.20230214111049.353:yview
-    #@+node:AGP.20230214111049.354:setForBody
+    #@-node:yview
+    #@+node:setForBody
     def setForBody(self,lo, hi):
         cc = self.cc
         #g.es("setforbody")
@@ -5483,16 +5516,16 @@ class BreakbarClass(Tk.Text):
         
         cc.LeoYBodyBar.set(lo,hi)	
     #@nonl
-    #@-node:AGP.20230214111049.354:setForBody
-    #@+node:AGP.20230214111049.355:setForBar
+    #@-node:setForBody
+    #@+node:setForBar
     def setForBar(self,lo, hi):
         cc = self.cc
         #g.es("setforbar")
         #cc.LeoBodyText.yview('moveto',lo)	
         cc.LeoYBodyBar.set(lo,hi)
     #@nonl
-    #@-node:AGP.20230214111049.355:setForBar
-    #@+node:AGP.20230214111049.356:Plug
+    #@-node:setForBar
+    #@+node:Plug
     def Plug(self):
         
         cc = self.cc
@@ -5503,8 +5536,8 @@ class BreakbarClass(Tk.Text):
         self.source_bar["yscrollcommand"] = self.setForBar
         
     #@nonl
-    #@-node:AGP.20230214111049.356:Plug
-    #@+node:AGP.20230214111049.357:UnPlug
+    #@-node:Plug
+    #@+node:UnPlug
     def UnPlug(self):
         
         cc = self.cc
@@ -5515,10 +5548,10 @@ class BreakbarClass(Tk.Text):
         self.source_bar["yscrollcommand"] = None
         
     #@nonl
-    #@-node:AGP.20230214111049.357:UnPlug
-    #@-node:AGP.20230214111049.352:Scrollbar funcs
-    #@+node:AGP.20230214111049.358:Events
-    #@+node:AGP.20230214111049.359:OnRightClick
+    #@-node:UnPlug
+    #@-node:Scrollbar funcs
+    #@+node:Events
+    #@+node:OnRightClick
     def OnRightClick(self,event):
         try:
             m = Tk.Menu(self)
@@ -5532,8 +5565,8 @@ class BreakbarClass(Tk.Text):
             g.es_exception()
         self.cc.LeoYBodyBar.focus_set()
     #@nonl
-    #@-node:AGP.20230214111049.359:OnRightClick
-    #@+node:AGP.20230214111049.360:OnLeftClick
+    #@-node:OnRightClick
+    #@+node:OnLeftClick
     def OnLeftClick(self,event):
     
         cc = self.cc
@@ -5544,7 +5577,7 @@ class BreakbarClass(Tk.Text):
         breaks = cc.cGet("BreakPoints")
         
         #print "onleftclick():"
-        loc = LocatorClass(cc,cc.CHILD_NODE,l)
+        loc = LocatorClass(cc,cc.RULES,cc.CHILD_NODE,l)
         if loc.FOUND_FILE_LINE == None:
             return
         
@@ -5560,8 +5593,8 @@ class BreakbarClass(Tk.Text):
         self.tag_delete(Tk.SEL)
         self.cc.LeoYBodyBar.focus_set()
     #@nonl
-    #@-node:AGP.20230214111049.360:OnLeftClick
-    #@+node:AGP.20230214111049.361:IdleUpdate
+    #@-node:OnLeftClick
+    #@+node:IdleUpdate
     def IdleUpdate(self):
         if self.bodychanged == True:
             t,b = Tk.Text.yview(self)
@@ -5569,24 +5602,24 @@ class BreakbarClass(Tk.Text):
             Tk.Text.yview(self,Tk.MOVETO,t)
             self.bodychanged = False
     #@nonl
-    #@-node:AGP.20230214111049.361:IdleUpdate
-    #@-node:AGP.20230214111049.358:Events
-    #@+node:AGP.20230214111049.362:Node breaks
-    #@+node:AGP.20230214111049.363:AddNodeBreak
+    #@-node:IdleUpdate
+    #@-node:Events
+    #@+node:Node breaks
+    #@+node:AddNodeBreak
     def AddNodeBreak(self,l,s="Enabled"):
         self.cc.cGet("BreakPoints")[l] = s
-    #@-node:AGP.20230214111049.363:AddNodeBreak
-    #@+node:AGP.20230214111049.364:DeleteNodeBreak
+    #@-node:AddNodeBreak
+    #@+node:DeleteNodeBreak
     def DeleteNodeBreak(self,l):
         breaks = self.cc.cGet("BreakPoints")
         if l in breaks:
             del breaks[l]
-    #@-node:AGP.20230214111049.364:DeleteNodeBreak
-    #@+node:AGP.20230214111049.365:ClearNodeBreaks
+    #@-node:DeleteNodeBreak
+    #@+node:ClearNodeBreaks
     def ClearNodeBreaks(self):
         self.cc.cSet("BreakPoints",{})
-    #@-node:AGP.20230214111049.365:ClearNodeBreaks
-    #@+node:AGP.20230214111049.366:BreaksFromNode
+    #@-node:ClearNodeBreaks
+    #@+node:BreaksFromNode
     def BreaksFromNode(self):
         
         cc = self.cc
@@ -5597,10 +5630,10 @@ class BreakbarClass(Tk.Text):
         for l,s in breaks.iteritems():
             self.AddBarBreak(l,s)
             self.AddBreakTag(l)
-    #@-node:AGP.20230214111049.366:BreaksFromNode
-    #@-node:AGP.20230214111049.362:Node breaks
-    #@+node:AGP.20230214111049.367:Bar Breaks
-    #@+node:AGP.20230214111049.368:AddBarBreak
+    #@-node:BreaksFromNode
+    #@-node:Node breaks
+    #@+node:Bar Breaks
+    #@+node:AddBarBreak
     def AddBarBreak(self,l,s="Enabled"):
         self["state"] = 'normal'
         #----------------------------------------
@@ -5616,8 +5649,8 @@ class BreakbarClass(Tk.Text):
         #-----------------------------------------
         self["state"] = 'disabled'
     
-    #@-node:AGP.20230214111049.368:AddBarBreak
-    #@+node:AGP.20230214111049.369:DeleteBarBreak
+    #@-node:AddBarBreak
+    #@+node:DeleteBarBreak
     def DeleteBarBreak(self,l):
         self["state"] = 'normal'
         #----------------------------------------
@@ -5631,8 +5664,8 @@ class BreakbarClass(Tk.Text):
         self.update_idletasks()
     
     
-    #@-node:AGP.20230214111049.369:DeleteBarBreak
-    #@+node:AGP.20230214111049.370:ClearBarBreaks
+    #@-node:DeleteBarBreak
+    #@+node:ClearBarBreaks
     def ClearBarBreaks(self):
         
         cc = self.cc
@@ -5660,7 +5693,7 @@ class BreakbarClass(Tk.Text):
                 self.insert("end","\n")
                 
                 #print "ckearbarbreak():"
-                loc = LocatorClass(cc,cc.CHILD_NODE,fl-cc.CHILD_LINE+2)
+                loc = LocatorClass(cc,cc.RULES,cc.CHILD_NODE,fl-cc.CHILD_LINE+2)
                 fl = loc.FOUND_FILE_LINE
                 
                 if fl != None:
@@ -5680,18 +5713,18 @@ class BreakbarClass(Tk.Text):
         #-----------------------------------------
         self["state"] = 'disabled'
     
-    #@-node:AGP.20230214111049.370:ClearBarBreaks
-    #@-node:AGP.20230214111049.367:Bar Breaks
-    #@+node:AGP.20230214111049.371:tag breaks
-    #@+node:AGP.20230214111049.372:AddBreakTag
+    #@-node:ClearBarBreaks
+    #@-node:Bar Breaks
+    #@+node:tag breaks
+    #@+node:AddBreakTag
     def AddBreakTag(self,l):
         
         w = self.cc.LeoBodyText
         
         w.tag_add("xcc_break",l+".0",l+".end")
     #@nonl
-    #@-node:AGP.20230214111049.372:AddBreakTag
-    #@+node:AGP.20230214111049.373:DeleteBreakTag
+    #@-node:AddBreakTag
+    #@+node:DeleteBreakTag
     def DeleteBreakTag(self,s,e=None):
         
         w = self.cc.LeoBodyText
@@ -5701,16 +5734,16 @@ class BreakbarClass(Tk.Text):
         else:
             w.tag_remove("xcc_break",s,e)
     #@nonl
-    #@-node:AGP.20230214111049.373:DeleteBreakTag
-    #@+node:AGP.20230214111049.374:ClearBreakTags
+    #@-node:DeleteBreakTag
+    #@+node:ClearBreakTags
     def ClearBreakTags(self):
         
         w = self.cc.LeoBodyText
         w.tag_delete("xcc_break")
         w.tag_config("xcc_break",background=self.bgcolor)
     #@nonl
-    #@-node:AGP.20230214111049.374:ClearBreakTags
-    #@+node:AGP.20230214111049.375:BreaksFromTags
+    #@-node:ClearBreakTags
+    #@+node:BreaksFromTags
     def BreaksFromTags(self):
         
         cc = self.cc
@@ -5725,9 +5758,9 @@ class BreakbarClass(Tk.Text):
             self.AddBreak(cc.CHILD_EXT,cc.CHILD_LINE,el)
             range = w.tag_nextrange("xcc_break",el+".end")
     #@nonl
-    #@-node:AGP.20230214111049.375:BreaksFromTags
-    #@-node:AGP.20230214111049.371:tag breaks
-    #@+node:AGP.20230214111049.376:AddBreak
+    #@-node:BreaksFromTags
+    #@-node:tag breaks
+    #@+node:AddBreak
     def AddBreak(self,filext,fileline,bodyline,state="Enabled"):
         
         cc = self.cc
@@ -5747,8 +5780,8 @@ class BreakbarClass(Tk.Text):
             if cc.DBG_PROMPT:
                 cc.DbgOut("")
     
-    #@-node:AGP.20230214111049.376:AddBreak
-    #@+node:AGP.20230214111049.377:DeleteBreak
+    #@-node:AddBreak
+    #@+node:DeleteBreak
     def DeleteBreak(self,filext,fileline,bodyline):
         
         cc = self.cc
@@ -5766,8 +5799,8 @@ class BreakbarClass(Tk.Text):
             
             if cc.DBG_PROMPT:
                 cc.DbgOut("")
-    #@-node:AGP.20230214111049.377:DeleteBreak
-    #@+node:AGP.20230214111049.378:DeleteNodeBreaks
+    #@-node:DeleteBreak
+    #@+node:DeleteNodeBreaks
     def DeleteNodeBreaks(self):
         try:
             cc = self.cc
@@ -5782,8 +5815,8 @@ class BreakbarClass(Tk.Text):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.378:DeleteNodeBreaks
-    #@+node:AGP.20230214111049.379:DeleteProjectBreaks
+    #@-node:DeleteNodeBreaks
+    #@+node:DeleteProjectBreaks
     def DeleteProjectBreaks(self):
         
         cc = self.cc
@@ -5797,8 +5830,8 @@ class BreakbarClass(Tk.Text):
         
             cc.cSelect(cc.CHILD_NODE)
     #@nonl
-    #@-node:AGP.20230214111049.379:DeleteProjectBreaks
-    #@+node:AGP.20230214111049.380:Hide
+    #@-node:DeleteProjectBreaks
+    #@+node:Hide
     def Hide(self,erase = False):
         
         w = self.cc.LeoBodyText
@@ -5806,81 +5839,108 @@ class BreakbarClass(Tk.Text):
         
         self.pack_forget()
         self.source_bar.pack_forget()
-        self.head_bar.pack_forget()
+        self.head_frame.pack_forget()
         
         w.pack(expand=1, fill="both")
         w.tag_delete("xcc_break")
         
         self.visible = False
     #@nonl
-    #@-node:AGP.20230214111049.380:Hide
-    #@+node:AGP.20230214111049.381:Show
+    #@-node:Hide
+    #@+node:Show
     def Show(self,locator=None):
     
         cc = self.cc
+        body = cc.LeoBodyText
+        
+        hdr_bar = self
+        src_bar = self.source_bar
+        
+        hdr_side = self.hdr_side
+        src_side = self.src_side
+        
         
         if not locator:
-            locator = LocatorClass(cc,cc.CHILD_NODE,1)
+            locator = LocatorClass(cc,cc.RULES,cc.CHILD_NODE,1)
             cc.CHILD_EXT = locator.FOUND_FILE_EXT
             cc.CHILD_LINE = locator.FOUND_FILE_LINE
         
         show_header_line = locator.FOUND_BODY_HDR_LINE or locator.FOUND_HEAD_HDR_LINE
         show_source_line = locator.FOUND_BODY_SRC_LINE or locator.FOUND_HEAD_SRC_LINE
         
+        
+        
         if True:#not self.visible:
+            self.visible = False
             self.Plug()
-            cc.LeoBodyText.pack_forget()
+            
+            body.pack_forget()
             cc.LeoYBodyBar.pack_forget()
             #cc.ToolBar.pack_forget()
         
+            border = body["bd"]
+            py = body["pady"]
             
-        
-            border = cc.LeoBodyText ["bd"]
-            py = cc.LeoBodyText["pady"]
             self.config(pady=py,bd=border)
             self.source_bar.config(pady=py,bd=border)
             
             
             
-            self.pack_forget()
-            self.head_bar.pack_forget()
-            self.source_bar.pack_forget()
+            hdr_bar.pack_forget()
+            self.head_frame.pack_forget()
+            src_bar.pack_forget()
             
             if self.leowrap != 'none':
                 cc.LeoXBodyBar.pack(side="bottom",fill="x")
             
-            self.head_bar.pack(side="top",fill="x")
+            self.head_frame.pack(side="top",fill="x")
+            
+            #print locator.FOUND_BODY_HDR_LINE ,locator.FOUND_HEAD_HDR_LINE
+            
             if show_header_line:
-                self.pack(side='left',fill="y") #header
+                #print "pack header"
+                hdr_bar.pack(side='left',fill="y") #header
+            
+            #print locator.FOUND_BODY_SRC_LINE, locator.FOUND_HEAD_SRC_LINE
             if show_source_line:
-                self.source_bar.pack(side='right',fill="y")
+                #print "pack src"
+                src_bar.pack(side='left',fill="y")
+                
+            
             
             
             
             #cc.LeoXBodyBar.pack(side="bottom",fill="x")
             cc.LeoYBodyBar.pack(side="right",fill="y")
-            
-            
             cc.LeoBodyText.pack(expand=1,fill="both")
+            
+            
+            
         #self.BreaksFromNode()--------------
         if locator:        
             
-            self.hdr_line.pack_forget()
+            hdr_side.pack_forget()
             self.display.pack_forget()
-            self.src_line.pack_forget()
+            src_side.pack_forget()
+            
+            
+            
+            
             if show_header_line:
-                self.hdr_line.pack(side="left")
-            
-            
-            
+                hdr_side.pack(side="left")
+                
             if show_source_line:
-                self.src_line.pack(side="right")
+                #self.src_line.pack_propagate(0)
+                src_side.pack(side="left")
+            
+            
+                
             self.display.pack(side="left",fill="x",expand=1)
             
             self.ClearBreakTags()
                 
             self.SyncDisplayToChild(locator)
-            self.Sync(locator)
+            self.SyncLineNumbers(locator)
         
             breaks = cc.cGet("BreakPoints",{})
             for l,s in breaks.iteritems():
@@ -5894,13 +5954,15 @@ class BreakbarClass(Tk.Text):
         
         self.visible = True
     #@nonl
-    #@-node:AGP.20230214111049.381:Show
-    #@+node:AGP.20230522153016:SyncDisplayToChild
+    #@-node:Show
+    #@+node:SyncDisplayToChild
     def SyncDisplayToChild(self,loc):
         
         cc = self.cc
-        self.display["cursor"] = ""
-        self.display.unbind("<Button-1>")
+        display = self.display
+        
+        display["cursor"] = ""
+        display.unbind("<Button-1>")
             
         
         hline = None
@@ -5928,17 +5990,18 @@ class BreakbarClass(Tk.Text):
         off = len(disp)
         disp += cc.CHILD_NODE.headString()
         
-        self.display["state"] = 'normal'
-        self.display.delete(1.0,'end')
-        self.display.tag_delete("marking")
-        self.display.insert("insert",disp)
+        display["state"] = 'normal'
+        display.delete(1.0,'end')
+        display.tag_delete("marking")
+        #display.tag_delete("xcc_error")
+        display.insert("insert",disp)
         
         if loc.CURRENT_RULE == "class":
             spec,name,base,inst,dest = loc.CURRENT_CLASS_MO
             #print loc.CURRENT_CLASS_MO
             v,s,e = name
             if v != "":
-                self.display.tag_add("marking","1.0","1."+str(s+off-1))
+                display.tag_add("marking","1.0","1."+str(s+off-1))
                 
             v,s,e = base
             if v != "":
@@ -5952,7 +6015,7 @@ class BreakbarClass(Tk.Text):
                         if toff != -1:
                             #print "term",term,toff
                             do_search = True
-                            self.display.tag_add("marking","1."+str(s+off+toff),"1."+str(s+off+toff+tl))
+                            display.tag_add("marking","1."+str(s+off+toff),"1."+str(s+off+toff+tl))
                             v = v[toff+tl:]
         
         if loc.CURRENT_RULE == "func":
@@ -5960,11 +6023,11 @@ class BreakbarClass(Tk.Text):
             
             v,s,e = spec
             if v != "":
-                self.display.tag_add("marking","1."+str(s+off),"1."+str(e+off))
+                display.tag_add("marking","1."+str(s+off),"1."+str(e+off))
             
             v,s,e = ret
             if s != -1 and e != -1:
-                self.display.tag_add("marking","1."+str(s+off),"1."+str(e+off))		
+                display.tag_add("marking","1."+str(s+off),"1."+str(e+off))		
             
             params,s,e = params
             if params != "()":
@@ -5974,81 +6037,75 @@ class BreakbarClass(Tk.Text):
                     pmo = re.search("[( ]*(?P<TYPE>.+) +(?P<NAME>[^) ]+)[ )]*",p)
                     if pmo != None:
                         s2,e2 = pmo.span("TYPE")
-                        self.display.tag_add("marking","1."+str(s+off+s2-1),"1."+str(s+off+(e2-s2)))
+                        display.tag_add("marking","1."+str(s+off+s2-1),"1."+str(s+off+(e2-s2)))
                         off += len(p)+1
                         
         
         if loc.CURRENT_RULE == "doc":
-            self.display.insert("insert",loc.DocName())
+            display.insert("insert",loc.DocName())
             
-        self.display.tag_config("marking",foreground=g.theme['keyword'])#"#7575e5")
-        self.display["state"] = 'disabled'
+        display.tag_config("marking",foreground=g.theme['keyword'])#"#7575e5")
+        display["state"] = 'disabled'
     
     
-    #@-node:AGP.20230522153016:SyncDisplayToChild
-    #@+node:AGP.20230214111049.382:Sync
-    def Sync(self,locator):
+    #@-node:SyncDisplayToChild
+    #@+node:SyncLineNumbers()
+    def SyncLineNumbers(self,locator=None):
         
         cc = self.cc
         
+        if not locator:
+            locator = LocatorClass(cc,cc.RULES,cc.CHILD_NODE,1)
+            #locator = cc.locator
+        
+        
+        
+        hdr_bar = self
         src_bar = self.source_bar
-        self["state"] = 'normal'
+        
+        hdr_side = self.hdr_side
+        src_side = self.src_side
+        
+        hdr_bar["state"] = 'normal'
         src_bar["state"] = 'normal'
         
-        self.delete(1.0,'end')
+        hdr_bar.delete(1.0,'end')
         src_bar.delete(1.0,'end')
         
         
-        
-        self.hdr_line.delete(1.0,'end')
-        self.src_line.delete(1.0,'end')
+        hdr_side.delete(1.0,'end')
+        src_side.delete(1.0,'end')
         #----------------------------------------
-        
-    
-        bfm = ""    #body file marker
-        if locator.FOUND_BODY_SRC_LINE:
-            bfm = "."
-        
-        if locator.FOUND_BODY_HDR_LINE:
-            bext = self.cc.HDR_EXT
-            if bfm != "":
-                bfm = ":"
-            else:
-                bfm = "'"
-        
     
         bhlw = bslw = 1
         
         hhl = locator.FOUND_HEAD_HDR_LINE
         hsl = locator.FOUND_HEAD_SRC_LINE
         
-        #print "sync",locator.FOUND_HEAD_HDR_LINE,locator.FOUND_HEAD_SRC_LINE
+        #print "sync head",locator.FOUND_HEAD_HDR_LINE,locator.FOUND_HEAD_SRC_LINE
         
         if hhl:
             bhlw = len(str(hhl))
-        
-            self.hdr_line.insert("end",str(hhl)+"\n")
-            #print "hdr_linr",hhl
+            hdr_side.insert("end",str(hhl)+"\n")
         else:
-            self.hdr_line.insert("end","\n")
+            hdr_side.insert("end","\n")
             
         if hsl:
             bslw = len(str(hsl))
-            self.src_line.insert("end",str(hsl)+"\n")
-            #print "src_linr",hsl
+            src_side.insert("end",str(hsl)+"\n")
         else:
-            self.src_line.insert("end","\n")
+            src_side.insert("end","\n")
     
     
         bhl = locator.FOUND_BODY_HDR_LINE
         bsl = locator.FOUND_BODY_SRC_LINE
-    
+        
+        #print "sync body",locator.FOUND_BODY_HDR_LINE,locator.FOUND_BODY_SRC_LINE
+        
         if cc.CHILD_LINE and cc.CHILD_LINE != -1:
             fl = cc.CHILD_LINE
             bs = cc.CHILD_NODE.bodyString()
             lines = bs.splitlines(True)
-            
-            
             
             if locator.FOUND_OTHERS:
                 body_line,hdr_line,src_line = locator.FOUND_OTHERS
@@ -6066,8 +6123,7 @@ class BreakbarClass(Tk.Text):
                 
                 if i == body_line-1:
                     if bhl:
-                        self.insert("end",nl)
-                        #fl = hdr_line
+                        hdr_bar.insert("end",nl)
                         bhl = hdr_line+2
                     if bsl:
                         src_bar.insert("end",nl)
@@ -6075,8 +6131,7 @@ class BreakbarClass(Tk.Text):
                     
                 else:
                     if bhl:
-                        self.insert("end",str(bhl)+nl)
-                        src_bar
+                        hdr_bar.insert("end",str(bhl)+nl)
                         bhl += 1
                     if bsl:
                         src_bar.insert("end",str(bsl)+nl)
@@ -6084,109 +6139,84 @@ class BreakbarClass(Tk.Text):
             
                     
                   
-            #if len(bhl) > 0:
-            #self.delete("end - 1 chars")
-            #if len(bsl) > 0:
-            #self.source_bar.delete("end - 1 chars")
+            bhlw = max( bhlw, len(str(bhl)) )
+            bslw = max( bslw, len(str(bsl)) )
             
-            """while len(lines) > 0:
-                l = lines.pop(0)
-                if l.strip() != "@others":
-                    self.insert("end",str(fl)+"\n")
-                    fl += 1
-                else:
-                    break
         
-            if len(lines) > 0 and l.strip() == "@others":
-                self.insert("end","\n")
-                
-                #print "sync():"
-                #locator.ResumeParse(fl-cc.CHILD_LINE+2)
-                #loc = LocatorClass(cc,cc.CHILD_NODE,fl-cc.CHILD_LINE+2)
-                fl = locator.FOUND_FILE_LINE
-                
-                if fl != None:
-                    while len(lines) > 0:
-                        l = lines.pop(0)
-                        self.insert("end",str(fl)+"\n")
-                        fl += 1
-                                """
-            if len(str(bhl)) > bhlw:
-                bhlw = len(str(bhl))
-                
-            if len(str(bsl)) > bslw:
-                bslw = len(str(bsl))
-            #print "width",bhlw,bslw
-        self.config(width = bhlw)
-        self.source_bar.config(width = bslw)
+        hdr_bar.config(width = bhlw)
+        src_bar.config(width = bslw)
         
-        self.hdr_line.config(width = bhlw)
-        self.src_line.config(width = bslw)
+        hdr_side.config(width = bhlw)
+        src_side.config(width = bslw)
         
         
         #cc.ToolBar.Spacer.config(width=w+1)
         #-----------------------------------------
-        self.source_bar["state"] = 'disabled'
-        self["state"] = 'disabled'
-    #@-node:AGP.20230214111049.382:Sync
-    #@+node:AGP.20230214111049.383:Cancel
+        src_bar["state"] = 'disabled'
+        hdr_bar["state"] = 'disabled'
+    #@-node:SyncLineNumbers()
+    #@+node:Cancel
     def Cancel(self,menu):
         menu.unpost()
         
-    #@-node:AGP.20230214111049.383:Cancel
+    #@-node:Cancel
     #@-others
-#@-node:AGP.20230214111049.350:class BreakbarClass
-#@+node:AGP.20230214111049.384:class DocEditClass
+#@-node:class BreakbarClass
+#@+node:class DocEditClass
 class DocEditClass(Tk.Text):
     #@    @+others
-    #@+node:AGP.20230214111049.385:__init__
+    #@+node:__init__
     def __init__(self,cc):
         self.cc = cc
         
         self.MainFrame = Tk.Frame(cc.LeoBodyParent,relief='groove')
         
+        bg = cc.LeoBodyText["bg"]
         
         #@    @+others
-        #@+node:AGP.20230214111049.386:TopBar
+        #@+node:TopBar
         self.TopBar = Tk.Frame(self.MainFrame,relief='ridge',height=20,bd=2)
         self.TopBar.pack(side="top",fill="x",expand=1)    
-        #@+others
-        #@-others
-        #@nonl
-        #@-node:AGP.20230214111049.386:TopBar
-        #@+node:AGP.20230214111049.387:New Topic
+        #@-node:TopBar
+        #@+node:New Topic
         self.CheckValue = Tk.StringVar()
         self.Check = Tk.Checkbutton(self.TopBar,
                                     offvalue="False",
                                     onvalue="True",
                                     command=self.SaveToNode,
                                     variable=self.CheckValue,
-                                    text="New Topic")    
+                                    text="New Topic",
+                                    bg = bg,
+                                    selectcolor=bg)    
         self.Check.pack(side="left")
         #@nonl
-        #@-node:AGP.20230214111049.387:New Topic
-        #@+node:AGP.20230214111049.388:Use Head
+        #@-node:New Topic
+        #@+node:Use Head
         self.HeadValue = Tk.StringVar()
         self.Head = Tk.Checkbutton(self.TopBar,
                                     offvalue="False",
                                     onvalue="True",
                                     command=self.SaveToNode,
                                     variable=self.HeadValue,
-                                    text="Use Head")    
+                                    text="Use Head",
+                                    bg = bg,
+                                    selectcolor=bg)    
         self.Head.pack(side="left")
         #@nonl
-        #@-node:AGP.20230214111049.388:Use Head
-        #@+node:AGP.20230214111049.389:Pre Format
+        #@-node:Use Head
+        #@+node:Pre Format
         self.PreValue = Tk.StringVar()
         self.Pre = Tk.Checkbutton(self.TopBar,
                                     offvalue="False",
                                     onvalue="True",
                                     command=self.SaveToNode,
                                     variable=self.PreValue,
-                                    text="Preformat")    
+                                    text="Preformat",
+                                    bg = bg,
+                                    selectcolor=bg)    
         self.Pre.pack(side="left")
         #@nonl
-        #@-node:AGP.20230214111049.389:Pre Format
+        #@-node:Pre Format
         #@-others
         
         coffset=10
@@ -6199,12 +6229,12 @@ class DocEditClass(Tk.Text):
         coff = 10
         colors = red+pred*coff, green+pgreen*coff, blue+pblue*coff
         
-        bg = "#%02x%02x%02x" % colors
+        #bg = cc.LeoBodyText["bg"] #"#%02x%02x%02x" % colors
         
         Tk.Text.__init__(self,
             self.MainFrame,
             name='sidebar',
-            bg=bg,#cc.BreakBar.cget("bg"),
+            bg=bg,
             width=2,
             height=10,
             bd=cc.LeoBodyText["bd"],
@@ -6215,21 +6245,23 @@ class DocEditClass(Tk.Text):
             wrap='none'
         )
         
-        self.YBar = Tk.Scrollbar(self.MainFrame,command=self.yview)
+        self.YBar = g.app.gui.SCROLLBAR(self.MainFrame,1,corner=True)
+        #Tk.Scrollbar(self.MainFrame,command=self.yview)
         self.YBar.pack(side="right",fill="y")
         
         self.bind("<KeyRelease>",self.OnKeyRelease)
         self.pack(side="top",fill="both",expand=1)    
         
-        self.XBar = Tk.Scrollbar(self.MainFrame,orient="horizontal",command=self.xview)
+        self.XBar = g.app.gui.SCROLLBAR(self.MainFrame,0,corner=True)
+        #Tk.Scrollbar(self.MainFrame,orient="horizontal",command=self.xview)
         self.XBar.pack(side="bottom",fill="x")
         
         self.config(yscrollcommand=self.YBar.set)
         self.config(xscrollcommand=self.XBar.set)
         
         self.visible = False
-    #@-node:AGP.20230214111049.385:__init__
-    #@+node:AGP.20230214111049.390:Show
+    #@-node:__init__
+    #@+node:Show
     def Show(self):
         try:
             cc = self.cc
@@ -6256,8 +6288,8 @@ class DocEditClass(Tk.Text):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.390:Show
-    #@+node:AGP.20230214111049.391:Hide
+    #@-node:Show
+    #@+node:Hide
     def Hide(self):
         try:
             cc = self.cc
@@ -6268,8 +6300,8 @@ class DocEditClass(Tk.Text):
         except Exception:
             g.es_exception()
     #@nonl
-    #@-node:AGP.20230214111049.391:Hide
-    #@+node:AGP.20230214111049.392:LoadFromNode
+    #@-node:Hide
+    #@+node:LoadFromNode
     def LoadFromNode(self):
         cc = self.cc
         self.delete(1.0,'end')
@@ -6288,10 +6320,11 @@ class DocEditClass(Tk.Text):
             self.Head.pack_forget()
             self.Pre.pack_forget()
     #@nonl
-    #@-node:AGP.20230214111049.392:LoadFromNode
-    #@+node:AGP.20230214111049.393:SaveToNode
+    #@-node:LoadFromNode
+    #@+node:SaveToNode
     def SaveToNode(self):
-        cc = self.cc  
+        cc = self.cc
+        print "save to node",self.CheckValue.get()
         if cc.CHILD_NODE:
             cc.cSet("DOC",self.get(1.0,"end-1c"))
             cc.cSet("NEW_TOPIC",self.CheckValue.get())
@@ -6305,19 +6338,19 @@ class DocEditClass(Tk.Text):
         cc.c.setChanged(True)   
         #cc.c.redraw() #
     #@nonl
-    #@-node:AGP.20230214111049.393:SaveToNode
-    #@+node:AGP.20230214111049.394:OnKeyRelease
+    #@-node:SaveToNode
+    #@+node:OnKeyRelease
     def OnKeyRelease(self,event):
         self.SaveToNode()
         
     #@nonl
-    #@-node:AGP.20230214111049.394:OnKeyRelease
+    #@-node:OnKeyRelease
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.384:class DocEditClass
-#@+node:AGP.20230214111049.395:HELP
-#@+node:AGP.20230214111049.396:Options
-#@+node:AGP.20230214111049.397:BuildSequence
+#@-node:class DocEditClass
+#@+node:HELP
+#@+node:Options
+#@+node:BuildSequence
 OptBuildSequenceHelp = """
 Tool launch sequence, each line represents a process 
 and they are called in the order that they appear.
@@ -6340,10 +6373,10 @@ The following variables are supported:
     _LIBPATHS_
     _LIBRARIES_"""
 #@nonl
-#@-node:AGP.20230214111049.397:BuildSequence
-#@-node:AGP.20230214111049.396:Options
-#@+node:AGP.20230214111049.398:Compiler
-#@+node:AGP.20230214111049.399:CplArgumentsHelp
+#@-node:BuildSequence
+#@-node:Options
+#@+node:Compiler
+#@+node:CplArgumentsHelp
 CplArgumentsHelp = """
 Command line passed to to the compiler.
 Each lines are concatenated using space.
@@ -6360,8 +6393,8 @@ The following variables are supported:
     _LIBPATHS_
     _LIBRARIES_"""
 #@nonl
-#@-node:AGP.20230214111049.399:CplArgumentsHelp
-#@+node:AGP.20230214111049.400:CplDebugArgumentsHelp
+#@-node:CplArgumentsHelp
+#@+node:CplDebugArgumentsHelp
 CplDebugArgumentsHelp = """
 Command line passed to to the compiler 
 when debugging is requested.
@@ -6379,24 +6412,24 @@ The following variables are supported:
     _LIBPATHS_
     _LIBRARIES_"""
 #@nonl
-#@-node:AGP.20230214111049.400:CplDebugArgumentsHelp
-#@+node:AGP.20230214111049.401:IncludeSearchPathsHelp
+#@-node:CplDebugArgumentsHelp
+#@+node:IncludeSearchPathsHelp
 IncludeSearchPathsHelp = """
 Each lines is a path to be searched for include files.
 
 These paths are assembled unsing the "Include path"
 symbol to create the _INCPATHS_ variable."""
 #@nonl
-#@-node:AGP.20230214111049.401:IncludeSearchPathsHelp
-#@+node:AGP.20230214111049.402:LibrarySearchPathsHelp
+#@-node:IncludeSearchPathsHelp
+#@+node:LibrarySearchPathsHelp
 LibrarySearchPathsHelp = """
 Each lines is a path to be searched for library files.
 
 These paths are assembled unsing the "Library path"
 symbol to create the _LIBPATHS_ variable."""
 #@nonl
-#@-node:AGP.20230214111049.402:LibrarySearchPathsHelp
-#@+node:AGP.20230214111049.403:UsedLibrariesHelp
+#@-node:LibrarySearchPathsHelp
+#@+node:UsedLibrariesHelp
 UsedLibrariesHelp = """
 Each whitespace delimited word is a libary to be 
 used while building the project.
@@ -6404,8 +6437,8 @@ used while building the project.
 These libraries are assembled unsing the "Use library"
 symbol to create the _LIBRARIES_ variable."""
 #@nonl
-#@-node:AGP.20230214111049.403:UsedLibrariesHelp
-#@+node:AGP.20230214111049.404:IncludePathAndLibraryPathHelp
+#@-node:UsedLibrariesHelp
+#@+node:IncludePathAndLibraryPathHelp
 IncludePathAndLibraryPathHelp = """
 Include path:	
     Symbol used with "Include search path" field
@@ -6414,8 +6447,8 @@ Include path:
 Library path:	
     Symbol used with "Library search path" field
     to create the _LIBPATHS_ variable."""
-#@-node:AGP.20230214111049.404:IncludePathAndLibraryPathHelp
-#@+node:AGP.20230214111049.405:UseLibraryAndCheckSyntaxeHelp
+#@-node:IncludePathAndLibraryPathHelp
+#@+node:UseLibraryAndCheckSyntaxeHelp
 UseLibraryAndCheckSyntaxeHelp = """
 Use library:	
     Symbol used with "Used libraries" field
@@ -6426,8 +6459,8 @@ Check syntaxe:
     header (.h extension). Header alone cant be 
     built but some compiler offer a syntaxe check."""
 #@nonl
-#@-node:AGP.20230214111049.405:UseLibraryAndCheckSyntaxeHelp
-#@+node:AGP.20230214111049.406:BuildExeAndBuildDllHelp
+#@-node:UseLibraryAndCheckSyntaxeHelp
+#@+node:BuildExeAndBuildDllHelp
 BuildExeAndBuildDllHelp = """
 One of these symbols will be used to replace
 the _BUILD_ variable in the "Arguments" and 
@@ -6445,13 +6478,13 @@ Build exe:
 Build dll:	
     Symbol used to build a dll."""
 #@nonl
-#@-node:AGP.20230214111049.406:BuildExeAndBuildDllHelp
-#@+node:AGP.20230214111049.407:CompilePchAndUsePchHelp
+#@-node:BuildExeAndBuildDllHelp
+#@+node:CompilePchAndUsePchHelp
 CompilePchAndUsePchHelp = """
 TODO: Support precompiled header auto creation/inclusion."""
 #@nonl
-#@-node:AGP.20230214111049.407:CompilePchAndUsePchHelp
-#@+node:AGP.20230214111049.408:ErrorDetectionHelp
+#@-node:CompilePchAndUsePchHelp
+#@+node:ErrorDetectionHelp
 ErrorDetectionHelp = """
 Regular expression used to detect error 
 from the compiler output.
@@ -6465,10 +6498,10 @@ the regular expression:
     DEF *
     
     * = Facultative groups"""
-#@-node:AGP.20230214111049.408:ErrorDetectionHelp
-#@-node:AGP.20230214111049.398:Compiler
-#@+node:AGP.20230214111049.409:Debugger
-#@+node:AGP.20230214111049.410:DbgArgumentsHelp
+#@-node:ErrorDetectionHelp
+#@-node:Compiler
+#@+node:Debugger
+#@+node:DbgArgumentsHelp
 DbgArgumentsHelp = """
 Command line passed to to the debugger.
 Each lines are concatenated using space.
@@ -6481,8 +6514,8 @@ The following variables are supported:
     _EXT_
     _SRCEXT_"""
 #@nonl
-#@-node:AGP.20230214111049.410:DbgArgumentsHelp
-#@+node:AGP.20230214111049.411:DbgPipingHelp
+#@-node:DbgArgumentsHelp
+#@+node:DbgPipingHelp
 DbgPipingHelp = """
 Prompt pattern:
     Regular expression used to detect the debugger prompt.
@@ -6490,8 +6523,8 @@ Prompt pattern:
 Pipe eol:
     End of line character used when sending command to the debugger."""
 #@nonl
-#@-node:AGP.20230214111049.411:DbgPipingHelp
-#@+node:AGP.20230214111049.412:DbgStartupTaskHelp
+#@-node:DbgPipingHelp
+#@+node:DbgStartupTaskHelp
 DbgStartupTaskHelp = """
 Commands sent to the debugger at startup.
 These commands must leave the debugger breaked
@@ -6505,8 +6538,8 @@ The following variables are supported:
     _EXT_
     _SRCEXT_"""
 #@nonl
-#@-node:AGP.20230214111049.412:DbgStartupTaskHelp
-#@+node:AGP.20230214111049.413:DbgTargetPidHelp
+#@-node:DbgStartupTaskHelp
+#@+node:DbgTargetPidHelp
 DbgTargetPidHelp = """
 Target pid task:
     Command used to retreive the target process identifier.
@@ -6535,8 +6568,8 @@ Find pid:
         
         PID"""
 #@nonl
-#@-node:AGP.20230214111049.413:DbgTargetPidHelp
-#@+node:AGP.20230214111049.414:DbgBreakDetectionHelp
+#@-node:DbgTargetPidHelp
+#@+node:DbgBreakDetectionHelp
 DbgBreakDetectionHelp = """
 Regular expression used to detect a break in target code execution.
 
@@ -6546,8 +6579,8 @@ made to find the current location in the target code using the
 
 Each line is a different regular expression."""
 #@nonl
-#@-node:AGP.20230214111049.414:DbgBreakDetectionHelp
-#@+node:AGP.20230214111049.415:DbgSetClearBreakHelp
+#@-node:DbgBreakDetectionHelp
+#@+node:DbgSetClearBreakHelp
 DbgSetClearBreakHelp = """
 Set break:
     Command used to set a breakpoint.
@@ -6578,8 +6611,8 @@ Clear break:
         
     *If _ID_ is used, attempt to find it using the
     "List breaks" and "Identify break" fields."""
-#@-node:AGP.20230214111049.415:DbgSetClearBreakHelp
-#@+node:AGP.20230214111049.416:DbgBreakIdHelp
+#@-node:DbgSetClearBreakHelp
+#@+node:DbgBreakIdHelp
 DbgBreakIdHelp = """
 List breaks:
     Command used to list the debugger's break table.
@@ -6607,8 +6640,8 @@ Identify break:
     The following groups must be returned by the regular expression:
         
         ID"""
-#@-node:AGP.20230214111049.416:DbgBreakIdHelp
-#@+node:AGP.20230214111049.417:DbgLocationHelp
+#@-node:DbgBreakIdHelp
+#@+node:DbgLocationHelp
 DbgLocationHelp = """
 Query location:
     Command used to retreive the file and line where
@@ -6633,8 +6666,8 @@ Find location:
         LINE
 
 """
-#@-node:AGP.20230214111049.417:DbgLocationHelp
-#@+node:AGP.20230214111049.418:DbgMiscExpHelp
+#@-node:DbgLocationHelp
+#@+node:DbgMiscExpHelp
 DbgMiscExpHelp = """
 Regular expression:
     Each line is a separate regular expression.
@@ -6662,15 +6695,15 @@ Task:
         _EXT_
         _SRCEXT_"""
 #@nonl
-#@-node:AGP.20230214111049.418:DbgMiscExpHelp
-#@-node:AGP.20230214111049.409:Debugger
-#@-node:AGP.20230214111049.395:HELP
-#@-node:AGP.20230214111049.222:Widget classes
-#@+node:AGP.20230214111049.419:Parsing classes
-#@+node:AGP.20230320235129:OUTPUT
+#@-node:DbgMiscExpHelp
+#@-node:Debugger
+#@-node:HELP
+#@-node:Widget classes
+#@+node:Parsing classes
+#@+node:OUTPUT
 class OUTPUT:
     #@    @+others
-    #@+node:AGP.20230320235129.1:__init__()
+    #@+node:__init__()
     def __init__(self,parser,writer=None):
         
         self.parser = parser
@@ -6687,15 +6720,15 @@ class OUTPUT:
         
         self.CURRENT_LINE = 0
     #@nonl
-    #@-node:AGP.20230320235129.1:__init__()
-    #@+node:AGP.20230320235129.2:__call__():
+    #@-node:__init__()
+    #@+node:__call__():
     def __call__(self,lines,strip=True,nl=True):
         
         if isinstance(lines,basestring):
             lines = lines.split('\n')
         
-        if len(lines) > 1 and lines[-1]=="":
-            lines.pop(-1)
+        #if len(lines) > 1 and lines[-1]=="":
+        #    lines.pop(-1)
         
         
         ts = self.tabstring
@@ -6716,6 +6749,7 @@ class OUTPUT:
         
         for l in lines:
             if CURRENT_LOCATION == 1:
+                #if destination is both files,must increment for only one of them p.BOTH
                 p.CURRENT_BODY_LINE += 1	
             
             #if nl:
@@ -6728,6 +6762,7 @@ class OUTPUT:
             if line_filter:
                 l = line_filter(l)
             #print ts + l + es
+            
             w( ts + l + es )
             
         
@@ -6736,8 +6771,8 @@ class OUTPUT:
         
         
     #@nonl
-    #@-node:AGP.20230320235129.2:__call__():
-    #@+node:AGP.20230320235129.4:tab
+    #@-node:__call__():
+    #@+node:tab
     def tab(self,tab=None,end=None):
         if tab:
             self.tablist.append(tab)
@@ -6747,8 +6782,8 @@ class OUTPUT:
         self.tabstring = "".join(self.tablist)
         self.endstring = "".join(self.endlist)
     #@nonl
-    #@-node:AGP.20230320235129.4:tab
-    #@+node:AGP.20230320235129.5:untab
+    #@-node:tab
+    #@+node:untab
     def untab(self,tab=True,end=True):
         if tab:
             self.tablist.pop(-1)
@@ -6758,8 +6793,8 @@ class OUTPUT:
         self.tabstring = "".join(self.tablist)
         self.endstring = "".join(self.endlist)
     #@nonl
-    #@-node:AGP.20230320235129.5:untab
-    #@+node:AGP.20230320235129.6:pushtab
+    #@-node:untab
+    #@+node:pushtab
     def pushtab(self):
         self.tabstack.insert(0,self.tablist)
         self.tablist = []
@@ -6770,8 +6805,8 @@ class OUTPUT:
         self.tabstring = "".join(self.tablist)
         self.endstring = "".join(self.endlist)
     #@nonl
-    #@-node:AGP.20230320235129.6:pushtab
-    #@+node:AGP.20230320235129.7:poptab
+    #@-node:pushtab
+    #@+node:poptab
     def poptab(self):
         #self.tabstring = self.tablist.pop(-1)
         
@@ -6783,121 +6818,150 @@ class OUTPUT:
         self.tabstring = "".join(self.tablist)
         self.endstring = "".join(self.endlist)
     #@nonl
-    #@-node:AGP.20230320235129.7:poptab
-    #@+node:AGP.20230321135641:write()
+    #@-node:poptab
+    #@+node:write()
     def write(self):
         pass
         
     #@nonl
-    #@-node:AGP.20230321135641:write()
+    #@-node:write()
     #@-others
 #@nonl
-#@-node:AGP.20230320235129:OUTPUT
-#@+node:AGP.20230529212053:OUTLIST
+#@-node:OUTPUT
+#@+node:OUTLIST
 class OUTLIST:
     #@    @+others
-    #@+node:AGP.20230529212053.1:__init__()
-    def __init__(self,outputs):
+    #@+node:__init__()
+    def __init__(self,parser,outputs):
         
+        self.parser = parser
         self.outputs = outputs
-    #@-node:AGP.20230529212053.1:__init__()
-    #@+node:AGP.20230529212053.2:__call__():
+    #@-node:__init__()
+    #@+node:__call__():
     def __call__(self,lines,strip=True,nl=True):
         
+        
+        p = self.parser
         for o in self.outputs:
+            if p.CURRENT_LOCATION == 1:
+                #if destination is both files,must increment for only one of them p.BOTH or reset before each outputs
+                p.CURRENT_BODY_LINE  = 0
             o(lines,strip,nl)
-    #@-node:AGP.20230529212053.2:__call__():
-    #@+node:AGP.20230529212053.3:tab
+    #@-node:__call__():
+    #@+node:tab
     def tab(self,tab,end):
         for o in self.outputs:
             o.tab(tab,end)
-    #@-node:AGP.20230529212053.3:tab
-    #@+node:AGP.20230529212053.4:untab
+    #@-node:tab
+    #@+node:untab
     def untab(self,tab,end):
         for o in self.outputs:
             o.untab(tab,end)
-    #@-node:AGP.20230529212053.4:untab
-    #@+node:AGP.20230529212053.5:pushtab
+    #@-node:untab
+    #@+node:pushtab
     def pushtab(self):
         for o in self.outputs:
             o.pushtab()
-    #@-node:AGP.20230529212053.5:pushtab
-    #@+node:AGP.20230529212053.6:poptab
+    #@-node:pushtab
+    #@+node:poptab
     def poptab(self):
         for o in self.outputs:
             o.poptab()
-    #@-node:AGP.20230529212053.6:poptab
+    #@-node:poptab
     #@-others
 #@nonl
-#@-node:AGP.20230529212053:OUTLIST
-#@+node:AGP.20230214111049.420:ParserClass
+#@-node:OUTLIST
+#@+node:ParserClass
 class ParserClass:
     
     #@    @+others
-    #@+node:AGP.20230524141224:class CPPRULES
+    #@+node:class CPPRULES
     class CPPRULES:
         #@    @+others
-        #@+node:AGP.20230524141224.1:__init__()
-        def __init__(self,parser):
+        #@+node:__init__()
+        def __init__(self,cc):
+            
+            
+            self.cc = cc
+            
             self.OUTFUNC_RULES = [self.basic_rules,self.func_rule,self.class_rule,self.default_rule]
             self.RULES = self.OUTFUNC_RULES
             self.INFUNC_RULES = [self.basic_rules,self.default_rule]
             
             
-            self.parser = parser
-            self.CMT = parser.cc.CMT
-            parser.TrueTabWrite = parser.TabWrite
+            #self.parser = None
+            
+            self.CMT = "//"#cc.CMT
+            
+            #parser.TrueTabWrite = parser.TabWrite
         #@nonl
-        #@-node:AGP.20230524141224.1:__init__()
-        #@+node:AGP.20230604135730:choose_writer()
+        #@-node:__init__()
+        #@+node:choose_writer()
         def choose_writer(self,head):
             
-            p = self.parser
+            #oh = head
+            
+            p = self.cc.Parser
             
             if p.FUNC_WRITER:
                 return p.FUNC_WRITER,head
             
             w = None
             
-            if head.endswith(";") or head.endswith("$"):#put in source ">"
+            parent_writer = p.PARENT_WRITER
+            if head.endswith(";"):#put in source ">"
+                parent_writer = None
                 w = p.SOURCE
-                
-            elif head.endswith("%"): #put in both "<>"
-                if p.BIFILE:
-                    w = p.BOTH
-                else:        
-                    w = p.SOURCE # same as p.HEADER when BIFILE is True
-                
                 head = head[:-1]
+            
+            elif head.endswith(">"):#put in source ">"
                 
-                
-            elif head.endswith("#"):    #enforce header "<"
+                if head.endswith("<->"):#childs inherit writer
+                    parent_writer = w = p.BOTH
+                    head = head[:-3]
+                elif head.endswith("->"):#childs inherit writer
+                    parent_writer = w = p.SOURCE
+                    head = head[:-2]
+                elif head.endswith("<>"):
+                    parent_writer = None
+                    w = p.BOTH
+                    head = head[:-2]
+                else:
+                    parent_writer = None
+                    w = p.SOURCE
+                    head = head[:-1]
+            
+            elif head.endswith("<-"):#childs inherit writer
+                    parent_writer = w = p.HEADER
+                    head = head[0:-2]
+            
+            elif head.endswith("<"):
+                parent_writer = None
+                w = p.HEADER
                 head = head[0:-1]
+            elif parent_writer:
+                w = parent_writer
+            else:
+                #print "header",head,p.HEADER.write,p.SOURCE.write
                 w = p.HEADER
-            
-            if not w and p.CLASS_WRITER:
-                w = p.CLASS_WRITER
-            
-            if not w and p.PARENT_WRITER:
-                w = p.PARENT_WRITER
-                #print head,"parent writer",w
-            
-            if not w:
-                w = p.HEADER
-                #print head,"header writer",w
                 
-            p.PARENT_WRITER = w   
+            p.PARENT_WRITER = parent_writer
+            
+            
                 
             return w,head
         #@nonl
-        #@-node:AGP.20230604135730:choose_writer()
-        #@+node:AGP.20230524154206:split_rule()
+        #@-node:choose_writer()
+        #@+node:split_rule()
         def split_rule(self,node,head):
             
-            p = self.Parser
-            cc = p.cc
+            cc = self.cc
+            p = cc.Parser
+            
             
             w,head = self.choose_writer(head)
+            
+            
             
             parts = head.replace("\\t","\t").replace("\\n","\n").split("$")
             
@@ -6950,12 +7014,12 @@ class ParserClass:
                 
             return None
         #@nonl
-        #@-node:AGP.20230524154206:split_rule()
-        #@+node:AGP.20230524143101:default_rule()
+        #@-node:split_rule()
+        #@+node:default_rule()
         def default_rule(self,head):
                 
-            p = self.parser
-            cc = p.cc
+            cc = self.cc
+            p = cc.Parser
             
             w,head = self.choose_writer(head)
                 
@@ -6968,9 +7032,12 @@ class ParserClass:
                 
             
             return p.WriteNode(p.CURRENT_NODE,self.CMT+head,w,tab,end,doc=doc,close=close)
-        #@-node:AGP.20230524143101:default_rule()
-        #@+node:AGP.20230524143101.1:basic_rules()
+        #@-node:default_rule()
+        #@+node:basic_rules()
         def basic_rules(self,head):
+            
+            cc = self.cc
+            p = cc.Parser
             
             #AT rule
             if head.startswith("@"):
@@ -6981,11 +7048,16 @@ class ParserClass:
             #print "commemt",self.CMT
         	
             if head.startswith(self.CMT):
-                p = self.parser
                 
                 p.CURRENT_RULE = "comment"
+                #p.RULES = self.INFUNC_RULES#---------------------------------
+                
                 w,head = self.choose_writer(head)
-                return p.WriteNode(p.CURRENT_NODE,head,w,"\t"+self.CMT,None,doc=head,close="\n")
+                #if p.BIFILE == True:
+                #    w=p.BOTH #this ensure that both file destination are commented
+                
+                
+                return p.WriteNode(p.CURRENT_NODE,head,w,self.CMT+"\t",None,doc=head,close="\n",taball=True)#,rules=[self.default_rule])
             
             
             
@@ -6993,10 +7065,21 @@ class ParserClass:
             
             if "@" in head:
                 
-                p = self.parser
+                #p = self.parser
                 
                 p.CURRENT_RULE = "split"
+                
+                if head.endswith(";"):  #incompatible with semicolon rule
+                    semicolon = True
+                    head = head[:-1]
+                else:
+                    semicolon = False
+                
                 w,head = self.choose_writer(head)
+                
+                if semicolon:
+                    head += ";"
+                
                 
                 close = "\n"
                 doc = head
@@ -7017,6 +7100,7 @@ class ParserClass:
                     end = parts[2]
                 
                 
+                
                 if tail != "":
                     close = tail+"\n"
                 
@@ -7030,15 +7114,19 @@ class ParserClass:
             
             return None
         #@nonl
-        #@-node:AGP.20230524143101.1:basic_rules()
-        #@+node:AGP.20230524143136:func_rule()
+        #@-node:basic_rules()
+        #@+node:func_rule()
         def func_rule(self,head):
-            p = self.parser
+            
+            
             mo = SplitFunc(head)
             
             if not mo:
                 return None
                 
+            cc = self.cc
+            p = cc.Parser
+            
             p.CURRENT_RULE = "func"
             
             #p.OnFunc(mo)
@@ -7046,8 +7134,8 @@ class ParserClass:
             spec,ret,name,params,pure,dest,ctors = self.Groups = p.CURRENT_FUNC_MO = mo
             
             # # is same as nothing for func
-            TO_SRC = ";" in dest[0] or "%" in dest[0]
-            DO_DEC = not "!" in dest[0] and not "$" in dest[0]# ! mean the function is not declared, only defined in src, main()!
+            TO_SRC = ";" in dest[0] or ">" in dest[0]
+            DO_DEC = not "!" in dest[0] and "->" != dest[0]# ! mean the function is not declared, only defined in src, main()!
             IS_PURE = pure[0] != ""     #function only declared
             
             node = p.CURRENT_NODE
@@ -7104,11 +7192,13 @@ class ParserClass:
             
         
          
-        #@-node:AGP.20230524143136:func_rule()
-        #@+node:AGP.20230524143435:DeclareFunc
+        #@-node:func_rule()
+        #@+node:DeclareFunc
         def DeclareFunc(self,wf):
             
-            p = self.parser
+            cc = self.cc
+            p = cc.Parser
+            
             spec,ret,name,params,pure,dest,ctors = self.Groups
             
             if name[0] == "":
@@ -7118,9 +7208,21 @@ class ParserClass:
             if "__asm" in specs:
                 specs.remove("__asm")
                 spec = (string.join(specs),spec[1],spec[2])
+                
+            #if this is a definition, must remove default parameter assignement
+            params = params[0].strip("()")
+            """paramslist = params.split(",")
+            params = ""
+            for pmt in paramslist:
+                pa = pmt.split("=")params = params[0].strip("()")
+                if params != "":
+                    params += ","+pa[0]
+                else:#if this is not a full definition, must remove default parameter assignement
+                    params += pa[0]
+            """
             
             
-            p.CURRENT_FUNC = proto = spec[0] +" "+ ret[0] +" "+ name[0] + params[0] + pure[0] +";"
+            p.CURRENT_FUNC = proto = spec[0] +" "+ ret[0] +" "+ name[0] + "("+params+")" + pure[0] +";"
             
             p.CURRENT_FUNC = proto = " ".join(proto.split())
             
@@ -7131,10 +7233,13 @@ class ParserClass:
                 
             return True
         #@nonl
-        #@-node:AGP.20230524143435:DeclareFunc
-        #@+node:AGP.20230524143443:DefineFunc
+        #@-node:DeclareFunc
+        #@+node:DefineFunc
         def DefineFunc(self,w,node,full=False,push=False):            
-            p = self.parser
+            
+            cc = self.cc
+            p = cc.Parser    
+        
             spec,ret,name,params,pure,dest,ctors = self.Groups
             
             if name[0] == "":
@@ -7145,11 +7250,11 @@ class ParserClass:
             proto = ""
             _as = "" #access specifier
             
-            asm = False
+            asm = None
             specs = spec[0].split()
             if "__asm" in specs:
                 specs.remove("__asm")
-                asm = True
+                asm = p.asm_line_filter
             
             if full == True:
                     #specs = spec[0].split()
@@ -7166,22 +7271,25 @@ class ParserClass:
                         #_as = n+"::"+_as
                         _as += n+"::"
                         push = True   #push tab flag, indicate to reset tab beacause class func defined in src
-                #if this is not a full definition, must remove default parameter assignement
+                
                 params = params[0].strip("()")
+                
+                #if this is not a full definition, must remove default parameter assignement
                 paramslist = params.split(",")
                 params = ""
                 for pmt in paramslist:
                     pa = pmt.split("=")
                     if params != "":
                         params += ","+pa[0]
-                    else:
+                    else:#if this is not a full definition, must remove default parameter assignement
                         params += pa[0]
                         
             proto += ret[0]+" "+_as+name[0]+"("+params+")"+ctors
             proto = proto.strip()
             
+            
             #@    @+others
-            #@+node:AGP.20230524143443.1:doc
+            #@+node:doc
             nt = StrToBool(p.cc.cGet("NEW_TOPIC","False",node=node))
             uh = StrToBool(p.cc.cGet("USE_HEAD","False",node=node))    
             
@@ -7202,8 +7310,8 @@ class ParserClass:
                 
                 dh += ")"
                         
-            #@-node:AGP.20230524143443.1:doc
-            #@+node:AGP.20230524143443.2:core
+            #@-node:doc
+            #@+node:core
             
             
             p.CURRENT_LOCATION = 0  #head
@@ -7213,8 +7321,8 @@ class ParserClass:
             
             #wf(p.TAB_STRING+p.cc.FUNC_HDR)
             #print w
-            w(p.cc.FUNC_HDR)#,False)
-            
+            w(p.cc.FUNC_HDR)#[:-2])#,False)
+            #print p.cc.FUNC_HDR.strip()
             if False:#node.bodyString().strip()=="" and not node.firstChild(): #empty bracket
                 #Error("xcc :",str(p.CURRENT_SRC_LINE))
                 
@@ -7249,14 +7357,14 @@ class ParserClass:
                 
                 
                 
-                if asm:
-                    p.line_filter = p.asm_line_filter
-                
-                if not p.WriteNode(node,proto+p.cc.FUNC_OPN,w,"\t",None,doc=dh):
+                #if asm:
+                #    p.line_filter = p.asm_line_filter
+                #print proto
+                if not p.WriteNode(node,proto+p.cc.FUNC_OPN,w,"\t",None,doc=dh,line_filter=asm):
                     return False
                 
-                if asm:
-                    p.line_filter = None
+                #if asm:
+                #    p.line_filter = None
             
                 
                 
@@ -7272,19 +7380,19 @@ class ParserClass:
             
                 push and w.poptab()
             #@nonl
-            #@-node:AGP.20230524143443.2:core
+            #@-node:core
             #@-others
             
             p.FUNC_WRITER = None
             
             return True
         #@nonl
-        #@-node:AGP.20230524143443:DefineFunc
-        #@+node:AGP.20230524143703:class_rule()
+        #@-node:DefineFunc
+        #@+node:class_rule()
         def class_rule(self,head):
                 
-            p = self.parser
-            cc = p.cc
+            cc = self.cc
+            p = cc.Parser
             
             class_s = head.find("class ")
             if class_s > -1:
@@ -7295,9 +7403,6 @@ class ParserClass:
                 spec = (head[:class_s],0,class_s)
                 name_s = class_s+6		
                 dest_s = head.find(";",name_s)
-                
-                if dest_s == -1:
-                    dest_s = head.find("$",name_s)
                     
                 inst_s = head.find("!",name_s)
                 base_s = head.find(":",name_s)
@@ -7308,9 +7413,20 @@ class ParserClass:
                     dest = (head[dest_s:dest_s+1],dest_s,dest_s+1)
                     inst_e = dest_s
                     base_e = dest_s
-                else:
-                    dest = ("",-1,-1)
-                    name_e = inst_e = base_e = len(head)
+                else:#new syntax
+                    if head.endswith("->"):
+                        dest = ("->",len(head)-2,len(head))
+                        name_e = inst_e = base_e = len(head)-2
+                    elif head.endswith("<-"):
+                        dest = ("<-",len(head)-2,len(head))
+                        name_e = inst_e = base_e = len(head)-2
+                    elif head.endswith("<->"):
+                        dest = ("<->",len(head)-3,len(head))
+                        name_e = inst_e = base_e = len(head)-3
+                        
+                    else:
+                        dest = ("",-1,-1)
+                        name_e = inst_e = base_e = len(head)
                 
                 #inst --------------------------
                 if inst_s > -1:
@@ -7331,7 +7447,7 @@ class ParserClass:
                 oldmo = p.CURRENT_CLASS_MO
                 p.CURRENT_CLASS_MO = mo = (spec,name,base,inst,dest)
                 #@        @+others
-                #@+node:AGP.20230524144233:on match
+                #@+node:on match
                 p.CURRENT_RULE = "class"
                     
                 #spec,name,base,inst,dest = mo
@@ -7370,7 +7486,7 @@ class ParserClass:
                 
                 p.CLASS_LIST.append(name[0])#-------------------------
                 
-                head = cc.CLASS_HDR + cdec+cc.CLASS_OPN+"\n"
+                head = cc.CLASS_HDR +"\n"+ cdec+cc.CLASS_OPN+"\n"
                 
                 if not p.WriteNode(p.CURRENT_NODE,head,cw,"\t",None,doc=name[0]):
                         return False
@@ -7418,764 +7534,30 @@ class ParserClass:
                 
                 return True
                 #@nonl
-                #@-node:AGP.20230524144233:on match
+                #@-node:on match
                 #@-others
                 p.CURRENT_CLASS_MO = oldmo
             
         #@nonl
-        #@-node:AGP.20230524143703:class_rule()
+        #@-node:class_rule()
         #@-others
-    #@-node:AGP.20230524141224:class CPPRULES
-    #@+node:AGP.20230214111049.421:Rules
-    #@+node:AGP.20230214111049.422:LoadCppRules
-    def LoadCppRules(self):
-        
-        parser = self
-    
-        self.OUTFUNC_RULES = [
-            self.ATRULE(),
-            self.COMMENTRULE(parser),	#placed fisrt to allow functions and class to be commented out
-            self.FUNCRULE(parser),
-            self.CLASSRULE(parser),	#must be after CppFuncRule or it will catch template funcs
-            self.DEFAULTRULE(parser)	#must be the last rule cos it always proceed
-        ]
-        
-        self.RULES = self.OUTFUNC_RULES
-        
-        self.INFUNC_RULES = [
-            self.ATRULE(),
-            self.FUNCCOMMENTRULE(parser),	#placed fisrt to allow functions and class to be commented out
-            self.FUNCASMRULE(parser),
-            self.FUNCDEFAULTRULE(parser)	#must be the last rule cos it always proceed
-        ]
-    #@nonl
-    #@-node:AGP.20230214111049.422:LoadCppRules
-    #@+node:AGP.20230214111049.423:ATRULE
-    class ATRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.424:Match
-        def Match(self,head):
-            if head.startswith("@"):
-                return True
-            return None
-        
-        #@-node:AGP.20230214111049.424:Match
-        #@+node:AGP.20230214111049.425:OnMatch
-        def OnMatch(self,mo,node):
-            pass
-        #@-node:AGP.20230214111049.425:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.423:ATRULE
-    #@+node:AGP.20230214111049.426:COMMENTRULE
-    class COMMENTRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.427:ctor
-        def __init__ (self,Parser):    
-            self.Parser = Parser
-            self.CMT = Parser.cc.CMT
-        #@nonl
-        #@-node:AGP.20230214111049.427:ctor
-        #@+node:AGP.20230214111049.428:Match
-        def Match(self,head):
-            if head.startswith(self.CMT):
-                if head.endswith(";"):
-                    return True
-                return False
-            return None
-        #@nonl
-        #@-node:AGP.20230214111049.428:Match
-        #@+node:AGP.20230214111049.429:OnMatch
-        def OnMatch(self,mo,node):
-            
-            p = self.Parser
-            cc = p.cc    
-            
-            p.CURRENT_RULE = "comment"
-            
-            if mo:#put in source
-                w = p.SOURCE
-                #cc.cSet("DESTINATION","SRC",node)
-                head = node.headString()[2:-1]
-            else:        
-                if p.CLASS_WRITER:
-                    w = p.CLASS_WRITER
-                else:
-                    w = p.HEADER
-                #cc.cSet("DESTINATION","HDR",node)
-                head = node.headString()[2:]
-            
-            
-            
-            #---------------------------------    
-            p.StartDoc(head,node)#------------------------doc
-            
-            p.CURRENT_LOCATION = 0  #head
-            
-            w.tab(cc.CMT)
-            w(head+"\n")    
-            
-            if p.WriteOthers(node,w) == False:#---------------
-                return False
-            
-            p.CURRENT_LOCATION = 2  #tail
-            w.untab(cc.CMT)
-            w("\n")
-        
-            p.EndDoc(node)#-------------------------------doc
-            #----------------------------------
-            
-            return True
-        
-        
-        #@-node:AGP.20230214111049.429:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.426:COMMENTRULE
-    #@+node:AGP.20230214111049.430:FUNCRULE
-    class FUNCRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.431:ctor
-        def __init__ (self,Parser):    
-            self.Parser = Parser
-            Parser.TrueTabWrite = Parser.TabWrite
-        #@nonl
-        #@-node:AGP.20230214111049.431:ctor
-        #@+node:AGP.20230214111049.432:Match
-        def Match(self,head):	
-           return SplitFunc(head)
-            
-        #@-node:AGP.20230214111049.432:Match
-        #@+node:AGP.20230214111049.433:_OnMatch{}
-        def _OnMatch(self,mo,node):
-            
-            p = self.Parser
-            p.CURRENT_RULE = "func"
-            
-            #p.OnFunc(mo)
-            
-            spec,ret,name,params,pure,dest,ctors = self.Groups = p.CURRENT_FUNC_MO = mo
-            
-            if pure[0] == "":#define the func, possibly splitted
-                
-                if ";" in dest[0]:#put in source
-                    
-                    if "!" in dest[0]:# ! mean the function is not declared, only defined in src, main()!
-                        
-                        #no declaration in header
-                        return self.DefineFunc(p.SOURCE,node,full=True)
-                        
-                    else:
-                        
-                        if self.DeclareFunc(p.HEADER) == False:
-                            return False
-                        
-                        return self.DefineFunc(p.SOURCE,node)
-                    
-                
-                else:
-                    
-                    if p.CLASS_WRITER:
-                        
-                        if p.CLASS_WRITER == p.HEADER:#func is split
-                            if ";" in dest[0]:#put in source
-                                
-                                return self.DeclareFunc(p.CLASS_WRITER) and self.DefineFunc(p.SOURCE,node,push=True)
-                                
-                                #if self.DeclareFunc(p.CLASS_WRITER) == False:
-                                #    return False
-                                #return self.DefineFunc(p.SOURCE,node,push=True)
-                            else:
-                                return self.DefineFunc(p.HEADER,node,full=True)            
-                                                
-                        else:#func is not splitted, written with the class
-                            return self.DefineFunc(p.CLASS_WRITER,node)
-                
-                    else:
-                        
-                        return self.DefineFunc(p.HEADER,node,full=True)
-            
-            else:#pure function, only declare the func, real destination depend upon DEST group and EXT
-                if p.CLASS_WRITER:
-                    p.CURRENT_FUNC_DST = "HDR"
-                    #p.cc.cSet("DESTINATION","HDR",node)
-                    return self.DeclareFunc(p.CLASS_WRITER)
-                    
-                else:
-                    Error("xcc :","Pure virtual function outside a class is illegal!")
-                    #cc.GoToNode(node)
-                    return False
-        #@nonl
-        #@-node:AGP.20230214111049.433:_OnMatch{}
-        #@+node:AGP.20230322091505:OnMatch{}
-        def OnMatch(self,mo,node):
-            
-            p = self.Parser
-            p.CURRENT_RULE = "func"
-            
-            #p.OnFunc(mo)
-            
-            spec,ret,name,params,pure,dest,ctors = self.Groups = p.CURRENT_FUNC_MO = mo
-            
-            TO_SRC = ";" in dest[0]
-            DO_DEC = not "!" in dest[0]# ! mean the function is not declared, only defined in src, main()!
-            IS_PURE = pure[0] != ""     #function only declared
-            
-            WDEC = p.HEADER
-            WDEF = p.SOURCE
-            
-            WCLASS = p.CLASS_WRITER
-            
-            if WCLASS:
-                WDEC = WCLASS
-            
-            elif IS_PURE:# 
-                Error("xcc :","Pure virtual function outside a class is illegal!")
-                #cc.GoToNode(node)
-                return False
-            
-            SINGLE = WDEC == WDEF
-            
-            SPLIT = WDEC != WDEF    #class defined in header-> split
-        
-            
-            if SPLIT:
-                if DO_DEC and not self.DeclareFunc(WDEC):
-                    return False
-                    
-                
-                return not IS_PURE and self.DefineFunc(p.SOURCE,node)
-            else:
-                if WCLASS:
-                    return self.DefineFunc(WCLASS,node,full=True)
-                else:        
-                    if TO_SRC:
-                        return self.DefineFunc(p.SOURCE,node,full=True)
-                    else:
-                        return self.DefineFunc(p.HEADER,node,full=True)
-            
-         
-        #@nonl
-        #@-node:AGP.20230322091505:OnMatch{}
-        #@+node:AGP.20230214111049.434:DeclareFunc
-        def DeclareFunc(self,wf):
-            
-            p = self.Parser
-            spec,ret,name,params,pure,dest,ctors = self.Groups
-            
-            if name[0] == "":
-                return False
-            
-            specs = spec[0].split()
-            if "__asm" in specs:
-                specs.remove("__asm")
-                spec = (string.join(specs),spec[1],spec[2])
-            
-            
-            p.CURRENT_FUNC = proto = spec[0] +" "+ ret[0] +" "+ name[0] + params[0] + pure[0] +";"
-            
-            p.CURRENT_FUNC = proto = " ".join(proto.split())
-            
-            p.CURRENT_LOCATION = 0  #head
-            #print "|",wf.tabstring,"|",proto
-            #wf(p.TAB_STRING+proto.strip()+"\n")
-            wf(proto)
-                
-            return True
-        #@nonl
-        #@-node:AGP.20230214111049.434:DeclareFunc
-        #@+node:AGP.20230214111049.435:DefineFunc
-        def DefineFunc(self,wf,node,full=False,push=False):            
-            p = self.Parser
-            spec,ret,name,params,pure,dest,ctors = self.Groups
-            
-            if name[0] == "":
-                p.cc.ToolBar.SetError("No function name in : "+GetNodePath(p.CURRENT_NODE),p.CURRENT_NODE)
-                return False
-                    
-            p.FUNC_WRITER = wf
-            proto = ""
-            _as = "" #access specifier
-            
-            asm = False
-            specs = spec[0].split()
-            if "__asm" in specs:
-                specs.remove("__asm")
-                asm = True
-            
-            if full == True:
-                    #specs = spec[0].split()
-                    #if "__asm" in specs:
-                        #specs.remove("__asm")
-                        #spec = (string.join(specs),spec[1],spec[2])
-                    if not name[0].startswith("~"):     #remove any specifier form destructor outside of class definition
-                        proto = string.join(specs)+" "
-                    
-                    params = params[0].strip("()")
-            else:
-                for n in p.CLASS_LIST:#if full == True, declared and defined at once, so no access specifier
-                    if n != None:
-                        #_as = n+"::"+_as
-                        _as += n+"::"
-                        push = True   #push tab flag, indicate to reset tab beacause class func defined in src
-                #if this is not a full definition, must remove default parameter assignement
-                params = params[0].strip("()")
-                paramslist = params.split(",")
-                params = ""
-                for pmt in paramslist:
-                    pa = pmt.split("=")
-                    if params != "":
-                        params += ","+pa[0]
-                    else:
-                        params += pa[0]
-                        
-            proto += ret[0]+" "+_as+name[0]+"("+params+")"+ctors
-            proto = proto.strip()
-            
-            #@    @+others
-            #@+node:AGP.20230214111049.436:doc
-            
-            
-            nt = StrToBool(p.cc.cGet("NEW_TOPIC","False",node=node))
-            uh = StrToBool(p.cc.cGet("USE_HEAD","False",node=node))    
-            if nt:
-                p.StartDoc(name[0],node)
-            elif uh:
-                prms = SplitParams(params)
-                dh = "<font color=\"blue\">"+spec[0]+" "+ret[0]+"</font> "+_as+name[0]+"("
-                if prms != None:
-                    for t,n,a in prms:                
-                        dh += "<font color=\"blue\">"+t+"</font> "+n
-                        if a != None:
-                            dh += " = <font color=\"green\">"+a+"</font> "
-                        
-                        dh += ", "
-                    dh = dh[:-2]
-                
-                dh += ")"
-                        
-                p.StartDoc(dh,node)
-            #---------------------
-                        
-            #@+others
-            #@+node:AGP.20230214111049.437:core
-            push and wf.pushtab()
-            
-            p.CURRENT_LOCATION = 0  #head
-            
-            nl="\n"
-            
-            
-            #wf(p.TAB_STRING+p.cc.FUNC_HDR)
-            wf(p.cc.FUNC_HDR)
-            
-            if node.bodyString().strip()=="" and not node.firstChild(): #empty bracket
-                #Error("xcc :",str(p.CURRENT_SRC_LINE))
-                
-                #wf(p.TAB_STRING+proto+p.cc.FUNC_OPN+p.cc.FUNC_END)
-                wf(proto+p.cc.FUNC_OPN+p.cc.FUNC_END)
-                
-                
-                #Error("xcc :",p.TAB_STRING+proto+p.cc.FUNC_OPN+p.cc.FUNC_END)
-                #Error("xcc :",str(p.CURRENT_SRC_LINE))
-            
-            else:
-            
-                #wf(p.TAB_STRING+proto+p.cc.FUNC_OPN)#+"\n")#---------------------
-                wf(proto+p.cc.FUNC_OPN)#+"\n")#---------------------
-            
-                p.CURRENT_FUNC = proto
-            
-                p.RULES = p.INFUNC_RULES#---------------------------------
-                wf.tab()
-                
-                if asm:
-                    p.line_filter = p.asm_line_filter
-                
-                
-                #if asm:
-                #    if p.WriteOthers_asm(node,wf) == False:
-                #        return False
-                #else:
-                if p.WriteOthers(node,wf) == False:
-                    return False
-                        
-                if asm:
-                    p.line_filter = None
-            
-                wf.untab()
-                p.RULES = p.OUTFUNC_RULES#---------------------------
-            
-            
-                
-                p.CURRENT_LOCATION = 2  #tail
-                #wf(p.TAB_STRING+p.cc.FUNC_END)#+"\n")#---------------------------
-                wf(p.cc.FUNC_END)#+"\n")#---------------------------
-                p.CURRENT_FUNC = ""
-                
-            push and wf.poptab()
-            #@nonl
-            #@-node:AGP.20230214111049.437:core
-            #@-others
-                    
-            #---------------------
-            p.EndDoc(node)
-            #@nonl
-            #@-node:AGP.20230214111049.436:doc
-            #@-others
-                        
-            return True
-        #@nonl
-        #@-node:AGP.20230214111049.435:DefineFunc
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.430:FUNCRULE
-    #@+node:AGP.20230214111049.438:CLASSRULE
-    class CLASSRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.439:ctor
-        def __init__ (self,Parser):    
-            self.Parser = Parser
-        #@nonl
-        #@-node:AGP.20230214111049.439:ctor
-        #@+node:AGP.20230214111049.440:Match
-        #spec class name base inst dest
-        def Match(self,head):
-            #return self.Matcher.search(head)
-            class_s = head.find("class ")
-            if class_s > -1:
-                head = head.split()
-                head = string.join(head)
-                class_s = head.rfind("class ")
-                
-                spec = (head[:class_s],0,class_s)
-                name_s = class_s+6		
-                dest_s = head.find(";",name_s)
-                inst_s = head.find("!",name_s)
-                base_s = head.find(":",name_s)
-                
-                #dest -----------------------
-                if dest_s > -1:
-                    name_e = dest_s
-                    dest = (head[dest_s:dest_s+1],dest_s,dest_s+1)
-                    inst_e = dest_s
-                    base_e = dest_s
-                else:
-                    dest = ("",-1,-1)
-                    name_e = inst_e = base_e = len(head)
-                
-                #inst --------------------------
-                if inst_s > -1:
-                    name_e = inst_s
-                    base_e = inst_s
-                    inst = (head[inst_s:inst_e],inst_s,inst_e)
-                else:
-                    inst = ("",-1,-1)
-                
-                #base ---------------------------------		
-                if base_s > -1:
-                    name_e = base_s
-                    base = (head[base_s:base_e],base_s,base_e)
-                else:
-                    base = ("",-1,-1)
-                
-                name = (head[name_s:name_e],name_s,name_e)
-                        
-                return (spec,name,base,inst,dest)
-                    
-            return None
-        #@nonl
-        #@-node:AGP.20230214111049.440:Match
-        #@+node:AGP.20230214111049.441:OnMatch
-        def OnMatch(self,mo,node):
-            # global LOCATE_CHILD
-            
-            p = self.Parser
-            cc = p.cc
-            
-            p.CURRENT_RULE = "class"
-            
-            spec,name,base,inst,dest = mo
-            
-            #determine where to write
-            if len(p.CLASS_LIST) == 0:#redirect only for the root class
-                if dest[0] != "":#directed toward source
-                    p.CLASS_WRITER = p.SOURCE
-                    push = True
-                else:
-                    p.CLASS_WRITER = p.HEADER
-                    push = False
-            else:
-                if p.CLASS_WRITER == p.HEADER:
-                    push = False
-                else:
-                    push = True
-            
-            cw = p.CLASS_WRITER
-            
-            cdec = ""
-            
-            if spec[0] != "":
-                cdec += spec[0]+" "
-            
-            if name[0] == "":
-                p.cc.ToolBar.SetError("No name in class definition :"+GetNodePath(p.CURRENT_NODE),p.CURRENT_NODE)
-                return False
-            
-            cdec += "class "+name[0]
-            
-            if base[0] != "":
-                cdec += base[0]
-                
-            push and cw.pushtab()
-            
-            #---------------------------------
-            p.StartDoc(name[0],node)#-------------------------------
-        
-            p.CLASS_LIST.append(name[0])#-------------------------
-            
-            p.CURRENT_LOCATION = 0  #head
-            cw(cc.CLASS_HDR)            #p.TAB_STRING+
-            cw(cdec+cc.CLASS_OPN+"\n")  #p.TAB_STRING+
-            
-            cw.tab()
-            
-            if p.WriteOthers(node,cw) == False:#------------------
-                return False
-            
-            cw.untab()
-            
-            inst = inst[0][1:]
-            ce = cc.CLASS_END.replace("_INST_",inst)
-            
-            p.CURRENT_LOCATION = 2  #tail
-            cw(ce+"\n")#p.TAB_STRING+
-            
-            p.CLASS_LIST.pop()#-----------------------------------
-        
-            p.EndDoc(node)#--------------------------------------
-            #---------------------------------
-            
-            push and cw.poptab()
-        
-            if len(p.CLASS_LIST) == 0:
-                p.CLASS_WRITER = None		
-            
-            return True
-        #@-node:AGP.20230214111049.441:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.438:CLASSRULE
-    #@+node:AGP.20230214111049.442:DEFAULTRULE
-    class DEFAULTRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.443:__init__
-        def __init__(self,Parser):
-            
-            self.Parser = Parser
-            self.Matcher = re.compile("(?P<HEAD>[^;]*)(?P<DEST>;$)*")
-        #@nonl
-        #@-node:AGP.20230214111049.443:__init__
-        #@+node:AGP.20230214111049.444:Match
-        def Match(self,head):
-            return head.endswith(";")
-        #@nonl
-        #@-node:AGP.20230214111049.444:Match
-        #@+node:AGP.20230214111049.445:OnMatch
-        def OnMatch(self,mo,node):
-                
-            p = self.Parser
-            cc = p.cc
-            
-            if mo:#put in source
-                w = p.SOURCE
-                head = node.headString()[:-1]        
-            else:        
-                if p.CLASS_WRITER:
-                    w = p.CLASS_WRITER
-                else:
-                    w = p.HEADER
-                head = node.headString()          
-                
-            p.CURRENT_RULE = "default"        
-            
-            #---------------------------    
-            p.StartDoc(head,node)#----------------------------------
-            
-            p.CURRENT_LOCATION = 0  #head
-            w(cc.CMT+head)
-            
-            #p.Tab() - for python compatibility
-            if p.WriteOthers(node,w) == False:#-----------------------
-                return False    
-            #p.UnTab()- for python compatibility
-            
-            p.CURRENT_LOCATION = 2  #tail	
-            w("\n")
-            
-            p.EndDoc(node)#---------------------------------------------
-            #----------------------------
-            return True
-            
-            
-        #@nonl
-        #@-node:AGP.20230214111049.445:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.442:DEFAULTRULE
-    #@+node:AGP.20230214111049.446:FUNCCOMMENTRULE
-    class FUNCCOMMENTRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.447:__init__
-        def __init__(self,Parser):
-            
-            self.Parser = Parser	
-            self.Matcher = re.compile("^//(?P<HEAD>.*)")
-            
-        #@nonl
-        #@-node:AGP.20230214111049.447:__init__
-        #@+node:AGP.20230214111049.448:Match
-        def Match(self,head):
-            return self.Matcher.search(head)
-        #@-node:AGP.20230214111049.448:Match
-        #@+node:AGP.20230214111049.449:OnMatch
-        def OnMatch(self,mo,node):
-            
-            p = self.Parser
-            p.CURRENT_RULE = "funccomment"
-            
-            w = p.FUNC_WRITER
-            groups = mo.groupdict()
-            
-            head = groups["HEAD"]
-            if head == None:
-                head = ""
-                
-            p.CURRENT_LOCATION = 0  #head
-            w.tab(p.cc.CMT)
-            w(head+"\n")
-            
-            if p.WriteOthers(node,w) == False:
-                return False
-            
-            p.CURRENT_LOCATION = 2  #tail
-            w.untab(p.cc.CMT)
-            w("\n")
-        
-            return True
-        #@-node:AGP.20230214111049.449:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.446:FUNCCOMMENTRULE
-    #@+node:AGP.20230214111049.450:FUNCASMRULE
-    class FUNCASMRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.451:__init__
-        def __init__(self,Parser):
-            
-            self.Parser = Parser	
-            self.Matcher = re.compile("^__asm(?P<HEAD>.*)")
-            
-        #@nonl
-        #@-node:AGP.20230214111049.451:__init__
-        #@+node:AGP.20230214111049.452:Match
-        def Match(self,head):
-            return self.Matcher.search(head)
-        #@-node:AGP.20230214111049.452:Match
-        #@+node:AGP.20230214111049.453:OnMatch
-        def OnMatch(self,mo,node):
-            
-            p = self.Parser
-            p.CURRENT_RULE = "funcasm"
-            
-            w = p.FUNC_WRITER
-            groups = mo.groupdict()
-            
-            head = groups["HEAD"]
-            if head == None:
-                head = ""
-                
-            p.CURRENT_LOCATION = 0  #head
-            w.Tab()
-            w("//__asm"+head+"\n")
-            
-            
-            p.line_filter = p.asm_line_filter
-            
-            if p.WriteOthers(node,wf) == False:
-                return False
-                    
-            p.line_filter = None
-            
-            
-            p.CURRENT_LOCATION = 2  #tail
-            w.UnTab()
-            w("\n")
-        
-            return True
-        #@-node:AGP.20230214111049.453:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.450:FUNCASMRULE
-    #@+node:AGP.20230214111049.454:FUNCDEFAULTRULE
-    class FUNCDEFAULTRULE:
-        #@    @+others
-        #@+node:AGP.20230214111049.455:__init__
-        def __init__(self,Parser):
-            
-            self.Parser = Parser
-            self.Matcher = re.compile("(?P<HEAD>.*)")
-        #@nonl
-        #@-node:AGP.20230214111049.455:__init__
-        #@+node:AGP.20230214111049.456:Match
-        def Match(self,head):
-        
-            return self.Matcher.search(head)
-        #@-node:AGP.20230214111049.456:Match
-        #@+node:AGP.20230214111049.457:OnMatch
-        def OnMatch(self,mo,node):
-            
-            p = self.Parser
-            p.CURRENT_RULE = "funcdefault"
-            
-            w = p.FUNC_WRITER
-            groups = mo.groupdict()
-        
-            head = groups["HEAD"]
-            if head == None:
-                head = ""
-            
-            #---------------------------    
-            p.StartDoc(head,node)#----------------------------------
-            
-            p.CURRENT_LOCATION = 0  #head
-            w(p.cc.CMT+head+"\n")
-            w.tab()
-            
-            if p.WriteOthers(node,w) == False:
-                return False
-            
-            w.untab()	
-            p.CURRENT_LOCATION = 2  #tail
-            w("\n")    
-            p.EndDoc(node)#---------------------------------------------
-            #----------------------------
-            return True
-        #@-node:AGP.20230214111049.457:OnMatch
-        #@-others
-    #@nonl
-    #@-node:AGP.20230214111049.454:FUNCDEFAULTRULE
-    #@-node:AGP.20230214111049.421:Rules
-    #@+node:AGP.20230214111049.458:__init__
-    def __init__(self,cc):
-        self.cc = cc
+    #@-node:class CPPRULES
+    #@+node:__init__
+    def __init__(self,cc,rules):
         
         self.__name__ = "ParserClass"
+        
+        self.cc = cc
+        cc.Parser = self
+        
+        self.RULES = rules.RULES
+        #rules.parser = self
+        
         self.DO_PARSE = True	
         self.NOW_PARSING = False
         self.PARSE_TIME = 0.0
         
-        self.RULES = []	
+        
         self.OnStart = None
         self.OnEnd = None    
         
@@ -8227,27 +7609,33 @@ class ParserClass:
         
         
         #@    @+others
-        #@+node:AGP.20230604195736:output files
+        #@+node:output files
         h = self.HEADER = OUTPUT(self)
         s = self.SOURCE = OUTPUT(self)
-        self.BOTH = OUTLIST([h,s])
         
-        self.cpprules = self.CPPRULES(self)
+        #self.BOTH = OUTLIST(self,[h,s])
+        
+        #self.cpprules = self.CPPRULES(self)
         
         self.BIFILE = True
           
         if cc.EXT == cc.SRC_EXT:
             self.DECLARE_IN_HDR = False
             self.BIFILE = False
+            self.BOTH = self.SOURCE
             
             
         if cc.EXT == cc.HDR_EXT:
             self.DEFINE_IN_SRC = False
             self.BIFILE = False
-        #@-node:AGP.20230604195736:output files
+            self.BOTH = self.HEADER
+        
+        if self.BIFILE:
+            self.BOTH = OUTLIST(self,[h,s])
+        #@-node:output files
         #@-others
-    #@-node:AGP.20230214111049.458:__init__
-    #@+node:AGP.20230315110656:_Declare
+    #@-node:__init__
+    #@+node:_Declare
     def _Declare(self,text):
         lines = text.splitlines(True)      
         
@@ -8265,13 +7653,13 @@ class ParserClass:
             for l in lines:    
                 self.CURRENT_HDR_LINE += 1
                 self.WriteHeader(l.rstrip("\n")+"\n")
-    #@-node:AGP.20230315110656:_Declare
-    #@+node:AGP.20230521193408:Declare
+    #@-node:_Declare
+    #@+node:Declare
     def Declare(self,text):
         self.HEADER(text)
     
-    #@-node:AGP.20230521193408:Declare
-    #@+node:AGP.20230315105014:_Define
+    #@-node:Declare
+    #@+node:_Define
     def _Define(self,text):
         lines = text.splitlines(True)      
         
@@ -8289,13 +7677,13 @@ class ParserClass:
             for l in lines:    
                 self.CURRENT_SRC_LINE += 1
                 self.WriteSource(l.rstrip("\n")+"\n")
-    #@-node:AGP.20230315105014:_Define
-    #@+node:AGP.20230521193302:Define
+    #@-node:_Define
+    #@+node:Define
     def Define(self,text):
         self.SOURCE(text)
-    #@-node:AGP.20230521193302:Define
-    #@+node:AGP.20230214111049.461:WriteOthers
-    def WriteOthers(self,node,w,tab=None):
+    #@-node:Define
+    #@+node:WriteOthers
+    def WriteOthers(self,node,w,tab=None,rules=None):
         
         
         self.DocumNode(node)
@@ -8306,27 +7694,32 @@ class ParserClass:
         
         self.others = others = None
         
+        
+        
         if len(cbt) > 0:
         
             cbt = self.CURRENT_BODY_TEXT = node.bodyString().split("@others",1)
         
-            others = len(cbt) > 1    
+            others = len(cbt) > 1
         
             t = cbt[0].split('\n')
-        
-            if others > 1 and len(t) > 0 and not t[-1].endswith(""):    #there is a tabing for @others
-                tab = t.pop(-1)
+            #print t
+            if others:
+                if len(t) > 0:
+                    if t[-1].endswith(""):    
+                        pass#t.pop(-1)           #must remove empty str before @others
+                    else:
+                        tab = t.pop(-1) #there is a tabing for @others
             
             w(t)    # write pre-others text
             
-            #print "preothers",( self.CURRENT_BODY_LINE, self.HEADER.CURRENT_LINE , self.SOURCE.CURRENT_LINE)
             
         if tab:
             w.tab(tab)
             
         self.PushBodyLine()
                 
-        if self.ParseNode(node) == False:
+        if self.ParseNode(node,rules=rules) == False:
             return False
         
     
@@ -8335,6 +7728,7 @@ class ParserClass:
         
         if others:
             self.others = ( self.CURRENT_BODY_LINE, self.HEADER.CURRENT_LINE , self.SOURCE.CURRENT_LINE)
+            self.CURRENT_BODY_LINE -= 1
         
         
         
@@ -8354,38 +7748,9 @@ class ParserClass:
         
         return True
         
-        """if o != -1:
-            lb = b[:o]
-            pnl = lb.rfind("\n")
-            if pnl > -1:
-                lb = lb[:pnl]
-            
-            tb = b[o+7:]
-            pnl = tb.find("\n")		
-            if pnl > -1:
-                tb = tb[pnl+1:]        
-            
-            if lb != "":
-                self.TabWrite(lb+"\n",w)
-            
-            self.PushBodyLine()
-            if self.ParseNode(node) == False:
-                return False
-            self.PopBodyLine()
-            self.CURRENT_LOCATION = 1   #body
-            self.TabWrite(b[o+7:]+"\n",w)
-            #self.TabWrite(b[o+7:],w)
-        else:        
-            #self.TabWrite(b+"\n",w)
-            self.TabWrite(b,w)
-            if self.ParseNode(node) == False:
-                return False
-        
-        return True"""
-        
-    #@-node:AGP.20230214111049.461:WriteOthers
-    #@+node:AGP.20230529114310:WriteNode
-    def WriteNode(self,node,head,w,tab=None,end=None,doc=None,close=None):
+    #@-node:WriteOthers
+    #@+node:WriteNode
+    def WriteNode(self,node,head,w,tab=None,end=None,doc=None,close=None,rules=None,taball=False,line_filter=None):
         
         if doc:
             self.StartDoc(doc,node)
@@ -8393,20 +7758,31 @@ class ParserClass:
         self.CURRENT_LOCATION = 0  #head
     	
         #w(head+"\n")
+        #print head
         w(head)
         
         if tab or end:
-            w.tab(tab,end)
+            if taball:
+                self.BOTH.tab(tab,end) #tab all outputs
+            else:
+                w.tab(tab,end)
         
-    	
+    	if line_filter:
+            self.line_filter=line_filter
         
-        if self.WriteOthers(node,w) == False:#---------------
+        if self.WriteOthers(node,w,rules=rules) == False:#---------------
             return False
     		
         self.CURRENT_LOCATION = 2  #tail
         
+        if line_filter:
+            self.line_filter=None
+        
         if tab or end:
-            w.untab(tab,end)
+            if taball:
+                self.BOTH.untab(tab,end)
+            else:
+                w.untab(tab,end)
         
         #w("\n")
         
@@ -8418,23 +7794,18 @@ class ParserClass:
             
         return True
         
-    #@-node:AGP.20230529114310:WriteNode
-    #@+node:AGP.20230529211158:WriteBoth
-    def WriteBoth(s,strip=True):
-        self.HEADER(s,strip)
-        self.SOURCE(s,strip)
-    #@-node:AGP.20230529211158:WriteBoth
-    #@+node:AGP.20230214111049.463:PushBodyLine
+    #@-node:WriteNode
+    #@+node:PushBodyLine
     def PushBodyLine(self):
         self.BODY_LINE_STACK.insert(0,self.CURRENT_BODY_LINE)
-    #@-node:AGP.20230214111049.463:PushBodyLine
-    #@+node:AGP.20230214111049.464:PopBodyLine
+    #@-node:PushBodyLine
+    #@+node:PopBodyLine
     def PopBodyLine(self):
         self.CURRENT_BODY_LINE = self.BODY_LINE_STACK.pop(0)
         
         
-    #@-node:AGP.20230214111049.464:PopBodyLine
-    #@+node:AGP.20230214111049.465:Parse
+    #@-node:PopBodyLine
+    #@+node:Parse
     def Parse(self):
         
         cc = self.cc
@@ -8488,9 +7859,9 @@ class ParserClass:
         
         return res
     
-    #@-node:AGP.20230214111049.465:Parse
-    #@+node:AGP.20230214111049.466:ParseNode
-    def ParseNode(self,node,reset=False):
+    #@-node:Parse
+    #@+node:ParseNode
+    def ParseNode(self,node,reset=False,rules=None):
         cc = self.cc
         
         if self.DO_PARSE == False:
@@ -8512,7 +7883,10 @@ class ParserClass:
             tcr = self.CURRENT_RULE
             tcmo = self.CURRENT_MO
             
-            for r in self.cpprules.RULES:
+            if rules == None:
+                rules = self.RULES
+            
+            for r in rules:
                 result = r(ch)
                 if result == None:
                     continue
@@ -8523,17 +7897,6 @@ class ParserClass:
                 return False        
             
             
-            """
-            for r in self.RULES:
-                result = r.Match(ch)
-                if result != None:
-                    self.CURRENT_MO = result
-                    if r.OnMatch(result,cn) == False or self.DO_PARSE == False:
-                        return False
-                    #else:
-                    #    cc.cSet("RULE",self.CURRENT_RULE,cn)
-                    break
-            """
             self.CURRENT_RULE = tcr
             self.CURRENT_MO = tcmo
             
@@ -8545,8 +7908,8 @@ class ParserClass:
             
         
         return True
-    #@-node:AGP.20230214111049.466:ParseNode
-    #@+node:AGP.20230323202248:asm_line_filter()
+    #@-node:ParseNode
+    #@+node:asm_line_filter()
     def asm_line_filter(self,line):    
         line = line.strip()
         
@@ -8569,37 +7932,37 @@ class ParserClass:
         
         return line
             
-    #@-node:AGP.20230323202248:asm_line_filter()
-    #@+node:AGP.20230214111049.469:Tabing
-    #@+node:AGP.20230214111049.470:Tab
+    #@-node:asm_line_filter()
+    #@+node:Tabing
+    #@+node:Tab
     def Tab(self,sym="\t"):
         self.TAB_STRING += sym
     #@nonl
-    #@-node:AGP.20230214111049.470:Tab
-    #@+node:AGP.20230214111049.471:UnTab
+    #@-node:Tab
+    #@+node:UnTab
     def UnTab(self,sym="\t"):
         self.TAB_STRING = self.TAB_STRING[:-len(sym)] 
-    #@-node:AGP.20230214111049.471:UnTab
-    #@+node:AGP.20230214111049.472:PushTab
+    #@-node:UnTab
+    #@+node:PushTab
     def PushTab(self):
         self.TAB_LIST.append(self.TAB_STRING)
         self.TAB_STRING = ""
     #@nonl
-    #@-node:AGP.20230214111049.472:PushTab
-    #@+node:AGP.20230214111049.473:PopTab
+    #@-node:PushTab
+    #@+node:PopTab
     def PopTab(self):
         self.TAB_STRING = self.TAB_LIST.pop(-1)
     #@nonl
-    #@-node:AGP.20230214111049.473:PopTab
-    #@+node:AGP.20230214111049.474:TabWrite
+    #@-node:PopTab
+    #@+node:TabWrite
     def TabWrite(self,text,outfunc):
         if type(text) == "str":
             text = text.splitlines(True)
         
         for l in text:
             outfunc(self.TAB_STRING+l)
-    #@-node:AGP.20230214111049.474:TabWrite
-    #@+node:AGP.20230214111049.475:TabWrite_asm
+    #@-node:TabWrite
+    #@+node:TabWrite_asm
     def TabWrite_asm(self,text,outfunc):
         if type(text) == "str":
             text = text.splitlines(True)
@@ -8626,51 +7989,59 @@ class ParserClass:
             
             
             outfunc(self.TAB_STRING + l)
-    #@-node:AGP.20230214111049.475:TabWrite_asm
-    #@-node:AGP.20230214111049.469:Tabing
-    #@+node:AGP.20230214111049.476:Documentation
-    #@+node:AGP.20230214111049.477:Docum
+    #@-node:TabWrite_asm
+    #@-node:Tabing
+    #@+node:Documentation
+    #@+node:Docum
     def Docum(self,text):
         pass
-    #@-node:AGP.20230214111049.477:Docum
-    #@+node:AGP.20230315124909:DocumNode
+    #@-node:Docum
+    #@+node:DocumNode
     def DocumNode(self,node):
         pass
-    #@-node:AGP.20230315124909:DocumNode
-    #@+node:AGP.20230214111049.478:PushDoc
+    #@-node:DocumNode
+    #@+node:PushDoc
     def PushDoc(self,name,intro=True):
         pass
-    #@-node:AGP.20230214111049.478:PushDoc
-    #@+node:AGP.20230214111049.479:PopDoc
+    #@-node:PushDoc
+    #@+node:PopDoc
     def PopDoc(self):
         pass
-    #@-node:AGP.20230214111049.479:PopDoc
-    #@+node:AGP.20230214111049.480:DocName
+    #@-node:PopDoc
+    #@+node:DocName
     def DocName(self,sym="_",s=0):
         pass
-    #@-node:AGP.20230214111049.480:DocName
-    #@+node:AGP.20230214111049.481:StartDoc
+    #@-node:DocName
+    #@+node:StartDoc
     def StartDoc(self,name,node):
         pass
-    #@-node:AGP.20230214111049.481:StartDoc
-    #@+node:AGP.20230214111049.482:EndDoc
+    #@-node:StartDoc
+    #@+node:EndDoc
     def EndDoc(self,node):
         pass
-    #@-node:AGP.20230214111049.482:EndDoc
-    #@-node:AGP.20230214111049.476:Documentation
+    #@-node:EndDoc
+    #@-node:Documentation
     #@-others
 
-#@-node:AGP.20230214111049.420:ParserClass
-#@+node:AGP.20230214111049.483:WriterClass
+#@-node:ParserClass
+#@+node:WriterClass
 class WriterClass(ParserClass):
 
     #@    @+others
-    #@+node:AGP.20230214111049.484:__init__
-    def __init__(self,cc):
+    #@+node:__init__
+    def __init__(self,cc,rules):
         
         self.Result = False
+        #g.theme['shade'](0.1)
+        #<style>body{color: "+g.theme['foreground']+";}</style>
+        # style=\"background-color:"+cc.LeoBodyText["bg"]+"
         
-        self.BeginHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<html>\n<head>\n<title>TITLE</title>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">\n</head>\n<body>"
+        self.BeginHtml = """<!DOCTYPE html>
+    <html>
+    <head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>"""
         
         self.EndHtml = "</body>\n</html>"
         self.DocTab = -5
@@ -8680,7 +8051,7 @@ class WriterClass(ParserClass):
         self.DOC_NAMES = [] #
         self.DOC_FOLDER = cc.NAME+"_doc"
         
-        ParserClass.__init__(self,cc)
+        ParserClass.__init__(self,cc,rules)
         self.__name__ = "WriterClass"
         
         #self.OnStart = self.OnWriteStart
@@ -8758,14 +8129,16 @@ class WriterClass(ParserClass):
                 df.close()
                 
         if self.DOC_MENU != None:
+            self.DOC_MENU.write(self.EndHtml)
             self.DOC_MENU.close()
-    #@-node:AGP.20230214111049.484:__init__
-    #@+node:AGP.20230315102606:Documentation
-    #@+node:AGP.20230315124706:DocumNode
+    
+    #@-node:__init__
+    #@+node:Documentation
+    #@+node:DocumNode
     def DocumNode(self,node):    
         self.Docum(self.GetDoc(node))
-    #@-node:AGP.20230315124706:DocumNode
-    #@+node:AGP.20230315125225:GetDoc
+    #@-node:DocumNode
+    #@+node:GetDoc
     def GetDoc(self,node):
         #self.cc.sGet("DOC","")
         
@@ -8774,7 +8147,7 @@ class WriterClass(ParserClass):
         v = node.v
         cfg = None
         #print "getdoc:",node.v
-        print node
+        #print node
         
         if not hasattr(v,"unknownAttributes"):
             return ""
@@ -8792,21 +8165,8 @@ class WriterClass(ParserClass):
         
         return ""
     #@nonl
-    #@-node:AGP.20230315125225:GetDoc
-    #@+node:AGP.20230315102606.2:PushDoc
-    def PushDoc(self,name,intro=True):
-        self.DOC_NAMES.append(name)
-        
-    #@nonl
-    #@-node:AGP.20230315102606.2:PushDoc
-    #@+node:AGP.20230315102606.3:PopDoc
-    def PopDoc(self):
-        self.DOC_NAMES.pop()
-        
-        
-    #@nonl
-    #@-node:AGP.20230315102606.3:PopDoc
-    #@+node:AGP.20230315102606.4:DocName
+    #@-node:GetDoc
+    #@+node:DocName
     def DocName(self,sym="_",s=0):
         name = ""
         for n in self.DOC_NAMES[s:]:
@@ -8817,8 +8177,8 @@ class WriterClass(ParserClass):
             
         return name
     #@nonl
-    #@-node:AGP.20230315102606.4:DocName
-    #@+node:AGP.20230315102606.5:StartDoc
+    #@-node:DocName
+    #@+node:StartDoc
     def StartDoc(self,name,node):
         cc = self.cc
         nt = StrToBool(cc.cGet("NEW_TOPIC","False",node=node))
@@ -8840,8 +8200,8 @@ class WriterClass(ParserClass):
             self.Docum("<pre>")
                 
                 
-    #@-node:AGP.20230315102606.5:StartDoc
-    #@+node:AGP.20230315102606.6:EndDoc
+    #@-node:StartDoc
+    #@+node:EndDoc
     def EndDoc(self,node):
         cc = self.cc
         nt = StrToBool(cc.cGet("NEW_TOPIC","False",node=node))
@@ -8856,8 +8216,8 @@ class WriterClass(ParserClass):
         elif uh:
             self.Docum("</blockquote>\n")
     #@nonl
-    #@-node:AGP.20230315102606.6:EndDoc
-    #@+node:AGP.20230214111049.485:PushDoc
+    #@-node:EndDoc
+    #@+node:PushDoc
     def PushDoc(self,name,intro=True):
         cc = self.cc    
         self.DocTab += 5
@@ -8871,17 +8231,20 @@ class WriterClass(ParserClass):
         
         
             df = self.DOC_FILES[-1]
-            df.write(self.BeginHtml.replace("TITLE",self.DocName()+" Documentation"))
+            #begin = self.BeginHtml.replace("TITLE",self.DocName()+" Documentation")
+            begin = self.BeginHtml.replace("<head>","<head><style>body{color: "+g.theme['foreground']+";}</style>")
+            begin = begin.replace("<body>","<body style=\"background-color:"+cc.LeoBodyText["bg"]+";\">")
+            df.write(begin)
         
             if len(self.DOC_FILES) == 1:
                 df.write("<h1>"+name+"</h1><hr>")
             elif intro:
-                df.write("<h1>"+self.DocName(" > ",1)+"</h1><hr>")
+                df.write("<h1>"+self.DocName(" -> ",1)+"</h1><hr>")
                 
             cc.sAddText("\" writing "+cc.ABS_PATH+"/"+self.DOC_FOLDER+"/"+self.DocName()+".html\n")
     
-    #@-node:AGP.20230214111049.485:PushDoc
-    #@+node:AGP.20230214111049.486:PopDoc
+    #@-node:PushDoc
+    #@+node:PopDoc
     def PopDoc(self):
         #g.es("PopDoc("+self.DOC_NAMES.pop()+")")
         self.DOC_NAMES.pop()
@@ -8892,15 +8255,15 @@ class WriterClass(ParserClass):
                 df.write(self.EndHtml)
                 df.close()
     #@nonl
-    #@-node:AGP.20230214111049.486:PopDoc
-    #@+node:AGP.20230214111049.487:WriteDoc
+    #@-node:PopDoc
+    #@+node:WriteDoc
     def WriteDoc(self,text):
         #self.CURRENT_DOC_LINE += 1
         
         self.DOC_FILES[-1].write(text.encode("utf-8","strict"))
     #@nonl
-    #@-node:AGP.20230214111049.487:WriteDoc
-    #@+node:AGP.20230214111049.491:CreateBaseDoc
+    #@-node:WriteDoc
+    #@+node:CreateBaseDoc
     def CreateBaseDoc(self):
         cc = self.cc
         name = cc.NAME
@@ -8908,10 +8271,38 @@ class WriterClass(ParserClass):
         if self.DOC_FOLDER != "" and os.access(cc.ABS_PATH+"/"+self.DOC_FOLDER,os.F_OK) != 1:
             os.makedirs(cc.ABS_PATH+"/"+self.DOC_FOLDER)
         
+        style = """body {
+      background-color: BGCOLOR;
+      color: BODYCOLOR
+    }
+    a {
+      text-decoration: none; /* Removes underline by default */
+    }
+    a:link {
+      color: LINKCOLOR
+    }
+    a:visited {
+      color: VISLNKCOLOR
+    }
+    """
+    
+        style = style.replace("BGCOLOR",g.theme['background'])
+        style = style.replace("BODYCOLOR",g.theme['foreground'])
+        style = style.replace("LINKCOLOR",g.color_shade(0.75,g.theme['accent']))
+        style = style.replace("VISLNKCOLOR",g.theme['accent'])
+        
+        
+        stylesheet = file(cc.ABS_PATH+"/"+self.DOC_FOLDER+"/style.css","w+b")
+        stylesheet.write(style)
+        stylesheet.close()
+        
         cc.sAddText("\" "+cc.ABS_PATH+"/"+self.DOC_FOLDER+"/index.html\n")
         self.BaseDoc = file(cc.ABS_PATH+"/"+self.DOC_FOLDER+"/index.html","w+b")    
         
-        bs = self.BeginHtml.replace("<body>","").replace("TITLE",name+" Documentation")
+        
+        
+        bs = self.BeginHtml.replace("<body>","")
+        bs = bs.replace("<head>","<head>\n<title>"+name+" Documentation</title>\n")
         
         bs += "<frameset cols=\"25%,75%\">\n"
         bs += "<frame src=\""+name+"_menu.html\" name=\"menu_frame\" frameborder=0 scrolling=\"auto\">\n"
@@ -8928,18 +8319,22 @@ class WriterClass(ParserClass):
         cc.sAddText("\" writing "+cc.ABS_PATH+"/"+self.DOC_FOLDER+"/"+name+"_menu.html\n")    
         self.DOC_MENU = dm = file(cc.ABS_PATH+"/"+self.DOC_FOLDER+"/"+name+"_menu.html","w+b")
         
-        dm.write(self.BeginHtml.replace("<body>","<body style=\"background-color:rgb(235,235,255);\">"))
+        
+        #begin = self.BeginHtml.replace("<body>","<body style=\"background-color:"+g.theme['shade'](0.05)+";\">")
+        #begin = begin.replace("<head>","<head><style>body{color: "+g.theme['foreground']+";}</style>")
+        
+        dm.write(self.BeginHtml)#rgb(235,235,255)
         dm.write("<h1>"+"<a href=\"index.html\" target=\"_parent\">"+name+"</a></h1><hr align=\"left\" width = \"80%\">")
         
-    #@-node:AGP.20230214111049.491:CreateBaseDoc
-    #@-node:AGP.20230315102606:Documentation
-    #@+node:AGP.20230214111049.488:WriteMenu
+    #@-node:CreateBaseDoc
+    #@-node:Documentation
+    #@+node:WriteMenu
     def WriteMenu(self,text):
         s = self.DocTab*"&nbsp;"+text
         self.DOC_MENU.write(s)
     #@nonl
-    #@-node:AGP.20230214111049.488:WriteMenu
-    #@+node:AGP.20230214111049.489:OnWriteStart
+    #@-node:WriteMenu
+    #@+node:OnWriteStart
     def OnWriteStart(self):    
         
         cc = self.cc
@@ -9020,8 +8415,8 @@ class WriterClass(ParserClass):
     
         return True
     #@nonl
-    #@-node:AGP.20230214111049.489:OnWriteStart
-    #@+node:AGP.20230214111049.490:OnWriteEnd
+    #@-node:OnWriteStart
+    #@+node:OnWriteEnd
     def OnWriteEnd(self):
         
         if self.HDR_FILE:
@@ -9042,24 +8437,24 @@ class WriterClass(ParserClass):
         if self.DOC_MENU != None:
             self.DOC_MENU.close()
     #@nonl
-    #@-node:AGP.20230214111049.490:OnWriteEnd
+    #@-node:OnWriteEnd
     #@-others
-#@-node:AGP.20230214111049.483:WriterClass
-#@+node:AGP.20230214111049.492:BreakFinderClass
+#@-node:WriterClass
+#@+node:BreakFinderClass
 class BreakFinderClass(ParserClass):
     #@    @+others
-    #@+node:AGP.20230214111049.493:__init__
-    def __init__(self,cc):
+    #@+node:__init__
+    def __init__(self,cc,rules):
         
         self.Result = False
-        ParserClass.__init__(self,cc)
+        ParserClass.__init__(self,cc,rules)
         
         self.OnStart = self.OnFindStart
         self.OnParseNode = self.BreakOPN
         
         self.Result = self.Parse()
-    #@-node:AGP.20230214111049.493:__init__
-    #@+node:AGP.20230214111049.494:OnFindStart
+    #@-node:__init__
+    #@+node:OnFindStart
     def OnFindStart(self):
         # loading event funcs
         if self.DECLARE_IN_HDR:
@@ -9081,8 +8476,8 @@ class BreakFinderClass(ParserClass):
     
         return True
     #@nonl
-    #@-node:AGP.20230214111049.494:OnFindStart
-    #@+node:AGP.20230214111049.495:BreakDec
+    #@-node:OnFindStart
+    #@+node:BreakDec
     def BreakDec(self,text):
         
         cbl = self.CURRENT_BODY_LINE
@@ -9091,8 +8486,8 @@ class BreakFinderClass(ParserClass):
         if cb and str(cbl) in cb:
             self.BREAKS["h:"+str(self.CURRENT_HDR_LINE)] = cb[str(cbl)]
     #@nonl
-    #@-node:AGP.20230214111049.495:BreakDec
-    #@+node:AGP.20230214111049.496:BreakDef
+    #@-node:BreakDec
+    #@+node:BreakDef
     def BreakDef(self,text):
         
         cbl = self.CURRENT_BODY_LINE
@@ -9100,8 +8495,8 @@ class BreakFinderClass(ParserClass):
         
         if cb and str(cbl) in cb:
             self.BREAKS[self.cc.SRC_EXT+":"+str(self.CURRENT_SRC_LINE)] = cb[str(cbl)]
-    #@-node:AGP.20230214111049.496:BreakDef
-    #@+node:AGP.20230214111049.497:BreakOPN
+    #@-node:BreakDef
+    #@+node:BreakOPN
     def BreakOPN(self,node,back=False):
         
         cc = self.cc
@@ -9112,17 +8507,17 @@ class BreakFinderClass(ParserClass):
         else:
             self.CURRENT_BREAKS = None
     #@nonl
-    #@-node:AGP.20230214111049.497:BreakOPN
+    #@-node:BreakOPN
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.492:BreakFinderClass
-#@+node:AGP.20230214111049.498:SeekErrorClass
+#@-node:BreakFinderClass
+#@+node:SeekErrorClass
 class SeekErrorClass(ParserClass):
     #@    @+others
-    #@+node:AGP.20230214111049.499:__init__
-    def __init__(self,cc,line,ext,col="0",color="red"):
+    #@+node:__init__
+    def __init__(self,cc,rules,line,ext,col="0",color="red"):
     
-        ParserClass.__init__(self,cc)		
+        ParserClass.__init__(self,cc,rules)		
         self.SEEK_LINE = line
         self.SEEK_COL = col
         self.SEEK_EXT = ext
@@ -9145,8 +8540,8 @@ class SeekErrorClass(ParserClass):
         else:
             Error("xcc: ","Unable to find line: "+str(line))
     #@nonl
-    #@-node:AGP.20230214111049.499:__init__
-    #@+node:AGP.20230214111049.500:OnStartSeek
+    #@-node:__init__
+    #@+node:OnStartSeek
     def OnStartSeek(self):
         
         if self.DECLARE_IN_HDR:
@@ -9161,51 +8556,53 @@ class SeekErrorClass(ParserClass):
         
         return True
     #@nonl
-    #@-node:AGP.20230214111049.500:OnStartSeek
-    #@+node:AGP.20230214111049.501:SeekDec
+    #@-node:OnStartSeek
+    #@+node:SeekDec
     def SeekDec(self,text):
         if self.DO_PARSE:
-            if self.CURRENT_HDR_LINE == self.SEEK_LINE and self.SEEK_EXT == self.cc.HDR_EXT:
+            
+            if self.HEADER.CURRENT_LINE == self.SEEK_LINE and self.SEEK_EXT == self.cc.HDR_EXT:
                 index = None
                 if self.CURRENT_LOCATION == 0:  #head
-                    index = "1."+self.SEEK_COL
+                    index = None#"1."+self.SEEK_COL
                 if self.CURRENT_LOCATION == 1:  #body
                     index = str(self.CURRENT_BODY_LINE)+"."+self.SEEK_COL
                 if self.CURRENT_LOCATION == 2:  #tail
-                    index = "1000."+self.SEEK_COL
+                    index = None#"1000."+self.SEEK_COL
                 
                 self.DO_PARSE = False
                 self.FOUND_NODE = self.CURRENT_NODE.copy()
                 self.FOUND_INDEX = index
-    #@nonl
-    #@-node:AGP.20230214111049.501:SeekDec
-    #@+node:AGP.20230214111049.502:SeekDef
+                
+    #@-node:SeekDec
+    #@+node:SeekDef
     def SeekDef(self,text):
         if self.DO_PARSE:
-            if self.CURRENT_SRC_LINE == self.SEEK_LINE and self.SEEK_EXT == self.cc.SRC_EXT:
+            if self.SOURCE.CURRENT_LINE == self.SEEK_LINE and self.SEEK_EXT == self.cc.SRC_EXT:
                 index = None
                 if self.CURRENT_LOCATION == 0:  #head
-                    index = "1."+self.SEEK_COL
+                    index = None#"1."+self.SEEK_COL
                 if self.CURRENT_LOCATION == 1:  #body
                     index = str(self.CURRENT_BODY_LINE)+"."+self.SEEK_COL
                 if self.CURRENT_LOCATION == 2:  #tail
-                    index = "1000."+self.SEEK_COL
+                    index = None#"1000."+self.SEEK_COL
                 
                 self.DO_PARSE = False
                 self.FOUND_NODE = self.CURRENT_NODE.copy()
                 self.FOUND_INDEX = index
+                
     #@nonl
-    #@-node:AGP.20230214111049.502:SeekDef
+    #@-node:SeekDef
     #@-others
 #@nonl
-#@-node:AGP.20230214111049.498:SeekErrorClass
-#@+node:AGP.20230214111049.503:LocatorClass
+#@-node:SeekErrorClass
+#@+node:LocatorClass
 class LocatorClass(ParserClass):
     #@    @+others
-    #@+node:AGP.20230214111049.504:__init__
-    def __init__(self,cc,node,line):
+    #@+node:__init__
+    def __init__(self,cc,rules,node,line):
         
-        ParserClass.__init__(self,cc)		
+        ParserClass.__init__(self,cc,rules)		
             
         self.LOCATE_NODE = node
         self.LOCATE_BODY_LINE = int(line)
@@ -9222,6 +8619,9 @@ class LocatorClass(ParserClass):
         
         #print "locator:"
         
+        #self.HEADER.write = self.LocateDec
+        #self.SOURCE.write = self.LocateDef
+        
         if self.DECLARE_IN_HDR:
             self.HEADER.write = self.LocateDec
         else:
@@ -9235,8 +8635,8 @@ class LocatorClass(ParserClass):
         
         self.Parse()
     #@nonl
-    #@-node:AGP.20230214111049.504:__init__
-    #@+node:AGP.20230214111049.505:OnStartLocate
+    #@-node:__init__
+    #@+node:OnStartLocate
     def OnStartLocate(self):
         if self.DECLARE_IN_HDR:
             self.HEADER.write = self.LocateDec
@@ -9253,8 +8653,8 @@ class LocatorClass(ParserClass):
         #self.DOC_PROC_LIST.append(self.LocateDoc)
         
         return True
-    #@-node:AGP.20230214111049.505:OnStartLocate
-    #@+node:AGP.20230214111049.506:LocateDec
+    #@-node:OnStartLocate
+    #@+node:LocateDec
     def LocateDec(self,text):
         #print "h:",self.HEADER.CURRENT_LINE,"b:",self.CURRENT_BODY_LINE,text
         if self.DO_PARSE == True:
@@ -9291,8 +8691,8 @@ class LocatorClass(ParserClass):
                     
                     
     #@nonl
-    #@-node:AGP.20230214111049.506:LocateDec
-    #@+node:AGP.20230214111049.507:LocateDef
+    #@-node:LocateDec
+    #@+node:LocateDef
     def LocateDef(self,text):
         #print "c:",self.SOURCE.CURRENT_LINE,"b:",self.CURRENT_BODY_LINE,text
         if self.DO_PARSE == True:        
@@ -9324,12 +8724,12 @@ class LocatorClass(ParserClass):
                     self.DO_PARSE = False
                     
                     return  """         
-    #@-node:AGP.20230214111049.507:LocateDef
+    #@-node:LocateDef
     #@-others
-#@-node:AGP.20230214111049.503:LocatorClass
-#@-node:AGP.20230214111049.419:Parsing classes
-#@-node:AGP.20230214111049.60:Classes
+#@-node:LocatorClass
+#@-node:Parsing classes
+#@-node:Classes
 #@-others
 #@nonl
-#@-node:AGP.20230214111049:@thin xcc_nodes.py
+#@-node:@file xcc_nodes.py
 #@-leo

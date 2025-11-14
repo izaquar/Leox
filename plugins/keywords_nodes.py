@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20240831123716:@thin keywords_nodes.py
+#@+leo-ver=4
+#@+node:@file keywords_nodes.py
 #@<< docstring >>
-#@+node:AGP.20240831123716.1:<< docstring >>
+#@+node:<< docstring >>
 '''A plugin to add keywords to a language'''
 #@nonl
-#@-node:AGP.20240831123716.1:<< docstring >>
+#@-node:<< docstring >>
 #@nl
 
 #@@language python
@@ -13,19 +13,19 @@
 # Contributed by agp
 
 #@<< imports >>
-#@+node:AGP.20240831123716.2:<< imports >>
+#@+node:<< imports >>
 
 import leoGlobals as g
 import leoPlugins
 import leoColor
-#@-node:AGP.20240831123716.2:<< imports >>
+#@-node:<< imports >>
 #@nl
 __version__ = '1.0'
 
 current_knode = None
     
 #@+others
-#@+node:AGP.20240831123716.4:init
+#@+node:init
 def init ():
     leoPlugins.registerHandler(('new','open2'), on_open)
     leoPlugins.registerHandler("select2", on_select2)
@@ -33,8 +33,8 @@ def init ():
             
     return True
 #@nonl
-#@-node:AGP.20240831123716.4:init
-#@+node:AGP.20240831123716.22:on_open
+#@-node:init
+#@+node:on_open
 #  scan the outline and process @read nodes.
 def on_open (tag,keywords):
 
@@ -52,8 +52,8 @@ def on_open (tag,keywords):
         v = v.threadNext()
     #c.endUpdate()
 #@nonl
-#@-node:AGP.20240831123716.22:on_open
-#@+node:AGP.20240831123716.26:on_select2
+#@-node:on_open
+#@+node:on_select2
 def on_select2 (tag,keywords):
     global current_knode
     
@@ -70,14 +70,14 @@ def on_select2 (tag,keywords):
     if g.match_word(h,0,"@keywords"):
         current_knode = v
     
-#@-node:AGP.20240831123716.26:on_select2
-#@+node:AGP.20240831131440:update_keywords(v)
+#@-node:on_select2
+#@+node:update_keywords(v)
 def update_keywords(v):
     
     h = v.headString()
     lang = h[10:]
     langk = lang+"_keywords"
-    bc = leoColor.baseColorizer
+    bc = leoColor.colorizer
     
     if hasattr(bc,langk):
         kwds = getattr(bc, langk)
@@ -88,8 +88,8 @@ def update_keywords(v):
     else:
         g.es(lang+" is an invalid language!",color="red")
 #@nonl
-#@-node:AGP.20240831131440:update_keywords(v)
+#@-node:update_keywords(v)
 #@-others
 #@nonl
-#@-node:AGP.20240831123716:@thin keywords_nodes.py
+#@-node:@file keywords_nodes.py
 #@-leo

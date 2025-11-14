@@ -1,96 +1,99 @@
-#defined first, used by shade()
-*background = '#08090A'
-*foreground = '#FFF0F0'
+#@+leo-ver=4
+#@+node:@file leo.ui
+#option for new windows
+split_direction = False
+split_ratio1 = 0.33
+split_ratio2 = 0.66
 
+#compat
+splitbar_width = 8
+*leotree.font = ('consolas', 13,'normal','roman')
+
+# must be defined before shade(u) is used, wich interpolate from background(0.0) to foreground(1.0)
+# or from specified colors as in shade(0.5,'black','white')
+background = '#08090A'
+foreground = '#F8F0F4'
+#some widely used shortcut
+bg = background
+fg = foreground
+
+#various text tag colors
 accent = '#FF8000'
 info =  '#22BB88'
 warning = '#FF4422'
-error = '#FF4422'
+error = '#FF2211'
 
 keyword = "#A5A5FF"
 string = '#22BB88'
 directive = '#A5A5FF'
 comment = '#777777'
 
-#node icons------------------
+#node icons colors ------------------
 mark = accent
 clone = warning
 content = '#00DDFF'
 dirty = '#808080'
 
-split_bar_color = "#8080B0"
-scrollbar_width = 12
-splitbar_width = 10
-splitbar_color = 10
-
-#Tkinter default options-----------------------------
-*background = '#08090A'
-*foreground = '#FFF0F0'
-
-#*background = '#e8e8FF'
-#*foreground = '#08090A'
-
-*Font = ('arial', 10,'normal','roman')
+#Tkinter global options -----------------------------
+*background = background
+*foreground = foreground
 
 *selectBackground = shade(0.4)
-*selectForeground = shade(0.05)
+*selectForeground = foreground #shade(0.05)
 *insertBackground = shade(0.8)
 
 *highlightBackground = background
 *highlightColor = accent
 *highlightThickness = 0
 
-
 *borderColor = foreground
+*borderWidth = 0
+*relief = 'flat'
+
+*selectColor = foreground
+
+#Tkinter options by class name ------------------------
+*Font = ('arial', 10,'normal','roman')
+
 *Button*relief = 'groove'
 
+*Checkbutton*selectcolor = foreground
+
+*Menubutton*background = shade(0.3)
+*Menu*borderWidth = 1
+*Menu*borderwidth = 1
+*Menu*background = shade(0.3)
+*Menu*activeBackground = shade(0.5)
+
 *ScrollBar*width = 12
-*ScrollBar*Background = shade(0.1)
+*ScrollBar*height = 12
+*ScrollBar*background = shade(0.1)
 *ScrollBar*inactivecolor = shade(0.2)
 *ScrollBar*activecolor = shade(0.5)
 
 *Splitter*width = 8
 *Splitter*height = 8
+*Splitter*background = shade(0.3)
 
-*menuframe.Background = shade(0.3)
-*Menubutton*Background = shade(0.3)
-*Menu*borderWidth = 5
-*Menu*Background = shade(0.3)
-*Menu*activeBackground = shade(0.5)
+*Text*padX = 10
+*Text*padY = 10
+*tree.padX = 10
+*tree.padY = 10
 
-
-*iconframe.Background = shade(0.3)
-
+#Tkinter options by widget name -----------------------
+*menuframe.background = shade(0.3)
+*toolframe.background = shade(0.25)
+*statusframe.background = shade(0.3)
 #qlinkframe
 
-
-*statusframe.Background = shade(0.5)
-
-Checkbutton*selectcolor = foreground
-
-
-#Tkinter default options by widget name----------------
-
-
 *logtext.font = ('courier', 12,'normal','roman')
-
+*log.highlightThickness = 1
 *nodetext.font = ('consolas', 12,'normal','roman')
-#*nodetext.Foreground = '#AAD4FA'
+*nodetext.Foreground = shade(0.9)
+*tree.font = ('consolas', 13,'normal','roman')
+*tree.highlightThickness = 1
 *bodytext.font = ('consolas', 12,'normal','roman')
-#*bodytext.Foreground = '#9AC4FA'
-#*hsplitter.height = 8
-#*vsplitter.width = 8
-#'#8AB4F5'
-
-
-
-
-
-
-
-    
-    
-
-
-
-
+*bodytext.Foreground = shade(0.9)
+#*bodytext.highlightThickness = 1
+#@-node:@file leo.ui
+#@-leo

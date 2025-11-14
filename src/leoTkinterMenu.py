@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.4100:@thin leoTkinterMenu.py
+#@+node:AGP.20250415230112.3560:@thin leoTkinterMenu.py
 """Tkinter menu handling for Leo."""
 
 #@@language python
@@ -14,7 +14,7 @@ import tkFont
 class leoTkinterMenu (leoMenu.leoMenu):
     """A class that represents a Leo window."""
     #@    @+others
-    #@+node:ekr.20031218072017.4102:__init__()
+    #@+node:AGP.20250415230112.3561:__init__()
     def __init__ (self,frame):
         
         # Init the base class.
@@ -28,9 +28,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
         #    'menu_text_font_family', 'menu_text_font_size',
         #    'menu_text_font_slant',  'menu_text_font_weight',
         #    c.config.defaultMenuFontSize)
-    #@-node:ekr.20031218072017.4102:__init__()
-    #@+node:ekr.20060211101811:Activate menu commands
-    #@+node:ekr.20060211100905.1:tkMenu.activateMenu
+    #@-node:AGP.20250415230112.3561:__init__()
+    #@+node:AGP.20250415230112.3562:Activate menu commands
+    #@+node:AGP.20250415230112.3563:tkMenu.activateMenu
     def activateMenu (self,menuName):
         
         c = self.c ;  top = c.frame.top
@@ -46,8 +46,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
             menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
         else:
             g.trace('oops, no menu: %s' % menuName)
-    #@-node:ekr.20060211100905.1:tkMenu.activateMenu
-    #@+node:ekr.20060210133835.1:tkMenu.computeMenuPositions
+    #@-node:AGP.20250415230112.3563:tkMenu.activateMenu
+    #@+node:AGP.20250415230112.3564:tkMenu.computeMenuPositions
     def computeMenuPositions (self):
         
         # A hack.  It would be better to set this when creating the menus.
@@ -66,9 +66,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
             n += font.measure(z+' '*4)+1
             
         return d
-    #@-node:ekr.20060210133835.1:tkMenu.computeMenuPositions
-    #@-node:ekr.20060211101811:Activate menu commands
-    #@+node:ekr.20060211144330.1:getMacHelpMenu
+    #@-node:AGP.20250415230112.3564:tkMenu.computeMenuPositions
+    #@-node:AGP.20250415230112.3562:Activate menu commands
+    #@+node:AGP.20250415230112.3565:getMacHelpMenu
     def getMacHelpMenu (self):
         
         try:
@@ -84,32 +84,32 @@ class leoTkinterMenu (leoMenu.leoMenu):
             g.es_exception()
             return None
     #@nonl
-    #@-node:ekr.20060211144330.1:getMacHelpMenu
-    #@+node:ekr.20031218072017.4103:Tkinter menu bindings
+    #@-node:AGP.20250415230112.3565:getMacHelpMenu
+    #@+node:AGP.20250415230112.3566:Tkinter menu bindings
     # See the Tk docs for what these routines are to do
-    #@+node:ekr.20031218072017.4104:Methods with Tk spellings
-    #@+node:ekr.20031218072017.4105:add_cascade
+    #@+node:AGP.20250415230112.3567:Methods with Tk spellings
+    #@+node:AGP.20250415230112.3568:add_cascade
     def add_cascade (self,parent,label,menu,underline):
         
         """Wrapper for the Tkinter add_cascade menu method."""
         
         return parent.add_cascade(label=label,menu=menu,underline=underline)
-    #@-node:ekr.20031218072017.4105:add_cascade
-    #@+node:ekr.20031218072017.4106:add_command
+    #@-node:AGP.20250415230112.3568:add_cascade
+    #@+node:AGP.20250415230112.3569:add_command
     def add_command (self,menu,**keys):
         
         """Wrapper for the Tkinter add_command menu method."""
     
         return menu.add_command(**keys)
-    #@-node:ekr.20031218072017.4106:add_command
-    #@+node:ekr.20031218072017.4107:add_separator
+    #@-node:AGP.20250415230112.3569:add_command
+    #@+node:AGP.20250415230112.3570:add_separator
     def add_separator(self,menu):
         
         """Wrapper for the Tkinter add_separator menu method."""
     
         menu.add_separator()
-    #@-node:ekr.20031218072017.4107:add_separator
-    #@+node:ekr.20031218072017.4108:bind
+    #@-node:AGP.20250415230112.3570:add_separator
+    #@+node:AGP.20250415230112.3571:bind
     def bind (self,bind_shortcut,callback):
         
         """Wrapper for the Tkinter bind menu method."""
@@ -117,29 +117,29 @@ class leoTkinterMenu (leoMenu.leoMenu):
         # g.trace(bind_shortcut)
     
         return self.top.bind(bind_shortcut,callback)
-    #@-node:ekr.20031218072017.4108:bind
-    #@+node:ekr.20031218072017.4109:delete
+    #@-node:AGP.20250415230112.3571:bind
+    #@+node:AGP.20250415230112.3572:delete
     def delete (self,menu,realItemName):
         
         """Wrapper for the Tkinter delete menu method."""
     
         return menu.delete(realItemName)
-    #@-node:ekr.20031218072017.4109:delete
-    #@+node:ekr.20031218072017.4110:delete_range
+    #@-node:AGP.20250415230112.3572:delete
+    #@+node:AGP.20250415230112.3573:delete_range
     def delete_range (self,menu,n1,n2):
         
         """Wrapper for the Tkinter delete menu method."""
     
         return menu.delete(n1,n2)
-    #@-node:ekr.20031218072017.4110:delete_range
-    #@+node:ekr.20031218072017.4111:destroy
+    #@-node:AGP.20250415230112.3573:delete_range
+    #@+node:AGP.20250415230112.3574:destroy
     def destroy (self,menu):
         
         """Wrapper for the Tkinter destroy menu method."""
     
         return menu.destroy()
-    #@-node:ekr.20031218072017.4111:destroy
-    #@+node:ekr.20031218072017.4112:insert_cascade
+    #@-node:AGP.20250415230112.3574:destroy
+    #@+node:AGP.20250415230112.3575:insert_cascade
     def insert_cascade (self,parent,index,label,menu,underline):
         
         """Wrapper for the Tkinter insert_cascade menu method."""
@@ -147,8 +147,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
         return parent.insert_cascade(
             index=index,label=label,
             menu=menu,underline=underline)
-    #@-node:ekr.20031218072017.4112:insert_cascade
-    #@+node:ekr.20031218072017.4113:new_menu agp
+    #@-node:AGP.20250415230112.3575:insert_cascade
+    #@+node:AGP.20250415230112.3576:new_menu agp
     def new_menu(self,parent,tearoff=False,postc=None):
         
         """Wrapper for the Tkinter new_menu menu method."""
@@ -167,7 +167,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
                     return Tk.Menu(parent,tearoff=tearoff,postcommand=postc)
             else:
                 
-                menu = Tk.Menu(parent,tearoff=tearoff,bd=0,bg=bg,postcommand=postc)
+                menu = Tk.Menu(parent,tearoff=tearoff,bg=bg,postcommand=postc)
                 #print "menu bg",bg
             
         else:
@@ -183,8 +183,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
             
         return menu
     #@nonl
-    #@-node:ekr.20031218072017.4113:new_menu agp
-    #@+node:AGP.20231020203607:xnew_menu
+    #@-node:AGP.20250415230112.3576:new_menu agp
+    #@+node:AGP.20250415230112.3577:xnew_menu
     def xnew_menu(self,parent,tearoff=False):
         
         """Wrapper for the Tkinter new_menu menu method."""
@@ -199,18 +199,18 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 return Tk.Menu(parent,tearoff=tearoff,bg=bg)
         else:
             return Tk.Menu(parent,tearoff=tearoff,bg=bg)
-    #@-node:AGP.20231020203607:xnew_menu
-    #@-node:ekr.20031218072017.4104:Methods with Tk spellings
-    #@+node:ekr.20031218072017.4114:Methods with other spellings (Tkmenu)
-    #@+node:ekr.20041228063406:clearAccel
+    #@-node:AGP.20250415230112.3577:xnew_menu
+    #@-node:AGP.20250415230112.3567:Methods with Tk spellings
+    #@+node:AGP.20250415230112.3578:Methods with other spellings (Tkmenu)
+    #@+node:AGP.20250415230112.3579:clearAccel
     def clearAccel(self,menu,name):
         
         realName = self.getRealMenuName(name)
         realName = realName.replace("&","")
     
         menu.entryconfig(realName,accelerator='')
-    #@-node:ekr.20041228063406:clearAccel
-    #@+node:ekr.20031218072017.4115:createMenuBar
+    #@-node:AGP.20250415230112.3579:clearAccel
+    #@+node:AGP.20250415230112.3580:createMenuBar
     def createMenuBar(self,frame):
     
         top = frame.top
@@ -225,8 +225,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
         #topMenu.pack(side='top',fill='x')
         
         #top.config(menu=topMenu) # Display the menu. #agp menu
-    #@-node:ekr.20031218072017.4115:createMenuBar
-    #@+node:ekr.20051022042645:createOpenWithMenu
+    #@-node:AGP.20250415230112.3580:createMenuBar
+    #@+node:AGP.20250415230112.3581:createOpenWithMenu
     def createOpenWithMenu(self,parent,label,index,amp_index):
         
         '''Create a submenu.'''
@@ -234,8 +234,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
         menu = Tk.Menu(parent,tearoff=0)
         parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
         return menu
-    #@-node:ekr.20051022042645:createOpenWithMenu
-    #@+node:ekr.20031218072017.4119:disableMenu
+    #@-node:AGP.20250415230112.3581:createOpenWithMenu
+    #@+node:AGP.20250415230112.3582:disableMenu
     def disableMenu (self,menu,name):
         
         try:
@@ -249,8 +249,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 print "disableMenu menu,name:",menu,name
                 g.es_exception()
                 pass
-    #@-node:ekr.20031218072017.4119:disableMenu
-    #@+node:ekr.20031218072017.4120:enableMenu
+    #@-node:AGP.20250415230112.3582:disableMenu
+    #@+node:AGP.20250415230112.3583:enableMenu
     # Fail gracefully if the item name does not exist.
     
     def enableMenu (self,menu,name,val):
@@ -267,8 +267,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 print "enableMenu menu,name,val:",menu,name,val
                 g.es_exception()
                 pass
-    #@-node:ekr.20031218072017.4120:enableMenu
-    #@+node:ekr.20060622075612:getMenuLabel
+    #@-node:AGP.20250415230112.3583:enableMenu
+    #@+node:AGP.20250415230112.3584:getMenuLabel
     def getMenuLabel (self,menu,name):
         
         '''Return the index of the menu item whose name (or offset) is given.
@@ -280,8 +280,8 @@ class leoTkinterMenu (leoMenu.leoMenu):
             index = None
             
         return index
-    #@-node:ekr.20060622075612:getMenuLabel
-    #@+node:ekr.20031218072017.4121:setMenuLabel
+    #@-node:AGP.20250415230112.3584:getMenuLabel
+    #@+node:AGP.20250415230112.3585:setMenuLabel
     def setMenuLabel (self,menu,name,label,underline=-1):
     
         try:
@@ -300,9 +300,9 @@ class leoTkinterMenu (leoMenu.leoMenu):
             if not g.app.unitTesting:
                 print "setMenuLabel menu,name,label:",menu,name,label
                 g.es_exception()
-    #@-node:ekr.20031218072017.4121:setMenuLabel
-    #@-node:ekr.20031218072017.4114:Methods with other spellings (Tkmenu)
-    #@-node:ekr.20031218072017.4103:Tkinter menu bindings
+    #@-node:AGP.20250415230112.3585:setMenuLabel
+    #@-node:AGP.20250415230112.3578:Methods with other spellings (Tkmenu)
+    #@-node:AGP.20250415230112.3566:Tkinter menu bindings
     #@-others
-#@-node:ekr.20031218072017.4100:@thin leoTkinterMenu.py
+#@-node:AGP.20250415230112.3560:@thin leoTkinterMenu.py
 #@-leo

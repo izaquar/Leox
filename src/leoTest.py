@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20051104075904:@thin leoTest.py
+#@+node:AGP.20250415230112.2536:@thin leoTest.py
 '''Classes for Leo's unit testing. 
 
 Run the unit tests in test.leo using the Execute Script command.'''
@@ -7,12 +7,8 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@@language python
 #@@tabwidth -4
 
-__pychecker__ = '--no-import --no-reimportself --no-reimport --no-constCond --no-constant1'
-    # Disable all import warnings.
-    # Disable warnings about if 1 and if 0.
-
 #@<< leoTest imports >>
-#@+node:ekr.20051104075904.1:<< leoTest imports >>
+#@+node:AGP.20250415230112.2537:<< leoTest imports >>
 import leoGlobals as g
 
 import leoColor
@@ -39,7 +35,7 @@ try:
     import timeit
 except ImportError:
     pass
-#@-node:ekr.20051104075904.1:<< leoTest imports >>
+#@-node:AGP.20250415230112.2537:<< leoTest imports >>
 #@nl
 
 # print 'leoTest.py.__file__',__file__
@@ -51,8 +47,8 @@ else:
     newAtFile = False
 
 #@+others
-#@+node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
-#@+node:ekr.20051104075904.3:isSuiteNode and isTestNode
+#@+node:AGP.20250415230112.2538:Support @profile, @suite, @test, @timer
+#@+node:AGP.20250415230112.2539:isSuiteNode and isTestNode
 def isSuiteNode (p):
     h = p.headString().lower()
     return g.match_word(h,0,"@suite")
@@ -60,8 +56,8 @@ def isSuiteNode (p):
 def isTestNode (p):
     h = p.headString().lower()
     return g.match_word(h,0,"@test")
-#@-node:ekr.20051104075904.3:isSuiteNode and isTestNode
-#@+node:ekr.20051104075904.4:doTests...
+#@-node:AGP.20250415230112.2539:isSuiteNode and isTestNode
+#@+node:AGP.20250415230112.2540:doTests...
 def doTests(c,all,verbosity=1):
 
     p = c.currentPosition() ; p1 = p.copy()
@@ -93,13 +89,13 @@ def doTests(c,all,verbosity=1):
             c.selectPosition(p1)
     finally:
         g.app.unitTesting = False
-#@+node:ekr.20051104075904.5:class generalTestCase
+#@+node:AGP.20250415230112.2541:class generalTestCase
 class generalTestCase(unittest.TestCase):
 
     """Create a unit test from a snippet of code."""
 
     #@    @+others
-    #@+node:ekr.20051104075904.6:__init__
+    #@+node:AGP.20250415230112.2542:__init__
     def __init__ (self,c,p):
     
          # Init the base class.
@@ -107,34 +103,31 @@ class generalTestCase(unittest.TestCase):
     
         self.c = c
         self.p = p.copy()
-    #@-node:ekr.20051104075904.6:__init__
-    #@+node:ekr.20051104075904.7: fail
+    #@-node:AGP.20250415230112.2542:__init__
+    #@+node:AGP.20250415230112.2543: fail
     def fail (self,msg=None):
     
         """Mark a unit test as having failed."""
         
-        __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
-    
         import leoGlobals as g
     
         g.app.unitTestDict["fail"] = g.callers()
-    #@-node:ekr.20051104075904.7: fail
-    #@+node:ekr.20051104075904.8:setUp
+    #@-node:AGP.20250415230112.2543: fail
+    #@+node:AGP.20250415230112.2544:setUp
     def setUp (self):
     
         c = self.c ; p = self.p
     
         c.selectPosition(p)
-    #@-node:ekr.20051104075904.8:setUp
-    #@+node:ekr.20051104075904.9:tearDown
+    #@-node:AGP.20250415230112.2544:setUp
+    #@+node:AGP.20250415230112.2545:tearDown
     def tearDown (self):
     
         pass
     
         # To do: restore the outline.
-    #@-node:ekr.20051104075904.9:tearDown
-    #@+node:ekr.20051104075904.10:runTest
+    #@-node:AGP.20250415230112.2545:tearDown
+    #@+node:AGP.20250415230112.2546:runTest
     def runTest (self,define_g = True):
     
         c = self.c ; p = self.p.copy()
@@ -150,15 +143,15 @@ class generalTestCase(unittest.TestCase):
             # Execute the test in a totally pristine environment.
             exec script + '\n' in {}
     #@nonl
-    #@-node:ekr.20051104075904.10:runTest
-    #@+node:ekr.20051104075904.11:shortDescription
+    #@-node:AGP.20250415230112.2546:runTest
+    #@+node:AGP.20250415230112.2547:shortDescription
     def shortDescription (self):
     
         return self.p.headString() + '\n'
-    #@-node:ekr.20051104075904.11:shortDescription
+    #@-node:AGP.20250415230112.2547:shortDescription
     #@-others
-#@-node:ekr.20051104075904.5:class generalTestCase
-#@+node:ekr.20051104075904.12:makeTestSuite
+#@-node:AGP.20250415230112.2541:class generalTestCase
+#@+node:AGP.20250415230112.2548:makeTestSuite
 #@+at 
 #@nonl
 # This code executes the script in an @suite node.  This code assumes:
@@ -189,8 +182,8 @@ def makeTestSuite (c,p):
         g.trace('Exception creating test cases for %s' % p.headString())
         g.es_exception()
         return None
-#@-node:ekr.20051104075904.12:makeTestSuite
-#@+node:ekr.20051104075904.13:makeTestCase
+#@-node:AGP.20250415230112.2548:makeTestSuite
+#@+node:AGP.20250415230112.2549:makeTestCase
 def makeTestCase (c,p):
     
     p = p.copy()
@@ -199,9 +192,9 @@ def makeTestCase (c,p):
         return generalTestCase(c,p)
     else:
         return None
-#@-node:ekr.20051104075904.13:makeTestCase
-#@-node:ekr.20051104075904.4:doTests...
-#@+node:ekr.20051104075904.14:runProfileOnNode
+#@-node:AGP.20250415230112.2549:makeTestCase
+#@-node:AGP.20250415230112.2540:doTests...
+#@+node:AGP.20250415230112.2550:runProfileOnNode
 # A utility for use by script buttons.
 
 def runProfileOnNode (p,outputPath):
@@ -214,8 +207,8 @@ def runProfileOnNode (p,outputPath):
     stats.strip_dirs()
     stats.sort_stats('cum','file','name')
     stats.print_stats()
-#@-node:ekr.20051104075904.14:runProfileOnNode
-#@+node:ekr.20051104075904.15:runTimerOnNode
+#@-node:AGP.20250415230112.2550:runProfileOnNode
+#@+node:AGP.20250415230112.2551:runTimerOnNode
 # A utility for use by script buttons.
 
 def runTimerOnNode (c,p,count):
@@ -237,10 +230,10 @@ def runTimerOnNode (c,p,count):
         g.es_print("count: %d time/count: %f %s" % (count,result/count,p.headString()))
     except:
         t.print_exc()
-#@-node:ekr.20051104075904.15:runTimerOnNode
-#@-node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
-#@+node:ekr.20051104075904.16:run gc
-#@+node:ekr.20051104075904.17:runGC
+#@-node:AGP.20250415230112.2551:runTimerOnNode
+#@-node:AGP.20250415230112.2538:Support @profile, @suite, @test, @timer
+#@+node:AGP.20250415230112.2552:run gc
+#@+node:AGP.20250415230112.2553:runGC
 lastObjectCount = 0
 lastObjectsDict = {}
 lastTypesDict = {}
@@ -264,8 +257,8 @@ def runGc(disable=False):
     # makeObjectList(message)
 
 runGC = runGc
-#@-node:ekr.20051104075904.17:runGC
-#@+node:ekr.20051104075904.18:enableGc
+#@-node:AGP.20250415230112.2553:runGC
+#@+node:AGP.20250415230112.2554:enableGc
 def set_debugGc ():
 
     gc.set_debug(
@@ -277,8 +270,8 @@ def set_debugGc ():
         gc.DEBUG_OBJECTS
         # gc.DEBUG_SAVEALL
     )
-#@-node:ekr.20051104075904.18:enableGc
-#@+node:ekr.20051104075904.19:makeObjectList
+#@-node:AGP.20250415230112.2554:enableGc
+#@+node:AGP.20250415230112.2555:makeObjectList
 def makeObjectList(message):
 
     # WARNING: this id trick is not proper: newly allocated objects can have the same address as old objects.
@@ -292,8 +285,8 @@ def makeObjectList(message):
         lastObjectsDict[id(o)]=o
 
     print "%25s: %d new, %d total objects" % (message,len(newObjects),len(objects))
-#@-node:ekr.20051104075904.19:makeObjectList
-#@+node:ekr.20051104075904.20:printGc
+#@-node:AGP.20250415230112.2555:makeObjectList
+#@+node:AGP.20250415230112.2556:printGc
 def printGc(message=None):
     
     '''Called from unit tests.'''
@@ -312,7 +305,7 @@ def printGc(message=None):
     print "%6d =%7d %s" % (delta,n2,"totals")
 
     #@    << print number of each type of object >>
-    #@+node:ekr.20051104075904.21:<< print number of each type of object >>
+    #@+node:AGP.20250415230112.2557:<< print number of each type of object >>
     global lastTypesDict
     typesDict = {}
     
@@ -336,11 +329,11 @@ def printGc(message=None):
     
     lastTypesDict = typesDict
     typesDict = {}
-    #@-node:ekr.20051104075904.21:<< print number of each type of object >>
+    #@-node:AGP.20250415230112.2557:<< print number of each type of object >>
     #@nl
     if 0:
         #@        << print added functions >>
-        #@+node:ekr.20051104075904.22:<< print added functions >>
+        #@+node:AGP.20250415230112.2558:<< print added functions >>
         import types
         import inspect
         
@@ -364,13 +357,13 @@ def printGc(message=None):
         
         lastFunctionsDict = funcDict
         funcDict = {}
-        #@-node:ekr.20051104075904.22:<< print added functions >>
+        #@-node:AGP.20250415230112.2558:<< print added functions >>
         #@nl
 
     lastObjectCount = n2
     return delta
-#@-node:ekr.20051104075904.20:printGc
-#@+node:ekr.20051104075904.23:printGcRefs
+#@-node:AGP.20250415230112.2556:printGc
+#@+node:AGP.20250415230112.2559:printGcRefs
 def printGcRefs (verbose=True):
 
     refs = gc.get_referrers(g.app.windowList[0])
@@ -382,20 +375,20 @@ def printGcRefs (verbose=True):
             print type(ref)
     else:
         print "%d referrers" % len(refs)
-#@-node:ekr.20051104075904.23:printGcRefs
-#@-node:ekr.20051104075904.16:run gc
-#@+node:ekr.20051104075904.24: class testUtils
+#@-node:AGP.20250415230112.2559:printGcRefs
+#@-node:AGP.20250415230112.2552:run gc
+#@+node:AGP.20250415230112.2560: class testUtils
 class testUtils:
 
     """Common utility routines used by unit tests."""
 
     #@    @+others
-    #@+node:ekr.20060106114716.1:ctor (testUtils)
+    #@+node:AGP.20250415230112.2561:ctor (testUtils)
     def __init__ (self,c):
         
         self.c = c
-    #@-node:ekr.20060106114716.1:ctor (testUtils)
-    #@+node:ekr.20051104075904.25:compareOutlines
+    #@-node:AGP.20250415230112.2561:ctor (testUtils)
+    #@+node:AGP.20250415230112.2562:compareOutlines
     def compareOutlines (self,root1,root2,compareHeadlines=True,tag='',report=True):
     
         """Compares two outlines, making sure that their topologies,
@@ -446,19 +439,19 @@ class testUtils:
                 print 'p1.isCloned() == p2.isCloned()'
     
         return ok
-    #@-node:ekr.20051104075904.25:compareOutlines
-    #@+node:ekr.20051104075904.26:Finding nodes...
-    #@+node:ekr.20051104075904.27:findChildrenOf
+    #@-node:AGP.20250415230112.2562:compareOutlines
+    #@+node:AGP.20250415230112.2563:Finding nodes...
+    #@+node:AGP.20250415230112.2564:findChildrenOf
     def findChildrenOf (self,root):
     
         return [p.copy() for p in root.children_iter()]
-    #@-node:ekr.20051104075904.27:findChildrenOf
-    #@+node:ekr.20051104075904.28:findSubnodesOf
+    #@-node:AGP.20250415230112.2564:findChildrenOf
+    #@+node:AGP.20250415230112.2565:findSubnodesOf
     def findSubnodesOf (self,root):
     
         return [p.copy() for p in root.subtree_iter()]
-    #@-node:ekr.20051104075904.28:findSubnodesOf
-    #@+node:ekr.20051104075904.29:findNodeInRootTree
+    #@-node:AGP.20250415230112.2565:findSubnodesOf
+    #@+node:AGP.20250415230112.2566:findNodeInRootTree
     def findRootNode (self,p):
     
         """Return the root of p's tree."""
@@ -466,8 +459,8 @@ class testUtils:
         while p and p.hasParent():
             p.moveToParent()
         return p
-    #@-node:ekr.20051104075904.29:findNodeInRootTree
-    #@+node:ekr.20051104075904.30:u.findNodeInTree
+    #@-node:AGP.20250415230112.2566:findNodeInRootTree
+    #@+node:AGP.20250415230112.2567:u.findNodeInTree
     def findNodeInTree(self,p,headline,startswith=False):
     
         """Search for a node in p's tree matching the given headline."""
@@ -480,8 +473,8 @@ class testUtils:
                 return p.copy()
         return c.nullPosition()
     
-    #@-node:ekr.20051104075904.30:u.findNodeInTree
-    #@+node:ekr.20051104075904.31:findNodeAnywhere
+    #@-node:AGP.20250415230112.2567:u.findNodeInTree
+    #@+node:AGP.20250415230112.2568:findNodeAnywhere
     def findNodeAnywhere(self,headline):
         
         c = self.c
@@ -490,9 +483,9 @@ class testUtils:
             if p.headString().strip().lower() == h:
                 return p.copy()
         return c.nullPosition()
-    #@-node:ekr.20051104075904.31:findNodeAnywhere
-    #@-node:ekr.20051104075904.26:Finding nodes...
-    #@+node:ekr.20051104075904.33:numberOfClonesInOutline
+    #@-node:AGP.20250415230112.2568:findNodeAnywhere
+    #@-node:AGP.20250415230112.2563:Finding nodes...
+    #@+node:AGP.20250415230112.2569:numberOfClonesInOutline
     def numberOfClonesInOutline (self):
     
         """Returns the number of cloned nodes in an outline"""
@@ -502,16 +495,16 @@ class testUtils:
             if p.isCloned():
                 n += 1
         return n
-    #@-node:ekr.20051104075904.33:numberOfClonesInOutline
-    #@+node:ekr.20051104075904.34:numberOfNodesInOutline
+    #@-node:AGP.20250415230112.2569:numberOfClonesInOutline
+    #@+node:AGP.20250415230112.2570:numberOfNodesInOutline
     def numberOfNodesInOutline (self):
     
         """Returns the total number of nodes in an outline"""
     
         return len([p for p in self.c.allNodes_iter()])
-    #@-node:ekr.20051104075904.34:numberOfNodesInOutline
-    #@+node:ekr.20051104075904.36:testUtils.writeNode/sToNode
-    #@+node:ekr.20051104075904.37:writeNodesToNode
+    #@-node:AGP.20250415230112.2570:numberOfNodesInOutline
+    #@+node:AGP.20250415230112.2571:testUtils.writeNode/sToNode
+    #@+node:AGP.20250415230112.2572:writeNodesToNode
     def writeNodesToNode (self,c,input,output,sentinels=True):
     
         result = []
@@ -520,8 +513,8 @@ class testUtils:
             result.append(s)
         result = ''.join(result)
         output.scriptSetBodyString (result)
-    #@-node:ekr.20051104075904.37:writeNodesToNode
-    #@+node:ekr.20051104075904.38:writeNodeToNode
+    #@-node:AGP.20250415230112.2572:writeNodesToNode
+    #@+node:AGP.20250415230112.2573:writeNodeToNode
     def writeNodeToNode (self,c,input,output,sentinels=True):
     
         """Do an atFile.write the input tree to the body text of the output node."""
@@ -529,8 +522,8 @@ class testUtils:
         s = self.writeNodeToString(c,input,sentinels)
     
         output.scriptSetBodyString (s)
-    #@-node:ekr.20051104075904.38:writeNodeToNode
-    #@+node:ekr.20051104075904.39:writeNodeToString
+    #@-node:AGP.20250415230112.2573:writeNodeToNode
+    #@+node:AGP.20250415230112.2574:writeNodeToString
     def writeNodeToString (self,c,input,sentinels):
     
         """Return an atFile.write of the input tree to a string."""
@@ -551,9 +544,9 @@ class testUtils:
         s = df.stringOutput
     
         return s
-    #@-node:ekr.20051104075904.39:writeNodeToString
-    #@-node:ekr.20051104075904.36:testUtils.writeNode/sToNode
-    #@+node:ekr.20051104075904.40:testUtils.compareIgnoringNodeNames
+    #@-node:AGP.20250415230112.2574:writeNodeToString
+    #@-node:AGP.20250415230112.2571:testUtils.writeNode/sToNode
+    #@+node:AGP.20250415230112.2575:testUtils.compareIgnoringNodeNames
     def compareIgnoringNodeNames (self,s1,s2,delims,verbose=False):
     
         # Compare text containing sentinels, but ignore differences in @+-nodes.
@@ -595,22 +588,19 @@ class testUtils:
                         g.trace("line2:",repr(line2))
                     return False
         return True
-    #@-node:ekr.20051104075904.40:testUtils.compareIgnoringNodeNames
+    #@-node:AGP.20250415230112.2575:testUtils.compareIgnoringNodeNames
     #@-others
-#@-node:ekr.20051104075904.24: class testUtils
-#@+node:ekr.20051104075904.41: fail
+#@-node:AGP.20250415230112.2560: class testUtils
+#@+node:AGP.20250415230112.2576: fail
 def fail ():
 
     """Mark a unit test as having failed."""
     
-    __pychecker__ = '--no-argsused'
-        #  msg needed so signature matches base class.
-
     import leoGlobals as g
 
     g.app.unitTestDict["fail"] = g.callers()
-#@-node:ekr.20051104075904.41: fail
-#@+node:ekr.20051104075904.42:leoTest.runLeoTest
+#@-node:AGP.20250415230112.2576: fail
+#@+node:AGP.20250415230112.2577:leoTest.runLeoTest
 def runLeoTest(c,path,verbose=False,full=False):
 
     frame = None ; ok = False ; old_gui = g.app.gui
@@ -629,9 +619,9 @@ def runLeoTest(c,path,verbose=False,full=False):
             g.app.closeLeoWindow(frame.c.frame)
         c.frame.top.update()
 #@nonl
-#@-node:ekr.20051104075904.42:leoTest.runLeoTest
-#@+node:ekr.20051104075904.43:Specific to particular unit tests...
-#@+node:ekr.20051104075904.44:at-File test code (leoTest.py)
+#@-node:AGP.20250415230112.2577:leoTest.runLeoTest
+#@+node:AGP.20250415230112.2578:Specific to particular unit tests...
+#@+node:AGP.20250415230112.2579:at-File test code (leoTest.py)
 def runAtFileTest(c,p):
 
     """Common code for testing output of @file, @thin, etc."""
@@ -664,7 +654,7 @@ def runAtFileTest(c,p):
         assert(result == expected)
     except AssertionError:
         #@        << dump result and expected >>
-        #@+node:ekr.20051104075904.45:<< dump result and expected >>
+        #@+node:AGP.20250415230112.2580:<< dump result and expected >>
         print ; print '-' * 20
         print "result..."
         for line in g.splitLines(result):
@@ -674,27 +664,27 @@ def runAtFileTest(c,p):
         for line in g.splitLines(expected):
             print "%3d" % len(line),repr(line)
         print '-' * 20
-        #@-node:ekr.20051104075904.45:<< dump result and expected >>
+        #@-node:AGP.20250415230112.2580:<< dump result and expected >>
         #@nl
         raise
-#@-node:ekr.20051104075904.44:at-File test code (leoTest.py)
-#@+node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
+#@-node:AGP.20250415230112.2579:at-File test code (leoTest.py)
+#@+node:AGP.20250415230112.2581:Reformat Paragraph test code (leoTest.py)
 # DTHEIN 2004.01.11: Added unit tests for reformatParagraph
-#@+node:ekr.20051104075904.47:class reformatParagraphTest
+#@+node:AGP.20250415230112.2582:class reformatParagraphTest
 class reformatParagraphTest:
     
     '''A class to work around stupidities of the Unittest classes.'''
     
     #@    @+others
-    #@+node:ekr.20051104075904.48:__init__
+    #@+node:AGP.20250415230112.2583:__init__
     def __init__ (self,c,p):
         
         self.c = c
         self.p = p.copy()
     
         self.go()
-    #@-node:ekr.20051104075904.48:__init__
-    #@+node:ekr.20051104075904.49:go
+    #@-node:AGP.20250415230112.2583:__init__
+    #@+node:AGP.20250415230112.2584:go
     def go (self):
         
         try:
@@ -702,8 +692,8 @@ class reformatParagraphTest:
             self.runTest()
         finally:
             self.tearDown()
-    #@-node:ekr.20051104075904.49:go
-    #@+node:ekr.20051104075904.50:checkPosition
+    #@-node:AGP.20250415230112.2584:go
+    #@+node:AGP.20250415230112.2585:checkPosition
     def checkPosition(self,expRow,expCol):
     
         row,col = self.getRowCol()
@@ -711,8 +701,8 @@ class reformatParagraphTest:
         assert expCol == col, "Got column %d.  Expected %d" % (col,expCol)
     
         assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
-    #@-node:ekr.20051104075904.50:checkPosition
-    #@+node:ekr.20051104075904.51:checkText
+    #@-node:AGP.20250415230112.2585:checkPosition
+    #@+node:AGP.20250415230112.2586:checkText
     def checkText(self):
     
         new_text = self.tempChild.bodyString()
@@ -730,8 +720,8 @@ class reformatParagraphTest:
         assert newLinesCount == refLinesCount, \
             "Expected " + str(refLinesCount) + " lines, but " \
             + "received " + str(newLinesCount) + " lines."
-    #@-node:ekr.20051104075904.51:checkText
-    #@+node:ekr.20051104075904.52:copyBeforeToTemp
+    #@-node:AGP.20250415230112.2586:checkText
+    #@+node:AGP.20250415230112.2587:copyBeforeToTemp
     def copyBeforeToTemp(self):
     
         c = self.c ; tempNode = self.tempNode
@@ -756,8 +746,8 @@ class reformatParagraphTest:
         c.selectPosition(self.tempChild)
         c.frame.body.setInsertPointToStartOfLine( 0 )
         c.frame.body.setTextSelection(None,None)
-    #@-node:ekr.20051104075904.52:copyBeforeToTemp
-    #@+node:ekr.20051104075904.53:getRowCol
+    #@-node:AGP.20250415230112.2587:copyBeforeToTemp
+    #@+node:AGP.20250415230112.2588:getRowCol
     def getRowCol(self):
     
         c = self.c ; body = c.frame.body.bodyCtrl ; gui = g.app.gui
@@ -774,13 +764,13 @@ class reformatParagraphTest:
             col = g.computeWidth(s,tab_width)
     
         return row,col
-    #@-node:ekr.20051104075904.53:getRowCol
-    #@+node:ekr.20051104075904.54:runTest
+    #@-node:AGP.20250415230112.2588:getRowCol
+    #@+node:AGP.20250415230112.2589:runTest
     def runTest(self):
         
         g.trace('must be overridden in subclasses')
-    #@-node:ekr.20051104075904.54:runTest
-    #@+node:ekr.20051104075904.55:setUp
+    #@-node:AGP.20250415230112.2589:runTest
+    #@+node:AGP.20250415230112.2590:setUp
     def setUp(self):
         
         c = self.c ; p = self.p
@@ -799,8 +789,8 @@ class reformatParagraphTest:
         self.tempChild = None
     
         self.copyBeforeToTemp()
-    #@-node:ekr.20051104075904.55:setUp
-    #@+node:ekr.20051104075904.56:tearDown
+    #@-node:AGP.20250415230112.2590:setUp
+    #@+node:AGP.20250415230112.2591:tearDown
     def tearDown(self):
         
         c = self.c ; tempNode = self.tempNode
@@ -816,16 +806,16 @@ class reformatParagraphTest:
             
         # c.undoer.rollbackToMark(self.undoMark)
         c.undoer.clearUndoState()
-    #@-node:ekr.20051104075904.56:tearDown
+    #@-node:AGP.20250415230112.2591:tearDown
     #@-others
-#@-node:ekr.20051104075904.47:class reformatParagraphTest
-#@+node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
+#@-node:AGP.20250415230112.2582:class reformatParagraphTest
+#@+node:AGP.20250415230112.2592:class singleParagraphTest (reformatParagraphTest)
 class singleParagraphTest (reformatParagraphTest):
     
     '''A class to work around stupidities of the Unittest classes.'''
     
     #@    @+others
-    #@+node:ekr.20051104075904.58:__init__
+    #@+node:AGP.20250415230112.2593:__init__
     def __init__ (self,c,p,finalRow,finalCol):
         
         self.finalCol = finalCol
@@ -833,8 +823,8 @@ class singleParagraphTest (reformatParagraphTest):
         
         # Call the base class.
         reformatParagraphTest.__init__(self,c,p)
-    #@-node:ekr.20051104075904.58:__init__
-    #@+node:ekr.20051104075904.59:runTest
+    #@-node:AGP.20250415230112.2593:__init__
+    #@+node:AGP.20250415230112.2594:runTest
     def runTest(self):
     
         # Reformat the paragraph
@@ -843,14 +833,14 @@ class singleParagraphTest (reformatParagraphTest):
         # Compare the computed result to the reference result.
         self.checkText()
         self.checkPosition(self.finalRow,self.finalCol)
-    #@-node:ekr.20051104075904.59:runTest
+    #@-node:AGP.20250415230112.2594:runTest
     #@-others
-#@-node:ekr.20051104075904.57:class singleParagraphTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
+#@-node:AGP.20250415230112.2592:class singleParagraphTest (reformatParagraphTest)
+#@+node:AGP.20250415230112.2595:class multiParagraphTest (reformatParagraphTest)
 class multiParagraphTest (reformatParagraphTest):
     
     #@    @+others
-    #@+node:ekr.20051104075904.61:runTest
+    #@+node:AGP.20250415230112.2596:runTest
     def runTest(self):
     
         self.c.reformatParagraph()
@@ -864,14 +854,14 @@ class multiParagraphTest (reformatParagraphTest):
     
         # Compare the computed result to the reference result.
         self.checkText()
-    #@-node:ekr.20051104075904.61:runTest
+    #@-node:AGP.20250415230112.2596:runTest
     #@-others
-#@-node:ekr.20051104075904.60:class multiParagraphTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
+#@-node:AGP.20250415230112.2595:class multiParagraphTest (reformatParagraphTest)
+#@+node:AGP.20250415230112.2597:class multiParagraphWithListTest (reformatParagraphTest)
 class multiParagraphWithListTest (reformatParagraphTest):
     
     #@    @+others
-    #@+node:ekr.20051104075904.63:runTest
+    #@+node:AGP.20250415230112.2598:runTest
     def runTest(self):
     
         # reformat the paragraph and check insertion cursor position
@@ -890,14 +880,14 @@ class multiParagraphWithListTest (reformatParagraphTest):
     
         # Compare the computed result to the reference result.
         self.checkText()
-    #@-node:ekr.20051104075904.63:runTest
+    #@-node:AGP.20250415230112.2598:runTest
     #@-others
-#@-node:ekr.20051104075904.62:class multiParagraphWithListTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
+#@-node:AGP.20250415230112.2597:class multiParagraphWithListTest (reformatParagraphTest)
+#@+node:AGP.20250415230112.2599:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
 class leadingWSOnEmptyLinesTest (reformatParagraphTest):
     
     #@    @+others
-    #@+node:ekr.20051104075904.65:runTest
+    #@+node:AGP.20250415230112.2600:runTest
     def runTest(self):
     
         # reformat the paragraph and check insertion cursor position
@@ -916,14 +906,14 @@ class leadingWSOnEmptyLinesTest (reformatParagraphTest):
     
         # Compare the computed result to the reference result.
         self.checkText()
-    #@-node:ekr.20051104075904.65:runTest
+    #@-node:AGP.20250415230112.2600:runTest
     #@-others
-#@-node:ekr.20051104075904.64:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
-#@+node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
+#@-node:AGP.20250415230112.2599:class leadingWSOnEmptyLinesTest (reformatParagraphTest)
+#@+node:AGP.20250415230112.2601:class testDirectiveBreaksParagraph (reformatParagraphTest)
 class directiveBreaksParagraphTest (reformatParagraphTest):
     
     #@    @+others
-    #@+node:ekr.20051104075904.67:runTest
+    #@+node:AGP.20250415230112.2602:runTest
     def runTest(self):
     
         # reformat the paragraph and check insertion cursor position
@@ -938,12 +928,12 @@ class directiveBreaksParagraphTest (reformatParagraphTest):
     
         # Compare the computed result to the reference result.
         self.checkText()
-    #@-node:ekr.20051104075904.67:runTest
+    #@-node:AGP.20250415230112.2602:runTest
     #@-others
-#@-node:ekr.20051104075904.66:class testDirectiveBreaksParagraph (reformatParagraphTest)
-#@-node:ekr.20051104075904.46:Reformat Paragraph test code (leoTest.py)
-#@+node:ekr.20051104075904.68:Edit Body test code (leoTest.py)
-#@+node:ekr.20051104075904.69: makeEditBodySuite
+#@-node:AGP.20250415230112.2601:class testDirectiveBreaksParagraph (reformatParagraphTest)
+#@-node:AGP.20250415230112.2581:Reformat Paragraph test code (leoTest.py)
+#@+node:AGP.20250415230112.2603:Edit Body test code (leoTest.py)
+#@+node:AGP.20250415230112.2604: makeEditBodySuite
 def makeEditBodySuite(c):
 
     """Create an Edit Body test for every descendant of testParentHeadline.."""
@@ -972,14 +962,14 @@ def makeEditBodySuite(c):
             print 'missing "before" or "after" for', p.headString()
 
     return suite
-#@-node:ekr.20051104075904.69: makeEditBodySuite
-#@+node:ekr.20051104075904.70:class editBodyTestCase
+#@-node:AGP.20250415230112.2604: makeEditBodySuite
+#@+node:AGP.20250415230112.2605:class editBodyTestCase
 class editBodyTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@    @+others
-    #@+node:ekr.20051104075904.71: __init__
+    #@+node:AGP.20250415230112.2606: __init__
     def __init__ (self,c,parent,before,after,sel,ins,tempNode):
     
         # Init the base class.
@@ -998,20 +988,17 @@ class editBodyTestCase(unittest.TestCase):
             g.trace('parent',parent)
             g.trace('before',before)
             g.trace('after',after)
-    #@-node:ekr.20051104075904.71: __init__
-    #@+node:ekr.20051104075904.72: fail
+    #@-node:AGP.20250415230112.2606: __init__
+    #@+node:AGP.20250415230112.2607: fail
     def fail (self,msg=None):
     
         """Mark a unit test as having failed."""
         
-        __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
-    
         import leoGlobals as g
     
         g.app.unitTestDict["fail"] = g.callers()
-    #@-node:ekr.20051104075904.72: fail
-    #@+node:ekr.20051104075904.73:editBody
+    #@-node:AGP.20250415230112.2607: fail
+    #@+node:AGP.20250415230112.2608:editBody
     def editBody (self):
     
         c = self.c ; u = self.u
@@ -1038,13 +1025,13 @@ class editBodyTestCase(unittest.TestCase):
             assert(u.compareOutlines(self.tempNode,self.after,compareHeadlines=False,tag='after redo'))
             c.undoer.undo()
             assert(u.compareOutlines(self.tempNode,self.before,compareHeadlines=False,tag='after undo2'))
-    #@-node:ekr.20051104075904.73:editBody
-    #@+node:ekr.20051104075904.74:runTest
+    #@-node:AGP.20250415230112.2608:editBody
+    #@+node:AGP.20250415230112.2609:runTest
     def runTest(self):
     
         self.editBody()
-    #@-node:ekr.20051104075904.74:runTest
-    #@+node:ekr.20051104075904.75:setUp
+    #@-node:AGP.20250415230112.2609:runTest
+    #@+node:AGP.20250415230112.2610:setUp
     def setUp(self):
     
         c = self.c ; tempNode = self.tempNode
@@ -1078,8 +1065,8 @@ class editBodyTestCase(unittest.TestCase):
         if not self.sel and not self.ins:
             g.app.gui.setInsertPoint(t,"1.0")
             g.app.gui.setTextSelection(t,"1.0","1.0")
-    #@-node:ekr.20051104075904.75:setUp
-    #@+node:ekr.20051104075904.76:tearDown
+    #@-node:AGP.20250415230112.2610:setUp
+    #@+node:AGP.20250415230112.2611:tearDown
     def tearDown (self):
     
         c = self.c ; tempNode = self.tempNode
@@ -1095,12 +1082,12 @@ class editBodyTestCase(unittest.TestCase):
         
         # c.undoer.rollbackToMark(self.undoMark)
         c.undoer.clearUndoState()
-    #@-node:ekr.20051104075904.76:tearDown
+    #@-node:AGP.20250415230112.2611:tearDown
     #@-others
-#@-node:ekr.20051104075904.70:class editBodyTestCase
-#@-node:ekr.20051104075904.68:Edit Body test code (leoTest.py)
-#@+node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20051104075904.78:makeImportExportSuite
+#@-node:AGP.20250415230112.2605:class editBodyTestCase
+#@-node:AGP.20250415230112.2603:Edit Body test code (leoTest.py)
+#@+node:AGP.20250415230112.2612:Import/Export test code (leoTest.py)
+#@+node:AGP.20250415230112.2613:makeImportExportSuite
 def makeImportExportSuite(c,parentHeadline,doImport):
 
     """Create an Import/Export test for every descendant of testParentHeadline.."""
@@ -1122,14 +1109,14 @@ def makeImportExportSuite(c,parentHeadline,doImport):
         suite.addTest(test)
 
     return suite
-#@-node:ekr.20051104075904.78:makeImportExportSuite
-#@+node:ekr.20051104075904.79:class importExportTestCase
+#@-node:AGP.20250415230112.2613:makeImportExportSuite
+#@+node:AGP.20250415230112.2614:class importExportTestCase
 class importExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@    @+others
-    #@+node:ekr.20051104075904.80:__init__
+    #@+node:AGP.20250415230112.2615:__init__
     def __init__ (self,c,v,dialog,temp_v,doImport):
     
         # Init the base class.
@@ -1147,20 +1134,17 @@ class importExportTestCase(unittest.TestCase):
         self.doImport = doImport
     
         self.old_v = c.currentVnode()
-    #@-node:ekr.20051104075904.80:__init__
-    #@+node:ekr.20051104075904.81: fail
+    #@-node:AGP.20250415230112.2615:__init__
+    #@+node:AGP.20250415230112.2616: fail
     def fail (self,msg=None):
     
         """Mark a unit test as having failed."""
         
-        __pychecker__ = '--no-argsused'
-            #  msg needed so signature matches base class.
-    
         import leoGlobals as g
     
         g.app.unitTestDict["fail"] = g.callers()
-    #@-node:ekr.20051104075904.81: fail
-    #@+node:ekr.20051104075904.82:importExport
+    #@-node:AGP.20250415230112.2616: fail
+    #@+node:AGP.20250415230112.2617:importExport
     def importExport (self):
     
         c = self.c ; v = self.v
@@ -1173,15 +1157,15 @@ class importExportTestCase(unittest.TestCase):
     
         failedMethod = g.app.unitTestDict.get("fail")
         self.failIf(failedMethod,failedMethod)
-    #@-node:ekr.20051104075904.82:importExport
-    #@+node:ekr.20051104075904.83:runTest
+    #@-node:AGP.20250415230112.2617:importExport
+    #@+node:AGP.20250415230112.2618:runTest
     def runTest(self):
     
         # """Import Export Test Case"""
     
         self.importExport()
-    #@-node:ekr.20051104075904.83:runTest
-    #@+node:ekr.20051104075904.84:setUp
+    #@-node:AGP.20250415230112.2618:runTest
+    #@+node:AGP.20250415230112.2619:setUp
     def setUp(self):
     
         c = self.c ; temp_v = self.temp_v ; d = self.dialog
@@ -1217,16 +1201,16 @@ class importExportTestCase(unittest.TestCase):
     
         self.oldGui = g.app.gui
         self.gui = leoGui.unitTestGui(theDict,trace=False)
-    #@-node:ekr.20051104075904.84:setUp
-    #@+node:ekr.20051104075904.85:shortDescription
+    #@-node:AGP.20250415230112.2619:setUp
+    #@+node:AGP.20250415230112.2620:shortDescription
     def shortDescription (self):
     
         try:
             return "ImportExportTestCase: %s %s" % (self.v.headString(),self.fileName)
         except:
             return "ImportExportTestCase"
-    #@-node:ekr.20051104075904.85:shortDescription
-    #@+node:ekr.20051104075904.86:tearDown
+    #@-node:AGP.20250415230112.2620:shortDescription
+    #@+node:AGP.20250415230112.2621:tearDown
     def tearDown (self):
     
         c = self.c ; temp_v = self.temp_v
@@ -1247,12 +1231,12 @@ class importExportTestCase(unittest.TestCase):
                 
         g.app.gui = self.oldGui
         c.selectVnode(self.old_v)
-    #@-node:ekr.20051104075904.86:tearDown
+    #@-node:AGP.20250415230112.2621:tearDown
     #@-others
-#@-node:ekr.20051104075904.79:class importExportTestCase
-#@-node:ekr.20051104075904.77:Import/Export test code (leoTest.py)
-#@+node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
-#@+node:ekr.20051104075904.88:About the Perfect Import tests
+#@-node:AGP.20250415230112.2614:class importExportTestCase
+#@-node:AGP.20250415230112.2612:Import/Export test code (leoTest.py)
+#@+node:AGP.20250415230112.2622:Perfect Import test code (leoTest.py)
+#@+node:AGP.20250415230112.2623:About the Perfect Import tests
 #@@killcolor
 #@+at
 # 
@@ -1279,14 +1263,12 @@ class importExportTestCase(unittest.TestCase):
 # A test passes if and only if the body of -result matches the body of 
 # output-after-sent, ignoring the details of @+node and @-node sentinels.
 #@-at
-#@-node:ekr.20051104075904.88:About the Perfect Import tests
-#@+node:ekr.20051104075904.89:runPerfectImportTest
+#@-node:AGP.20250415230112.2623:About the Perfect Import tests
+#@+node:AGP.20250415230112.2624:runPerfectImportTest
 def runPerfectImportTest(c,p,
     testing=False,verbose=False,
     ignoreSentinelsInCompare=False):
         
-    __pychecker__ = '--no-shadowbuiltin' # input is a builtin.
-
     # The contents of the "-input" and "-input-after" nodes define the changes.
 
     p = c.currentPosition()
@@ -1338,10 +1320,10 @@ def runPerfectImportTest(c,p,
             result.bodyString(),
             out_after_sent.bodyString(),
             delims,verbose=True)
-#@-node:ekr.20051104075904.89:runPerfectImportTest
-#@-node:ekr.20051104075904.87:Perfect Import test code (leoTest.py)
-#@+node:ekr.20051104075904.90:Plugin tests... (leoTest.py)
-#@+node:ekr.20051104075904.91:getAllPluginFilenames
+#@-node:AGP.20250415230112.2624:runPerfectImportTest
+#@-node:AGP.20250415230112.2622:Perfect Import test code (leoTest.py)
+#@+node:AGP.20250415230112.2625:Plugin tests... (leoTest.py)
+#@+node:AGP.20250415230112.2626:getAllPluginFilenames
 def getAllPluginFilenames ():
 
     path = g.os_path_join(g.app.loadDir,"..","plugins")
@@ -1350,8 +1332,8 @@ def getAllPluginFilenames ():
     files = [g.os_path_abspath(f) for f in files]
     files.sort()
     return files
-#@-node:ekr.20051104075904.91:getAllPluginFilenames
-#@+node:ekr.20051104075904.92:testPlugin (no longer used)
+#@-node:AGP.20250415230112.2626:getAllPluginFilenames
+#@+node:AGP.20250415230112.2627:testPlugin (no longer used)
 def oldTestPlugin (fileName,verbose=False):
         
     path = g.os_path_join(g.app.loadDir,"..","plugins")
@@ -1366,8 +1348,8 @@ def oldTestPlugin (fileName,verbose=False):
             g.trace("Executing unitTest in plugins/%s..." % fileName)
 
         module.unitTest(verbose=verbose)
-#@-node:ekr.20051104075904.92:testPlugin (no longer used)
-#@+node:ekr.20051104075904.93:checkFileSyntax
+#@-node:AGP.20250415230112.2627:testPlugin (no longer used)
+#@+node:AGP.20250415230112.2628:checkFileSyntax
 def checkFileSyntax (fileName,s):
     
     try:
@@ -1376,8 +1358,8 @@ def checkFileSyntax (fileName,s):
         g.es("Syntax error in: %s" % fileName,color="blue")
         g.es_exception(full=False,color="black")
         raise
-#@-node:ekr.20051104075904.93:checkFileSyntax
-#@+node:ekr.20051104075904.94:checkFileTabs
+#@-node:AGP.20250415230112.2628:checkFileSyntax
+#@+node:AGP.20250415230112.2629:checkFileTabs
 def checkFileTabs (fileName,s):
 
     try:
@@ -1407,14 +1389,14 @@ def checkFileTabs (fileName,s):
         print s ; g.trace(s)
         g.es_exception()
         assert 0, "test failed"
-#@-node:ekr.20051104075904.94:checkFileTabs
-#@-node:ekr.20051104075904.90:Plugin tests... (leoTest.py)
-#@+node:ekr.20051104075904.95:throwAssertionError
+#@-node:AGP.20250415230112.2629:checkFileTabs
+#@-node:AGP.20250415230112.2625:Plugin tests... (leoTest.py)
+#@+node:AGP.20250415230112.2630:throwAssertionError
 def throwAssertionError():
     
     assert 0, 'assert(0) as a test of catching assertions'
-#@-node:ekr.20051104075904.95:throwAssertionError
-#@+node:ekr.20061008140603:runEditCommandTest
+#@-node:AGP.20250415230112.2630:throwAssertionError
+#@+node:AGP.20250415230112.2631:runEditCommandTest
 def runEditCommandTest (c,p):
     
     u = testUtils(c) ; atTest = p.copy()
@@ -1459,10 +1441,10 @@ def runEditCommandTest (c,p):
     finally:
         c.endUpdate()
 #@nonl
-#@-node:ekr.20061008140603:runEditCommandTest
-#@-node:ekr.20051104075904.43:Specific to particular unit tests...
-#@+node:ekr.20051104075904.96:Test of doctest
-#@+node:ekr.20051104075904.97:factorial
+#@-node:AGP.20250415230112.2631:runEditCommandTest
+#@-node:AGP.20250415230112.2578:Specific to particular unit tests...
+#@+node:AGP.20250415230112.2632:Test of doctest
+#@+node:AGP.20250415230112.2633:factorial
 def factorial(n):
     """Return the factorial of n, an exact integer >= 0.
 
@@ -1513,10 +1495,10 @@ def factorial(n):
             result *= long(factor)
         factor += 1
     return result
-#@-node:ekr.20051104075904.97:factorial
-#@-node:ekr.20051104075904.96:Test of doctest
-#@+node:ekr.20051104075904.98:Docutils stuff
-#@+node:ekr.20051104075904.99:createUnitTestsFromDoctests
+#@-node:AGP.20250415230112.2633:factorial
+#@-node:AGP.20250415230112.2632:Test of doctest
+#@+node:AGP.20250415230112.2634:Docutils stuff
+#@+node:AGP.20250415230112.2635:createUnitTestsFromDoctests
 def createUnitTestsFromDoctests (modules,verbose=True):
 
     created = False # True if suite is non-empty.
@@ -1537,8 +1519,8 @@ def createUnitTestsFromDoctests (modules,verbose=True):
             pass # No tests found.
 
     return g.choose(created,suite,None)
-#@-node:ekr.20051104075904.99:createUnitTestsFromDoctests
-#@+node:ekr.20051104075904.100:findAllAtFileNodes
+#@-node:AGP.20250415230112.2635:createUnitTestsFromDoctests
+#@+node:AGP.20250415230112.2636:findAllAtFileNodes
 def findAllAtFileNodes(c):
 
     paths = []
@@ -1554,8 +1536,8 @@ def findAllAtFileNodes(c):
                 paths.append(path)
 
     return paths
-#@-node:ekr.20051104075904.100:findAllAtFileNodes
-#@+node:ekr.20051104075904.101:importAllModulesInPathList
+#@-node:AGP.20250415230112.2636:findAllAtFileNodes
+#@+node:AGP.20250415230112.2637:importAllModulesInPathList
 def importAllModulesInPathList(paths):
 
     paths = list(paths)
@@ -1567,8 +1549,8 @@ def importAllModulesInPathList(paths):
             modules.append(module)
 
     return modules
-#@-node:ekr.20051104075904.101:importAllModulesInPathList
-#@+node:ekr.20051104075904.102:importAllModulesInPath
+#@-node:AGP.20250415230112.2637:importAllModulesInPathList
+#@+node:AGP.20250415230112.2638:importAllModulesInPath
 def importAllModulesInPath (path):
 
     path = g.os_path_abspath(path)
@@ -1589,8 +1571,8 @@ def importAllModulesInPath (path):
 
     return modules
 #@nonl
-#@-node:ekr.20051104075904.102:importAllModulesInPath
-#@+node:ekr.20051104075904.103:safeImportModule
+#@-node:AGP.20250415230112.2638:importAllModulesInPath
+#@+node:AGP.20250415230112.2639:safeImportModule
 #@+at 
 #@nonl
 # Warning: do NOT use g.importFromPath here!
@@ -1614,10 +1596,10 @@ def safeImportModule (fileName):
     else:
         print "Not a .py file:",fileName
         return None
-#@-node:ekr.20051104075904.103:safeImportModule
-#@-node:ekr.20051104075904.98:Docutils stuff
-#@+node:ekr.20051104075904.104:Test of doTestRoutinesInModule
-#@+node:ekr.20051104075904.105:test_dummy & dummyTestCase
+#@-node:AGP.20250415230112.2639:safeImportModule
+#@-node:AGP.20250415230112.2634:Docutils stuff
+#@+node:AGP.20250415230112.2640:Test of doTestRoutinesInModule
+#@+node:AGP.20250415230112.2641:test_dummy & dummyTestCase
 def test_dummy():
     import leoGlobals as g
     g.trace()
@@ -1627,8 +1609,8 @@ class dummyTestClass: # NOT a TestCase.
     def test_one (self):
         import leoGlobals as g
         g.trace(self)
-#@-node:ekr.20051104075904.105:test_dummy & dummyTestCase
-#@-node:ekr.20051104075904.104:Test of doTestRoutinesInModule
+#@-node:AGP.20250415230112.2641:test_dummy & dummyTestCase
+#@-node:AGP.20250415230112.2640:Test of doTestRoutinesInModule
 #@-others
-#@-node:ekr.20051104075904:@thin leoTest.py
+#@-node:AGP.20250415230112.2536:@thin leoTest.py
 #@-leo

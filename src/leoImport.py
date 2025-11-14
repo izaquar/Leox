@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3206:@thin leoImport.py
+#@+node:AGP.20250415230112.1733:@thin leoImport.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
@@ -13,7 +13,7 @@ import string
 class baseLeoImportCommands:
     """The base class for Leo's import commands."""
     #@    @+others
-    #@+node:ekr.20031218072017.3207:import.__init__
+    #@+node:AGP.20250415230112.1734:import.__init__
     def __init__ (self,c):
     
         self.c = c
@@ -39,9 +39,9 @@ class baseLeoImportCommands:
         self.web_st = []
         self.encoding = g.app.tkEncoding # 2/25/03: was "utf-8"
         self._forcedGnxPositionList = []
-    #@-node:ekr.20031218072017.3207:import.__init__
-    #@+node:ekr.20031218072017.3209:Import
-    #@+node:ekr.20031218072017.3210:createOutline
+    #@-node:AGP.20250415230112.1734:import.__init__
+    #@+node:AGP.20250415230112.1735:Import
+    #@+node:AGP.20250415230112.1736:createOutline
     def createOutline (self,fileName,parent):
     
         c = self.c ; u = c.undoer
@@ -55,7 +55,7 @@ class baseLeoImportCommands:
         appendFileFlag = ext not in (
             ".c", ".cpp", ".cxx", ".el", ".java", ".lua", ".pas", ".py", ".pyw", ".php")
         #@    << Read file into s >>
-        #@+node:ekr.20031218072017.3211:<< Read file into s >>
+        #@+node:AGP.20250415230112.1737:<< Read file into s >>
         try:
             theFile = open(fileName)
             s = theFile.read()
@@ -65,7 +65,7 @@ class baseLeoImportCommands:
             g.es("can not open " + fileName)
             leoTest.fail()
             return None
-        #@-node:ekr.20031218072017.3211:<< Read file into s >>
+        #@-node:AGP.20250415230112.1737:<< Read file into s >>
         #@nl
         # Create the top-level headline.
         undoData = u.beforeInsertNode(parent)
@@ -102,8 +102,8 @@ class baseLeoImportCommands:
         else:
             g.es("createOutline: can't happen")
         return p
-    #@-node:ekr.20031218072017.3210:createOutline
-    #@+node:ekr.20041126042730:getTabWidth
+    #@-node:AGP.20250415230112.1736:createOutline
+    #@+node:AGP.20250415230112.1738:getTabWidth
     def getTabWidth (self):
         
         d = g.scanDirectives(self.c)
@@ -112,8 +112,8 @@ class baseLeoImportCommands:
             return w
         else:
             return self.c.tab_width
-    #@-node:ekr.20041126042730:getTabWidth
-    #@+node:ekr.20031218072017.1810:importDerivedFiles
+    #@-node:AGP.20250415230112.1738:getTabWidth
+    #@+node:AGP.20250415230112.1739:importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None):
         # Not a command.  It must *not* have an event arg.
         
@@ -127,7 +127,7 @@ class baseLeoImportCommands:
             for fileName in paths:
                 g.setGlobalOpenDir(fileName)
                 #@            << set isThin if fileName is a thin derived file >>
-                #@+node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+                #@+node:AGP.20250415230112.1740:<< set isThin if fileName is a thin derived file >>
                 fileName = g.os_path_normpath(fileName)
                 
                 try:
@@ -136,7 +136,7 @@ class baseLeoImportCommands:
                     theFile.close()
                 except IOError:
                     isThin = False
-                #@-node:ekr.20040930135204:<< set isThin if fileName is a thin derived file >>
+                #@-node:AGP.20250415230112.1740:<< set isThin if fileName is a thin derived file >>
                 #@nl
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAfter()
@@ -155,13 +155,13 @@ class baseLeoImportCommands:
             u.afterChangeGroup(p,command)
         finally:
             c.endUpdate()
-    #@+node:ekr.20051208100903.1:forceGnxOnPosition
+    #@+node:AGP.20250415230112.1741:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
     
         self._forcedGnxPositionList.append(p.v)
-    #@-node:ekr.20051208100903.1:forceGnxOnPosition
-    #@-node:ekr.20031218072017.1810:importDerivedFiles
-    #@+node:ekr.20031218072017.3212:importFilesCommand
+    #@-node:AGP.20250415230112.1741:forceGnxOnPosition
+    #@-node:AGP.20250415230112.1739:importDerivedFiles
+    #@+node:AGP.20250415230112.1742:importFilesCommand
     def importFilesCommand (self,files=None,treeType=None,
         perfectImport=True,testing=False,verbose=False):
             # Not a command.  It must *not* have an event arg.
@@ -177,7 +177,7 @@ class baseLeoImportCommands:
         try: # range of update...
             if len(files) == 2:
                 #@            << Create a parent for two files having a common prefix >>
-                #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+                #@+node:AGP.20250415230112.1743:<< Create a parent for two files having a common prefix >>
                 #@+at 
                 #@nonl
                 # The two filenames have a common prefix everything before the 
@@ -194,7 +194,7 @@ class baseLeoImportCommands:
                     junk, nameExt = g.os_path_split(prefix1)
                     name,ext = g.os_path_splitext(prefix1)
                     current.initHeadString(name)
-                #@-node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
+                #@-node:AGP.20250415230112.1743:<< Create a parent for two files having a common prefix >>
                 #@nl
             for fileName in files:
                 g.setGlobalOpenDir(fileName)
@@ -214,9 +214,9 @@ class baseLeoImportCommands:
         finally:
             c.endUpdate()
         c.selectVnode(current)
-    #@-node:ekr.20031218072017.3212:importFilesCommand
-    #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
-    #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
+    #@-node:AGP.20250415230112.1742:importFilesCommand
+    #@+node:AGP.20250415230112.1744:importFlattenedOutline & allies
+    #@+node:AGP.20250415230112.1745:convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
     
     def convertMoreStringToOutlineAfter (self,s,firstVnode):
@@ -228,8 +228,6 @@ class baseLeoImportCommands:
     
     def convertMoreStringsToOutlineAfter (self,strings,firstVnode):
         
-        __pychecker__ = '--no-objattrs' # suppress bad warnings re lastVnode.
-    
         c = self.c
         if len(strings) == 0: return None
         if not self.stringsAreValidMoreFile(strings): return None
@@ -245,7 +243,7 @@ class baseLeoImportCommands:
                 level -= firstLevel
                 if level >= 0:
                     #@                << Link a new vnode v into the outline >>
-                    #@+node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@+node:AGP.20250415230112.1746:<< Link a new vnode v into the outline >>
                     assert(level >= 0)
                     if lastVnode is None:
                         # g.trace(firstVnode)
@@ -264,10 +262,10 @@ class baseLeoImportCommands:
                         v = lastVnode.insertAfter()
                     lastVnode = v
                     lastLevel = level
-                    #@-node:ekr.20031218072017.3216:<< Link a new vnode v into the outline >>
+                    #@-node:AGP.20250415230112.1746:<< Link a new vnode v into the outline >>
                     #@nl
                     #@                << Set the headline string, skipping over the leader >>
-                    #@+node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                    #@+node:AGP.20250415230112.1747:<< Set the headline string, skipping over the leader >>
                     j = 0
                     while g.match(s,j,'\t'):
                         j += 1
@@ -275,10 +273,10 @@ class baseLeoImportCommands:
                         j += 2
                     
                     v.initHeadString(s[j:])
-                    #@-node:ekr.20031218072017.3217:<< Set the headline string, skipping over the leader >>
+                    #@-node:AGP.20250415230112.1747:<< Set the headline string, skipping over the leader >>
                     #@nl
                     #@                << Count the number of following body lines >>
-                    #@+node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                    #@+node:AGP.20250415230112.1748:<< Count the number of following body lines >>
                     bodyLines = 0
                     index += 1 # Skip the headline.
                     while index < len(strings):
@@ -292,10 +290,10 @@ class baseLeoImportCommands:
                             strings[index] = s[1:]
                         bodyLines += 1
                         index += 1
-                    #@-node:ekr.20031218072017.3218:<< Count the number of following body lines >>
+                    #@-node:AGP.20250415230112.1748:<< Count the number of following body lines >>
                     #@nl
                     #@                << Add the lines to the body text of v >>
-                    #@+node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                    #@+node:AGP.20250415230112.1749:<< Add the lines to the body text of v >>
                     if bodyLines > 0:
                         body = ""
                         n = index - bodyLines
@@ -305,7 +303,7 @@ class baseLeoImportCommands:
                                 body += "\n"
                             n += 1
                         v.setTnodeText(body)
-                    #@-node:ekr.20031218072017.3219:<< Add the lines to the body text of v >>
+                    #@-node:AGP.20250415230112.1749:<< Add the lines to the body text of v >>
                     #@nl
                     v.setDirty()
                 else: index += 1
@@ -316,8 +314,8 @@ class baseLeoImportCommands:
         finally:
             c.endUpdate()
         return theRoot
-    #@-node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
-    #@+node:ekr.20031218072017.3220:importFlattenedOutline
+    #@-node:AGP.20250415230112.1745:convertMoreString/StringsToOutlineAfter
+    #@+node:AGP.20250415230112.1750:importFlattenedOutline
     def importFlattenedOutline (self,files): # Not a command, so no event arg.
     
         c = self.c ; u = c.undoer ; current = c.currentPosition()
@@ -328,7 +326,7 @@ class baseLeoImportCommands:
         fileName = files[0] # files contains at most one file.
         g.setGlobalOpenDir(fileName)
         #@    << Read the file into array >>
-        #@+node:ekr.20031218072017.3221:<< Read the file into array >>
+        #@+node:AGP.20250415230112.1751:<< Read the file into array >>
         try:
             theFile = open(fileName)
             s = theFile.read()
@@ -340,7 +338,7 @@ class baseLeoImportCommands:
             g.es("Can not open " + fileName, color="blue")
             leoTest.fail()
             return
-        #@-node:ekr.20031218072017.3221:<< Read the file into array >>
+        #@-node:AGP.20250415230112.1751:<< Read the file into array >>
         #@nl
     
         # Convert the string to an outline and insert it after the current node.
@@ -355,8 +353,8 @@ class baseLeoImportCommands:
             u.afterInsertNode(p,'Import',undoData)
         else:
             g.es(fileName + " is not a valid MORE file.")
-    #@-node:ekr.20031218072017.3220:importFlattenedOutline
-    #@+node:ekr.20031218072017.3222:moreHeadlineLevel
+    #@-node:AGP.20250415230112.1750:importFlattenedOutline
+    #@+node:AGP.20250415230112.1752:moreHeadlineLevel
     # return the headline level of s,or -1 if the string is not a MORE headline.
     def moreHeadlineLevel (self,s):
     
@@ -369,8 +367,8 @@ class baseLeoImportCommands:
             return level, plusFlag
         else:
             return -1, plusFlag
-    #@-node:ekr.20031218072017.3222:moreHeadlineLevel
-    #@+node:ekr.20031218072017.3223:stringIs/stringsAreValidMoreFile
+    #@-node:AGP.20250415230112.1752:moreHeadlineLevel
+    #@+node:AGP.20250415230112.1753:stringIs/stringsAreValidMoreFile
     # Used by paste logic.
     
     def stringIsValidMoreFile (self,s):
@@ -400,10 +398,10 @@ class baseLeoImportCommands:
                     lastLevel = level
                     plusFlag = newFlag
         return True
-    #@-node:ekr.20031218072017.3223:stringIs/stringsAreValidMoreFile
-    #@-node:ekr.20031218072017.3214:importFlattenedOutline & allies
-    #@+node:ekr.20031218072017.3224:importWebCommand & allies
-    #@+node:ekr.20031218072017.3225:createOutlineFromWeb
+    #@-node:AGP.20250415230112.1753:stringIs/stringsAreValidMoreFile
+    #@-node:AGP.20250415230112.1744:importFlattenedOutline & allies
+    #@+node:AGP.20250415230112.1754:importWebCommand & allies
+    #@+node:AGP.20250415230112.1755:createOutlineFromWeb
     def createOutlineFromWeb (self,path,parent):
     
         c = self.c ; u = c.undoer
@@ -423,8 +421,8 @@ class baseLeoImportCommands:
         u.afterInsertNode(p,'Import',undoData)
     
         return p
-    #@-node:ekr.20031218072017.3225:createOutlineFromWeb
-    #@+node:ekr.20031218072017.3226:importWebCommand
+    #@-node:AGP.20250415230112.1755:createOutlineFromWeb
+    #@+node:AGP.20250415230112.1756:importWebCommand
     def importWebCommand (self,files,webType):
     
         c = self.c ; current = c.currentVnode()
@@ -444,8 +442,8 @@ class baseLeoImportCommands:
             c.selectVnode(current)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.3226:importWebCommand
-    #@+node:ekr.20031218072017.3227:findFunctionDef
+    #@-node:AGP.20250415230112.1756:importWebCommand
+    #@+node:AGP.20250415230112.1757:findFunctionDef
     def findFunctionDef (self,s,i):
         
         # Look at the next non-blank line for a function name.
@@ -460,8 +458,8 @@ class baseLeoImportCommands:
                 else: break
             else: i += 1
         return None
-    #@-node:ekr.20031218072017.3227:findFunctionDef
-    #@+node:ekr.20031218072017.3228:scanBodyForHeadline
+    #@-node:AGP.20250415230112.1757:findFunctionDef
+    #@+node:AGP.20250415230112.1758:scanBodyForHeadline
     #@+at 
     #@nonl
     # This method returns the proper headline text.
@@ -478,7 +476,7 @@ class baseLeoImportCommands:
         
         if self.webType == "cweb":
             #@        << scan cweb body for headline >>
-            #@+node:ekr.20031218072017.3229:<< scan cweb body for headline >>
+            #@+node:AGP.20250415230112.1759:<< scan cweb body for headline >>
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s,i)
@@ -504,11 +502,11 @@ class baseLeoImportCommands:
                     if k > -1 and (g.match(s,k+2,"+=") or g.match(s,k+2,"=")):
                         return s[j:k+2] # return the section ref.
                 i = g.skip_line(s,i)
-            #@-node:ekr.20031218072017.3229:<< scan cweb body for headline >>
+            #@-node:AGP.20250415230112.1759:<< scan cweb body for headline >>
             #@nl
         else:
             #@        << scan noweb body for headline >>
-            #@+node:ekr.20031218072017.3230:<< scan noweb body for headline >>
+            #@+node:AGP.20250415230112.1760:<< scan noweb body for headline >>
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s,i)
@@ -525,11 +523,11 @@ class baseLeoImportCommands:
                     if name:
                         return name
                 i = g.skip_line(s,i)
-            #@-node:ekr.20031218072017.3230:<< scan noweb body for headline >>
+            #@-node:AGP.20250415230112.1760:<< scan noweb body for headline >>
             #@nl
         return "@" # default.
-    #@-node:ekr.20031218072017.3228:scanBodyForHeadline
-    #@+node:ekr.20031218072017.3231:scanWebFile (handles limbo)
+    #@-node:AGP.20250415230112.1758:scanBodyForHeadline
+    #@+node:AGP.20250415230112.1761:scanWebFile (handles limbo)
     def scanWebFile (self,fileName,parent):
     
         theType = self.webType
@@ -544,7 +542,7 @@ class baseLeoImportCommands:
             return
     
         #@    << Create a symbol table of all section names >>
-        #@+node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+        #@+node:AGP.20250415230112.1762:<< Create a symbol table of all section names >>
         i = 0 ; self.web_st = []
         while i < len(s):
             i = g.skip_ws_and_nl(s,i)
@@ -560,10 +558,10 @@ class baseLeoImportCommands:
             else: i += 1
         
         # g.trace(self.cstDump())
-        #@-node:ekr.20031218072017.3232:<< Create a symbol table of all section names >>
+        #@-node:AGP.20250415230112.1762:<< Create a symbol table of all section names >>
         #@nl
         #@    << Create nodes for limbo text and the root section >>
-        #@+node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+        #@+node:AGP.20250415230112.1763:<< Create nodes for limbo text and the root section >>
         i = 0
         while i < len(s):
             i = g.skip_ws_and_nl(s,i)
@@ -585,12 +583,12 @@ class baseLeoImportCommands:
             self.createHeadline(parent,s[j:i],g.angleBrackets(" @ "))
             
         # g.trace(g.get_line(s,i))
-        #@-node:ekr.20031218072017.3233:<< Create nodes for limbo text and the root section >>
+        #@-node:AGP.20250415230112.1763:<< Create nodes for limbo text and the root section >>
         #@nl
         while i < len(s):
             progress = i
             #@        << Create a node for the next module >>
-            #@+node:ekr.20031218072017.3234:<< Create a node for the next module >>
+            #@+node:AGP.20250415230112.1764:<< Create a node for the next module >>
             if theType=="cweb":
                 assert(self.isModuleStart(s,i))
                 start = i
@@ -601,7 +599,7 @@ class baseLeoImportCommands:
                         if self.isModuleStart(s,i): break
                         else: i = g.skip_line(s,i)
                 #@    << Handle cweb @d, @f, @c and @p directives >>
-                #@+node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+                #@+node:AGP.20250415230112.1765:<< Handle cweb @d, @f, @c and @p directives >>
                 if g.match(s,i,"@d") or g.match(s,i,"@f"):
                     i += 2 ; i = g.skip_line(s,i)
                     # Place all @d and @f directives in the same node.
@@ -622,7 +620,7 @@ class baseLeoImportCommands:
                         i = g.skip_ws_and_nl(s,i)
                         if self.isModuleStart(s,i):
                             break
-                #@-node:ekr.20031218072017.3235:<< Handle cweb @d, @f, @c and @p directives >>
+                #@-node:AGP.20250415230112.1765:<< Handle cweb @d, @f, @c and @p directives >>
                 #@nl
             else:
                 assert(self.isDocStart(s,i)) # isModuleStart == isDocStart for noweb.
@@ -636,12 +634,12 @@ class baseLeoImportCommands:
             body = self.massageWebBody(body)
             headline = self.scanBodyForHeadline(body)
             self.createHeadline(parent,body,headline)
-            #@-node:ekr.20031218072017.3234:<< Create a node for the next module >>
+            #@-node:AGP.20250415230112.1764:<< Create a node for the next module >>
             #@nl
             assert(progress < i)
-    #@-node:ekr.20031218072017.3231:scanWebFile (handles limbo)
-    #@+node:ekr.20031218072017.3236:Symbol table
-    #@+node:ekr.20031218072017.3237:cstCanonicalize
+    #@-node:AGP.20250415230112.1761:scanWebFile (handles limbo)
+    #@+node:AGP.20250415230112.1766:Symbol table
+    #@+node:AGP.20250415230112.1767:cstCanonicalize
     # We canonicalize strings before looking them up, but strings are entered in the form they are first encountered.
     
     def cstCanonicalize (self,s,lower=True):
@@ -654,8 +652,8 @@ class baseLeoImportCommands:
         s = string.replace(s,"  "," ")
         s = string.strip(s)
         return s
-    #@-node:ekr.20031218072017.3237:cstCanonicalize
-    #@+node:ekr.20031218072017.3238:cstDump
+    #@-node:AGP.20250415230112.1767:cstCanonicalize
+    #@+node:AGP.20250415230112.1768:cstDump
     def cstDump (self):
     
         self.web_st.sort()
@@ -663,8 +661,8 @@ class baseLeoImportCommands:
         for name in self.web_st:
             s += name + "\n"
         return s
-    #@-node:ekr.20031218072017.3238:cstDump
-    #@+node:ekr.20031218072017.3239:cstEnter
+    #@-node:AGP.20250415230112.1768:cstDump
+    #@+node:AGP.20250415230112.1769:cstEnter
     # We only enter the section name into the symbol table if the ... convention is not used.
     
     def cstEnter (self,s):
@@ -680,8 +678,8 @@ class baseLeoImportCommands:
             if string.lower(name) == lower:
                 return
         self.web_st.append(upper)
-    #@-node:ekr.20031218072017.3239:cstEnter
-    #@+node:ekr.20031218072017.3240:cstLookup
+    #@-node:AGP.20250415230112.1769:cstEnter
+    #@+node:AGP.20250415230112.1770:cstLookup
     # This method returns a string if the indicated string is a prefix of an entry in the web_st.
     
     def cstLookup (self,target):
@@ -703,16 +701,14 @@ class baseLeoImportCommands:
                     found = True ; result = s
                     # g.es("replacing: " + target + " with: " + s)
         return result
-    #@-node:ekr.20031218072017.3240:cstLookup
-    #@-node:ekr.20031218072017.3236:Symbol table
-    #@-node:ekr.20031218072017.3224:importWebCommand & allies
-    #@+node:EKR.20040506075328.2:perfectImport
+    #@-node:AGP.20250415230112.1770:cstLookup
+    #@-node:AGP.20250415230112.1766:Symbol table
+    #@-node:AGP.20250415230112.1754:importWebCommand & allies
+    #@+node:AGP.20250415230112.1771:perfectImport
     def perfectImport (self,fileName,p,testing=False,verbose=False,convertBlankLines=True,verify=True):
         
-        __pychecker__ = 'maxlines=500'
-        
         #@    << about this algorithm >>
-        #@+node:ekr.20040717112739:<< about this algorithm >>
+        #@+node:AGP.20250415230112.1772:<< about this algorithm >>
         #@@nocolor
         #@+at
         # 
@@ -748,20 +744,20 @@ class baseLeoImportCommands:
         # by comparing the original version of the imported outline with the 
         # corrected version of the outline.
         #@-at
-        #@-node:ekr.20040717112739:<< about this algorithm >>
+        #@-node:AGP.20250415230112.1772:<< about this algorithm >>
         #@nl
         c = self.c
         root = p.copy()
         at = c.atFileCommands
         if testing:
             #@        << clear all dirty bits >>
-            #@+node:ekr.20040716065356:<< clear all dirty bits >>
+            #@+node:AGP.20250415230112.1773:<< clear all dirty bits >>
             for p2 in p.self_and_subtree_iter():
                 p2.clearDirty()
-            #@-node:ekr.20040716065356:<< clear all dirty bits >>
+            #@-node:AGP.20250415230112.1773:<< clear all dirty bits >>
             #@nl
         #@    << Assign file indices >>
-        #@+node:ekr.20040716064333:<< Assign file indices  >>
+        #@+node:AGP.20250415230112.1774:<< Assign file indices  >>
         nodeIndices = g.app.nodeIndices
         
         nodeIndices.setTimestamp()
@@ -771,14 +767,14 @@ class baseLeoImportCommands:
                 theId,time,n = p2.v.t.fileIndex
             except TypeError:
                 p2.v.t.fileIndex = nodeIndices.getNewIndex()
-        #@-node:ekr.20040716064333:<< Assign file indices  >>
+        #@-node:AGP.20250415230112.1774:<< Assign file indices  >>
         #@nl
         #@    << Write root's tree to to string s >>
-        #@+node:ekr.20040716064333.1:<< Write root's tree to to string s >>
+        #@+node:AGP.20250415230112.1775:<< Write root's tree to to string s >>
         at.write(root,thinFile=True,toString=True)
         s = at.stringOutput
         if not s: return
-        #@-node:ekr.20040716064333.1:<< Write root's tree to to string s >>
+        #@-node:AGP.20250415230112.1775:<< Write root's tree to to string s >>
         #@nl
     
         # Set up the data for the algorithm.
@@ -795,15 +791,15 @@ class baseLeoImportCommands:
             write_lines = mu.propagateDiffsToSentinelsLines(i_lines,j_lines,fat_lines,mapping)
             if 1: # For testing.
                 #@            << put the corrected fat lines in a new node >>
-                #@+node:ekr.20040717132539:<< put the corrected fat lines in a new node >>
+                #@+node:AGP.20250415230112.1776:<< put the corrected fat lines in a new node >>
                 write_lines_node = root.insertAfter()
                 write_lines_node.initHeadString("write_lines")
                 s = ''.join(write_lines)
                 write_lines_node.scriptSetBodyString(s,encoding=g.app.tkEncoding)
-                #@-node:ekr.20040717132539:<< put the corrected fat lines in a new node >>
+                #@-node:AGP.20250415230112.1776:<< put the corrected fat lines in a new node >>
                 #@nl
             #@        << correct root's tree using write_lines >>
-            #@+node:ekr.20040717113036:<< correct root's tree using write_lines >>
+            #@+node:AGP.20250415230112.1777:<< correct root's tree using write_lines >>
             #@+at 
             #@nonl
             # Notes:
@@ -834,11 +830,11 @@ class baseLeoImportCommands:
                 g.es("Exception in Perfect Import",color="red")
                 g.es_exception()
                 s = None
-            #@-node:ekr.20040717113036:<< correct root's tree using write_lines >>
+            #@-node:AGP.20250415230112.1777:<< correct root's tree using write_lines >>
             #@nl
         if verify:
             #@        << verify that writing the tree would produce the original file >>
-            #@+node:ekr.20040718035658:<< verify that writing the tree would produce the original file >>
+            #@+node:AGP.20250415230112.1778:<< verify that writing the tree would produce the original file >>
             try:
                 # Read the original file into before_lines.
                 before = file(fileName)
@@ -866,7 +862,7 @@ class baseLeoImportCommands:
                     if verbose:
                         g.es("Perfect Import failed verification test!",color="red")
                         #@            << dump the files >>
-                        #@+node:ekr.20040718045423:<< dump the files >>
+                        #@+node:AGP.20250415230112.1779:<< dump the files >>
                         print len(before_lines),len(after_lines)
                         
                         if len(before_lines)==len(after_lines):
@@ -902,17 +898,17 @@ class baseLeoImportCommands:
                                             k += 1
                                         j += 1
                                     break
-                        #@-node:ekr.20040718045423:<< dump the files >>
+                        #@-node:AGP.20250415230112.1779:<< dump the files >>
                         #@nl
             except IOError:
                 g.es("Can not reopen %s!" % fileName,color="red")
                 leoTest.fail()
-            #@-node:ekr.20040718035658:<< verify that writing the tree would produce the original file >>
+            #@-node:AGP.20250415230112.1778:<< verify that writing the tree would produce the original file >>
             #@nl
-    #@-node:EKR.20040506075328.2:perfectImport
-    #@+node:ekr.20031218072017.3241:Scanners for createOutline
-    #@+node:ekr.20031218072017.2256:Python scanners & tests
-    #@+node:ekr.20031218072017.2257:scanPythonClass & helpers
+    #@-node:AGP.20250415230112.1771:perfectImport
+    #@+node:AGP.20250415230112.1780:Scanners for createOutline
+    #@+node:AGP.20250415230112.1781:Python scanners & tests
+    #@+node:AGP.20250415230112.1782:scanPythonClass & helpers
     def scanPythonClass (self,s,i,start,parent):
     
         """Creates a child node c of parent for the class, and children of c for each def in the class."""
@@ -921,7 +917,7 @@ class baseLeoImportCommands:
         c = self.c
         class_indent = self.getLeadingIndent(s,i)
         #@    << set class_name and headline >>
-        #@+node:ekr.20031218072017.2258:<< set class_name and headline >>
+        #@+node:AGP.20250415230112.1783:<< set class_name and headline >>
         # Skip to the class name.
         i = g.skip_ws(s,i)
         i = g.skip_c_id(s,i) # skip "class"
@@ -933,7 +929,7 @@ class baseLeoImportCommands:
         else:
             headline = ''
             class_name = ''
-        #@-node:ekr.20031218072017.2258:<< set class_name and headline >>
+        #@-node:AGP.20250415230112.1783:<< set class_name and headline >>
         #@nl
         if not class_name: return i
         i = g.skip_line(s,i) # Skip the class line.
@@ -948,7 +944,7 @@ class baseLeoImportCommands:
         if s2: c.appendStringToBody(class_vnode,s2)
         self.methodName = savedMethodName
         return i
-    #@+node:ekr.20060626100102:scanPythonClassHelper
+    #@+node:AGP.20250415230112.1784:scanPythonClassHelper
     def scanPythonClassHelper(self,s,i,class_indent,class_name,class_vnode):
         
         indent =  self.getLeadingIndent(s,i)
@@ -987,8 +983,8 @@ class baseLeoImportCommands:
             else: i += 1
             assert(progress < i)
         return start,i
-    #@-node:ekr.20060626100102:scanPythonClassHelper
-    #@+node:ekr.20060626101103.1:createParentText
+    #@-node:AGP.20250415230112.1784:scanPythonClassHelper
+    #@+node:AGP.20250415230112.1785:createParentText
     def createParentText (self,class_vnode,class_name):
     
         '''Insert the proper body text in the class_vnode.'''
@@ -1001,8 +997,8 @@ class baseLeoImportCommands:
         else:
             ref = g.angleBrackets(' class %s methods ' % (class_name))
             c.appendStringToBody(class_vnode,"\t" + ref + "\n\n")
-    #@-node:ekr.20060626101103.1:createParentText
-    #@+node:ekr.20060626103415:createClassNodeText
+    #@-node:AGP.20250415230112.1785:createParentText
+    #@+node:AGP.20250415230112.1786:createClassNodeText
     def createClassNodeText (self,s,i,start):
         
         # Create the section name using the old value of self.methodName.
@@ -1027,16 +1023,16 @@ class baseLeoImportCommands:
         if docStringSeen: body = body + '\n'
         
         return i,prefix,body
-    #@-node:ekr.20060626103415:createClassNodeText
-    #@-node:ekr.20031218072017.2257:scanPythonClass & helpers
-    #@+node:ekr.20031218072017.2263:scanPythonDef
+    #@-node:AGP.20250415230112.1786:createClassNodeText
+    #@-node:AGP.20250415230112.1782:scanPythonClass & helpers
+    #@+node:AGP.20250415230112.1787:scanPythonDef
     def scanPythonDef (self,s,i,start,parent):
     
         """Creates a node of parent for the def."""
     
         # g.trace(g.get_line(s,i))
         #@    << set headline or return i >>
-        #@+node:ekr.20031218072017.2264:<< set headline or return i >>
+        #@+node:AGP.20250415230112.1788:<< set headline or return i >>
         i = g.skip_ws(s,i)
         i = g.skip_c_id(s,i) # Skip the "def"
         i = g.skip_ws_and_nl(s,i)
@@ -1045,14 +1041,14 @@ class baseLeoImportCommands:
             headline = s[j:i]
             # g.trace("headline:" + headline)
         else: return i
-        #@-node:ekr.20031218072017.2264:<< set headline or return i >>
+        #@-node:AGP.20250415230112.1788:<< set headline or return i >>
         #@nl
         i = self.skipPythonDef(s,i,start)
         # Create the def node.
         savedMethodName = self.methodName
         self.methodName = headline
         #@    << Create def node >>
-        #@+node:ekr.20031218072017.2266:<< Create def node >>
+        #@+node:AGP.20250415230112.1789:<< Create def node >>
         # Create the prefix line for @root trees.
         if self.treeType == "@file":
             prefix = ""
@@ -1067,12 +1063,12 @@ class baseLeoImportCommands:
         
         # Create the node.
         self.createHeadline(parent,prefix + body,headline)
-        #@-node:ekr.20031218072017.2266:<< Create def node >>
+        #@-node:AGP.20250415230112.1789:<< Create def node >>
         #@nl
         self.methodName = savedMethodName
         return i
-    #@-node:ekr.20031218072017.2263:scanPythonDef
-    #@+node:ekr.20031218072017.2267:scanPythonDecls
+    #@-node:AGP.20250415230112.1787:scanPythonDef
+    #@+node:AGP.20250415230112.1790:scanPythonDecls
     def scanPythonDecls (self,s,i,parent,indent,indent_parent_ref_flag=True):
         
         c = self.c
@@ -1095,14 +1091,14 @@ class baseLeoImportCommands:
                 i = g.skip_python_string(s,i)
             elif g.is_c_id(ch):
                 #@            << break on def or class >>
-                #@+node:ekr.20031218072017.2268:<< break on def or class >>
+                #@+node:AGP.20250415230112.1791:<< break on def or class >>
                 if g.match_c_word(s,i,"def") or g.match_c_word(s,i,"class"):
                     i = g.find_line_start(s,i)
                     done = True
                     break
                 else:
                     i = g.skip_c_id(s,i)
-                #@-node:ekr.20031218072017.2268:<< break on def or class >>
+                #@-node:AGP.20250415230112.1791:<< break on def or class >>
                 #@nl
             else: i += 1
             assert(progress < i)
@@ -1110,7 +1106,7 @@ class baseLeoImportCommands:
         if g.is_nl(s,j): j = g.skip_nl(s,j)
         if j < i:
             #@        << Create a child node for declarations >>
-            #@+node:ekr.20031218072017.2269:<< Create a child node for declarations >>
+            #@+node:AGP.20250415230112.1792:<< Create a child node for declarations >>
             headline = ref = g.angleBrackets(" " + self.methodName + " declarations ")
             leading_tab = g.choose(indent_parent_ref_flag,"\t","")
             
@@ -1122,11 +1118,11 @@ class baseLeoImportCommands:
             if self.treeType == "@root":
                 body = "@code\n\n" + body
             self.createHeadline(parent,body,headline)
-            #@-node:ekr.20031218072017.2269:<< Create a child node for declarations >>
+            #@-node:AGP.20250415230112.1792:<< Create a child node for declarations >>
             #@nl
         return i
-    #@-node:ekr.20031218072017.2267:scanPythonDecls
-    #@+node:ekr.20031218072017.2270:scanPythonText
+    #@-node:AGP.20250415230112.1790:scanPythonDecls
+    #@+node:AGP.20250415230112.1793:scanPythonText
     # See the comments for scanCText for what the text looks like.
     
     def scanPythonText (self,s,parent):
@@ -1145,7 +1141,7 @@ class baseLeoImportCommands:
             elif ch == '"' or ch == '\'': i = g.skip_python_string(s,i)
             elif g.is_c_id(ch):
                 #@            << handle possible Python function or class >>
-                #@+node:ekr.20031218072017.2271:<< handle possible Python function or class >>
+                #@+node:AGP.20250415230112.1794:<< handle possible Python function or class >>
                 if g.match_c_word(s,i,"def") or g.match_word(s,i,"class"):
                     isDef = g.match_c_word(s,i,"def")
                     if not decls_seen:
@@ -1160,29 +1156,29 @@ class baseLeoImportCommands:
                         i = start = self.scanPythonClass(s,i,start,parent)
                 else:
                     i = g.skip_c_id(s,i)
-                #@-node:ekr.20031218072017.2271:<< handle possible Python function or class >>
+                #@-node:AGP.20250415230112.1794:<< handle possible Python function or class >>
                 #@nl
             else: i += 1
             assert(progress < i)
         if not decls_seen: # 2/17/03
             c.appendStringToBody(parent,"@ignore\n" + self.rootLine + "@language python\n")
         #@    << Append a reference to the methods of this file >>
-        #@+node:ekr.20031218072017.2272:<< Append a reference to the methods of this file >>
+        #@+node:AGP.20250415230112.1795:<< Append a reference to the methods of this file >>
         if self.treeType == "@root" and self.methodsSeen:
             c.appendStringToBody(parent,
                 g.angleBrackets(" " + self.methodName + " methods ") + "\n\n")
-        #@-node:ekr.20031218072017.2272:<< Append a reference to the methods of this file >>
+        #@-node:AGP.20250415230112.1795:<< Append a reference to the methods of this file >>
         #@nl
         #@    << Append any unused python text to the parent's body text >>
-        #@+node:ekr.20031218072017.2273:<< Append any unused python text to the parent's body text >>
+        #@+node:AGP.20250415230112.1796:<< Append any unused python text to the parent's body text >>
         # Do nothing if only whitespace is left.
         i = start ; i = g.skip_ws_and_nl(s,i)
         if i < len(s):
             c.appendStringToBody(parent,s[start:])
-        #@-node:ekr.20031218072017.2273:<< Append any unused python text to the parent's body text >>
+        #@-node:AGP.20250415230112.1796:<< Append any unused python text to the parent's body text >>
         #@nl
-    #@-node:ekr.20031218072017.2270:scanPythonText
-    #@+node:ekr.20060626083237.1:skipPythonDef
+    #@-node:AGP.20250415230112.1793:scanPythonText
+    #@+node:AGP.20250415230112.1797:skipPythonDef
     def skipPythonDef (self,s,i,start):
         
         # g.trace(g.get_line(s,i))
@@ -1191,7 +1187,7 @@ class baseLeoImportCommands:
         defIndent = self.getLeadingIndent(s,start)
         parenCount = 0
         #@    << skip the entire signature >>
-        #@+node:ekr.20060627062652:<< skip the entire signature >>
+        #@+node:AGP.20250415230112.1798:<< skip the entire signature >>
         # Now that we count parens, we must be careful to skip the entire signature.
         
         j = s.find('(',i)
@@ -1203,7 +1199,7 @@ class baseLeoImportCommands:
             return i
         else:
             i = g.skip_line(s,j) # Still not quite 100% correct.
-        #@-node:ekr.20060627062652:<< skip the entire signature >>
+        #@-node:AGP.20250415230112.1798:<< skip the entire signature >>
         #@nl
         indent = self.getLeadingIndent(s,i)
         while i < len(s): # and indent > defIndent
@@ -1233,8 +1229,8 @@ class baseLeoImportCommands:
             assert(progress < i)
             
         return i
-    #@-node:ekr.20060626083237.1:skipPythonDef
-    #@+node:ekr.20060626083237.2:test_skipPythonDef
+    #@-node:AGP.20250415230112.1797:skipPythonDef
+    #@+node:AGP.20250415230112.1799:test_skipPythonDef
     def test_skipPythonDef (self):
     
         global c # Get syntax warning if this is not first.
@@ -1245,7 +1241,7 @@ class baseLeoImportCommands:
         self.tab_width = d.get("tabwidth")
         verbose = False
         #@    << define s >>
-        #@+node:ekr.20060626083725:<< define s >>
+        #@+node:AGP.20250415230112.1800:<< define s >>
         s = '''\
         def test1():
             aList = (a,
@@ -1259,7 +1255,7 @@ class baseLeoImportCommands:
         '''
         
         s = g.adjustTripleString(s,self.tab_width)
-        #@-node:ekr.20060626083725:<< define s >>
+        #@-node:AGP.20250415230112.1800:<< define s >>
         #@nl
         start = 0
         i = self.skipPythonDef(s,i=0,start=start)
@@ -1271,8 +1267,8 @@ class baseLeoImportCommands:
         result = s[start:i].strip()
         if verbose: g.trace(result)
         assert result.startswith('def test2') and result.endswith('pass'),'result:\n%s' % result
-    #@-node:ekr.20060626083237.2:test_skipPythonDef
-    #@+node:ekr.20060627063313:test_skipPythonDef2
+    #@-node:AGP.20250415230112.1799:test_skipPythonDef
+    #@+node:AGP.20250415230112.1801:test_skipPythonDef2
     def test_skipPythonDef2 (self):
         
         '''Tests of long signature lines.'''
@@ -1285,7 +1281,7 @@ class baseLeoImportCommands:
         self.tab_width = d.get("tabwidth")
         verbose = False
         #@    << define s >>
-        #@+node:ekr.20060627063313.1:<< define s >>
+        #@+node:AGP.20250415230112.1802:<< define s >>
         s = '''\
         def test1(
                 a=2):
@@ -1297,7 +1293,7 @@ class baseLeoImportCommands:
         '''
         
         s = g.adjustTripleString(s,self.tab_width)
-        #@-node:ekr.20060627063313.1:<< define s >>
+        #@-node:AGP.20250415230112.1802:<< define s >>
         #@nl
         start = 0
         i = self.skipPythonDef(s,i=0,start=start)
@@ -1309,8 +1305,8 @@ class baseLeoImportCommands:
         result = s[start:i].strip()
         if verbose: g.trace(result)
         assert result.startswith('def test2') and result.endswith('return 2'),'result:\n%s' % result
-    #@-node:ekr.20060627063313:test_skipPythonDef2
-    #@+node:ekr.20060626100102.1:test_scanPythonClass
+    #@-node:AGP.20250415230112.1801:test_skipPythonDef2
+    #@+node:AGP.20250415230112.1803:test_scanPythonClass
     def test_scanPythonClass (self):
     
         global c # Get syntax warning if this is not first.
@@ -1321,7 +1317,7 @@ class baseLeoImportCommands:
         self.tab_width = d.get("tabwidth")
         verbose = False
         #@    << define s >>
-        #@+node:ekr.20060626100102.2:<< define s >>
+        #@+node:AGP.20250415230112.1804:<< define s >>
         s = '''\
         class aClass:
             def spam():
@@ -1336,7 +1332,7 @@ class baseLeoImportCommands:
         '''
         
         s = g.adjustTripleString(s,self.tab_width)
-        #@-node:ekr.20060626100102.2:<< define s >>
+        #@-node:AGP.20250415230112.1804:<< define s >>
         #@nl
         start = 0
         i = self.skipPythonDef(s,i=0,start=start)
@@ -1348,17 +1344,15 @@ class baseLeoImportCommands:
         result = s[start:i].strip()
         if verbose: g.trace(result)
         assert result.startswith('class aClass2') and result.endswith("'twit'"),'result:\n%s' % result
-    #@-node:ekr.20060626100102.1:test_scanPythonClass
-    #@-node:ekr.20031218072017.2256:Python scanners & tests
-    #@+node:ekr.20031218072017.3250:scanCText
+    #@-node:AGP.20250415230112.1803:test_scanPythonClass
+    #@-node:AGP.20250415230112.1781:Python scanners & tests
+    #@+node:AGP.20250415230112.1805:scanCText
     # Creates a child of parent for each C function definition seen.
     
     def scanCText (self,s,parent):
         
-        __pychecker__ = 'maxlines=500'
-    
         #@    << define scanCText vars >>
-        #@+node:ekr.20031218072017.3251:<< define scanCText vars >>
+        #@+node:AGP.20250415230112.1806:<< define scanCText vars >>
         c = self.c
         include_seen = method_seen = False
         methodKind = g.choose(self.fileType==".c","functions","methods")
@@ -1366,7 +1360,7 @@ class baseLeoImportCommands:
         scan_start = function_start = 0
         name = None
         i = 0
-        #@-node:ekr.20031218072017.3251:<< define scanCText vars >>
+        #@-node:AGP.20250415230112.1806:<< define scanCText vars >>
         #@nl
         while i < len(s):
             # line = g.get_line(s,i) ; g.trace(line)
@@ -1374,21 +1368,21 @@ class baseLeoImportCommands:
             # These cases skip tokens.
             if ch == '/':
                 #@            << handle possible C comments >>
-                #@+node:ekr.20031218072017.3260:<< handle possible C comments >>
+                #@+node:AGP.20250415230112.1807:<< handle possible C comments >>
                 if g.match(s,i,"//"):
                     i = g.skip_line(s,i)
                 elif g.match(s,i,"/*"):
                     i = g.skip_block_comment(s,i)
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3260:<< handle possible C comments >>
+                #@-node:AGP.20250415230112.1807:<< handle possible C comments >>
                 #@nl
             elif ch == '"' or ch == '\'':
                 i = g.skip_string(s,i)
             # These cases help determine where functions start.
             elif ch == '=':
                 #@            << handle equal sign in C >>
-                #@+node:ekr.20031218072017.3261:<< handle equal sign in C>>
+                #@+node:AGP.20250415230112.1808:<< handle equal sign in C>>
                 #@+at 
                 #@nonl
                 # We can not be seeing a function definition when we find an 
@@ -1403,11 +1397,11 @@ class baseLeoImportCommands:
                 i = g.skip_ws(s,i) # 6/9/04
                 if g.match(s,i,'{'):
                     i = g.skip_braces(s,i)
-                #@-node:ekr.20031218072017.3261:<< handle equal sign in C>>
+                #@-node:AGP.20250415230112.1808:<< handle equal sign in C>>
                 #@nl
             elif ch == '(':
                 #@            << handle open paren in C >>
-                #@+node:ekr.20031218072017.3262:<< handle open paren in C >>
+                #@+node:AGP.20250415230112.1809:<< handle open paren in C >>
                 lparen = i
                 # This will skip any equal signs inside the paren.
                 i = g.skip_parens(s,i)
@@ -1417,11 +1411,11 @@ class baseLeoImportCommands:
                     if g.match(s,i,';'):
                         lparen = None # not a function definition.
                 else: lparen = None
-                #@-node:ekr.20031218072017.3262:<< handle open paren in C >>
+                #@-node:AGP.20250415230112.1809:<< handle open paren in C >>
                 #@nl
             elif ch == ';':
                 #@            << handle semicolon in C >>
-                #@+node:ekr.20031218072017.3263:<< handle semicolon in C >>
+                #@+node:AGP.20250415230112.1810:<< handle semicolon in C >>
                 #@+at 
                 #@nonl
                 # A semicolon signals the end of a declaration, thereby 
@@ -1435,18 +1429,18 @@ class baseLeoImportCommands:
                 i += 1 # skip the semicolon.
                 if lparen == None:
                     function_start = i + 1 # The semicolon ends the declaration.
-                #@-node:ekr.20031218072017.3263:<< handle semicolon in C >>
+                #@-node:AGP.20250415230112.1810:<< handle semicolon in C >>
                 #@nl
             # These cases and the default case can create child nodes.
             elif ch == '#':
                 #@            << handle # sign >>
-                #@+node:ekr.20031218072017.3252:<< handle # sign >>
+                #@+node:AGP.20250415230112.1811:<< handle # sign >>
                 # if statements may contain function definitions.
                 i += 1  # Skip the '#'
                 if not include_seen and g.match_c_word(s,i,"include"):
                     include_seen = True
                     #@    << create a child node for all #include statements >>
-                    #@+node:ekr.20031218072017.3253:<< create a child node for all #include statements >>
+                    #@+node:AGP.20250415230112.1812:<< create a child node for all #include statements >>
                     # Scan back to the start of the line.
                     include_start = i = g.find_line_start(s,i)
                     
@@ -1488,16 +1482,16 @@ class baseLeoImportCommands:
                     scan_start = function_start = i = save_ip
                     # Append the headline to the parent's body.
                     c.appendStringToBody(parent,headline + "\n")
-                    #@-node:ekr.20031218072017.3253:<< create a child node for all #include statements >>
+                    #@-node:AGP.20250415230112.1812:<< create a child node for all #include statements >>
                     #@nl
                 else:
                     j = i
                     i = g.skip_pp_directive(s,i)
-                #@-node:ekr.20031218072017.3252:<< handle # sign >>
+                #@-node:AGP.20250415230112.1811:<< handle # sign >>
                 #@nl
             elif ch == '{':
                 #@            << handle open curly bracket in C >>
-                #@+node:ekr.20031218072017.3254:<< handle open curly bracket in C >> (scans function)
+                #@+node:AGP.20250415230112.1813:<< handle open curly bracket in C >> (scans function)
                 j = i = g.skip_braces(s,i) # Skip all inner blocks.
                 
                 # This may fail if #if's contain unmatched curly braces.
@@ -1512,7 +1506,7 @@ class baseLeoImportCommands:
                         function_start = scan_start 
                     else:
                         #@        << create a declaration node >>
-                        #@+node:ekr.20031218072017.3255:<< create a declaration node >>
+                        #@+node:AGP.20250415230112.1814:<< create a declaration node >>
                         save_ip = i
                         i = scan_start
                         while i < function_start and g.is_ws_or_nl(s,i):
@@ -1530,10 +1524,10 @@ class baseLeoImportCommands:
                             self.createHeadline(parent,body,headline)
                         i = save_ip
                         scan_start = i
-                        #@-node:ekr.20031218072017.3255:<< create a declaration node >>
+                        #@-node:AGP.20250415230112.1814:<< create a declaration node >>
                         #@nl
                         #@        << append C function/method reference to parent node >>
-                        #@+node:ekr.20031218072017.3256:<< append C function/method reference to parent node >>
+                        #@+node:AGP.20250415230112.1815:<< append C function/method reference to parent node >>
                         if self.treeType == "@file":
                             c.appendStringToBody(parent,"@others\n")
                         else:
@@ -1542,7 +1536,7 @@ class baseLeoImportCommands:
                             rb = g.choose(cweb,"@>",">>")
                             c.appendStringToBody(parent,
                                 lb + " " + self.methodName + " " + methodKind + " " + rb + "\n")
-                        #@-node:ekr.20031218072017.3256:<< append C function/method reference to parent node >>
+                        #@-node:AGP.20250415230112.1815:<< append C function/method reference to parent node >>
                         #@nl
                     headline = name
                     body = s[function_start:function_end]
@@ -1554,11 +1548,11 @@ class baseLeoImportCommands:
                     lparen = None
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3254:<< handle open curly bracket in C >> (scans function)
+                #@-node:AGP.20250415230112.1813:<< handle open curly bracket in C >> (scans function)
                 #@nl
             elif g.is_c_id(ch):
                 #@            << handle id, class, typedef, struct, union, namespace >>
-                #@+node:ekr.20031218072017.3257:<< handle id, class, typedef, struct, union, namespace >>
+                #@+node:AGP.20250415230112.1816:<< handle id, class, typedef, struct, union, namespace >>
                 if g.match_c_word(s,i,"typedef"):
                     i = g.skip_typedef(s,i)
                     lparen = None
@@ -1571,7 +1565,7 @@ class baseLeoImportCommands:
                 elif g.match_c_word(s,i,"namespace"):
                     g.trace("namespace")
                     #@    << create children for the namespace >>
-                    #@+node:ekr.20031218072017.3258:<< create children for the namespace >>
+                    #@+node:AGP.20250415230112.1817:<< create children for the namespace >>
                     #@+at 
                     #@nonl
                     # Namesspaces change the self.moduleName and recursively 
@@ -1611,7 +1605,7 @@ class baseLeoImportCommands:
                             # Restore self.moduleName and continue scanning.
                             self.methodName = savedMethodName
                             scan_start = function_start = i
-                    #@-node:ekr.20031218072017.3258:<< create children for the namespace >>
+                    #@-node:AGP.20250415230112.1817:<< create children for the namespace >>
                     #@nl
                 # elif g.match_c_word(s,i,"class"):
                     # < < create children for the class > >
@@ -1622,7 +1616,7 @@ class baseLeoImportCommands:
                     else:
                         i = g.skip_c_id(s,i)
                     #@    << test for operator keyword >>
-                    #@+node:ekr.20031218072017.3259:<< test for operator keyword >>
+                    #@+node:AGP.20250415230112.1818:<< test for operator keyword >>
                     # We treat a C++ a construct such as operator + as a function name.
                     if g.match(name,0,"operator"):
                         j = i
@@ -1633,23 +1627,23 @@ class baseLeoImportCommands:
                                 s[i]!=' ' and s[i]!='\n' and s[i] != '\r'):
                                 i += 1
                             name = s[j:i] # extend the name.
-                    #@-node:ekr.20031218072017.3259:<< test for operator keyword >>
+                    #@-node:AGP.20250415230112.1818:<< test for operator keyword >>
                     #@nl
-                #@-node:ekr.20031218072017.3257:<< handle id, class, typedef, struct, union, namespace >>
+                #@-node:AGP.20250415230112.1816:<< handle id, class, typedef, struct, union, namespace >>
                 #@nl
             else: i += 1
         #@    << Append any unused text to the parent's body text >>
-        #@+node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@+node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         # Used by C, Java and Pascal parsers.
         # Do nothing if only whitespace is left.
         
         i = g.skip_ws_and_nl(s,scan_start)
         if i < len(s):
             c.appendStringToBody(parent,s[scan_start:])
-        #@-node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@-node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         #@nl
-    #@-node:ekr.20031218072017.3250:scanCText
-    #@+node:ekr.20031218072017.3265:scanElispText & allies
+    #@-node:AGP.20250415230112.1805:scanCText
+    #@+node:AGP.20250415230112.1820:scanElispText & allies
     def scanElispText(self,s,p):
     
         c = self.c
@@ -1676,7 +1670,7 @@ class baseLeoImportCommands:
         data = s[start:len(s)]
         if data.strip():
             self.createElispDataNode(p,data)
-    #@+node:ekr.20031218072017.3266:skipElispParens
+    #@+node:AGP.20250415230112.1821:skipElispParens
     def skipElispParens (self,s,i):
         
         level = 0 ; n = len(s)
@@ -1695,16 +1689,16 @@ class baseLeoImportCommands:
             elif g.match(s,i,";"):  i = g.skip_line(s,i)
             else: i += 1
         return i
-    #@-node:ekr.20031218072017.3266:skipElispParens
-    #@+node:ekr.20031218072017.3267:skipElispId
+    #@-node:AGP.20250415230112.1821:skipElispParens
+    #@+node:AGP.20250415230112.1822:skipElispId
     def skipElispId (self,s,i):
     
         n = len(s)
         while i < n and g.isWordChar(s[i]):
             i += 1
         return i
-    #@-node:ekr.20031218072017.3267:skipElispId
-    #@+node:ekr.20031218072017.3268:createElispFunction
+    #@-node:AGP.20250415230112.1822:skipElispId
+    #@+node:AGP.20250415230112.1823:createElispFunction
     def createElispFunction (self,p,s):
         
         body = s
@@ -1729,8 +1723,8 @@ class baseLeoImportCommands:
         theId = prefix + s[i:j]
     
         self.createHeadline(p,body,theId)
-    #@-node:ekr.20031218072017.3268:createElispFunction
-    #@+node:ekr.20031218072017.3269:createElispDataNode
+    #@-node:AGP.20250415230112.1823:createElispFunction
+    #@+node:AGP.20250415230112.1824:createElispDataNode
     def createElispDataNode (self,p,s):
         
         data = s
@@ -1753,24 +1747,22 @@ class baseLeoImportCommands:
             theId = "unnamed data"
     
         self.createHeadline(p,data,theId)
-    #@-node:ekr.20031218072017.3269:createElispDataNode
-    #@-node:ekr.20031218072017.3265:scanElispText & allies
-    #@+node:ekr.20041107094641:scanForthText
+    #@-node:AGP.20250415230112.1824:createElispDataNode
+    #@-node:AGP.20250415230112.1820:scanElispText & allies
+    #@+node:AGP.20250415230112.1825:scanForthText
     def scanForthText (self,s,parent):
         
         """Minimal forth scanner - leave it to user to create nodes as they see fit."""
     
         self.c.setBodyString(parent,"@ignore\n" + "@language forth\n" + self.rootLine + s)
-    #@-node:ekr.20041107094641:scanForthText
-    #@+node:ekr.20031218072017.3270:scanJavaText
+    #@-node:AGP.20250415230112.1825:scanForthText
+    #@+node:AGP.20250415230112.1826:scanJavaText
     # Creates a child of parent for each Java function definition seen.
     
     def scanJavaText (self,s,parent,outerFlag): # True if at outer level.
     
-        __pychecker__ = 'maxlines=500'
-    
         #@    << define scanJavaText vars >>
-        #@+node:ekr.20031218072017.3271:<< define scanJavaText vars >>
+        #@+node:AGP.20250415230112.1827:<< define scanJavaText vars >>
         c = self.c
         method_seen = False
         class_seen = False # True: class keyword seen at outer level.
@@ -1780,7 +1772,7 @@ class baseLeoImportCommands:
         name = None
         function_start = 0 # g.choose(outerFlag, None, 0)
         i = 0
-        #@-node:ekr.20031218072017.3271:<< define scanJavaText vars >>
+        #@-node:AGP.20250415230112.1827:<< define scanJavaText vars >>
         #@nl
         # if not outerFlag: g.trace("inner:",s)
         while i < len(s):
@@ -1789,20 +1781,20 @@ class baseLeoImportCommands:
             # These cases skip tokens.
             if ch == '/':
                 #@            << handle possible Java comments >>
-                #@+node:ekr.20031218072017.3277:<< handle possible Java comments >>
+                #@+node:AGP.20250415230112.1828:<< handle possible Java comments >>
                 if g.match(s,i,"//"):
                     i = g.skip_line(s,i)
                 elif g.match(s,i,"/*"):
                     i = g.skip_block_comment(s,i)
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3277:<< handle possible Java comments >>
+                #@-node:AGP.20250415230112.1828:<< handle possible Java comments >>
                 #@nl
             elif ch == '"' or ch == '\'': i = g.skip_string(s,i)
             # These cases help determine where functions start.
             elif ch == '=':
                 #@            << handle equal sign in Java >>
-                #@+node:ekr.20031218072017.3278:<< handle equal sign in Java >>
+                #@+node:AGP.20250415230112.1829:<< handle equal sign in Java >>
                 #@+at 
                 #@nonl
                 # We can not be seeing a function definition when we find an 
@@ -1816,11 +1808,11 @@ class baseLeoImportCommands:
                 lparen = None   # We have not seen an argument list yet.
                 if g.match(s,i,'='):
                     i = g.skip_braces(s,i)
-                #@-node:ekr.20031218072017.3278:<< handle equal sign in Java >>
+                #@-node:AGP.20250415230112.1829:<< handle equal sign in Java >>
                 #@nl
             elif ch == '(':
                 #@            << handle open paren in Java >>
-                #@+node:ekr.20031218072017.3279:<< handle open paren in Java >>
+                #@+node:AGP.20250415230112.1830:<< handle open paren in Java >>
                 lparen = i
                 # This will skip any equal signs inside the paren.
                 i = g.skip_parens(s,i)
@@ -1830,11 +1822,11 @@ class baseLeoImportCommands:
                     if g.match(s,i,';'):
                         lparen = None # not a function definition.
                 else: lparen = None
-                #@-node:ekr.20031218072017.3279:<< handle open paren in Java >>
+                #@-node:AGP.20250415230112.1830:<< handle open paren in Java >>
                 #@nl
             elif ch == ';':
                 #@            << handle semicolon in Java >>
-                #@+node:ekr.20031218072017.3280:<< handle semicolon in Java >>
+                #@+node:AGP.20250415230112.1831:<< handle semicolon in Java >>
                 #@+at 
                 #@nonl
                 # A semicolon signals the end of a declaration, thereby 
@@ -1848,13 +1840,13 @@ class baseLeoImportCommands:
                 i += 1 # skip the semicolon.
                 if lparen == None:
                     function_start = i + 1 # The semicolon ends the declaration.
-                #@-node:ekr.20031218072017.3280:<< handle semicolon in Java >>
+                #@-node:AGP.20250415230112.1831:<< handle semicolon in Java >>
                 #@nl
                 class_seen = False
             # These cases can create child nodes.
             elif ch == '{':
                 #@            << handle open curly bracket in Java >>
-                #@+node:ekr.20031218072017.3272:<< handle open curly bracket in Java >>
+                #@+node:AGP.20250415230112.1832:<< handle open curly bracket in Java >>
                 brace_ip1 = i
                 i = g.skip_braces(s,i) # Skip all inner blocks.
                 brace_ip2 = i
@@ -1895,7 +1887,7 @@ class baseLeoImportCommands:
                         function_start = scan_start
                     else:
                         #@        << create a Java declaration node >>
-                        #@+node:ekr.20031218072017.3273:<< create a Java declaration node >>
+                        #@+node:AGP.20250415230112.1833:<< create a Java declaration node >>
                         save_ip = i
                         i = scan_start
                         while i < function_start and g.is_ws_or_nl(s,i):
@@ -1917,10 +1909,10 @@ class baseLeoImportCommands:
                         
                         i = save_ip
                         scan_start = i
-                        #@-node:ekr.20031218072017.3273:<< create a Java declaration node >>
+                        #@-node:AGP.20250415230112.1833:<< create a Java declaration node >>
                         #@nl
                         #@        << append Java method reference to parent node >>
-                        #@+node:ekr.20031218072017.3274:<< append Java method reference to parent node >>
+                        #@+node:AGP.20250415230112.1834:<< append Java method reference to parent node >>
                         if self.treeType == "@file":
                             if outerFlag:
                                 c.appendStringToBody(parent,"\n@others\n")
@@ -1930,7 +1922,7 @@ class baseLeoImportCommands:
                             kind = g.choose(outerFlag,"classes","methods")
                             ref_name = g.angleBrackets(" " + self.methodName + " " + kind + " ")
                             c.appendStringToBody(parent,leader + ref_name + "\n")
-                        #@-node:ekr.20031218072017.3274:<< append Java method reference to parent node >>
+                        #@-node:AGP.20250415230112.1834:<< append Java method reference to parent node >>
                         #@nl
                     if outerFlag: # Create a class.
                         # Backtrack so we remove leading whitespace.
@@ -1939,7 +1931,7 @@ class baseLeoImportCommands:
                         body = self.massageBody(body,methodKind)
                         v = self.createHeadline(parent,body,headline)
                         #@        << recursively scan the text >>
-                        #@+node:ekr.20031218072017.3275:<< recursively scan the text >>
+                        #@+node:AGP.20250415230112.1835:<< recursively scan the text >>
                         # These mark the points in the present function.
                         # g.trace("recursive scan:",g.get_line(s,brace_ip1+ 1))
                         oldMethodName = self.methodName
@@ -1947,7 +1939,7 @@ class baseLeoImportCommands:
                         self.scanJavaText(s[brace_ip1+1:brace_ip2], # Don't include either brace.
                             v,False) # inner level
                         self.methodName = oldMethodName
-                        #@-node:ekr.20031218072017.3275:<< recursively scan the text >>
+                        #@-node:AGP.20250415230112.1835:<< recursively scan the text >>
                         #@nl
                         # Append the brace to the parent.
                         c.appendStringToBody(v,"}")
@@ -1963,11 +1955,11 @@ class baseLeoImportCommands:
                     scan_start = function_start = i # Set the start of the _next_ function.
                     lparen = None ; class_seen = False
                 else: i += 1
-                #@-node:ekr.20031218072017.3272:<< handle open curly bracket in Java >>
+                #@-node:AGP.20250415230112.1832:<< handle open curly bracket in Java >>
                 #@nl
             elif g.is_c_id(s[i]):
                 #@            << skip and remember the Java id >>
-                #@+node:ekr.20031218072017.3276:<< skip and remember the Java id >>
+                #@+node:AGP.20250415230112.1836:<< skip and remember the Java id >>
                 if g.match_c_word(s,i,"class") or g.match_c_word(s,i,"interface"):
                     if g.match_c_word(s,i,"class"):
                         class_seen = True
@@ -1982,28 +1974,28 @@ class baseLeoImportCommands:
                     j = i ; i = g.skip_c_id(s,i)
                     if not lparen and not class_seen:
                         name = s[j:i] # Remember the name.
-                #@-node:ekr.20031218072017.3276:<< skip and remember the Java id >>
+                #@-node:AGP.20250415230112.1836:<< skip and remember the Java id >>
                 #@nl
             else: i += 1
         #@    << Append any unused text to the parent's body text >>
-        #@+node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@+node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         # Used by C, Java and Pascal parsers.
         # Do nothing if only whitespace is left.
         
         i = g.skip_ws_and_nl(s,scan_start)
         if i < len(s):
             c.appendStringToBody(parent,s[scan_start:])
-        #@-node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@-node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         #@nl
-    #@-node:ekr.20031218072017.3270:scanJavaText
-    #@+node:ekr.20060328112327:scanLuaText
+    #@-node:AGP.20250415230112.1826:scanJavaText
+    #@+node:AGP.20250415230112.1837:scanLuaText
     def scanLuaText (self,s,parent):
          
         """Minimal Lua scanner - leave it to user to create nodes as they see fit."""
      
         self.c.setBodyString(parent,"@ignore\n" + "@language lua\n" + self.rootLine + s)
-    #@-node:ekr.20060328112327:scanLuaText
-    #@+node:ekr.20031218072017.3281:scanPascalText
+    #@-node:AGP.20250415230112.1837:scanLuaText
+    #@+node:AGP.20250415230112.1838:scanPascalText
     # Creates a child of parent for each Pascal function definition seen.
     
     def scanPascalText (self,s,parent):
@@ -2021,7 +2013,7 @@ class baseLeoImportCommands:
             elif g.match(s,i,"(*"): i = g.skip_pascal_block_comment(s,i)
             elif g.is_c_id(s[i]):
                 #@            << handle possible Pascal function >>
-                #@+node:ekr.20031218072017.3282:<< handle possible Pascal function >>
+                #@+node:AGP.20250415230112.1839:<< handle possible Pascal function >>
                 if g.match_c_word(s,i,"begin"):
                     i = g.skip_pascal_begin_end(s,i)
                     if g.match_c_word(s,i,"end"):
@@ -2035,7 +2027,7 @@ class baseLeoImportCommands:
                     i = g.skip_c_id(s,i)
                     i = g.skip_ws_and_nl(s,i)
                     #@    << remember the function name, or continue >>
-                    #@+node:ekr.20031218072017.3285:<< remember the function name, or continue >>
+                    #@+node:AGP.20250415230112.1840:<< remember the function name, or continue >>
                     if i < len(s) and g.is_c_id(s[i]):
                         j = i ; i = g.skip_c_id(s,i)
                         while i + 1 < len(s) and s[i] == '.' and g.is_c_id(s[i+1]):
@@ -2043,12 +2035,12 @@ class baseLeoImportCommands:
                             i = g.skip_c_id(s,i)
                         name = s[j:i]
                     else: continue
-                    #@-node:ekr.20031218072017.3285:<< remember the function name, or continue >>
+                    #@-node:AGP.20250415230112.1840:<< remember the function name, or continue >>
                     #@nl
                     #@    << skip the function definition, or continue >>
-                    #@+node:ekr.20031218072017.3286:<< skip the function definition, or continue >>
+                    #@+node:AGP.20250415230112.1841:<< skip the function definition, or continue >>
                     #@<< skip past the semicolon >>
-                    #@+node:ekr.20031218072017.3287:<< skip past the semicolon >>
+                    #@+node:AGP.20250415230112.1842:<< skip past the semicolon >>
                     while i < len(s) and s[i] != ';':
                         # The paremeter list may contain "inner" semicolons.
                         if s[i] == '(':
@@ -2075,7 +2067,7 @@ class baseLeoImportCommands:
                                 else: i = g.skip_c_id(s,i)
                             elif ch == '"' or ch == '\'': i = g.skip_pascal_string(s,i)
                             else: i += 1
-                    #@-node:ekr.20031218072017.3287:<< skip past the semicolon >>
+                    #@-node:AGP.20250415230112.1842:<< skip past the semicolon >>
                     #@nl
                     
                     if not g.match_c_word(s,i,"begin"):
@@ -2091,12 +2083,12 @@ class baseLeoImportCommands:
                         if g.is_nl(s,i):
                             i = g.skip_nl(s,i)
                     else: continue
-                    #@-node:ekr.20031218072017.3286:<< skip the function definition, or continue >>
+                    #@-node:AGP.20250415230112.1841:<< skip the function definition, or continue >>
                     #@nl
                     if not method_seen:
                         method_seen = True
                         #@        << create a child node for leading declarations >>
-                        #@+node:ekr.20031218072017.3283:<< create a child node for leading declarations >>
+                        #@+node:AGP.20250415230112.1843:<< create a child node for leading declarations >>
                         save_ip = i
                         i = scan_start
                         while i < start and g.is_ws_or_nl(s,i):
@@ -2114,22 +2106,22 @@ class baseLeoImportCommands:
                             self.createHeadline(parent,body,headline)
                         i = save_ip
                         scan_start = i
-                        #@-node:ekr.20031218072017.3283:<< create a child node for leading declarations >>
+                        #@-node:AGP.20250415230112.1843:<< create a child node for leading declarations >>
                         #@nl
                         #@        << append noweb method reference to the parent node >>
-                        #@+node:ekr.20031218072017.3288:<< append noweb method reference to the parent node >>
+                        #@+node:AGP.20250415230112.1844:<< append noweb method reference to the parent node >>
                         # Append the headline to the parent's body.
                         if self.treeType == "@file":
                             c.appendStringToBody(parent,"@others\n")
                         else:
                             c.appendStringToBody(parent,
                                 g.angleBrackets(" " + self.methodName + " methods ") + "\n")
-                        #@-node:ekr.20031218072017.3288:<< append noweb method reference to the parent node >>
+                        #@-node:AGP.20250415230112.1844:<< append noweb method reference to the parent node >>
                         #@nl
                         function_start = start
                     else: function_start = scan_start
                     #@    << create a child node for the function >>
-                    #@+node:ekr.20031218072017.3284:<< create a child node for the function >>
+                    #@+node:AGP.20250415230112.1845:<< create a child node for the function >>
                     # Point i _after_ the last character of the function.
                     i = g.skip_ws(s,i)
                     if g.is_nl(s,i):
@@ -2140,36 +2132,34 @@ class baseLeoImportCommands:
                     body = self.massageBody(body,methodKind)
                     self.createHeadline(parent,body,headline)
                     scan_start = i
-                    #@-node:ekr.20031218072017.3284:<< create a child node for the function >>
+                    #@-node:AGP.20250415230112.1845:<< create a child node for the function >>
                     #@nl
                 else: i = g.skip_c_id(s,i)
-                #@-node:ekr.20031218072017.3282:<< handle possible Pascal function >>
+                #@-node:AGP.20250415230112.1839:<< handle possible Pascal function >>
                 #@nl
             else: i += 1
         #@    << Append any unused text to the parent's body text >>
-        #@+node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@+node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         # Used by C, Java and Pascal parsers.
         # Do nothing if only whitespace is left.
         
         i = g.skip_ws_and_nl(s,scan_start)
         if i < len(s):
             c.appendStringToBody(parent,s[scan_start:])
-        #@-node:ekr.20031218072017.3264:<< Append any unused text to the parent's body text >>
+        #@-node:AGP.20250415230112.1819:<< Append any unused text to the parent's body text >>
         #@nl
-    #@-node:ekr.20031218072017.3281:scanPascalText
-    #@+node:ekr.20031218072017.3242:scanPHPText (Dave Hein)
+    #@-node:AGP.20250415230112.1838:scanPascalText
+    #@+node:AGP.20250415230112.1846:scanPHPText (Dave Hein)
     # 08-SEP-2002 DTHEIN: Added for PHP import support.
     #
     # PHP uses both # and // as line comments, and /* */ as block comments
     
     def scanPHPText (self,s,parent):
     
-        __pychecker__ = 'maxlines=500'
-    
         """Creates a child of parent for each class and function definition seen."""
     
         #@    << define scanPHPText vars >>
-        #@+node:ekr.20031218072017.3244:<< define scanPHPText vars >>
+        #@+node:AGP.20250415230112.1847:<< define scanPHPText vars >>
         c = self.c
         scan_start = 0
         class_start = 0
@@ -2183,10 +2173,10 @@ class baseLeoImportCommands:
         # 14-SEP-2002 DTHEIN: added these 2 variables to allow use of @first/last
         startOfCode = s.find("\n") + 1 # this should be the line containing the initial <?php
         endOfCode = s.rfind("?>") # this should be the line containing the last ?>
-        #@-node:ekr.20031218072017.3244:<< define scanPHPText vars >>
+        #@-node:AGP.20250415230112.1847:<< define scanPHPText vars >>
         #@nl
         #@    << Append file if not pure PHP >>
-        #@+node:ekr.20031218072017.3243:<< Append file if not pure PHP >>
+        #@+node:AGP.20250415230112.1848:<< Append file if not pure PHP >>
         # If the file does not begin with <?php or end with ?> then
         # it is simply appended like a generic import would do.
         
@@ -2210,7 +2200,7 @@ class baseLeoImportCommands:
             g.es("File seems to be mixed HTML and PHP; importing as plain text file.")
             c.setBodyString(parent,"@ignore\n" + self.rootLine + s)
             return
-        #@-node:ekr.20031218072017.3243:<< Append file if not pure PHP >>
+        #@-node:AGP.20250415230112.1848:<< Append file if not pure PHP >>
         #@nl
         
         # 14-SEP-2002 DTHEIN: Make leading <?php use the @first directive
@@ -2223,7 +2213,7 @@ class baseLeoImportCommands:
             # These cases skip tokens.
             if ch == '/' or ch == '#':
                 #@            << handle possible PHP comments >>
-                #@+node:ekr.20031218072017.3246:<< handle possible PHP comments >>
+                #@+node:AGP.20250415230112.1849:<< handle possible PHP comments >>
                 if g.match(s,i,"//"):
                     i = g.skip_line(s,i)
                 elif g.match(s,i,"#"):
@@ -2232,16 +2222,16 @@ class baseLeoImportCommands:
                     i = g.skip_block_comment(s,i)
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3246:<< handle possible PHP comments >>
+                #@-node:AGP.20250415230112.1849:<< handle possible PHP comments >>
                 #@nl
             elif ch == '<':
                 #@            << handle possible heredoc string >>
-                #@+node:ekr.20031218072017.3245:<< handle possible heredoc string >>
+                #@+node:AGP.20250415230112.1850:<< handle possible heredoc string >>
                 if g.match(s,i,"<<<"):
                     i = g.skip_heredoc_string(s,i)
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3245:<< handle possible heredoc string >>
+                #@-node:AGP.20250415230112.1850:<< handle possible heredoc string >>
                 #@nl
             elif ch == '"' or ch == '\'':
                 i = g.skip_string(s,i)
@@ -2249,7 +2239,7 @@ class baseLeoImportCommands:
             # FIXME: probably want to capture 'var's as class member data
             elif ch == 'f' or ch =='c':
                 #@            << handle possible class or function >>
-                #@+node:ekr.20031218072017.3247:<< handle possible class or function >>
+                #@+node:AGP.20250415230112.1851:<< handle possible class or function >>
                 #@+at 
                 #@nonl
                 # In PHP, all functions are typeless and start with the 
@@ -2336,11 +2326,11 @@ class baseLeoImportCommands:
                     
                 else:
                     i += 1
-                #@-node:ekr.20031218072017.3247:<< handle possible class or function >>
+                #@-node:AGP.20250415230112.1851:<< handle possible class or function >>
                 #@nl
             elif class_start and (ch == '}'):
                 #@            << handle end of class >>
-                #@+node:ekr.20031218072017.3248:<< handle end of class >>
+                #@+node:AGP.20250415230112.1852:<< handle end of class >>
                 # Capture the rest of the body
                 class_body += s[scan_start:class_end]
                 # insert the class node's body
@@ -2354,22 +2344,22 @@ class baseLeoImportCommands:
                 class_end = 0
                 class_start = 0 #done with this class
                 class_body=""
-                #@-node:ekr.20031218072017.3248:<< handle end of class >>
+                #@-node:AGP.20250415230112.1852:<< handle end of class >>
                 #@nl
             else: i += 1
         #@    << Append any unused text to the parent's body text >>
-        #@+node:ekr.20031218072017.3249:<< Append any unused text to the parent's body text >>
+        #@+node:AGP.20250415230112.1853:<< Append any unused text to the parent's body text >>
         c.appendStringToBody(parent,s[scan_start:endOfCode])
-        #@-node:ekr.20031218072017.3249:<< Append any unused text to the parent's body text >>
+        #@-node:AGP.20250415230112.1853:<< Append any unused text to the parent's body text >>
         #@nl
         # 14-SEP-2002 DTHEIN: Make leading <?php use the @first directive
         c.appendStringToBody(parent,"@last ")
         c.appendStringToBody(parent,s[endOfCode:])
-    #@-node:ekr.20031218072017.3242:scanPHPText (Dave Hein)
-    #@-node:ekr.20031218072017.3241:Scanners for createOutline
-    #@-node:ekr.20031218072017.3209:Import
-    #@+node:ekr.20031218072017.3289:Export
-    #@+node:ekr.20031218072017.3290:convertCodePartToWeb
+    #@-node:AGP.20250415230112.1846:scanPHPText (Dave Hein)
+    #@-node:AGP.20250415230112.1780:Scanners for createOutline
+    #@-node:AGP.20250415230112.1735:Import
+    #@+node:AGP.20250415230112.1854:Export
+    #@+node:AGP.20250415230112.1855:convertCodePartToWeb
     # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
     
     def convertCodePartToWeb (self,s,i,v,result):
@@ -2380,7 +2370,7 @@ class baseLeoImportCommands:
         rb = g.choose(self.webType=="cweb","@>",">>")
         h = string.strip(v.headString())
         #@    << put v's headline ref in head_ref >>
-        #@+node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
+        #@+node:AGP.20250415230112.1856:<< put v's headline ref in head_ref>>
         #@+at 
         #@nonl
         # We look for either noweb or cweb brackets. head_ref does not include 
@@ -2401,15 +2391,15 @@ class baseLeoImportCommands:
             head_ref = string.strip(h[j+2:k])
             if len(head_ref) == 0:
                 head_ref = None
-        #@-node:ekr.20031218072017.3291:<< put v's headline ref in head_ref>>
+        #@-node:AGP.20250415230112.1856:<< put v's headline ref in head_ref>>
         #@nl
         #@    << put name following @root or @file in file_name >>
-        #@+node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
+        #@+node:AGP.20250415230112.1857:<< put name following @root or @file in file_name >>
         if g.match(h,0,"@file") or g.match(h,0,"@root"):
             line = h[5:]
             line = string.strip(line)
             #@    << set file_name >>
-            #@+node:ekr.20031218072017.3293:<< Set file_name >>
+            #@+node:AGP.20250415230112.1858:<< Set file_name >>
             # set j & k so line[j:k] is the file name.
             # g.trace(line)
             
@@ -2425,16 +2415,16 @@ class baseLeoImportCommands:
             file_name = string.strip(line[j:k])
             if file_name and len(file_name) == 0:
                 file_name = None
-            #@-node:ekr.20031218072017.3293:<< Set file_name >>
+            #@-node:AGP.20250415230112.1858:<< Set file_name >>
             #@nl
         else:
             file_name = line = None
-        #@-node:ekr.20031218072017.3292:<< put name following @root or @file in file_name >>
+        #@-node:AGP.20250415230112.1857:<< put name following @root or @file in file_name >>
         #@nl
         if g.match_word(s,i,"@root"):
             i = g.skip_line(s,i)
             #@        << append ref to file_name >>
-            #@+node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@+node:AGP.20250415230112.1859:<< append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
                     result += "@<root@>=" + nl
@@ -2444,12 +2434,12 @@ class baseLeoImportCommands:
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@-node:AGP.20250415230112.1859:<< append ref to file_name >>
             #@nl
         elif g.match_word(s,i,"@c") or g.match_word(s,i,"@code"):
             i = g.skip_line(s,i)
             #@        << append head_ref >>
-            #@+node:ekr.20031218072017.3295:<< append head_ref >>
+            #@+node:AGP.20250415230112.1860:<< append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
@@ -2465,12 +2455,12 @@ class baseLeoImportCommands:
                         head_ref = "@others"
             
                 result += lb + head_ref + rb + "=" + nl
-            #@-node:ekr.20031218072017.3295:<< append head_ref >>
+            #@-node:AGP.20250415230112.1860:<< append head_ref >>
             #@nl
         elif g.match_word(h,0,"@file"):
             # Only do this if nothing else matches.
             #@        << append ref to file_name >>
-            #@+node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@+node:AGP.20250415230112.1859:<< append ref to file_name >>
             if self.webType == "cweb":
                 if not file_name:
                     result += "@<root@>=" + nl
@@ -2480,12 +2470,12 @@ class baseLeoImportCommands:
                 if not file_name:
                     file_name = "*"
                 result += lb + file_name + rb + "=" + nl
-            #@-node:ekr.20031218072017.3294:<< append ref to file_name >>
+            #@-node:AGP.20250415230112.1859:<< append ref to file_name >>
             #@nl
             i = g.skip_line(s,i) # 4/28/02
         else:
             #@        << append head_ref >>
-            #@+node:ekr.20031218072017.3295:<< append head_ref >>
+            #@+node:AGP.20250415230112.1860:<< append head_ref >>
             if self.webType == "cweb":
                 if not head_ref:
                     result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
@@ -2501,7 +2491,7 @@ class baseLeoImportCommands:
                         head_ref = "@others"
             
                 result += lb + head_ref + rb + "=" + nl
-            #@-node:ekr.20031218072017.3295:<< append head_ref >>
+            #@-node:AGP.20250415230112.1860:<< append head_ref >>
             #@nl
         i,result = self.copyPart(s,i,result)
         return i, string.strip(result) + nl
@@ -2510,8 +2500,8 @@ class baseLeoImportCommands:
     #@nonl
     # %defs a b c
     #@-at
-    #@-node:ekr.20031218072017.3290:convertCodePartToWeb
-    #@+node:ekr.20031218072017.3296:convertDocPartToWeb (handle @ %def)
+    #@-node:AGP.20250415230112.1855:convertCodePartToWeb
+    #@+node:AGP.20250415230112.1861:convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb (self,s,i,result):
         
         nl = self.output_newline
@@ -2534,8 +2524,8 @@ class baseLeoImportCommands:
             # All nodes should start with '@', even if the doc part is empty.
             result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
         return i, result
-    #@-node:ekr.20031218072017.3296:convertDocPartToWeb (handle @ %def)
-    #@+node:ekr.20031218072017.3297:convertVnodeToWeb
+    #@-node:AGP.20250415230112.1861:convertDocPartToWeb (handle @ %def)
+    #@+node:AGP.20250415230112.1862:convertVnodeToWeb
     #@+at 
     #@nonl
     # This code converts a vnode to noweb text as follows:
@@ -2568,20 +2558,20 @@ class baseLeoImportCommands:
             elif (g.match_word(s,i,"@code") or g.match_word(s,i,"@root") or
                 g.match_word(s,i,"@c") or g.match(s,i,lb)):
                 #@            << Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@+node:AGP.20250415230112.1863:<< Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@-node:AGP.20250415230112.1863:<< Supply a missing doc part >>
                 #@nl
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             elif self.treeType == "@file" or startInCode:
                 #@            << Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@+node:AGP.20250415230112.1863:<< Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
                     result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
-                #@-node:ekr.20031218072017.3298:<< Supply a missing doc part >>
+                #@-node:AGP.20250415230112.1863:<< Supply a missing doc part >>
                 #@nl
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             else:
@@ -2592,8 +2582,8 @@ class baseLeoImportCommands:
         if len(result) > 0:
             result += nl
         return result
-    #@-node:ekr.20031218072017.3297:convertVnodeToWeb
-    #@+node:ekr.20031218072017.3299:copyPart
+    #@-node:AGP.20250415230112.1862:convertVnodeToWeb
+    #@+node:AGP.20250415230112.1864:copyPart
     # Copies characters to result until the end of the present section is seen.
     
     def copyPart (self,s,i,result):
@@ -2633,8 +2623,8 @@ class baseLeoImportCommands:
                 result += line
             assert(progress < i)
         return i, string.rstrip(result)
-    #@-node:ekr.20031218072017.3299:copyPart
-    #@+node:ekr.20031218072017.1462:exportHeadlines
+    #@-node:AGP.20250415230112.1864:copyPart
+    #@+node:AGP.20250415230112.1865:exportHeadlines
     def exportHeadlines (self,fileName):
         
         c = self.c ; nl = self.output_newline
@@ -2655,8 +2645,8 @@ class baseLeoImportCommands:
             head = g.toEncodedString(head,self.encoding,reportErrors=True)
             theFile.write(head + nl)
         theFile.close()
-    #@-node:ekr.20031218072017.1462:exportHeadlines
-    #@+node:ekr.20031218072017.1147:flattenOutline
+    #@-node:AGP.20250415230112.1865:exportHeadlines
+    #@+node:AGP.20250415230112.1866:flattenOutline
     def flattenOutline (self,fileName):
     
         c = self.c ; nl = self.output_newline
@@ -2684,8 +2674,8 @@ class baseLeoImportCommands:
                 body = g.toEncodedString(body,self.encoding,reportErrors=True)
                 theFile.write(body + nl)
         theFile.close()
-    #@-node:ekr.20031218072017.1147:flattenOutline
-    #@+node:ekr.20031218072017.1148:outlineToWeb
+    #@-node:AGP.20250415230112.1866:flattenOutline
+    #@+node:AGP.20250415230112.1867:outlineToWeb
     def outlineToWeb (self,fileName,webType):
     
         c = self.c ; nl = self.output_newline
@@ -2717,8 +2707,8 @@ class baseLeoImportCommands:
                 theFile.write(s)
                 if s[-1] != '\n': theFile.write(nl)
         theFile.close()
-    #@-node:ekr.20031218072017.1148:outlineToWeb
-    #@+node:ekr.20031218072017.3300:removeSentinelsCommand
+    #@-node:AGP.20250415230112.1867:outlineToWeb
+    #@+node:AGP.20250415230112.1868:removeSentinelsCommand
     def removeSentinelsCommand (self,paths):
         
         c = self.c
@@ -2729,7 +2719,7 @@ class baseLeoImportCommands:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             #@        << Read file into s >>
-            #@+node:ekr.20031218072017.3301:<< Read file into s >>
+            #@+node:AGP.20250415230112.1869:<< Read file into s >>
             try:
                 theFile = open(fileName)
                 s = theFile.read()
@@ -2739,10 +2729,10 @@ class baseLeoImportCommands:
                 g.es("can not open " + fileName, color="blue")
                 leoTest.fail()
                 return
-            #@-node:ekr.20031218072017.3301:<< Read file into s >>
+            #@-node:AGP.20250415230112.1869:<< Read file into s >>
             #@nl
             #@        << set delims from the header line >>
-            #@+node:ekr.20031218072017.3302:<< set delims from the header line >>
+            #@+node:AGP.20250415230112.1870:<< set delims from the header line >>
             # Skip any non @+leo lines.
             i = 0
             while i < len(s) and not g.find_on_line(s,i,"@+leo"):
@@ -2761,7 +2751,7 @@ class baseLeoImportCommands:
                 line_delim = None
             else:
                 line_delim,start_delim = start_delim,None
-            #@-node:ekr.20031218072017.3302:<< set delims from the header line >>
+            #@-node:AGP.20250415230112.1870:<< set delims from the header line >>
             #@nl
             # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s,line_delim,start_delim,end_delim)
@@ -2774,7 +2764,7 @@ class baseLeoImportCommands:
                 head,ext2 = g.os_path_splitext(fileName) 
                 newFileName = g.os_path_join(path,head+ext+ext2)
             #@        << Write s into newFileName >>
-            #@+node:ekr.20031218072017.1149:<< Write s into newFileName >>
+            #@+node:AGP.20250415230112.1871:<< Write s into newFileName >>
             try:
                 mode = c.config.output_newline
                 mode = g.choose(mode=="platform",'w','wb')
@@ -2786,18 +2776,16 @@ class baseLeoImportCommands:
             except:
                 g.es("exception creating: " + newFileName)
                 g.es_exception()
-            #@-node:ekr.20031218072017.1149:<< Write s into newFileName >>
+            #@-node:AGP.20250415230112.1871:<< Write s into newFileName >>
             #@nl
-    #@-node:ekr.20031218072017.3300:removeSentinelsCommand
-    #@+node:ekr.20031218072017.3303:removeSentinelLines
+    #@-node:AGP.20250415230112.1868:removeSentinelsCommand
+    #@+node:AGP.20250415230112.1872:removeSentinelLines
     # This does not handle @nonl properly, but that's a nit...
     
     def removeSentinelLines(self,s,line_delim,start_delim,end_delim):
     
         '''Properly remove all sentinle lines in s.'''
         
-        __pychecker__ = '--no-argsused' # end_delim.
-    
         delim = (line_delim or start_delim or '') + '@'
         verbatim = delim + 'verbatim' ; verbatimFlag = False
         result = [] ; lines = g.splitLines(s)
@@ -2812,8 +2800,8 @@ class baseLeoImportCommands:
                 verbatimFlag = False
         result = ''.join(result)
         return result
-    #@-node:ekr.20031218072017.3303:removeSentinelLines
-    #@+node:ekr.20031218072017.1464:weave
+    #@-node:AGP.20250415230112.1872:removeSentinelLines
+    #@+node:AGP.20250415230112.1873:weave
     def weave (self,filename):
         
         c = self.c ; nl = self.output_newline
@@ -2821,7 +2809,7 @@ class baseLeoImportCommands:
         if not p: return
         self.setEncoding()
         #@    << open filename to f, or return >>
-        #@+node:ekr.20031218072017.1150:<< open filename to f, or return >>
+        #@+node:AGP.20250415230112.1874:<< open filename to f, or return >>
         try:
             # 10/14/02: support for output_newline setting.
             mode = c.config.output_newline
@@ -2832,7 +2820,7 @@ class baseLeoImportCommands:
             g.es("exception opening:" + filename)
             g.es_exception()
             return
-        #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
+        #@-node:AGP.20250415230112.1874:<< open filename to f, or return >>
         #@nl
         for p in p.self_and_subtree_iter():
             s = p.bodyString()
@@ -2840,7 +2828,7 @@ class baseLeoImportCommands:
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
                 #@            << write the context of p to f >>
-                #@+node:ekr.20031218072017.1465:<< write the context of p to f >>
+                #@+node:AGP.20250415230112.1875:<< write the context of p to f >>
                 # write the headlines of p, p's parent and p's grandparent.
                 context = [] ; p2 = p.copy() ; i = 0
                 while i < 3:
@@ -2857,17 +2845,17 @@ class baseLeoImportCommands:
                     line = g.toEncodedString(line,self.encoding,reportErrors=True)
                     f.write(line)
                     f.write(nl)
-                #@-node:ekr.20031218072017.1465:<< write the context of p to f >>
+                #@-node:AGP.20250415230112.1875:<< write the context of p to f >>
                 #@nl
                 f.write("-" * 60) ; f.write(nl)
                 s = g.toEncodedString(s,self.encoding,reportErrors=True)
                 f.write(string.rstrip(s) + nl)
         f.flush()
         f.close()
-    #@-node:ekr.20031218072017.1464:weave
-    #@-node:ekr.20031218072017.3289:Export
-    #@+node:ekr.20031218072017.3305:Utilities
-    #@+node:ekr.20031218072017.3306:createHeadline
+    #@-node:AGP.20250415230112.1873:weave
+    #@-node:AGP.20250415230112.1854:Export
+    #@+node:AGP.20250415230112.1876:Utilities
+    #@+node:AGP.20250415230112.1877:createHeadline
     def createHeadline (self,parent,body,headline):
     
         # g.trace("parent,headline:",parent,headline)
@@ -2878,11 +2866,11 @@ class baseLeoImportCommands:
         if len(body) > 0:
             self.c.setBodyString(v,body,self.encoding)
         return v
-    #@-node:ekr.20031218072017.3306:createHeadline
-    #@+node:ekr.20031218072017.3307:error
+    #@-node:AGP.20250415230112.1877:createHeadline
+    #@+node:AGP.20250415230112.1878:error
     def error (self,s): g.es(s)
-    #@-node:ekr.20031218072017.3307:error
-    #@+node:ekr.20031218072017.3308:getLeadingIndent
+    #@-node:AGP.20250415230112.1878:error
+    #@+node:AGP.20250415230112.1879:getLeadingIndent
     def getLeadingIndent (self,s,i):
     
         """Return the leading whitespace of a line, ignoring blank and comment lines."""
@@ -2899,8 +2887,8 @@ class baseLeoImportCommands:
                 return width
         # g.trace("returns:0")
         return 0
-    #@-node:ekr.20031218072017.3308:getLeadingIndent
-    #@+node:ekr.20031218072017.3309:isDocStart and isModuleStart
+    #@-node:AGP.20250415230112.1879:getLeadingIndent
+    #@+node:AGP.20250415230112.1880:isDocStart and isModuleStart
     # The start of a document part or module in a noweb or cweb file.
     # Exporters may have to test for @doc as well.
     
@@ -2925,8 +2913,8 @@ class baseLeoImportCommands:
             return self.webType == "cweb" and (
                 g.match(s,i,"@c") or g.match(s,i,"@p") or
                 g.match(s,i,"@d") or g.match(s,i,"@f"))
-    #@-node:ekr.20031218072017.3309:isDocStart and isModuleStart
-    #@+node:ekr.20031218072017.3310:massageBody
+    #@-node:AGP.20250415230112.1880:isDocStart and isModuleStart
+    #@+node:AGP.20250415230112.1881:massageBody
     def massageBody (self,s,methodKind):
         
         # g.trace(s)
@@ -2961,8 +2949,8 @@ class baseLeoImportCommands:
                     return comment + "\n" + intro + newLine + newBody
                 else:
                     return intro + newLine + newBody
-    #@-node:ekr.20031218072017.3310:massageBody
-    #@+node:ekr.20031218072017.3311:massageComment
+    #@-node:AGP.20250415230112.1881:massageBody
+    #@+node:AGP.20250415230112.1882:massageComment
     def massageComment (self,s):
     
         """Returns s with all runs of whitespace and newlines converted to a single blank.
@@ -2977,15 +2965,15 @@ class baseLeoImportCommands:
         s = string.replace(s,"  "," ")
         s = string.strip(s)
         return s
-    #@-node:ekr.20031218072017.3311:massageComment
-    #@+node:ekr.20031218072017.3312:massageWebBody
+    #@-node:AGP.20250415230112.1882:massageComment
+    #@+node:AGP.20250415230112.1883:massageWebBody
     def massageWebBody (self,s):
     
         theType = self.webType
         lb = g.choose(theType=="cweb","@<","<<")
         rb = g.choose(theType=="cweb","@>",">>")
         #@    << Remove most newlines from @space and @* sections >>
-        #@+node:ekr.20031218072017.3313:<< Remove most newlines from @space and @* sections >>
+        #@+node:AGP.20250415230112.1884:<< Remove most newlines from @space and @* sections >>
         i = 0
         while i < len(s):
             i = g.skip_ws_and_nl(s,i)
@@ -3016,10 +3004,10 @@ class baseLeoImportCommands:
                     s = s[:start] + doc + s[end:]
                     i = start + len(doc)
             else: i = g.skip_line(s,i)
-        #@-node:ekr.20031218072017.3313:<< Remove most newlines from @space and @* sections >>
+        #@-node:AGP.20250415230112.1884:<< Remove most newlines from @space and @* sections >>
         #@nl
         #@    << Replace abbreviated names with full names >>
-        #@+node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
+        #@+node:AGP.20250415230112.1885:<< Replace abbreviated names with full names >>
         i = 0
         while i < len(s):
             # g.trace(g.get_line(s,i))
@@ -3034,12 +3022,12 @@ class baseLeoImportCommands:
                         s = s[:j] + name2 + s[k:]
                         i = j + len(name2)
             i = g.skip_line(s,i)
-        #@-node:ekr.20031218072017.3314:<< Replace abbreviated names with full names >>
+        #@-node:AGP.20250415230112.1885:<< Replace abbreviated names with full names >>
         #@nl
         s = string.rstrip(s)
         return s
-    #@-node:ekr.20031218072017.3312:massageWebBody
-    #@+node:ekr.20031218072017.1463:setEncoding
+    #@-node:AGP.20250415230112.1883:massageWebBody
+    #@+node:AGP.20250415230112.1886:setEncoding
     def setEncoding (self):
         
         # scanDirectives checks the encoding: may return None.
@@ -3051,8 +3039,8 @@ class baseLeoImportCommands:
             self.encoding = g.app.tkEncoding # 2/25/03
     
         # print self.encoding
-    #@-node:ekr.20031218072017.1463:setEncoding
-    #@+node:ekr.20031218072017.3315:skipLeadingComments
+    #@-node:AGP.20250415230112.1886:setEncoding
+    #@+node:AGP.20250415230112.1887:skipLeadingComments
     def skipLeadingComments (self,s):
     
         """Skips all leading comments in s, returning the remaining body text and the massaged comment text.
@@ -3065,7 +3053,7 @@ class baseLeoImportCommands:
         i = 0 ; comment = ""
         if self.fileType in [".c", ".cpp"]: # 11/2/02: don't mess with java comments.
             #@        << scan for C-style comments >>
-            #@+node:ekr.20031218072017.3316:<< scan for C-style comments >>
+            #@+node:AGP.20250415230112.1888:<< scan for C-style comments >>
             while i < len(s):
                 if g.match(s,i,"//"): # Handle a C++ comment.
                     while g.match(s,i,'/'):
@@ -3090,11 +3078,11 @@ class baseLeoImportCommands:
                     i = g.skip_ws(s,i)
                     i = g.skip_blank_lines(s,i)
                 else: break
-            #@-node:ekr.20031218072017.3316:<< scan for C-style comments >>
+            #@-node:AGP.20250415230112.1888:<< scan for C-style comments >>
             #@nl
         elif self.fileType == ".lua":
             #@        << scan for Lua comments >>
-            #@+node:ekr.20060328112327.1:<< scan for Lua comments >>
+            #@+node:AGP.20250415230112.1889:<< scan for Lua comments >>
             while i < len(s):
                 if g.match(s,i,"--"): # Handle a Lua line comment.
                     while g.match(s,i,'/'):
@@ -3105,11 +3093,11 @@ class baseLeoImportCommands:
                     i = g.skip_ws(s,i)
                     i = g.skip_blank_lines(s,i)
                 else: break
-            #@-node:ekr.20060328112327.1:<< scan for Lua comments >>
+            #@-node:AGP.20250415230112.1889:<< scan for Lua comments >>
             #@nl
         elif self.fileType == ".pas":
             #@        << scan for Pascal comments >>
-            #@+node:ekr.20031218072017.3317:<< scan for Pascal comments >>
+            #@+node:AGP.20250415230112.1890:<< scan for Pascal comments >>
             while i < len(s):
                 if g.match(s,i,"//"): # Handle a Pascal line comment.
                     while g.match(s,i,'/'):
@@ -3126,11 +3114,11 @@ class baseLeoImportCommands:
                     i = g.skip_ws(s,i)
                     i = g.skip_blank_lines(s,i)
                 else: break
-            #@-node:ekr.20031218072017.3317:<< scan for Pascal comments >>
+            #@-node:AGP.20250415230112.1890:<< scan for Pascal comments >>
             #@nl
         elif self.fileType == ".py":
             #@        << scan for Python comments >>
-            #@+node:ekr.20031218072017.3318:<< scan for Python comments >>
+            #@+node:AGP.20250415230112.1891:<< scan for Python comments >>
             while i < len(s) and g.match(s,i,'#'):
                 j = i + 1 ; i = g.skip_line(s,i)
                 comment = self.undentBody(comment)
@@ -3138,7 +3126,7 @@ class baseLeoImportCommands:
                 # 8/2/02: Preserve leading whitespace for undentBody
                 i = g.skip_ws(s,i)
                 i = g.skip_blank_lines(s,i)
-            #@-node:ekr.20031218072017.3318:<< scan for Python comments >>
+            #@-node:AGP.20250415230112.1891:<< scan for Python comments >>
             #@nl
         comment = string.strip(comment)
         if len(comment) == 0:
@@ -3147,8 +3135,8 @@ class baseLeoImportCommands:
             return s[i:], "@ " + comment
         else:
             return s[i:], "@ " + comment + "\n"
-    #@-node:ekr.20031218072017.3315:skipLeadingComments
-    #@+node:ekr.20031218072017.3319:undentBody
+    #@-node:AGP.20250415230112.1887:skipLeadingComments
+    #@+node:AGP.20250415230112.1892:undentBody
     # We look at the first line to determine how much leading whitespace to delete.
     
     def undentBody (self,s):
@@ -3171,12 +3159,12 @@ class baseLeoImportCommands:
             line = g.removeLeadingWhitespace(line,undent,self.tab_width)
             result += line
         return result
-    #@-node:ekr.20031218072017.3319:undentBody
-    #@-node:ekr.20031218072017.3305:Utilities
+    #@-node:AGP.20250415230112.1892:undentBody
+    #@-node:AGP.20250415230112.1876:Utilities
     #@-others
     
 class leoImportCommands (baseLeoImportCommands):
     """A class that implements Leo's import commands."""
     pass
-#@-node:ekr.20031218072017.3206:@thin leoImport.py
+#@-node:AGP.20250415230112.1733:@thin leoImport.py
 #@-leo

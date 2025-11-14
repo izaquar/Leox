@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2605:@thin leo.py 
+#@+node:AGP.20250415230112.3:@thin leo.py 
 #@@first
 
 """Entry point for Leo in Python."""
@@ -8,30 +8,6 @@
 #@@language python
 #@@tabwidth -4
 
-#@<< Import pychecker >>
-#@+node:ekr.20031218072017.2606:<< Import pychecker >>
-#@@color
-
-# __pychecker__ = '--no-argsused'
-
-# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
-
-if 0: # Set to 1 for lint-like testing.
-      # Use t23.bat: only on Python 2.3.
-
-    try:
-        import pychecker.checker
-        # This works.  We may want to set options here...
-        # from pychecker import Config 
-        # print pychecker
-        print ; print "Warning (in leo.py): pychecker.checker running..." ; print
-    except:
-        print ; print 'Can not import pychecker' ; print
-#@-node:ekr.20031218072017.2606:<< Import pychecker >>
-#@nl
-
-__pychecker__ = '--no-import --no-reimportself --no-reimport'
-    # Suppress import errors: this module must do strange things with imports.
 
 # Warning: do not import any Leo modules here!
 # Doing so would make g.app invalid in the imported files.
@@ -39,19 +15,16 @@ import os
 import string
 import sys
 
-#import Pmw
-
 #@+others
-#@+node:ekr.20031218072017.1934:run & allies
+#@+node:AGP.20250415230112.4:run & allies
 def run(fileName=None,pymacs=None,*args,**keywords):
     
     """Initialize and run Leo"""
     
-    __pychecker__ = '--no-argsused' # keywords not used.
     
     if not isValidPython(): return
     #@    << import leoGlobals and leoApp >>
-    #@+node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+    #@+node:AGP.20250415230112.5:<< import leoGlobals and leoApp >>
     # Import leoGlobals, but do NOT set g.
     try:
         import leoGlobals
@@ -68,10 +41,15 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # NOW we can set g.
     g = leoGlobals
     assert(g.app)
-    #@-node:ekr.20041219072112:<< import leoGlobals and leoApp >>
+    #@-node:AGP.20250415230112.5:<< import leoGlobals and leoApp >>
     #@nl
+    
     g.exe_dir = exe_dir
     g.computeStandardDirectories()
+    
+    import leoLang
+    
+    leoLang.import_languages()
     
     if pymacs:
         script = windowFlag = False
@@ -82,7 +60,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     g.app.setLeoID(verbose=verbose) # Force the user to set g.app.leoID.
     
     #@    << import leoNodes and leoConfig >>
-    #@+node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+    #@+node:AGP.20250415230112.6:<< import leoNodes and leoConfig >>
     try:
         import leoNodes
     except ImportError:
@@ -93,12 +71,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     except ImportError:
         print "Error importing leoConfig.py"
         import traceback ; traceback.print_exc()
-    #@-node:ekr.20041219072416.1:<< import leoNodes and leoConfig >>
+    #@-node:AGP.20250415230112.6:<< import leoNodes and leoConfig >>
     #@nl
-    
-    
-    
-    
     
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
@@ -106,8 +80,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     fileName = completeFileName(fileName)
     reportDirectories(verbose)
     
-    
-    
+
     # Read settings *after* setting g.app.config.
     # Read settings *before* opening plugins.  This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
@@ -116,9 +89,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     
     g.app.setEncoding()
     
-    
-    
-    
+
     if pymacs:
         createNullGuiWithScript(None)
     elif script:
@@ -143,26 +114,6 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     
     # Initialize tracing and statistics.
     g.init_sherlock(args)
-    #@    << start psycho >>
-    #@+node:ekr.20040411081633:<< start psycho >>
-    if g.app and g.app.use_psyco:
-        try:
-            import psyco
-            if 0:
-                theFile = r"c:\prog\test\psycoLog.txt"
-                g.es("psyco now logging to",theFile,color="blue")
-                psyco.log(theFile)
-                psyco.profile()
-            psyco.full()
-            g.es("psyco now running",color="blue")
-        except ImportError:
-            g.app.use_psyco = False
-        except:
-            print "unexpected exception importing psyco"
-            g.es_exception()
-            g.app.use_psyco = False
-    #@-node:ekr.20040411081633:<< start psycho >>
-    #@nl
     
     # New in 4.3: clear g.app.initing _before_ creating the frame.
     g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
@@ -191,7 +142,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c.bodyWantsFocus()
     
     g.app.gui.runMainLoop()
-#@+node:ekr.20031218072017.1936:isValidPython
+#@+node:AGP.20250415230112.7:isValidPython
 def isValidPython():
 
     message = """\
@@ -220,8 +171,8 @@ You may download Python from http://python.org/download/
         import traceback ; traceback.print_exc()
         return 0
 #@nonl
-#@-node:ekr.20031218072017.1936:isValidPython
-#@+node:ekr.20041124083125:completeFileName (leo.py)
+#@-node:AGP.20250415230112.7:isValidPython
+#@+node:AGP.20250415230112.8:completeFileName (leo.py)
 def completeFileName (fileName):
     
     import leoGlobals as g
@@ -237,8 +188,8 @@ def completeFileName (fileName):
         fileName = fileName + ".leo"
 
     return fileName
-#@-node:ekr.20041124083125:completeFileName (leo.py)
-#@+node:ekr.20031218072017.1624:createFrame (leo.py)
+#@-node:AGP.20250415230112.8:completeFileName (leo.py)
+#@+node:AGP.20250415230112.9:createFrame (leo.py)
 def createFrame (fileName):
     
     """Create a LeoFrame during Leo's startup process."""
@@ -266,10 +217,12 @@ def createFrame (fileName):
     if fileName:
         g.es("File not found: " + fileName)
 
+    frame.show()
+
     return c,frame
 #@nonl
-#@-node:ekr.20031218072017.1624:createFrame (leo.py)
-#@+node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
+#@-node:AGP.20250415230112.9:createFrame (leo.py)
+#@+node:AGP.20250415230112.10:createNullGuiWithScript (leo.py)
 def createNullGuiWithScript (script):
     
     import leoGlobals as g
@@ -281,8 +234,8 @@ def createNullGuiWithScript (script):
         g.app.root = g.app.gui.createRootWindow()
     g.app.gui.finishCreate()
     g.app.gui.setScript(script)
-#@-node:ekr.20031218072017.1938:createNullGuiWithScript (leo.py)
-#@+node:ekr.20031218072017.1939:getBatchScript
+#@-node:AGP.20250415230112.10:createNullGuiWithScript (leo.py)
+#@+node:AGP.20250415230112.11:getBatchScript
 def getBatchScript ():
     
     import leoGlobals as g
@@ -312,8 +265,8 @@ def getBatchScript ():
     finally:
         if f: f.close()
         return script, windowFlag
-#@-node:ekr.20031218072017.1939:getBatchScript
-#@+node:ekr.20041130093254:reportDirectories
+#@-node:AGP.20250415230112.11:getBatchScript
+#@+node:AGP.20250415230112.12:reportDirectories
 def reportDirectories(verbose):
     
     import leoGlobals as g
@@ -324,9 +277,9 @@ def reportDirectories(verbose):
             ("home",g.app.homeDir),
         ):
             g.es("%s dir: %s" % (kind,theDir),color="blue")
-#@-node:ekr.20041130093254:reportDirectories
-#@-node:ekr.20031218072017.1934:run & allies
-#@+node:ekr.20031218072017.2607:profile
+#@-node:AGP.20250415230112.12:reportDirectories
+#@-node:AGP.20250415230112.4:run & allies
+#@+node:AGP.20250415230112.13:profile
 #@+at 
 #@nonl
 # To gather statistics, do the following in a Python window, not idle:
@@ -353,7 +306,7 @@ def profile ():
     p.strip_dirs()
     p.sort_stats('cum','file','name')
     p.print_stats()
-#@-node:ekr.20031218072017.2607:profile
+#@-node:AGP.20250415230112.13:profile
 #@-others
 
 #cwdlog = file("cwd.log","w")
@@ -384,5 +337,5 @@ if __name__ == "__main__":
 #    cwdlog.write(exe_name)
 
 #cwdlog.close()
-#@-node:ekr.20031218072017.2605:@thin leo.py 
+#@-node:AGP.20250415230112.3:@thin leo.py 
 #@-leo

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20050710142719:@thin leoEditCommands.py
+#@+node:AGP.20250415230112.813:@thin leoEditCommands.py
 #@@first
 
 '''Basic editor commands for Leo.
@@ -10,9 +10,7 @@ Modelled after Emacs and Vim commands.'''
 from __future__ import generators # To make Leo work with Python 2.2
 
 #@<< imports >>
-#@+node:ekr.20050710151017:<< imports >>
-# __pychecker__ = '--no-import'
-
+#@+node:AGP.20250415230112.814:<< imports >>
 import leoGlobals as g
 
 import leoFind
@@ -28,30 +26,28 @@ import sys
 import Tkinter as Tk
 
 subprocess     = g.importExtension('subprocess',    pluginName=None,verbose=False)
-#Pmw            = g.importExtension('Pmw',           pluginName=None,verbose=False)
 tkColorChooser = g.importExtension('tkColorChooser',pluginName=None,verbose=False)
 tkFileDialog   = g.importExtension('tkFileDialog',  pluginName=None,verbose=False)
 tkFont         = g.importExtension('tkFont',        pluginName=None,verbose=False)
 
 # The following imports is sometimes used.
-__pychecker__ = '--no-import'
 import threading
-#@-node:ekr.20050710151017:<< imports >>
+#@-node:AGP.20250415230112.814:<< imports >>
 #@nl
 
 #@<< define class baseEditCommandsClass >>
-#@+node:ekr.20050920084036.1:<< define class baseEditCommandsClass >>
+#@+node:AGP.20250415230112.815:<< define class baseEditCommandsClass >>
 class baseEditCommandsClass:
 
     '''The base class for all edit command classes'''
 
     #@    @+others
-    #@+node:ekr.20050920084036.2: ctor, finishCreate, init (baseEditCommandsClass)
+    #@+node:AGP.20250415230112.816: ctor, finishCreate, init (baseEditCommandsClass)
     def __init__ (self,c):
     
         self.c = c
         self.k = self.k = None
-        self.registers = {} # To keep pychecker happy.
+        self.registers = {}
         self.undoData = None
         
     def finishCreate(self):
@@ -69,9 +65,9 @@ class baseEditCommandsClass:
         
         pass
     #@nonl
-    #@-node:ekr.20050920084036.2: ctor, finishCreate, init (baseEditCommandsClass)
-    #@+node:ekr.20051214132256:begin/endCommand
-    #@+node:ekr.20051214133130:beginCommand  & beginCommandWithEvent
+    #@-node:AGP.20250415230112.816: ctor, finishCreate, init (baseEditCommandsClass)
+    #@+node:AGP.20250415230112.817:begin/endCommand
+    #@+node:AGP.20250415230112.818:beginCommand  & beginCommandWithEvent
     def beginCommand (self,undoType='Typing'):
         
         '''Do the common processing at the start of each command.'''
@@ -83,7 +79,7 @@ class baseEditCommandsClass:
         '''Do the common processing at the start of each command.'''
         
         return self.beginCommandHelper(ch=event.char,undoType=undoType,w=event.widget)
-    #@+node:ekr.20051215102349:beingCommandHelper
+    #@+node:AGP.20250415230112.819:beingCommandHelper
     # New in Leo 4.4b4: calling beginCommand is valid for all widgets,
     # but does nothing unless we are in the body pane.
     
@@ -101,9 +97,9 @@ class baseEditCommandsClass:
             self.undoData = None
     
         return w
-    #@-node:ekr.20051215102349:beingCommandHelper
-    #@-node:ekr.20051214133130:beginCommand  & beginCommandWithEvent
-    #@+node:ekr.20051214133130.1:endCommand
+    #@-node:AGP.20250415230112.819:beingCommandHelper
+    #@-node:AGP.20250415230112.818:beginCommand  & beginCommandWithEvent
+    #@+node:AGP.20250415230112.820:endCommand
     # New in Leo 4.4b4: calling endCommand is valid for all widgets,
     # but handles undo only if we are in body pane.
     
@@ -127,9 +123,9 @@ class baseEditCommandsClass:
                 k.setLabelGrey(label)
             else:
                 k.resetLabel()
-    #@-node:ekr.20051214133130.1:endCommand
-    #@-node:ekr.20051214132256:begin/endCommand
-    #@+node:ekr.20061007105001:editWidget
+    #@-node:AGP.20250415230112.820:endCommand
+    #@-node:AGP.20250415230112.817:begin/endCommand
+    #@+node:AGP.20250415230112.821:editWidget
     def editWidget (self,event):
         
         c = self.c ; w = event and event.widget
@@ -144,16 +140,16 @@ class baseEditCommandsClass:
             
         return self.w
     #@nonl
-    #@-node:ekr.20061007105001:editWidget
-    #@+node:ekr.20050920084036.5:getPublicCommands & getStateCommands
+    #@-node:AGP.20250415230112.821:editWidget
+    #@+node:AGP.20250415230112.822:getPublicCommands & getStateCommands
     def getPublicCommands (self):
     
         '''Return a dict describing public commands implemented in the subclass.
         Keys are untranslated command names.  Values are methods of the subclass.'''
     
         return {}
-    #@-node:ekr.20050920084036.5:getPublicCommands & getStateCommands
-    #@+node:ekr.20050920084036.6:getWSString
+    #@-node:AGP.20250415230112.822:getPublicCommands & getStateCommands
+    #@+node:AGP.20250415230112.823:getWSString
     def getWSString (self,txt):
     
         if 1:
@@ -167,16 +163,16 @@ class baseEditCommandsClass:
                     ntxt.append(' ')
     
         return ''.join(ntxt)
-    #@-node:ekr.20050920084036.6:getWSString
-    #@+node:ekr.20050920084036.7:oops
+    #@-node:AGP.20250415230112.823:getWSString
+    #@+node:AGP.20250415230112.824:oops
     def oops (self):
     
         print("baseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
-    #@-node:ekr.20050920084036.7:oops
-    #@+node:ekr.20050929161635:Helpers
-    #@+node:ekr.20050920084036.249:_chckSel
+    #@-node:AGP.20250415230112.824:oops
+    #@+node:AGP.20250415230112.825:Helpers
+    #@+node:AGP.20250415230112.826:_chckSel
     def _chckSel (self,event,warning='no selection'):
     
         c = self.c ; k = self.k
@@ -189,8 +185,8 @@ class baseEditCommandsClass:
             k.setLabelGrey(warning)
         
         return val
-    #@-node:ekr.20050920084036.249:_chckSel
-    #@+node:ekr.20050920084036.250:_checkIfRectangle
+    #@-node:AGP.20250415230112.826:_chckSel
+    #@+node:AGP.20250415230112.827:_checkIfRectangle
     def _checkIfRectangle (self,event):
     
         k = self.k ; key = event.keysym.lower()
@@ -203,8 +199,8 @@ class baseEditCommandsClass:
             return True
     
         return False
-    #@-node:ekr.20050920084036.250:_checkIfRectangle
-    #@+node:ekr.20050920084036.10:contRanges
+    #@-node:AGP.20250415230112.827:_checkIfRectangle
+    #@+node:AGP.20250415230112.828:contRanges
     def contRanges (self,w,range):
     
         ranges = w.tag_ranges(range)
@@ -215,8 +211,8 @@ class baseEditCommandsClass:
             t2.append(w.get(ranges[z],ranges[z1]))
         t2 = '\n'.join(t2)
         return t1 == t2
-    #@-node:ekr.20050920084036.10:contRanges
-    #@+node:ekr.20050920084036.233:getRectanglePoints
+    #@-node:AGP.20250415230112.828:contRanges
+    #@+node:AGP.20250415230112.829:getRectanglePoints
     def getRectanglePoints (self,w):
     
         c = self.c
@@ -228,8 +224,8 @@ class baseEditCommandsClass:
         r3, r4 = i2.split('.')
     
         return int(r1), int(r2), int(r3), int(r4)
-    #@-node:ekr.20050920084036.233:getRectanglePoints
-    #@+node:ekr.20050920084036.9:inRange
+    #@-node:AGP.20250415230112.829:getRectanglePoints
+    #@+node:AGP.20250415230112.830:inRange
     def inRange (self,w,range,l='',r=''):
     
         ranges = w.tag_ranges(range)
@@ -240,15 +236,15 @@ class baseEditCommandsClass:
             if w.compare(l1,'>=',ranges[z]) and w.compare(r1,'<=',ranges[z1]):
                 return True
         return False
-    #@-node:ekr.20050920084036.9:inRange
-    #@+node:ekr.20051002090441:keyboardQuit
+    #@-node:AGP.20250415230112.830:inRange
+    #@+node:AGP.20250415230112.831:keyboardQuit
     def keyboardQuit (self,event):
         
         '''Clear the state and the minibuffer label.'''
         
         return self.k.keyboardQuit(event)
-    #@-node:ekr.20051002090441:keyboardQuit
-    #@+node:ekr.20050920084036.11:testinrange
+    #@-node:AGP.20250415230112.831:keyboardQuit
+    #@+node:AGP.20250415230112.832:testinrange
     def testinrange (self,w):
     
         if not self.inRange(w,'sel') or not self.contRanges(w,'sel'):
@@ -256,15 +252,15 @@ class baseEditCommandsClass:
             return False
         else:
             return True
-    #@-node:ekr.20050920084036.11:testinrange
-    #@-node:ekr.20050929161635:Helpers
+    #@-node:AGP.20250415230112.832:testinrange
+    #@-node:AGP.20250415230112.825:Helpers
     #@-others
-#@-node:ekr.20050920084036.1:<< define class baseEditCommandsClass >>
+#@-node:AGP.20250415230112.815:<< define class baseEditCommandsClass >>
 #@nl
 
 #@+others
-#@+node:ekr.20050924100713: Module level...
-#@+node:ekr.20050920084720:createEditCommanders (leoEditCommands module)
+#@+node:AGP.20250415230112.833: Module level...
+#@+node:AGP.20250415230112.834:createEditCommanders (leoEditCommands module)
 def createEditCommanders (c):
     
     '''Create edit classes in the commander.'''
@@ -275,8 +271,8 @@ def createEditCommanders (c):
         theInstance = theClass(c)# Create the class.
         setattr(c,name,theInstance)
         # g.trace(name,theInstance)
-#@-node:ekr.20050920084720:createEditCommanders (leoEditCommands module)
-#@+node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
+#@-node:AGP.20250415230112.834:createEditCommanders (leoEditCommands module)
+#@+node:AGP.20250415230112.835:finishCreateEditCommanders (leoEditCommands module)
 def finishCreateEditCommanders (c):
     
     '''Finish creating edit classes in the commander.
@@ -301,8 +297,8 @@ def finishCreateEditCommanders (c):
                 for key in keys: print
                 
     return d
-#@-node:ekr.20050922104731:finishCreateEditCommanders (leoEditCommands module)
-#@+node:ekr.20050924100713.1:initAllEditCommanders
+#@-node:AGP.20250415230112.835:finishCreateEditCommanders (leoEditCommands module)
+#@+node:AGP.20250415230112.836:initAllEditCommanders
 def initAllEditCommanders (c):
     
     '''Re-init classes in the commander.'''
@@ -312,28 +308,28 @@ def initAllEditCommanders (c):
     for name, theClass in classesList:
         theInstance = getattr(c,name)
         theInstance.init()
-#@-node:ekr.20050924100713.1:initAllEditCommanders
-#@-node:ekr.20050924100713: Module level...
-#@+node:ekr.20050920085536.84:class Tracker (an iterator)
+#@-node:AGP.20250415230112.836:initAllEditCommanders
+#@-node:AGP.20250415230112.833: Module level...
+#@+node:AGP.20250415230112.837:class Tracker (an iterator)
 class Tracker:
 
     '''An iterator class to allow the user to cycle through and change a list.'''
 
     #@    @+others
-    #@+node:ekr.20050920085536.85:init
+    #@+node:AGP.20250415230112.838:init
     def __init__ (self):
         
         self.tablist = []
         self.prefix = None 
         self.ng = self._next()
-    #@-node:ekr.20050920085536.85:init
-    #@+node:ekr.20050920085536.86:setTabList
+    #@-node:AGP.20250415230112.838:init
+    #@+node:AGP.20250415230112.839:setTabList
     def setTabList (self,prefix,tlist):
         
         self.prefix = prefix 
         self.tablist = tlist
-    #@-node:ekr.20050920085536.86:setTabList
-    #@+node:ekr.20050920085536.87:_next
+    #@-node:AGP.20250415230112.839:setTabList
+    #@+node:AGP.20250415230112.840:_next
     def _next (self):
         
         while 1:
@@ -343,21 +339,21 @@ class Tracker:
                 if tlist!=self.tablist:
                     break 
                 yield z
-    #@-node:ekr.20050920085536.87:_next
-    #@+node:ekr.20050920085536.88:next
+    #@-node:AGP.20250415230112.840:_next
+    #@+node:AGP.20250415230112.841:next
     def next (self):
         
         return self.ng.next()
-    #@-node:ekr.20050920085536.88:next
-    #@+node:ekr.20050920085536.89:clear
+    #@-node:AGP.20250415230112.841:next
+    #@+node:AGP.20250415230112.842:clear
     def clear (self):
     
         self.tablist = []
         self.prefix = None
-    #@-node:ekr.20050920085536.89:clear
+    #@-node:AGP.20250415230112.842:clear
     #@-others
-#@-node:ekr.20050920085536.84:class Tracker (an iterator)
-#@+node:ekr.20050920084036.13:abbrevCommandsClass (test)
+#@-node:AGP.20250415230112.837:class Tracker (an iterator)
+#@+node:AGP.20250415230112.843:abbrevCommandsClass (test)
 #@+at
 # 
 # type some text, set its abbreviation with Control-x a i g, type the text for 
@@ -382,7 +378,7 @@ class Tracker:
 class abbrevCommandsClass (baseEditCommandsClass):
 
     #@    @+others
-    #@+node:ekr.20050920084036.14: ctor & finishCreate
+    #@+node:AGP.20250415230112.844: ctor & finishCreate
     def __init__ (self,c):
         
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -393,8 +389,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
     def finishCreate(self):
         
         baseEditCommandsClass.finishCreate(self)
-    #@-node:ekr.20050920084036.14: ctor & finishCreate
-    #@+node:ekr.20050920084036.15: getPublicCommands & getStateCommands
+    #@-node:AGP.20250415230112.844: ctor & finishCreate
+    #@+node:AGP.20250415230112.845: getPublicCommands & getStateCommands
     def getPublicCommands (self):
         
         return {
@@ -408,8 +404,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
             'read-abbrev-file':             self.readAbbreviations,
             'write-abbrev-file':            self.writeAbbreviations,
         }
-    #@-node:ekr.20050920084036.15: getPublicCommands & getStateCommands
-    #@+node:ekr.20050920084036.25:addAbbreviation
+    #@-node:AGP.20250415230112.845: getPublicCommands & getStateCommands
+    #@+node:AGP.20250415230112.846:addAbbreviation
     def addAbbreviation (self,event):
         
         '''Add an abbreviation:
@@ -435,8 +431,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey(
                     "Abbreviations are on.\nAbbreviation: '%s' = '%s'" % (
                     k.arg,word))
-    #@-node:ekr.20050920084036.25:addAbbreviation
-    #@+node:ekr.20051004080550:addInverseAbbreviation
+    #@-node:AGP.20250415230112.846:addAbbreviation
+    #@+node:AGP.20250415230112.847:addInverseAbbreviation
     def addInverseAbbreviation (self,event):
         
         '''Add an inverse abbreviation:
@@ -457,8 +453,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
             word = w.get('insert -1c wordstart','insert -1c wordend').strip()
             if word:
                 self.abbrevs [word] = k.arg
-    #@-node:ekr.20051004080550:addInverseAbbreviation
-    #@+node:ekr.20050920084036.27:expandAbbrev
+    #@-node:AGP.20250415230112.847:addInverseAbbreviation
+    #@+node:AGP.20250415230112.848:expandAbbrev
     def expandAbbrev (self,event):
         
         '''Not a command.  Called from k.masterCommand to expand
@@ -481,15 +477,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
             w.insert('insert',val)
             
         return val is not None
-    #@-node:ekr.20050920084036.27:expandAbbrev
-    #@+node:ekr.20050920084036.18:killAllAbbrevs
+    #@-node:AGP.20250415230112.848:expandAbbrev
+    #@+node:AGP.20250415230112.849:killAllAbbrevs
     def killAllAbbrevs (self,event):
         
         '''Delete all abbreviations.'''
     
         self.abbrevs = {}
-    #@-node:ekr.20050920084036.18:killAllAbbrevs
-    #@+node:ekr.20050920084036.19:listAbbrevs
+    #@-node:AGP.20250415230112.849:killAllAbbrevs
+    #@+node:AGP.20250415230112.850:listAbbrevs
     def listAbbrevs (self,event):
         
         '''List all abbreviations.'''
@@ -499,8 +495,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if self.abbrevs:
             for z in self.abbrevs:
                 g.es('%s=%s' % (z,self.abbrevs[z]))
-    #@-node:ekr.20050920084036.19:listAbbrevs
-    #@+node:ekr.20050920084036.20:readAbbreviations
+    #@-node:AGP.20250415230112.850:listAbbrevs
+    #@+node:AGP.20250415230112.851:readAbbreviations
     def readAbbreviations (self,event):
         
         '''Read abbreviations from a file.'''
@@ -513,8 +509,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
             b = b [:-1]
             self.abbrevs [a] = b
         f.close()
-    #@-node:ekr.20050920084036.20:readAbbreviations
-    #@+node:ekr.20050920084036.21:regionalExpandAbbrev
+    #@-node:AGP.20250415230112.851:readAbbreviations
+    #@+node:AGP.20250415230112.852:regionalExpandAbbrev
     def regionalExpandAbbrev (self,event):
         
         '''Exapand abbreviations throughout a region.'''
@@ -527,7 +523,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         i2 = w.index('sel.last')
         ins = w.index('insert')
         #@    << define a new generator searchXR >>
-        #@+node:ekr.20050920084036.22:<< define a new generator searchXR >>
+        #@+node:AGP.20250415230112.853:<< define a new generator searchXR >>
         #@+at 
         #@nonl
         # This is a generator (it contains a yield).
@@ -564,14 +560,14 @@ class abbrevCommandsClass (baseEditCommandsClass):
             w.tag_delete('found')
             k.setLabelGrey('')
             self.k.regx = g.bunch(iter=None,key=None)
-        #@-node:ekr.20050920084036.22:<< define a new generator searchXR >>
+        #@-node:AGP.20250415230112.853:<< define a new generator searchXR >>
         #@nl
     
         # EKR: the 'result' of calling searchXR is a generator object.
         k.regx.iter = searchXR(i1,i2,ins,event)
         k.regx.iter.next() # Call it the first time.
-    #@-node:ekr.20050920084036.21:regionalExpandAbbrev
-    #@+node:ekr.20050920084036.23:toggleAbbrevMode
+    #@-node:AGP.20250415230112.852:regionalExpandAbbrev
+    #@+node:AGP.20250415230112.854:toggleAbbrevMode
     def toggleAbbrevMode (self,event):
         
         '''Toggle abbreviation mode.'''
@@ -580,8 +576,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit(event)
         k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
-    #@-node:ekr.20050920084036.23:toggleAbbrevMode
-    #@+node:ekr.20050920084036.24:writeAbbreviations
+    #@-node:AGP.20250415230112.854:toggleAbbrevMode
+    #@+node:AGP.20250415230112.855:writeAbbreviations
     def writeAbbreviations (self,event):
         
         '''Write abbreviations to a file.'''
@@ -592,10 +588,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
         for x in self.abbrevs:
             f.write('%s=%s\n' % (x,self.abbrevs[x]))
         f.close()
-    #@-node:ekr.20050920084036.24:writeAbbreviations
+    #@-node:AGP.20250415230112.855:writeAbbreviations
     #@-others
-#@-node:ekr.20050920084036.13:abbrevCommandsClass (test)
-#@+node:ekr.20050920084036.31:bufferCommandsClass
+#@-node:AGP.20250415230112.843:abbrevCommandsClass (test)
+#@+node:AGP.20250415230112.856:bufferCommandsClass
 #@+at 
 #@nonl
 # An Emacs instance does not have knowledge of what is considered a buffer in 
@@ -609,7 +605,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 class bufferCommandsClass (baseEditCommandsClass):
 
     #@    @+others
-    #@+node:ekr.20050920084036.32: ctor (bufferCommandsClass)
+    #@+node:AGP.20250415230112.857: ctor (bufferCommandsClass)
     def __init__ (self,c):
         
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -623,8 +619,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             self.w = c.frame.body.bodyCtrl
         except AttributeError:
             self.w = None
-    #@-node:ekr.20050920084036.32: ctor (bufferCommandsClass)
-    #@+node:ekr.20050920084036.33: getPublicCommands
+    #@-node:AGP.20250415230112.857: ctor (bufferCommandsClass)
+    #@+node:AGP.20250415230112.858: getPublicCommands
     def getPublicCommands (self):
     
         return {
@@ -641,9 +637,9 @@ class bufferCommandsClass (baseEditCommandsClass):
             'rename-buffer':                self.renameBuffer,
             'switch-to-buffer':             self.switchToBuffer,
         }
-    #@-node:ekr.20050920084036.33: getPublicCommands
-    #@+node:ekr.20050920084036.34:Entry points
-    #@+node:ekr.20050920084036.35:appendToBuffer
+    #@-node:AGP.20250415230112.858: getPublicCommands
+    #@+node:AGP.20250415230112.859:Entry points
+    #@+node:AGP.20250415230112.860:appendToBuffer
     def appendToBuffer (self,event):
         
         '''Add the selected body text to the end of the body text of a named buffer (node).'''
@@ -672,8 +668,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             finally:
                 c.endUpdate()
                 c.recolor_now()
-    #@-node:ekr.20050920084036.35:appendToBuffer
-    #@+node:ekr.20050920084036.36:copyToBuffer
+    #@-node:AGP.20250415230112.860:appendToBuffer
+    #@+node:AGP.20250415230112.861:copyToBuffer
     def copyToBuffer (self,event):
         
         '''Add the selected body text to the end of the body text of a named buffer (node).'''
@@ -702,8 +698,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             finally:
                 c.endUpdate()
                 c.recolor_now()
-    #@-node:ekr.20050920084036.36:copyToBuffer
-    #@+node:ekr.20050920084036.37:insertToBuffer
+    #@-node:AGP.20250415230112.861:copyToBuffer
+    #@+node:AGP.20250415230112.862:insertToBuffer
     def insertToBuffer (self,event):
         
         '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
@@ -730,8 +726,8 @@ class bufferCommandsClass (baseEditCommandsClass):
                 self.endCommand()
             finally:
                 c.endUpdate()
-    #@-node:ekr.20050920084036.37:insertToBuffer
-    #@+node:ekr.20050920084036.38:killBuffer
+    #@-node:AGP.20250415230112.862:insertToBuffer
+    #@+node:AGP.20250415230112.863:killBuffer
     def killBuffer (self,event):
         
         '''Delete a buffer (node) and all its descendants.'''
@@ -752,8 +748,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.deleteOutline (op_name='kill-buffer: %s' % h)
             c.selectPosition(current)
             self.k.setLabelBlue('Killed buffer: %s' % h)
-    #@-node:ekr.20050920084036.38:killBuffer
-    #@+node:ekr.20050920084036.42:listBuffers & listBuffersAlphabetically
+    #@-node:AGP.20250415230112.863:killBuffer
+    #@+node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
     def listBuffers (self,event):
         
         '''List all buffers (node headlines), in outline order.
@@ -776,8 +772,8 @@ class bufferCommandsClass (baseEditCommandsClass):
         g.es('Buffers...')
         for name in names:
             g.es(name)
-    #@-node:ekr.20050920084036.42:listBuffers & listBuffersAlphabetically
-    #@+node:ekr.20050920084036.39:prependToBuffer
+    #@-node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
+    #@+node:AGP.20250415230112.865:prependToBuffer
     def prependToBuffer (self,event):
         
         '''Add the selected body text to the start of the body text of a named buffer (node).'''
@@ -807,8 +803,8 @@ class bufferCommandsClass (baseEditCommandsClass):
                 c.endUpdate()
                 c.recolor_now()
     
-    #@-node:ekr.20050920084036.39:prependToBuffer
-    #@+node:ekr.20050920084036.43:renameBuffer
+    #@-node:AGP.20250415230112.865:prependToBuffer
+    #@+node:AGP.20250415230112.866:renameBuffer
     def renameBuffer (self,event):
         
         '''Rename a buffer, i.e., change a node's headline.'''
@@ -830,8 +826,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.beginUpdate()
             c.setHeadString(p,name)
             c.endUpdate()
-    #@-node:ekr.20050920084036.43:renameBuffer
-    #@+node:ekr.20050920084036.40:switchToBuffer
+    #@-node:AGP.20250415230112.866:renameBuffer
+    #@+node:AGP.20250415230112.867:switchToBuffer
     def switchToBuffer (self,event):
         
         '''Select a buffer (node) by its name (headline).'''
@@ -848,10 +844,10 @@ class bufferCommandsClass (baseEditCommandsClass):
                 c.selectPosition(p)
             finally:
                 c.endUpdate()
-    #@-node:ekr.20050920084036.40:switchToBuffer
-    #@-node:ekr.20050920084036.34:Entry points
-    #@+node:ekr.20050927102133.1:Utils
-    #@+node:ekr.20051215121416:computeData
+    #@-node:AGP.20250415230112.867:switchToBuffer
+    #@-node:AGP.20250415230112.859:Entry points
+    #@+node:AGP.20250415230112.868:Utils
+    #@+node:AGP.20250415230112.869:computeData
     def computeData (self):
         
         counts = {} ; self.nameList = []
@@ -875,8 +871,8 @@ class bufferCommandsClass (baseEditCommandsClass):
                 self.tnodes[key] = t
                 nameList.append(key)
                 self.names[h] = nameList
-    #@-node:ekr.20051215121416:computeData
-    #@+node:ekr.20051215164823:findBuffer
+    #@-node:AGP.20250415230112.869:computeData
+    #@+node:AGP.20250415230112.870:findBuffer
     def findBuffer (self,name):
         
         t = self.tnodes.get(name)
@@ -887,8 +883,8 @@ class bufferCommandsClass (baseEditCommandsClass):
                
         g.trace("Can't happen",name)
         return None
-    #@-node:ekr.20051215164823:findBuffer
-    #@+node:ekr.20050927093851:getBufferName
+    #@-node:AGP.20250415230112.870:findBuffer
+    #@+node:AGP.20250415230112.871:getBufferName
     def getBufferName (self,finisher):
         
         '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
@@ -907,22 +903,22 @@ class bufferCommandsClass (baseEditCommandsClass):
             finisher = self.getBufferNameFinisher
             self.getBufferNameFinisher = None
             finisher(k.arg)
-    #@-node:ekr.20050927093851:getBufferName
-    #@-node:ekr.20050927102133.1:Utils
+    #@-node:AGP.20250415230112.871:getBufferName
+    #@-node:AGP.20250415230112.868:Utils
     #@-others
-#@-node:ekr.20050920084036.31:bufferCommandsClass
-#@+node:ekr.20050920084036.150:controlCommandsClass
+#@-node:AGP.20250415230112.856:bufferCommandsClass
+#@+node:AGP.20250415230112.872:controlCommandsClass
 class controlCommandsClass (baseEditCommandsClass):
     
     #@    @+others
-    #@+node:ekr.20050920084036.151: ctor
+    #@+node:AGP.20250415230112.873: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
         
         self.payload = None
-    #@-node:ekr.20050920084036.151: ctor
-    #@+node:ekr.20050920084036.152: getPublicCommands
+    #@-node:AGP.20250415230112.873: ctor
+    #@+node:AGP.20250415230112.874: getPublicCommands
     def getPublicCommands (self):
         
         k = self.c.k
@@ -937,15 +933,15 @@ class controlCommandsClass (baseEditCommandsClass):
             'shell-command-on-region':      self.shellCommandOnRegion,
             'suspend':                      self.suspend,
         }
-    #@-node:ekr.20050920084036.152: getPublicCommands
-    #@+node:ekr.20050922110030:advertizedUndo
+    #@-node:AGP.20250415230112.874: getPublicCommands
+    #@+node:AGP.20250415230112.875:advertizedUndo
     def advertizedUndo (self,event):
         
         '''Undo the previous command.'''
     
         self.c.undoer.undo()
-    #@-node:ekr.20050922110030:advertizedUndo
-    #@+node:ekr.20050920084036.160:executeSubprocess
+    #@-node:AGP.20250415230112.875:advertizedUndo
+    #@+node:AGP.20250415230112.876:executeSubprocess
     def executeSubprocess (self,event,command,input):
         
         '''Execute a command in a separate process.'''
@@ -973,8 +969,8 @@ class controlCommandsClass (baseEditCommandsClass):
             w.insert('insert',x)
             
         k.setLabelGrey('finished shell-command: %s' % command)
-    #@-node:ekr.20050920084036.160:executeSubprocess
-    #@+node:ekr.20060603161041:setSilentMode
+    #@-node:AGP.20250415230112.876:executeSubprocess
+    #@+node:AGP.20250415230112.877:setSilentMode
     def setSilentMode (self,event=None):
         
         '''Set the mode to be run silently, without the minibuffer.
@@ -983,8 +979,8 @@ class controlCommandsClass (baseEditCommandsClass):
             --> set-silent-mode'''
         
         self.c.k.silentMode = True
-    #@-node:ekr.20060603161041:setSilentMode
-    #@+node:ekr.20050920084036.158:shellCommand
+    #@-node:AGP.20250415230112.877:setSilentMode
+    #@+node:AGP.20250415230112.878:shellCommand
     def shellCommand (self,event):
         
         '''Execute a shell command.'''
@@ -1002,8 +998,8 @@ class controlCommandsClass (baseEditCommandsClass):
                 self.executeSubprocess(event,command,input=None)
         else:
             k.setLabelGrey('can not execute shell-command: can not import subprocess')
-    #@-node:ekr.20050920084036.158:shellCommand
-    #@+node:ekr.20050930112126:shellCommandOnRegion
+    #@-node:AGP.20250415230112.878:shellCommand
+    #@+node:AGP.20250415230112.879:shellCommandOnRegion
     def shellCommandOnRegion (self,event):
         
         '''Execute a command taken from the selected text in a separate process.'''
@@ -1027,8 +1023,8 @@ class controlCommandsClass (baseEditCommandsClass):
                     k.resetLabel()
         else:
             k.setLabelGrey('can not execute shell-command: can not import subprocess')
-    #@-node:ekr.20050930112126:shellCommandOnRegion
-    #@+node:ekr.20050920084036.155:shutdown, saveBuffersKillEmacs & setShutdownHook
+    #@-node:AGP.20250415230112.879:shellCommandOnRegion
+    #@+node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
     def shutdown (self,event):
         
         '''Quit Leo, prompting to save any unsaved files first.'''
@@ -1036,8 +1032,8 @@ class controlCommandsClass (baseEditCommandsClass):
         g.app.onQuit()
             
     saveBuffersKillLeo = shutdown
-    #@-node:ekr.20050920084036.155:shutdown, saveBuffersKillEmacs & setShutdownHook
-    #@+node:ekr.20050920084036.153:suspend & iconifyFrame
+    #@-node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
+    #@+node:AGP.20250415230112.881:suspend & iconifyFrame
     def suspend (self,event):
         
         '''Minimize the present Leo window.'''
@@ -1053,19 +1049,19 @@ class controlCommandsClass (baseEditCommandsClass):
         '''Minimize the present Leo window.'''
     
         self.suspend(event)
-    #@-node:ekr.20050920084036.153:suspend & iconifyFrame
+    #@-node:AGP.20250415230112.881:suspend & iconifyFrame
     #@-others
-#@-node:ekr.20050920084036.150:controlCommandsClass
-#@+node:ekr.20060127162818.1:debugCommandsClass
+#@-node:AGP.20250415230112.872:controlCommandsClass
+#@+node:AGP.20250415230112.882:debugCommandsClass
 class debugCommandsClass (baseEditCommandsClass):
     
     #@    @+others
-    #@+node:ekr.20060127162921: ctor
+    #@+node:AGP.20250415230112.883: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:ekr.20060127162921: ctor
-    #@+node:ekr.20060127163325: getPublicCommands
+    #@-node:AGP.20250415230112.883: ctor
+    #@+node:AGP.20250415230112.884: getPublicCommands
     def getPublicCommands (self):
         
         k = self
@@ -1084,15 +1080,15 @@ class debugCommandsClass (baseEditCommandsClass):
             'run-unit-tests':       self.runUnitTests,
             'verbose-dump-objects': self.verboseDumpObjects,
         }
-    #@-node:ekr.20060127163325: getPublicCommands
-    #@+node:ekr.20060205050659:collectGarbage
+    #@-node:AGP.20250415230112.884: getPublicCommands
+    #@+node:AGP.20250415230112.885:collectGarbage
     def collectGarbage (self,event=None):
         
         """Run Python's Gargabe Collector."""
         
         g.collectGarbage()
-    #@-node:ekr.20060205050659:collectGarbage
-    #@+node:ekr.20060519003651:debug
+    #@-node:AGP.20250415230112.885:collectGarbage
+    #@+node:AGP.20250415230112.886:debug
     def debug (self,event=None,target = None):
         
         '''Start an external debugger in another process.'''
@@ -1101,7 +1097,7 @@ class debugCommandsClass (baseEditCommandsClass):
         pythonDir = g.os_path_dirname(sys.executable)
         
         #@    << find a debugger or return >>
-        #@+node:ekr.20060521140213:<< find a debugger or return >>
+        #@+node:AGP.20250415230112.887:<< find a debugger or return >>
         debuggers = (
             c.config.getString('debugger_path'),
             g.os_path_join(pythonDir,'scripts','_winpdb.py'),
@@ -1117,10 +1113,10 @@ class debugCommandsClass (baseEditCommandsClass):
         else:
             g.es('No debugger found.')
             return
-        #@-node:ekr.20060521140213:<< find a debugger or return >>
+        #@-node:AGP.20250415230112.887:<< find a debugger or return >>
         #@nl
         #@    << find the target file >>
-        #@+node:ekr.20060521140213.1:<< find the target file >>
+        #@+node:AGP.20250415230112.888:<< find the target file >>
         targets = (
             target,
             c.config.getString('debugger_force_taget'),
@@ -1135,7 +1131,7 @@ class debugCommandsClass (baseEditCommandsClass):
                     break
                 else:
                     g.es('Debug target does not exist: %s' % (target),color='blue')
-        #@-node:ekr.20060521140213.1:<< find the target file >>
+        #@-node:AGP.20250415230112.888:<< find the target file >>
         #@nl
         
         if target:
@@ -1147,8 +1143,8 @@ class debugCommandsClass (baseEditCommandsClass):
             os.spawnv(os.P_NOWAIT, sys.executable, args)
         else: # Use a pristine environment.
             os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
-    #@-node:ekr.20060519003651:debug
-    #@+node:ekr.20060202160523:dumpAll/New/VerboseObjects
+    #@-node:AGP.20250415230112.886:debug
+    #@+node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
     def dumpAllObjects (self,event=None):
         
         '''Print a summary of all existing Python objects.'''
@@ -1176,8 +1172,8 @@ class debugCommandsClass (baseEditCommandsClass):
         g.app.trace_gc = True
         g.printGcVerbose()
         g.app.trace_gc = old
-    #@-node:ekr.20060202160523:dumpAll/New/VerboseObjects
-    #@+node:ekr.20060127163325.1:enable/disableGcTrace
+    #@-node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
+    #@+node:AGP.20250415230112.890:enable/disableGcTrace
     def disableGcTrace (self,event=None):
         
         '''Enable tracing of Python's Garbage Collector.'''
@@ -1191,8 +1187,8 @@ class debugCommandsClass (baseEditCommandsClass):
         g.app.trace_gc = True
         g.app.trace_gc_inited = False
         g.enable_gc_debug()
-    #@-node:ekr.20060127163325.1:enable/disableGcTrace
-    #@+node:ekr.20060202154734:freeTreeWidgets
+    #@-node:AGP.20250415230112.890:enable/disableGcTrace
+    #@+node:AGP.20250415230112.891:freeTreeWidgets
     def freeTreeWidgets (self,event=None):
         
         '''Free all widgets used in Leo's outline pane.'''
@@ -1201,8 +1197,8 @@ class debugCommandsClass (baseEditCommandsClass):
         
         c.frame.tree.destroyWidgets()
         c.redraw_now()
-    #@-node:ekr.20060202154734:freeTreeWidgets
-    #@+node:ekr.20060210100432:printFocus
+    #@-node:AGP.20250415230112.891:freeTreeWidgets
+    #@+node:AGP.20250415230112.892:printFocus
     # Doesn't work if the focus isn't in a pane with bindings!
     
     def printFocus (self,event=None):
@@ -1214,16 +1210,16 @@ class debugCommandsClass (baseEditCommandsClass):
         g.es_print('      hasFocusWidget: %s' % c.widget_name(c.hasFocusWidget))
         g.es_print('requestedFocusWidget: %s' % c.widget_name(c.requestedFocusWidget))
         g.es_print('           get_focus: %s' % c.widget_name(c.get_focus()))
-    #@-node:ekr.20060210100432:printFocus
-    #@+node:ekr.20060205043324.3:printGcSummary
+    #@-node:AGP.20250415230112.892:printFocus
+    #@+node:AGP.20250415230112.893:printGcSummary
     def printGcSummary (self,event=None):
         
         
         '''Print a brief summary of all Python objects.'''
     
         g.printGcSummary()
-    #@-node:ekr.20060205043324.3:printGcSummary
-    #@+node:ekr.20060202133313:printStats
+    #@-node:AGP.20250415230112.893:printGcSummary
+    #@+node:AGP.20250415230112.894:printStats
     def printStats (self,event=None):
         
         '''Print statistics about the objects that Leo is using.'''
@@ -1231,8 +1227,8 @@ class debugCommandsClass (baseEditCommandsClass):
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()
-    #@-node:ekr.20060202133313:printStats
-    #@+node:ekr.20060328121145:runUnitTest
+    #@-node:AGP.20250415230112.894:printStats
+    #@+node:AGP.20250415230112.895:runUnitTest
     def runUnitTests (self,event=None):
         
         '''Run all unit tests contained in the presently selected outline.'''
@@ -1240,17 +1236,17 @@ class debugCommandsClass (baseEditCommandsClass):
         c = self.c
     
         leoTest.doTests(c,all=False)
-    #@-node:ekr.20060328121145:runUnitTest
+    #@-node:AGP.20250415230112.895:runUnitTest
     #@-others
-#@-node:ekr.20060127162818.1:debugCommandsClass
-#@+node:ekr.20050920084036.53:editCommandsClass
+#@-node:AGP.20250415230112.882:debugCommandsClass
+#@+node:AGP.20250415230112.896:editCommandsClass
 class editCommandsClass (baseEditCommandsClass):
     
     '''Contains editing commands with little or no state.'''
 
     #@    @+others
-    #@+node:ekr.20050929155208: birth
-    #@+node:ekr.20050920084036.54: ctor (editCommandsClass)
+    #@+node:AGP.20250415230112.897: birth
+    #@+node:AGP.20250415230112.898: ctor (editCommandsClass)
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1281,8 +1277,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.smartAutoIndent        = c.config.getBool('smart_auto_indent')
         
         self.initBracketMatcher(c)
-    #@-node:ekr.20050920084036.54: ctor (editCommandsClass)
-    #@+node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
+    #@-node:AGP.20250415230112.898: ctor (editCommandsClass)
+    #@+node:AGP.20250415230112.899: getPublicCommands (editCommandsClass)
     def getPublicCommands (self):        
     
         c = self.c ; k = self.k 
@@ -1449,18 +1445,18 @@ class editCommandsClass (baseEditCommandsClass):
             'view-lossage':                         self.viewLossage,
             'what-line':                            self.whatLine,
         }
-    #@-node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
-    #@+node:ekr.20061012113455:doNothing
+    #@-node:AGP.20250415230112.899: getPublicCommands (editCommandsClass)
+    #@+node:AGP.20250415230112.900:doNothing
     def doNothing (self,event):
         
         '''A placeholder command, useful for testing bindings.'''
     
         g.trace()
     #@nonl
-    #@-node:ekr.20061012113455:doNothing
-    #@-node:ekr.20050929155208: birth
-    #@+node:ekr.20050920084036.57:capitalization & case
-    #@+node:ekr.20051015114221:capitalizeWord & up/downCaseWord
+    #@-node:AGP.20250415230112.900:doNothing
+    #@-node:AGP.20250415230112.897: birth
+    #@+node:AGP.20250415230112.901:capitalization & case
+    #@+node:AGP.20250415230112.902:capitalizeWord & up/downCaseWord
     def capitalizeWord (self,event):
         '''Capitalize the word at the cursor.'''
         self.capitalizeHelper(event,'cap','capitalize-word')
@@ -1472,8 +1468,8 @@ class editCommandsClass (baseEditCommandsClass):
     def upCaseWord (self,event):
         '''Convert all characters of the word at the cursor to UPPER CASE.'''
         self.capitalizeHelper(event,'up','upcase-word')
-    #@-node:ekr.20051015114221:capitalizeWord & up/downCaseWord
-    #@+node:ekr.20050920084036.145:changePreviousWord (not used)
+    #@-node:AGP.20250415230112.902:capitalizeWord & up/downCaseWord
+    #@+node:AGP.20250415230112.903:changePreviousWord (not used)
     def changePreviousWord (self,event):
     
         k = self.k ; stroke = k.stroke
@@ -1494,8 +1490,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.mark_set('insert',i)
         
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.145:changePreviousWord (not used)
-    #@+node:ekr.20051015114221.1:capitalizeHelper
+    #@-node:AGP.20250415230112.903:changePreviousWord (not used)
+    #@+node:AGP.20250415230112.904:capitalizeHelper
     def capitalizeHelper (self,event,which,undoType):
     
         w = self.editWidget(event)
@@ -1518,10 +1514,10 @@ class editCommandsClass (baseEditCommandsClass):
         w.mark_set('insert',i)
         
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20051015114221.1:capitalizeHelper
-    #@-node:ekr.20050920084036.57:capitalization & case
-    #@+node:ekr.20051022142249:clicks and focus (editCommandsClass)
-    #@+node:ekr.20060211100905:activate-x-menu & activateMenu (editCommandsClass)
+    #@-node:AGP.20250415230112.904:capitalizeHelper
+    #@-node:AGP.20250415230112.901:capitalization & case
+    #@+node:AGP.20250415230112.905:clicks and focus (editCommandsClass)
+    #@+node:AGP.20250415230112.906:activate-x-menu & activateMenu (editCommandsClass)
     def activateCmdsMenu    (self,event=None):
         '''Activate Leo's Cmnds menu.'''
         self.activateMenu('Cmds')
@@ -1553,8 +1549,8 @@ class editCommandsClass (baseEditCommandsClass):
     def activateMenu (self,menuName):
         c = self.c
         c.frame.menu.activateMenu(menuName)
-    #@-node:ekr.20060211100905:activate-x-menu & activateMenu (editCommandsClass)
-    #@+node:ekr.20051022144825.1:cycleFocus
+    #@-node:AGP.20250415230112.906:activate-x-menu & activateMenu (editCommandsClass)
+    #@+node:AGP.20250415230112.907:cycleFocus
     def cycleFocus (self,event):
         
         '''Cycle the keyboard focus between Leo's outline, body and log panes.'''
@@ -1581,8 +1577,8 @@ class editCommandsClass (baseEditCommandsClass):
         c.widgetWantsFocusNow(pane)
         c.k.newMinibufferWidget = pane
     #@nonl
-    #@-node:ekr.20051022144825.1:cycleFocus
-    #@+node:ekr.20060613090701:cycleAllFocus
+    #@-node:AGP.20250415230112.907:cycleFocus
+    #@+node:AGP.20250415230112.908:cycleAllFocus
     editWidgetCount = 0
     logWidgetCount = 0
     
@@ -1645,8 +1641,8 @@ class editCommandsClass (baseEditCommandsClass):
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
     #@nonl
-    #@-node:ekr.20060613090701:cycleAllFocus
-    #@+node:ekr.20051022144825:focusTo...
+    #@-node:AGP.20250415230112.908:cycleAllFocus
+    #@+node:AGP.20250415230112.909:focusTo...
     def focusToBody (self,event):
         '''Put the keyboard focus in Leo's body pane.'''
         self.c.bodyWantsFocusNow()
@@ -1662,8 +1658,8 @@ class editCommandsClass (baseEditCommandsClass):
     def focusToTree (self,event):
         '''Put the keyboard focus in Leo's outline pane.'''
         self.c.treeWantsFocusNow()
-    #@-node:ekr.20051022144825:focusTo...
-    #@+node:ekr.20060211063744.1:clicks in the headline
+    #@-node:AGP.20250415230112.909:focusTo...
+    #@+node:AGP.20250415230112.910:clicks in the headline
     # These call the actual event handlers so as to trigger hooks.
     
     def clickHeadline (self,event=None):
@@ -1679,8 +1675,8 @@ class editCommandsClass (baseEditCommandsClass):
         '''Simulate a right click in the headline of the presently selected node.'''
         c = self.c ; p = c.currentPosition()
         c.frame.tree.onHeadlineRightClick(event,p=p)
-    #@-node:ekr.20060211063744.1:clicks in the headline
-    #@+node:ekr.20060211055455:clicks in the icon box
+    #@-node:AGP.20250415230112.910:clicks in the headline
+    #@+node:AGP.20250415230112.911:clicks in the icon box
     # These call the actual event handlers so as to trigger hooks.
     
     def clickIconBox (self,event=None):
@@ -1698,8 +1694,8 @@ class editCommandsClass (baseEditCommandsClass):
         '''Simulate a right click in the icon box of the presently selected node.'''
         c = self.c ; p = c.currentPosition()
         c.frame.tree.onIconBoxRightClick(event,p=p)
-    #@-node:ekr.20060211055455:clicks in the icon box
-    #@+node:ekr.20060211062025:clickClickBox
+    #@-node:AGP.20250415230112.911:clicks in the icon box
+    #@+node:AGP.20250415230112.912:clickClickBox
     # Call the actual event handlers so as to trigger hooks.
     
     def clickClickBox (self,event=None):
@@ -1708,8 +1704,8 @@ class editCommandsClass (baseEditCommandsClass):
     
         c = self.c ; p = c.currentPosition()
         c.frame.tree.onClickBoxClick(event,p=p)
-    #@-node:ekr.20060211062025:clickClickBox
-    #@+node:ekr.20060211063744.2:simulate...Drag
+    #@-node:AGP.20250415230112.912:clickClickBox
+    #@+node:AGP.20250415230112.913:simulate...Drag
     # These call the drag setup methods which in turn trigger hooks.
     
     def simulateBeginDrag (self,event=None):
@@ -1725,10 +1721,10 @@ class editCommandsClass (baseEditCommandsClass):
         
         # Note: this assumes that tree.startDrag has already been called.
         c.frame.tree.endDrag(event)
-    #@-node:ekr.20060211063744.2:simulate...Drag
-    #@-node:ekr.20051022142249:clicks and focus (editCommandsClass)
-    #@+node:ekr.20051019183105:color & font
-    #@+node:ekr.20051019183105.1:show-colors
+    #@-node:AGP.20250415230112.913:simulate...Drag
+    #@-node:AGP.20250415230112.905:clicks and focus (editCommandsClass)
+    #@+node:AGP.20250415230112.914:color & font
+    #@+node:AGP.20250415230112.915:show-colors
     def showColors (self,event):
         
         '''Open a tab in the log pane showing various color pickers.'''
@@ -1736,7 +1732,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c ; log = c.frame.log ; tabName = 'Colors'
         
         #@    << define colors >>
-        #@+node:ekr.20051019183105.2:<< define colors >>
+        #@+node:AGP.20250415230112.916:<< define colors >>
         colors = (
             "gray60", "gray70", "gray80", "gray85", "gray90", "gray95",
             "snow1", "snow2", "snow3", "snow4", "seashell1", "seashell2",
@@ -1800,7 +1796,7 @@ class editCommandsClass (baseEditCommandsClass):
             "purple2", "purple3", "purple4", "MediumPurple1", "MediumPurple2",
             "MediumPurple3", "MediumPurple4", "thistle1", "thistle2", "thistle3",
             "thistle4" )
-        #@-node:ekr.20051019183105.2:<< define colors >>
+        #@-node:AGP.20250415230112.916:<< define colors >>
         #@nl
         
         if log.frameDict.get(tabName):
@@ -1811,7 +1807,7 @@ class editCommandsClass (baseEditCommandsClass):
             t.pack_forget()
             f = log.frameDict.get(tabName)
             self.createColorPicker(f,colors)
-    #@+node:ekr.20051019183105.3:createColorPicker
+    #@+node:AGP.20250415230112.917:createColorPicker
     def createColorPicker (self,parent,colors):
         
         colors = list(colors)
@@ -1831,7 +1827,7 @@ class editCommandsClass (baseEditCommandsClass):
         label.pack(side='left',pady=6)
     
         #@    << create optionMenu and callback >>
-        #@+node:ekr.20051019183105.4:<< create optionMenu and callback >>
+        #@+node:AGP.20250415230112.918:<< create optionMenu and callback >>
         colorBox = Pmw.ComboBox(f2,scrolledlist_items=colors)
         colorBox.pack(side='left',pady=4)
         
@@ -1844,10 +1840,10 @@ class editCommandsClass (baseEditCommandsClass):
             except: pass # Ignore invalid names.
         
         colorBox.configure(selectioncommand=colorCallback)
-        #@-node:ekr.20051019183105.4:<< create optionMenu and callback >>
+        #@-node:AGP.20250415230112.918:<< create optionMenu and callback >>
         #@nl
         #@    << create picker button and callback >>
-        #@+node:ekr.20051019183105.5:<< create picker button and callback >>
+        #@+node:AGP.20250415230112.919:<< create picker button and callback >>
         def pickerCallback ():
             rgb,val = tkColorChooser.askcolor(parent=parent,initialcolor=f.cget('background'))
             if rgb or val:
@@ -1860,11 +1856,11 @@ class editCommandsClass (baseEditCommandsClass):
         b = Tk.Button(f3,text="Color Picker...",
             command=pickerCallback,background=bg)
         b.pack(side='left',pady=4)
-        #@-node:ekr.20051019183105.5:<< create picker button and callback >>
+        #@-node:AGP.20250415230112.919:<< create picker button and callback >>
         #@nl
-    #@-node:ekr.20051019183105.3:createColorPicker
-    #@-node:ekr.20051019183105.1:show-colors
-    #@+node:ekr.20051019201809:show-fonts & helpers
+    #@-node:AGP.20250415230112.917:createColorPicker
+    #@-node:AGP.20250415230112.915:show-colors
+    #@+node:AGP.20250415230112.920:show-fonts & helpers
     def showFonts (self,event):
         
         '''Open a tab in the log pane showing a font picker.'''
@@ -1879,22 +1875,22 @@ class editCommandsClass (baseEditCommandsClass):
             t = log.textDict.get(tabName)
             t.pack_forget()
             self.createFontPicker(f)
-    #@+node:ekr.20051019201809.1:createFontPicker
+    #@+node:AGP.20250415230112.921:createFontPicker
     def createFontPicker (self,parent):
     
         bg = parent.cget('background')
         font = self.getFont()
         #@    << create the frames >>
-        #@+node:ekr.20051019202139:<< create the frames >>
+        #@+node:AGP.20250415230112.922:<< create the frames >>
         f = Tk.Frame(parent,background=bg) ; f.pack (side='top',expand=0,fill='both')
         f1 = Tk.Frame(f,background=bg)     ; f1.pack(side='top',expand=1,fill='x')
         f2 = Tk.Frame(f,background=bg)     ; f2.pack(side='top',expand=1,fill='x')
         f3 = Tk.Frame(f,background=bg)     ; f3.pack(side='top',expand=1,fill='x')
         f4 = Tk.Frame(f,background=bg)     ; f4.pack(side='top',expand=1,fill='x')
-        #@-node:ekr.20051019202139:<< create the frames >>
+        #@-node:AGP.20250415230112.922:<< create the frames >>
         #@nl
         #@    << create the family combo box >>
-        #@+node:ekr.20051019201809.2:<< create the family combo box >>
+        #@+node:AGP.20250415230112.923:<< create the family combo box >>
         names = tkFont.families()
         names = list(names)
         names.sort()
@@ -1908,19 +1904,19 @@ class editCommandsClass (baseEditCommandsClass):
         
         familyBox.selectitem(0)
         familyBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20051019201809.2:<< create the family combo box >>
+        #@-node:AGP.20250415230112.923:<< create the family combo box >>
         #@nl
         #@    << create the size entry >>
-        #@+node:ekr.20051019201809.3:<< create the size entry >>
+        #@+node:AGP.20250415230112.924:<< create the size entry >>
         Tk.Label(f2,text="Size:",width=10,background=bg).pack(side="left")
         
         sizeEntry = Tk.Entry(f2,width=4)
         sizeEntry.insert(0,'12')
         sizeEntry.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20051019201809.3:<< create the size entry >>
+        #@-node:AGP.20250415230112.924:<< create the size entry >>
         #@nl
         #@    << create the weight combo box >>
-        #@+node:ekr.20051019201809.4:<< create the weight combo box >>
+        #@+node:AGP.20250415230112.925:<< create the weight combo box >>
         weightBox = Pmw.ComboBox(f3,
             labelpos="we",label_text="Weight:",label_width=10,
             label_background=bg,
@@ -1929,10 +1925,10 @@ class editCommandsClass (baseEditCommandsClass):
         
         weightBox.selectitem(0)
         weightBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20051019201809.4:<< create the weight combo box >>
+        #@-node:AGP.20250415230112.925:<< create the weight combo box >>
         #@nl
         #@    << create the slant combo box >>
-        #@+node:ekr.20051019201809.5:<< create the slant combo box>>
+        #@+node:AGP.20250415230112.926:<< create the slant combo box>>
         slantBox = Pmw.ComboBox(f4,
             labelpos="we",label_text="Slant:",label_width=10,
             label_background=bg,
@@ -1941,19 +1937,19 @@ class editCommandsClass (baseEditCommandsClass):
         
         slantBox.selectitem(0)
         slantBox.pack(side="left",padx=2,pady=2)
-        #@-node:ekr.20051019201809.5:<< create the slant combo box>>
+        #@-node:AGP.20250415230112.926:<< create the slant combo box>>
         #@nl
         #@    << create the sample text widget >>
-        #@+node:ekr.20051019202139.1:<< create the sample text widget >>
+        #@+node:AGP.20250415230112.927:<< create the sample text widget >>
         self.sampleWidget = sample = Tk.Text(f,height=20,width=80,font=font)
         sample.pack(side='left')
         
         s = 'The quick brown fox\njumped over the lazy dog.\n0123456789'
         sample.insert('1.0',s)
-        #@-node:ekr.20051019202139.1:<< create the sample text widget >>
+        #@-node:AGP.20250415230112.927:<< create the sample text widget >>
         #@nl
         #@    << create and bind the callbacks >>
-        #@+node:ekr.20051019202328:<< create and bind the callbacks >>
+        #@+node:AGP.20250415230112.928:<< create and bind the callbacks >>
         def fontCallback(event=None):
             self.setFont(familyBox,sizeEntry,slantBox,weightBox,sample)
         
@@ -1961,11 +1957,11 @@ class editCommandsClass (baseEditCommandsClass):
             w.configure(selectioncommand=fontCallback)
         
         sizeEntry.bind('<Return>',fontCallback)
-        #@-node:ekr.20051019202328:<< create and bind the callbacks >>
+        #@-node:AGP.20250415230112.928:<< create and bind the callbacks >>
         #@nl
         self.createBindings()
-    #@-node:ekr.20051019201809.1:createFontPicker
-    #@+node:ekr.20060726133852:createBindings (fontPicker)
+    #@-node:AGP.20250415230112.921:createFontPicker
+    #@+node:AGP.20250415230112.929:createBindings (fontPicker)
     def createBindings (self):
         
         c = self.c ; k = c.k
@@ -1984,8 +1980,8 @@ class editCommandsClass (baseEditCommandsClass):
             w.bind(event,callback)
             
         k.completeAllBindingsForWidget(w)
-    #@-node:ekr.20060726133852:createBindings (fontPicker)
-    #@+node:ekr.20051019201809.6:getFont
+    #@-node:AGP.20250415230112.929:createBindings (fontPicker)
+    #@+node:AGP.20250415230112.930:getFont
     def getFont(self,family=None,size=12,slant='roman',weight='normal'):
         
         try:
@@ -1995,8 +1991,8 @@ class editCommandsClass (baseEditCommandsClass):
             g.es("family,size,slant,weight:",family,size,slant,weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
-    #@-node:ekr.20051019201809.6:getFont
-    #@+node:ekr.20051019201809.7:setFont
+    #@-node:AGP.20250415230112.930:getFont
+    #@+node:AGP.20250415230112.931:setFont
     def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
         
         d = {}
@@ -2020,18 +2016,18 @@ class editCommandsClass (baseEditCommandsClass):
         slant=d.get('slant','roman')
         font = self.getFont(family,size,slant,weight)
         label.configure(font=font)
-    #@-node:ekr.20051019201809.7:setFont
-    #@+node:ekr.20060726134339:hideTab
+    #@-node:AGP.20250415230112.931:setFont
+    #@+node:AGP.20250415230112.932:hideTab
     def hideTab (self,event=None):
         
         c = self.c
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
-    #@-node:ekr.20060726134339:hideTab
-    #@-node:ekr.20051019201809:show-fonts & helpers
-    #@-node:ekr.20051019183105:color & font
-    #@+node:ekr.20050920084036.132:comment column...
-    #@+node:ekr.20050920084036.133:setCommentColumn
+    #@-node:AGP.20250415230112.932:hideTab
+    #@-node:AGP.20250415230112.920:show-fonts & helpers
+    #@-node:AGP.20250415230112.914:color & font
+    #@+node:AGP.20250415230112.933:comment column...
+    #@+node:AGP.20250415230112.934:setCommentColumn
     def setCommentColumn (self,event):
         
         '''Set the comment column for the indent-to-comment-column command.'''
@@ -2042,8 +2038,8 @@ class editCommandsClass (baseEditCommandsClass):
         cc = w.index('insert')
         cc1, cc2 = cc.split('.')
         self.ccolumn = cc2
-    #@-node:ekr.20050920084036.133:setCommentColumn
-    #@+node:ekr.20050920084036.134:indentToCommentColumn
+    #@-node:AGP.20250415230112.934:setCommentColumn
+    #@+node:AGP.20250415230112.935:indentToCommentColumn
     def indentToCommentColumn (self,event):
     
         '''Insert whitespace to indent to the comment column.'''
@@ -2067,10 +2063,10 @@ class editCommandsClass (baseEditCommandsClass):
         w.mark_set('insert','insert lineend')
         
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.134:indentToCommentColumn
-    #@-node:ekr.20050920084036.132:comment column...
-    #@+node:ekr.20050920084036.58:dynamic abbreviation...
-    #@+node:ekr.20050920084036.59:dynamicExpansion
+    #@-node:AGP.20250415230112.935:indentToCommentColumn
+    #@-node:AGP.20250415230112.933:comment column...
+    #@+node:AGP.20250415230112.936:dynamic abbreviation...
+    #@+node:AGP.20250415230112.937:dynamicExpansion
     def dynamicExpansion (self,event): #, store = {'rlist': [], 'stext': ''} ):
     
         k = self.k
@@ -2110,8 +2106,8 @@ class editCommandsClass (baseEditCommandsClass):
             if not rlist: return
             txt = rlist.pop()
             doDa(txt)
-    #@-node:ekr.20050920084036.59:dynamicExpansion
-    #@+node:ekr.20050920084036.60:dynamicExpansion2
+    #@-node:AGP.20250415230112.937:dynamicExpansion
+    #@+node:AGP.20250415230112.938:dynamicExpansion2
     def dynamicExpansion2 (self,event):
     
         k = self.k
@@ -2127,8 +2123,8 @@ class editCommandsClass (baseEditCommandsClass):
         if dEstring:
             w.delete(i,i2)
             w.insert(i,dEstring)
-    #@-node:ekr.20050920084036.60:dynamicExpansion2
-    #@+node:ekr.20050920084036.61:getDynamicList (helper)
+    #@-node:AGP.20250415230112.938:dynamicExpansion2
+    #@+node:AGP.20250415230112.939:getDynamicList (helper)
     def getDynamicList (self,w,txt,rlist):
     
          ttext = w.get('1.0','end')
@@ -2141,10 +2137,10 @@ class editCommandsClass (baseEditCommandsClass):
                  else:
                      rlist.remove(word)
                      rlist.append(word)
-    #@-node:ekr.20050920084036.61:getDynamicList (helper)
-    #@-node:ekr.20050920084036.58:dynamic abbreviation...
-    #@+node:ekr.20050920084036.62:esc methods for Python evaluation
-    #@+node:ekr.20050920084036.63:watchEscape (Revise)
+    #@-node:AGP.20250415230112.939:getDynamicList (helper)
+    #@-node:AGP.20250415230112.936:dynamic abbreviation...
+    #@+node:AGP.20250415230112.940:esc methods for Python evaluation
+    #@+node:AGP.20250415230112.941:watchEscape (Revise)
     def watchEscape (self,event):
     
         k = self.k
@@ -2171,8 +2167,8 @@ class editCommandsClass (baseEditCommandsClass):
                 k.setLabel('Esc Esc -')
             elif event.keysym not in ('Shift_L','Shift_R'):
                 k.keyboardQuit(event)
-    #@-node:ekr.20050920084036.63:watchEscape (Revise)
-    #@+node:ekr.20050920084036.64:escEvaluate (Revise)
+    #@-node:AGP.20250415230112.941:watchEscape (Revise)
+    #@+node:AGP.20250415230112.942:escEvaluate (Revise)
     def escEvaluate (self,event):
     
         k = self.k
@@ -2196,9 +2192,9 @@ class editCommandsClass (baseEditCommandsClass):
                     k.setLabel('Error: Invalid Expression')
         else:
             k.updateLabel(event)
-    #@-node:ekr.20050920084036.64:escEvaluate (Revise)
-    #@-node:ekr.20050920084036.62:esc methods for Python evaluation
-    #@+node:ekr.20050920084036.65:evalExpression
+    #@-node:AGP.20250415230112.942:escEvaluate (Revise)
+    #@-node:AGP.20250415230112.940:esc methods for Python evaluation
+    #@+node:AGP.20250415230112.943:evalExpression
     def evalExpression (self,event):
         
         '''Evaluate a Python Expression entered in the minibuffer.'''
@@ -2216,8 +2212,8 @@ class editCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('Eval: %s -> %s' % (e,result))
             except Exception:
                 k.setLabelGrey('Invalid Expression: %s' % e)
-    #@-node:ekr.20050920084036.65:evalExpression
-    #@+node:ekr.20050920084036.66:fill column and centering
+    #@-node:AGP.20250415230112.943:evalExpression
+    #@+node:AGP.20250415230112.944:fill column and centering
     #@+at
     # These methods are currently just used in tandem to center the line or 
     # region within the fill column.
@@ -2240,7 +2236,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@@c
     
     #@+others
-    #@+node:ekr.20050920084036.67:centerLine
+    #@+node:AGP.20250415230112.945:centerLine
     def centerLine (self,event):
     
         '''Centers line within current fill column'''
@@ -2265,8 +2261,8 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert('insert linestart',ws)
             
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.67:centerLine
-    #@+node:ekr.20050920084036.68:setFillColumn
+    #@-node:AGP.20250415230112.945:centerLine
+    #@+node:AGP.20250415230112.946:setFillColumn
     def setFillColumn (self,event):
         
         '''Set the fill column used by the center-line and center-region commands.'''
@@ -2284,8 +2280,8 @@ class editCommandsClass (baseEditCommandsClass):
                 k.commandName = 'set-fill-column %d' % n
             except ValueError:
                 k.resetLabel()
-    #@-node:ekr.20050920084036.68:setFillColumn
-    #@+node:ekr.20050920084036.69:centerRegion
+    #@-node:AGP.20250415230112.946:setFillColumn
+    #@+node:AGP.20250415230112.947:centerRegion
     def centerRegion( self, event ):
     
         '''Centers the selected text within the fill column'''
@@ -2320,8 +2316,8 @@ class editCommandsClass (baseEditCommandsClass):
             sindex = sindex + 1
             
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.69:centerRegion
-    #@+node:ekr.20050920084036.70:setFillPrefix
+    #@-node:AGP.20250415230112.947:centerRegion
+    #@+node:AGP.20250415230112.948:setFillPrefix
     def setFillPrefix( self, event ):
         
         '''Make the selected text the fill prefix.'''
@@ -2331,19 +2327,19 @@ class editCommandsClass (baseEditCommandsClass):
     
         txt = w.get( 'insert linestart', 'insert' )
         self.fillPrefix = txt
-    #@-node:ekr.20050920084036.70:setFillPrefix
-    #@+node:ekr.20050920084036.71:_addPrefix
+    #@-node:AGP.20250415230112.948:setFillPrefix
+    #@+node:AGP.20250415230112.949:_addPrefix
     def _addPrefix (self,ntxt):
     
         ntxt = ntxt.split('.')
         ntxt = map(lambda a: self.fillPrefix+a,ntxt)
         ntxt = '.'.join(ntxt)
         return ntxt
-    #@-node:ekr.20050920084036.71:_addPrefix
+    #@-node:AGP.20250415230112.949:_addPrefix
     #@-others
-    #@-node:ekr.20050920084036.66:fill column and centering
-    #@+node:ekr.20060417194232:find (quick)
-    #@+node:ekr.20060925151926:backward/findCharacter & helper
+    #@-node:AGP.20250415230112.944:fill column and centering
+    #@+node:AGP.20250415230112.950:find (quick)
+    #@+node:AGP.20250415230112.951:backward/findCharacter & helper
     def backwardFindCharacter (self,event):
         return self.findCharacterHelper(event,backward=True,extend=False)
         
@@ -2356,7 +2352,7 @@ class editCommandsClass (baseEditCommandsClass):
     def findCharacterExtendSelection (self,event):
         return self.findCharacterHelper(event,backward=False,extend=True)
     #@nonl
-    #@+node:ekr.20060417194232.1:findCharacterHelper
+    #@+node:AGP.20250415230112.952:findCharacterHelper
     def findCharacterHelper (self,event,backward,extend):
     
         '''Put the cursor at the next occurance of a character on a line.'''
@@ -2401,9 +2397,9 @@ class editCommandsClass (baseEditCommandsClass):
             c.frame.clearStatusLine()
             k.clearState()
     #@nonl
-    #@-node:ekr.20060417194232.1:findCharacterHelper
-    #@-node:ekr.20060925151926:backward/findCharacter & helper
-    #@+node:ekr.20060417194232.2:findWord
+    #@-node:AGP.20250415230112.952:findCharacterHelper
+    #@-node:AGP.20250415230112.951:backward/findCharacter & helper
+    #@+node:AGP.20250415230112.953:findWord
     def findWord (self,event):
         
         '''Put the cursor at the next word (on a line) that starts with a character.'''
@@ -2437,10 +2433,10 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             k.clearState()
     
-    #@-node:ekr.20060417194232.2:findWord
-    #@-node:ekr.20060417194232:find (quick)
-    #@+node:ekr.20050920084036.72:goto...
-    #@+node:ekr.20050929115226:gotoCharacter
+    #@-node:AGP.20250415230112.953:findWord
+    #@-node:AGP.20250415230112.950:find (quick)
+    #@+node:AGP.20250415230112.954:goto...
+    #@+node:AGP.20250415230112.955:gotoCharacter
     def gotoCharacter (self,event):
         
         '''Put the cursor at the n'th character of the buffer.'''
@@ -2459,8 +2455,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.see('insert')
             k.resetLabel()
             k.clearState()
-    #@-node:ekr.20050929115226:gotoCharacter
-    #@+node:ekr.20060417181052:gotoGlobalLine
+    #@-node:AGP.20250415230112.955:gotoCharacter
+    #@+node:AGP.20250415230112.956:gotoGlobalLine
     def gotoGlobalLine (self,event):
         
         '''Put the cursor at the n'th line of a file or script.
@@ -2479,8 +2475,8 @@ class editCommandsClass (baseEditCommandsClass):
             k.clearState()
             if n.isdigit():
                 self.c.goToLineNumber (n=int(n))
-    #@-node:ekr.20060417181052:gotoGlobalLine
-    #@+node:ekr.20050929124234:gotoLine
+    #@-node:AGP.20250415230112.956:gotoGlobalLine
+    #@+node:AGP.20250415230112.957:gotoLine
     def gotoLine (self,event):
         
         '''Put the cursor at the n'th line of the buffer.'''
@@ -2499,10 +2495,10 @@ class editCommandsClass (baseEditCommandsClass):
                 w.see('insert')
             k.resetLabel()
             k.clearState()
-    #@-node:ekr.20050929124234:gotoLine
-    #@-node:ekr.20050920084036.72:goto...
-    #@+node:ekr.20050920084036.74:indent...
-    #@+node:ekr.20050920084036.75:backToIndentation
+    #@-node:AGP.20250415230112.957:gotoLine
+    #@-node:AGP.20250415230112.954:goto...
+    #@+node:AGP.20250415230112.958:indent...
+    #@+node:AGP.20250415230112.959:backToIndentation
     def backToIndentation (self,event):
         
         '''Position the point at the first non-blank character on the line.'''
@@ -2517,8 +2513,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.mark_set('insert',i2)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.75:backToIndentation
-    #@+node:ekr.20050920084036.76:deleteIndentation
+    #@-node:AGP.20250415230112.959:backToIndentation
+    #@+node:AGP.20250415230112.960:deleteIndentation
     def deleteIndentation (self,event):
         
         '''Delete indentation in the presently line.'''
@@ -2537,8 +2533,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.mark_set('insert',i)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.76:deleteIndentation
-    #@+node:ekr.20050920084036.78:indentRelative
+    #@-node:AGP.20250415230112.960:deleteIndentation
+    #@+node:AGP.20250415230112.961:indentRelative
     def indentRelative (self,event):
         
         '''The indent-relative command indents at the point based on the previous
@@ -2586,10 +2582,10 @@ class editCommandsClass (baseEditCommandsClass):
         c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
         w.mark_set('insert',i)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.78:indentRelative
-    #@-node:ekr.20050920084036.74:indent...
-    #@+node:ekr.20050920084036.85:insert & delete...
-    #@+node:ekr.20060417171125:addSpace/TabToLines & removeSpace/TabFromLines & helper
+    #@-node:AGP.20250415230112.961:indentRelative
+    #@-node:AGP.20250415230112.958:indent...
+    #@+node:AGP.20250415230112.962:insert & delete...
+    #@+node:AGP.20250415230112.963:addSpace/TabToLines & removeSpace/TabFromLines & helper
     def addSpaceToLines (self,event):
         '''Add a space to start of all lines, or all selected lines.'''
         self.addRemoveHelper(event,ch=' ',add=True,undoType='add-space-to-lines')
@@ -2605,7 +2601,7 @@ class editCommandsClass (baseEditCommandsClass):
     def removeTabFromLines (self,event):
         '''Remove a tab from start of all lines, or all selected lines.'''
         self.addRemoveHelper(event,ch='\t',add=False,undoType='remove-tab-from-lines')
-    #@+node:ekr.20060417172056:addRemoveHelper
+    #@+node:AGP.20250415230112.964:addRemoveHelper
     def addRemoveHelper(self,event,ch,add,undoType):
     
         c = self.c ; k = self.k
@@ -2638,9 +2634,9 @@ class editCommandsClass (baseEditCommandsClass):
             w.delete('1.0','end')
             w.insert('1.0',result)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20060417172056:addRemoveHelper
-    #@-node:ekr.20060417171125:addSpace/TabToLines & removeSpace/TabFromLines & helper
-    #@+node:ekr.20051026092433.1:backwardDeleteCharacter
+    #@-node:AGP.20250415230112.964:addRemoveHelper
+    #@-node:AGP.20250415230112.963:addSpace/TabToLines & removeSpace/TabFromLines & helper
+    #@+node:AGP.20250415230112.965:backwardDeleteCharacter
     def backwardDeleteCharacter (self,event=None):
         
         '''Delete the character to the left of the cursor.'''
@@ -2666,7 +2662,7 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete('insert-1c')
             else:
                 #@            << backspace with negative tab_width >>
-                #@+node:ekr.20051026092746:<< backspace with negative tab_width >>
+                #@+node:AGP.20250415230112.966:<< backspace with negative tab_width >>
                 s = prev = w.get("insert linestart","insert")
                 n = len(prev)
                 abs_width = abs(tab_width)
@@ -2683,7 +2679,7 @@ class editCommandsClass (baseEditCommandsClass):
                 
                 # Make sure we actually delete something.
                 w.delete("insert -%dc" % (max(1,count)),"insert")
-                #@-node:ekr.20051026092746:<< backspace with negative tab_width >>
+                #@-node:AGP.20250415230112.966:<< backspace with negative tab_width >>
                 #@nl
             self.endCommand(changed=True,setLabel=False) # Necessary to make text changes stick.
         else:
@@ -2694,8 +2690,8 @@ class editCommandsClass (baseEditCommandsClass):
                 # Bug fix: 1/6/06 (after a5 released).
                 # Do nothing at the start of the headline.
                 w.delete('insert-1c')
-    #@-node:ekr.20051026092433.1:backwardDeleteCharacter
-    #@+node:ekr.20060415112257:clean-lines
+    #@-node:AGP.20250415230112.965:backwardDeleteCharacter
+    #@+node:AGP.20250415230112.967:clean-lines
     def cleanLines (self,event):
         
         '''Removes leading whitespace from otherwise blanks lines.'''
@@ -2730,8 +2726,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete('1.0','end')
                 w.insert('1.0',result)
             self.endCommand(changed=changed,setLabel=True)
-    #@-node:ekr.20060415112257:clean-lines
-    #@+node:ekr.20060414085834:clearSelectedText
+    #@-node:AGP.20250415230112.967:clean-lines
+    #@+node:AGP.20250415230112.968:clearSelectedText
     def clearSelectedText (self,event):
         
         '''Delete the selected text.'''
@@ -2746,8 +2742,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.beginCommand(undoType='clear-selected-text')
         g.app.gui.replaceSelectionRangeWithText (w,i,j,'')
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20060414085834:clearSelectedText
-    #@+node:ekr.20050920084036.87:deleteNextChar
+    #@-node:AGP.20250415230112.968:clearSelectedText
+    #@+node:AGP.20250415230112.969:deleteNextChar
     def deleteNextChar (self,event):
         
         '''Delete the character to the right of the cursor.'''
@@ -2770,8 +2766,8 @@ class editCommandsClass (baseEditCommandsClass):
             changed = False
             
         self.endCommand(changed=changed,setLabel=False)
-    #@-node:ekr.20050920084036.87:deleteNextChar
-    #@+node:ekr.20050920084036.135:deleteSpaces
+    #@-node:AGP.20250415230112.969:deleteNextChar
+    #@+node:AGP.20250415230112.970:deleteSpaces
     def deleteSpaces (self,event,insertspace=False):
         
         '''Delete all whitespace surrounding the cursor.'''
@@ -2794,8 +2790,8 @@ class editCommandsClass (baseEditCommandsClass):
             if insertspace: w.insert('insert',' ')
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.135:deleteSpaces
-    #@+node:ekr.20050920084036.138:insertNewLine
+    #@-node:AGP.20250415230112.970:deleteSpaces
+    #@+node:AGP.20250415230112.971:insertNewLine
     def insertNewLine (self,event):
         
         '''Insert a newline at the cursor.'''
@@ -2811,8 +2807,8 @@ class editCommandsClass (baseEditCommandsClass):
             self.endCommand(changed=True,setLabel=False)
     
     insertNewline = insertNewLine
-    #@-node:ekr.20050920084036.138:insertNewLine
-    #@+node:ekr.20050920084036.86:insertNewLineAndTab
+    #@-node:AGP.20250415230112.971:insertNewLine
+    #@+node:AGP.20250415230112.972:insertNewLineAndTab
     def insertNewLineAndTab (self,event):
     
         '''Insert a newline and tab at the cursor.'''
@@ -2826,8 +2822,8 @@ class editCommandsClass (baseEditCommandsClass):
             self.beginCommand(undoType='insert-newline-and-indent')
             w.insert('insert','\n\t')
             self.endCommand(changed=True,setLabel=False)
-    #@-node:ekr.20050920084036.86:insertNewLineAndTab
-    #@+node:ekr.20050920084036.139:insertParentheses
+    #@-node:AGP.20250415230112.972:insertNewLineAndTab
+    #@+node:AGP.20250415230112.973:insertParentheses
     def insertParentheses (self,event):
         
         '''Insert () at the cursor.'''
@@ -2839,8 +2835,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.insert('insert','()')
         w.mark_set('insert','insert -1c')
         self.endCommand(changed=True,setLabel=False)
-    #@-node:ekr.20050920084036.139:insertParentheses
-    #@+node:ekr.20050920084036.141:removeBlankLines
+    #@-node:AGP.20250415230112.973:insertParentheses
+    #@+node:AGP.20250415230112.974:removeBlankLines
     def removeBlankLines (self,event):
         
         '''The remove-blank-lines command removes lines containing nothing but
@@ -2870,8 +2866,8 @@ class editCommandsClass (baseEditCommandsClass):
         
         if result != body:
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20050920084036.141:removeBlankLines
-    #@+node:ekr.20051125080855:selfInsertCommand & helpers
+    #@-node:AGP.20250415230112.974:removeBlankLines
+    #@+node:AGP.20250415230112.975:selfInsertCommand & helpers
     def selfInsertCommand(self,event,action='insert'):
         
         '''Insert a character in the body pane.
@@ -2904,7 +2900,7 @@ class editCommandsClass (baseEditCommandsClass):
         elif ch in ('\r','\n'):
             ch = '\n'
             #@        << handle newline >>
-            #@+node:ekr.20051026171121:<< handle newline >>
+            #@+node:AGP.20250415230112.976:<< handle newline >>
             i,j = oldSel
             
             if i != j:
@@ -2920,7 +2916,7 @@ class editCommandsClass (baseEditCommandsClass):
                 ):
                     # No auto-indent if in @nocolor mode or after a Change command.
                     self.updateAutoIndent(p,w)
-            #@-node:ekr.20051026171121:<< handle newline >>
+            #@-node:AGP.20250415230112.976:<< handle newline >>
             #@nl
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p,w,ch,oldSel)
@@ -2949,15 +2945,15 @@ class editCommandsClass (baseEditCommandsClass):
         g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
         return 'break'
     #@nonl
-    #@+node:ekr.20060831163241:test_selfInsertCommand
+    #@+node:AGP.20250415230112.977:test_selfInsertCommand
     def test_selfInsertCommand(self):
         
         self = c.editCommands
         event = g.Bunch(char='É',keysym=None,widget=c.frame.body.bodyCtrl)
         self.selfInsertCommand(event)
     #@nonl
-    #@-node:ekr.20060831163241:test_selfInsertCommand
-    #@+node:ekr.20060804095512:initBracketMatcher
+    #@-node:AGP.20250415230112.977:test_selfInsertCommand
+    #@+node:AGP.20250415230112.978:initBracketMatcher
     def initBracketMatcher (self,c):
     
         self.openBracketsList  = c.config.getString('open_flash_brackets')  or '([{'
@@ -2970,8 +2966,8 @@ class editCommandsClass (baseEditCommandsClass):
     
         # g.trace('self.openBrackets',openBrackets)
         # g.trace('self.closeBrackets',closeBrackets)
-    #@-node:ekr.20060804095512:initBracketMatcher
-    #@+node:ekr.20060627083506:flashMatchingBracketsHelper
+    #@-node:AGP.20250415230112.978:initBracketMatcher
+    #@+node:AGP.20250415230112.979:flashMatchingBracketsHelper
     def flashMatchingBracketsHelper (self,w,index,ch):
     
         s = g.app.gui.getAllText(w)
@@ -2992,8 +2988,8 @@ class editCommandsClass (baseEditCommandsClass):
         if j != -1:
             j = g.app.gui.toGuiIndex(s,w,j)
             self.flashCharacter(w,j)
-    #@-node:ekr.20060627083506:flashMatchingBracketsHelper
-    #@+node:ekr.20060627091557:flashCharacter
+    #@-node:AGP.20250415230112.979:flashMatchingBracketsHelper
+    #@+node:AGP.20250415230112.980:flashCharacter
     def flashCharacter(self,w,i):
         
         bg      = self.bracketsFlashBg or 'DodgerBlue1'
@@ -3015,8 +3011,8 @@ class editCommandsClass (baseEditCommandsClass):
             addFlashCallback(w,flashes,i)
         except Exception:
             pass
-    #@-node:ekr.20060627091557:flashCharacter
-    #@+node:ekr.20051027172949:updateAutomatchBracket
+    #@-node:AGP.20250415230112.980:flashCharacter
+    #@+node:AGP.20250415230112.981:updateAutomatchBracket
     def updateAutomatchBracket (self,p,w,ch,oldSel):
     
         # assert ch in ('(',')','[',']','{','}')
@@ -3041,8 +3037,8 @@ class editCommandsClass (baseEditCommandsClass):
                 if i != j:
                     w.delete(i,j)
                 w.insert(i,ch)
-    #@-node:ekr.20051027172949:updateAutomatchBracket
-    #@+node:ekr.20051026171121.1:udpateAutoIndent
+    #@-node:AGP.20250415230112.981:updateAutomatchBracket
+    #@+node:AGP.20250415230112.982:udpateAutoIndent
     # By David McNab:
     def updateAutoIndent (self,p,w):
     
@@ -3069,8 +3065,8 @@ class editCommandsClass (baseEditCommandsClass):
         ws = g.computeLeadingWhitespace(width,tab_width)
         if ws:
             w.insert("insert",ws)
-    #@-node:ekr.20051026171121.1:udpateAutoIndent
-    #@+node:ekr.20051026092433:updateTab
+    #@-node:AGP.20250415230112.982:udpateAutoIndent
+    #@+node:AGP.20250415230112.983:updateTab
     def updateTab (self,p,w):
     
         c = self.c ; d = g.scanDirectives(c,p)
@@ -3089,11 +3085,11 @@ class editCommandsClass (baseEditCommandsClass):
             width = g.computeWidth(s,tab_width)
             n = abs(tab_width) - (width % abs(tab_width))
             w.insert("insert",' ' * n)
-    #@-node:ekr.20051026092433:updateTab
-    #@-node:ekr.20051125080855:selfInsertCommand & helpers
-    #@-node:ekr.20050920084036.85:insert & delete...
-    #@+node:ekr.20050920084036.79:info...
-    #@+node:ekr.20050920084036.80:howMany
+    #@-node:AGP.20250415230112.983:updateTab
+    #@-node:AGP.20250415230112.975:selfInsertCommand & helpers
+    #@-node:AGP.20250415230112.962:insert & delete...
+    #@+node:AGP.20250415230112.984:info...
+    #@+node:AGP.20250415230112.985:howMany
     def howMany (self,event):
         
         '''Print how many occurances of a regular expression are found
@@ -3113,8 +3109,8 @@ class editCommandsClass (baseEditCommandsClass):
             reg = re.compile(k.arg)
             i = reg.findall(s)
             k.setLabelGrey('%s occurances of %s' % (len(i),k.arg))
-    #@-node:ekr.20050920084036.80:howMany
-    #@+node:ekr.20050920084036.81:lineNumber
+    #@-node:AGP.20250415230112.985:howMany
+    #@+node:AGP.20250415230112.986:lineNumber
     def lineNumber (self,event):
         
         '''Print the line and column number and percentage of insert point.'''
@@ -3131,8 +3127,8 @@ class editCommandsClass (baseEditCommandsClass):
         perc = int(len(txt2)/perc)
     
         k.setLabelGrey('Char: %s point %s of %s(%s%s)  Column %s' % (c,len(txt2),len(txt),perc,'%',i1))
-    #@-node:ekr.20050920084036.81:lineNumber
-    #@+node:ekr.20050920084036.83:viewLossage
+    #@-node:AGP.20250415230112.986:lineNumber
+    #@+node:AGP.20250415230112.987:viewLossage
     def viewLossage (self,event):
         
         '''Put the Emacs-lossage in the minibuffer label.'''
@@ -3146,8 +3142,8 @@ class editCommandsClass (baseEditCommandsClass):
             ch,stroke = data
             d = {' ':'Space','\t':'Tab','\b':'Backspace','\n':'Newline','\r':'Return'}
             g.es(stroke or d.get(ch) or ch or 'None')
-    #@-node:ekr.20050920084036.83:viewLossage
-    #@+node:ekr.20050920084036.84:whatLine
+    #@-node:AGP.20250415230112.987:viewLossage
+    #@+node:AGP.20250415230112.988:whatLine
     def whatLine (self,event):
         
         '''Print the line number of the line containing the cursor.'''
@@ -3161,10 +3157,10 @@ class editCommandsClass (baseEditCommandsClass):
         k.keyboardQuit(event)
     
         k.setLabel("Line %s" % i1)
-    #@-node:ekr.20050920084036.84:whatLine
-    #@-node:ekr.20050920084036.79:info...
-    #@+node:ekr.20050920084036.88:line...
-    #@+node:ekr.20050920084036.90:flushLines
+    #@-node:AGP.20250415230112.988:whatLine
+    #@-node:AGP.20250415230112.984:info...
+    #@+node:AGP.20250415230112.989:line...
+    #@+node:AGP.20250415230112.990:flushLines
     def flushLines (self,event):
     
         '''Delete each line that contains a match for regexp, operating on the text after point.
@@ -3181,8 +3177,8 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             self.linesHelper(event,k.arg,'flush')
             k.commandName = 'flush-lines %s' % k.arg
-    #@-node:ekr.20050920084036.90:flushLines
-    #@+node:ekr.20051002095724:keepLines
+    #@-node:AGP.20250415230112.990:flushLines
+    #@+node:AGP.20250415230112.991:keepLines
     def keepLines (self,event):
     
         '''Delete each line that does not contain a match for regexp, operating on the text after point.
@@ -3199,8 +3195,8 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             self.linesHelper(event,k.arg,'keep')
             k.commandName = 'keep-lines %s' % k.arg
-    #@-node:ekr.20051002095724:keepLines
-    #@+node:ekr.20050920084036.92:linesHelper
+    #@-node:AGP.20250415230112.991:keepLines
+    #@+node:AGP.20250415230112.992:linesHelper
     def linesHelper (self,event,pattern,which):
     
         k = self.k
@@ -3233,8 +3229,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.insert(i,''.join(keeplines))
         w.mark_set('insert',i)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.92:linesHelper
-    #@+node:ekr.20050920084036.77:splitLine
+    #@-node:AGP.20250415230112.992:linesHelper
+    #@+node:AGP.20250415230112.993:splitLine
     def splitLine (self,event):
         
         '''Split a line at the cursor position.'''
@@ -3251,11 +3247,11 @@ class editCommandsClass (baseEditCommandsClass):
         # w.mark_set('insert',i)
         # w.insert('insert','\n')
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.77:splitLine
-    #@-node:ekr.20050920084036.88:line...
-    #@+node:ekr.20050929114218:move cursor... (leoEditCommands)
-    #@+node:ekr.20051218170358: helpers
-    #@+node:ekr.20060113130510:extendHelper
+    #@-node:AGP.20250415230112.993:splitLine
+    #@-node:AGP.20250415230112.989:line...
+    #@+node:AGP.20250415230112.994:move cursor... (leoEditCommands)
+    #@+node:AGP.20250415230112.995: helpers
+    #@+node:AGP.20250415230112.996:extendHelper
     def extendHelper (self,w,extend,ins1,spot,setSpot=True):
     
         '''Handle the details of extending the selection.
@@ -3294,8 +3290,8 @@ class editCommandsClass (baseEditCommandsClass):
             
         c.frame.updateStatusLine()
     #@nonl
-    #@-node:ekr.20060113130510:extendHelper
-    #@+node:ekr.20060113105246.1:moveUpOrDownHelper
+    #@-node:AGP.20250415230112.996:extendHelper
+    #@+node:AGP.20250415230112.997:moveUpOrDownHelper
     def moveUpOrDownHelper (self,event,direction,extend):
     
         c = self.c
@@ -3340,8 +3336,8 @@ class editCommandsClass (baseEditCommandsClass):
                     w.see('insert')
         # Handle the extension.
         self.extendHelper(w,extend,ins1,spot,setSpot=False)
-    #@-node:ekr.20060113105246.1:moveUpOrDownHelper
-    #@+node:ekr.20051218122116:moveToHelper
+    #@-node:AGP.20250415230112.997:moveUpOrDownHelper
+    #@+node:AGP.20250415230112.998:moveToHelper
     def moveToHelper (self,event,spot,extend):
     
         '''Common helper method for commands the move the cursor
@@ -3376,8 +3372,8 @@ class editCommandsClass (baseEditCommandsClass):
             # Handle the selection.
             self.extendHelper(w,extend,ins1,spot,setSpot=True)
             w.see(spot)
-    #@-node:ekr.20051218122116:moveToHelper
-    #@+node:ekr.20051218171457:movePastCloseHelper
+    #@-node:AGP.20250415230112.998:moveToHelper
+    #@+node:AGP.20250415230112.999:movePastCloseHelper
     def movePastCloseHelper (self,event,extend):
     
         c = self.c
@@ -3403,8 +3399,8 @@ class editCommandsClass (baseEditCommandsClass):
         
         ins = '%s+1c' % i2
         self.moveToHelper(event,ins,extend)
-    #@-node:ekr.20051218171457:movePastCloseHelper
-    #@+node:ekr.20051218121447:moveWordHelper
+    #@-node:AGP.20250415230112.999:movePastCloseHelper
+    #@+node:AGP.20250415230112.1000:moveWordHelper
     def moveWordHelper (self,event,extend,forward,end=False):
     
         '''Move the cursor to the next word.
@@ -3444,8 +3440,8 @@ class editCommandsClass (baseEditCommandsClass):
         
         self.moveToHelper(event,toGui(i),extend)
     #@nonl
-    #@-node:ekr.20051218121447:moveWordHelper
-    #@+node:ekr.20051213094517:backSentenceHelper
+    #@-node:AGP.20250415230112.1000:moveWordHelper
+    #@+node:AGP.20250415230112.1001:backSentenceHelper
     def backSentenceHelper (self,event,extend):
     
         c = self.c
@@ -3464,8 +3460,8 @@ class editCommandsClass (baseEditCommandsClass):
             ins = '1.0'
         if ins:
             self.moveToHelper(event,ins,extend)
-    #@-node:ekr.20051213094517:backSentenceHelper
-    #@+node:ekr.20050920084036.137:forwardSentenceHelper
+    #@-node:AGP.20250415230112.1001:backSentenceHelper
+    #@+node:AGP.20250415230112.1002:forwardSentenceHelper
     def forwardSentenceHelper (self,event,extend):
     
         c = self.c
@@ -3478,8 +3474,8 @@ class editCommandsClass (baseEditCommandsClass):
         i = w.search('.','insert',stopindex='end')
         ins = i and '%s +1c' % i or 'end'
         self.moveToHelper(event,ins,extend)
-    #@-node:ekr.20050920084036.137:forwardSentenceHelper
-    #@+node:ekr.20051218133207.1:forwardParagraphHelper
+    #@-node:AGP.20250415230112.1002:forwardSentenceHelper
+    #@+node:AGP.20250415230112.1003:forwardParagraphHelper
     def forwardParagraphHelper (self,event,extend):
         
         c = self.c
@@ -3502,8 +3498,8 @@ class editCommandsClass (baseEditCommandsClass):
                 break
         if i:
             self.moveToHelper(event,i,extend)
-    #@-node:ekr.20051218133207.1:forwardParagraphHelper
-    #@+node:ekr.20051218133207:backwardParagraphHelper
+    #@-node:AGP.20250415230112.1003:forwardParagraphHelper
+    #@+node:AGP.20250415230112.1004:backwardParagraphHelper
     def backwardParagraphHelper (self,event,extend):
         
         c = self.c
@@ -3525,8 +3521,8 @@ class editCommandsClass (baseEditCommandsClass):
                 break
         if i:
             self.moveToHelper(event,i,extend)
-    #@-node:ekr.20051218133207:backwardParagraphHelper
-    #@+node:ekr.20060209095101:setMoveCol
+    #@-node:AGP.20250415230112.1004:backwardParagraphHelper
+    #@+node:AGP.20250415230112.1005:setMoveCol
     def setMoveCol (self,spot):
         
         self.moveSpot = spot
@@ -3536,9 +3532,9 @@ class editCommandsClass (baseEditCommandsClass):
             g.trace(
                 # 'spot',self.moveSpot,
                 'col',self.moveCol)
-    #@-node:ekr.20060209095101:setMoveCol
-    #@-node:ekr.20051218170358: helpers
-    #@+node:ekr.20050920084036.148:buffers
+    #@-node:AGP.20250415230112.1005:setMoveCol
+    #@-node:AGP.20250415230112.995: helpers
+    #@+node:AGP.20250415230112.1006:buffers
     def beginningOfBuffer (self,event):
         '''Move the cursor to the start of the body text.'''
         self.moveToHelper(event,'1.0',extend=False)
@@ -3554,8 +3550,8 @@ class editCommandsClass (baseEditCommandsClass):
     def endOfBufferExtendSelection (self,event):
         '''Extend the text selection by moving the cursor to the end of the body text.'''
         self.moveToHelper(event,'end',extend=True)
-    #@-node:ekr.20050920084036.148:buffers
-    #@+node:ekr.20051213080533:characters
+    #@-node:AGP.20250415230112.1006:buffers
+    #@+node:AGP.20250415230112.1007:characters
     def backCharacter (self,event):
         '''Move the cursor back one character, extending the selection if in extend mode.'''
         self.moveToHelper(event,'insert-1c',extend=False)
@@ -3571,8 +3567,8 @@ class editCommandsClass (baseEditCommandsClass):
     def forwardCharacterExtendSelection (self,event):
         '''Extend the selection by moving the cursor forward one character.'''
         self.moveToHelper (event,'insert+1c',extend=True)
-    #@-node:ekr.20051213080533:characters
-    #@+node:ekr.20051218174113:clear/set/ToggleExtendMode
+    #@-node:AGP.20250415230112.1007:characters
+    #@+node:AGP.20250415230112.1008:clear/set/ToggleExtendMode
     def clearExtendMode (self,event):
         '''Turn off extend mode: cursor movement commands do not extend the selection.'''
         self.extendModeHelper(event,False)
@@ -3594,8 +3590,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.extendMode = val
         g.es('Extend mode %s' % (g.choose(val,'on','off')), color='red')
         c.widgetWantsFocusNow(w)
-    #@-node:ekr.20051218174113:clear/set/ToggleExtendMode
-    #@+node:ekr.20050920084036.136:exchangePointMark
+    #@-node:AGP.20250415230112.1008:clear/set/ToggleExtendMode
+    #@+node:AGP.20250415230112.1009:exchangePointMark
     def exchangePointMark (self,event):
         
         '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
@@ -3611,8 +3607,8 @@ class editCommandsClass (baseEditCommandsClass):
             ins = g.choose(ins==i,j,i)
             g.app.gui.setInsertPoint(w,ins)
             g.app.gui.setTextSelection(w,i,j,insert=None)
-    #@-node:ekr.20050920084036.136:exchangePointMark
-    #@+node:ekr.20061007082956:extend-to-line
+    #@-node:AGP.20250415230112.1009:exchangePointMark
+    #@+node:AGP.20250415230112.1010:extend-to-line
     def extendToLine (self,event):
         
         '''Select the line at the cursor.'''
@@ -3633,8 +3629,8 @@ class editCommandsClass (baseEditCommandsClass):
             i += 1
     
         g.app.gui.setSelectionRange(w,toGui(i1),toGui(i))
-    #@-node:ekr.20061007082956:extend-to-line
-    #@+node:ekr.20061007214835.4:extend-to-sentence
+    #@-node:AGP.20250415230112.1010:extend-to-line
+    #@+node:AGP.20250415230112.1011:extend-to-sentence
     def extendToSentence (self,event):
         
         '''Select the line at the cursor.'''
@@ -3654,8 +3650,8 @@ class editCommandsClass (baseEditCommandsClass):
     
         g.app.gui.setSelectionRange(w,toGui(i1),toGui(i2))
     #@nonl
-    #@-node:ekr.20061007214835.4:extend-to-sentence
-    #@+node:ekr.20060116074839.2:extend-to-word
+    #@-node:AGP.20250415230112.1011:extend-to-sentence
+    #@+node:AGP.20250415230112.1012:extend-to-word
     def extendToWord (self,event):
         
         '''Select the word at the cursor.'''
@@ -3680,8 +3676,8 @@ class editCommandsClass (baseEditCommandsClass):
             i += 1
         g.app.gui.setSelectionRange(w,toGui(i1),toGui(i))
     #@nonl
-    #@-node:ekr.20060116074839.2:extend-to-word
-    #@+node:ekr.20051218141237:lines
+    #@-node:AGP.20250415230112.1012:extend-to-word
+    #@+node:AGP.20250415230112.1013:lines
     def beginningOfLine (self,event):
         '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
         self.moveToHelper(event,'insert linestart',extend=False)
@@ -3713,8 +3709,8 @@ class editCommandsClass (baseEditCommandsClass):
     def prevLineExtendSelection (self,event):
         '''Extend the selection by moving the cursor up.'''
         self.moveUpOrDownHelper(event,'up',extend=True)
-    #@-node:ekr.20051218141237:lines
-    #@+node:ekr.20050920084036.140:movePastClose (test)
+    #@-node:AGP.20250415230112.1013:lines
+    #@+node:AGP.20250415230112.1014:movePastClose (test)
     def movePastClose (self,event):
         '''Move the cursor past the closing parenthesis.'''
         self.movePastCloseHelper(event,extend=False)
@@ -3722,8 +3718,8 @@ class editCommandsClass (baseEditCommandsClass):
     def movePastCloseExtendSelection (self,event):
         '''Extend the selection by moving the cursor past the closing parenthesis.'''
         self.movePastCloseHelper(event,extend=True)
-    #@-node:ekr.20050920084036.140:movePastClose (test)
-    #@+node:ekr.20050920084036.102:paragraphs
+    #@-node:AGP.20250415230112.1014:movePastClose (test)
+    #@+node:AGP.20250415230112.1015:paragraphs
     def backwardParagraph (self,event):
         '''Move the cursor to the previous paragraph.'''
         self.backwardParagraphHelper (event,extend=False)
@@ -3739,8 +3735,8 @@ class editCommandsClass (baseEditCommandsClass):
     def forwardParagraphExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the next paragraph.'''
         self.forwardParagraphHelper(event,extend=True)
-    #@-node:ekr.20050920084036.102:paragraphs
-    #@+node:ekr.20050920084036.131:sentences
+    #@-node:AGP.20250415230112.1015:paragraphs
+    #@+node:AGP.20250415230112.1016:sentences
     def backSentence (self,event):
         '''Move the cursor to the previous sentence.'''
         self.backSentenceHelper(event,extend=False)
@@ -3756,8 +3752,8 @@ class editCommandsClass (baseEditCommandsClass):
     def forwardSentenceExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the next sentence.'''
         self.forwardSentenceHelper(event,extend=True)
-    #@-node:ekr.20050920084036.131:sentences
-    #@+node:ekr.20050920084036.149:words
+    #@-node:AGP.20250415230112.1016:sentences
+    #@+node:AGP.20250415230112.1017:words
     def backwardWord (self,event):
         '''Move the cursor to the previous word.'''
         self.moveWordHelper(event,extend=False,forward=False)
@@ -3781,11 +3777,11 @@ class editCommandsClass (baseEditCommandsClass):
     def forwardWordExtendSelection (self,event):
         '''Extend the selection by moving the cursor to the previous word.'''
         self.moveWordHelper(event,extend=True,forward=True)
-    #@-node:ekr.20050920084036.149:words
-    #@-node:ekr.20050929114218:move cursor... (leoEditCommands)
-    #@+node:ekr.20050920084036.95:paragraph...
+    #@-node:AGP.20250415230112.1017:words
+    #@-node:AGP.20250415230112.994:move cursor... (leoEditCommands)
+    #@+node:AGP.20250415230112.1018:paragraph...
     #@+others
-    #@+node:ekr.20050920084036.99:backwardKillParagraph
+    #@+node:AGP.20250415230112.1019:backwardKillParagraph
     def backwardKillParagraph (self,event):
         
         '''Kill the previous paragraph.'''
@@ -3810,8 +3806,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.selection_clear()
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.99:backwardKillParagraph
-    #@+node:ekr.20050920084036.103:fillParagraph
+    #@-node:AGP.20250415230112.1019:backwardKillParagraph
+    #@+node:AGP.20250415230112.1020:fillParagraph
     def fillParagraph( self, event ):
         
         '''Fill the selected paragraph'''
@@ -3850,8 +3846,8 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert( i2, ntxt )
             w.mark_set( 'insert', i )
             self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.103:fillParagraph
-    #@+node:ekr.20050920084036.100:fillRegion
+    #@-node:AGP.20250415230112.1020:fillParagraph
+    #@+node:AGP.20250415230112.1021:fillRegion
     def fillRegion (self,event):
     
         '''Fill all paragraphs in the selected text.'''
@@ -3874,8 +3870,8 @@ class editCommandsClass (baseEditCommandsClass):
             self.fillParagraph(event)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.100:fillRegion
-    #@+node:ekr.20050920084036.104:fillRegionAsParagraph
+    #@-node:AGP.20250415230112.1021:fillRegion
+    #@+node:AGP.20250415230112.1022:fillRegionAsParagraph
     def fillRegionAsParagraph (self,event):
         
         '''Fill the selected text.'''
@@ -3894,8 +3890,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.insert(i1,txt)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.104:fillRegionAsParagraph
-    #@+node:ekr.20050920084036.98:killParagraph (Test)
+    #@-node:AGP.20250415230112.1022:fillRegionAsParagraph
+    #@+node:AGP.20250415230112.1023:killParagraph (Test)
     def killParagraph (self,event):
         
         '''Kill the present paragraph.'''
@@ -3918,8 +3914,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.selection_clear()
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.98:killParagraph (Test)
-    #@+node:ekr.20050920084036.96:extend-to-paragraph & helper
+    #@-node:AGP.20250415230112.1023:killParagraph (Test)
+    #@+node:AGP.20250415230112.1024:extend-to-paragraph & helper
     def extendToParagraph (self,event):
         
         '''Select the paragraph surrounding the cursor.'''
@@ -3949,7 +3945,7 @@ class editCommandsClass (baseEditCommandsClass):
                     if not txt: i = w.index('%s + 1 lines' % i)
                     self.selectParagraphHelper(w,i)
                     break
-    #@+node:ekr.20050920084036.97:selectParagraphHelper
+    #@+node:AGP.20250415230112.1025:selectParagraphHelper
     def selectParagraphHelper (self,w,start):
     
         i2 = start
@@ -3964,13 +3960,13 @@ class editCommandsClass (baseEditCommandsClass):
     
         w.tag_add('sel','%s linestart' % start,'%s lineend' % i2)
         w.mark_set('insert','%s lineend' % i2)
-    #@-node:ekr.20050920084036.97:selectParagraphHelper
-    #@-node:ekr.20050920084036.96:extend-to-paragraph & helper
+    #@-node:AGP.20250415230112.1025:selectParagraphHelper
+    #@-node:AGP.20250415230112.1024:extend-to-paragraph & helper
     #@-others
-    #@-node:ekr.20050920084036.95:paragraph...
-    #@+node:ekr.20050920084036.105:region...
+    #@-node:AGP.20250415230112.1018:paragraph...
+    #@+node:AGP.20250415230112.1026:region...
     #@+others
-    #@+node:ekr.20050920084036.107:indentRegion (not used: use c.indentBody instead)
+    #@+node:AGP.20250415230112.1027:indentRegion (not used: use c.indentBody instead)
     def indentRegion (self,event):
         w = self.editWidget(event)
         if not w: return
@@ -4000,8 +3996,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete('%s.0' % z,'%s.0 lineend' % z)
                 w.insert('%s.0' % z,t2)
         # self.removeRKeys(w)
-    #@-node:ekr.20050920084036.107:indentRegion (not used: use c.indentBody instead)
-    #@+node:ekr.20050920084036.108:tabIndentRegion (indent-rigidly)
+    #@-node:AGP.20250415230112.1027:indentRegion (not used: use c.indentBody instead)
+    #@+node:AGP.20250415230112.1028:tabIndentRegion (indent-rigidly)
     def tabIndentRegion (self,event):
         
         '''Insert a hard tab at the start of each line of the selected text.'''
@@ -4020,8 +4016,8 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert(i,'\t')
             if i == i2: break
             i = w.index('%s + 1 lines' % i)
-    #@-node:ekr.20050920084036.108:tabIndentRegion (indent-rigidly)
-    #@+node:ekr.20050920084036.109:countRegion
+    #@-node:AGP.20250415230112.1028:tabIndentRegion (indent-rigidly)
+    #@+node:AGP.20250415230112.1029:countRegion
     def countRegion (self,event):
         
         '''Print the number of lines and characters in the selected text.'''
@@ -4038,8 +4034,8 @@ class editCommandsClass (baseEditCommandsClass):
     
         k.setLabelGrey('Region has %s lines, %s character%s' % (
             lines,chars,g.choose(chars==1,'','s')))
-    #@-node:ekr.20050920084036.109:countRegion
-    #@+node:ekr.20060417183606:moveLinesDown (works)
+    #@-node:AGP.20250415230112.1029:countRegion
+    #@+node:AGP.20250415230112.1030:moveLinesDown (works)
     def moveLinesDown (self,event):
         
         '''Move all lines containing any selected text down one line,
@@ -4083,8 +4079,8 @@ class editCommandsClass (baseEditCommandsClass):
             g.app.gui.setSelectionRangeWithLength(w,'1.0',len(selected)-1)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20060417183606:moveLinesDown (works)
-    #@+node:ekr.20060417183606.1:moveLinesUp (works, except for selection point when last line selected)
+    #@-node:AGP.20250415230112.1030:moveLinesDown (works)
+    #@+node:AGP.20250415230112.1031:moveLinesUp (works, except for selection point when last line selected)
     def moveLinesUp (self,event):
         
         '''Move all lines containing any selected text up one line,
@@ -4138,8 +4134,8 @@ class editCommandsClass (baseEditCommandsClass):
             g.app.gui.setSelectionRange(w,'end-%dc' % (len(selected)+1),'end-1c') # works
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20060417183606.1:moveLinesUp (works, except for selection point when last line selected)
-    #@+node:ekr.20050920084036.110:reverseRegion
+    #@-node:AGP.20250415230112.1031:moveLinesUp (works, except for selection point when last line selected)
+    #@+node:AGP.20250415230112.1032:reverseRegion
     def reverseRegion (self,event):
         
         '''Reverse the order of lines in the selected text.'''
@@ -4167,8 +4163,8 @@ class editCommandsClass (baseEditCommandsClass):
         k.resetLabel()
         
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.110:reverseRegion
-    #@+node:ekr.20050920084036.111:up/downCaseRegion & helper
+    #@-node:AGP.20250415230112.1032:reverseRegion
+    #@+node:AGP.20250415230112.1033:up/downCaseRegion & helper
     def downCaseRegion (self,event):
         '''Convert all characters in the selected text to lower case.'''
         self.caseHelper(event,'low','downcase-region')
@@ -4196,11 +4192,11 @@ class editCommandsClass (baseEditCommandsClass):
             self.endCommand(changed=True,setLabel=True)
     
         # self.removeRKeys(w)
-    #@-node:ekr.20050920084036.111:up/downCaseRegion & helper
+    #@-node:AGP.20250415230112.1033:up/downCaseRegion & helper
     #@-others
-    #@-node:ekr.20050920084036.105:region...
-    #@+node:ekr.20060309060654:scrolling...
-    #@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+    #@-node:AGP.20250415230112.1026:region...
+    #@+node:AGP.20250415230112.1034:scrolling...
+    #@+node:AGP.20250415230112.1035:scrollUp/Down/extendSelection
     def scrollDown (self,event):
         '''Scroll the presently selected pane down one page.'''
         self.scrollHelper(event,'down',extend=False)
@@ -4216,7 +4212,7 @@ class editCommandsClass (baseEditCommandsClass):
     def scrollUpExtendSelection (self,event):
         '''Extend the text selection by scrolling the body text up one page.'''
         self.scrollHelper(event,'up',extend=True)
-    #@+node:ekr.20060113082917:scrollHelper
+    #@+node:AGP.20250415230112.1036:scrollHelper
     def scrollHelper (self,event,direction,extend):
     
         k = self.k ; c = k.c
@@ -4245,8 +4241,8 @@ class editCommandsClass (baseEditCommandsClass):
                 self.scrollOutlineDownPage()
             else:
                 self.scrollOutlineUpPage()
-    #@-node:ekr.20060113082917:scrollHelper
-    #@+node:ekr.20050920084036.147:measure
+    #@-node:AGP.20250415230112.1036:scrollHelper
+    #@+node:AGP.20250415230112.1037:measure
     def measure (self,w):
         i = w.index('insert')
         i1, i2 = i.split('.')
@@ -4276,9 +4272,9 @@ class editCommandsClass (baseEditCommandsClass):
                 watch = watch + 1
     
         return watch, top, bottom
-    #@-node:ekr.20050920084036.147:measure
-    #@-node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-    #@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
+    #@-node:AGP.20250415230112.1037:measure
+    #@-node:AGP.20250415230112.1035:scrollUp/Down/extendSelection
+    #@+node:AGP.20250415230112.1038:scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):
         '''Scroll the outline pane down one line.'''
         a,b = self.c.frame.treeBar.get()
@@ -4302,8 +4298,8 @@ class editCommandsClass (baseEditCommandsClass):
         a,b = self.c.frame.treeBar.get()
         if a > 0.0:
             self.c.frame.tree.canvas.yview_scroll(-1,"page")
-    #@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
-    #@+node:ekr.20060726154531:scrollOutlineLeftRight
+    #@-node:AGP.20250415230112.1038:scrollOutlineUp/Down/Line/Page
+    #@+node:AGP.20250415230112.1039:scrollOutlineLeftRight
     def scrollOutlineLeft (self,event=None):
         '''Scroll the outline left.'''
         self.c.frame.tree.canvas.xview_scroll(1,"unit")
@@ -4311,9 +4307,9 @@ class editCommandsClass (baseEditCommandsClass):
     def scrollOutlineRight (self,event=None):
         '''Scroll the outline left.'''
         self.c.frame.tree.canvas.xview_scroll(-1,"unit")
-    #@-node:ekr.20060726154531:scrollOutlineLeftRight
-    #@-node:ekr.20060309060654:scrolling...
-    #@+node:ekr.20050920084036.117:sort...
+    #@-node:AGP.20250415230112.1039:scrollOutlineLeftRight
+    #@-node:AGP.20250415230112.1034:scrolling...
+    #@+node:AGP.20250415230112.1040:sort...
     '''XEmacs provides several commands for sorting text in a buffer.  All
     operate on the contents of the region (the text between point and the
     mark).  They divide the text of the region into many "sort records",
@@ -4414,7 +4410,7 @@ class editCommandsClass (baseEditCommandsClass):
     Rectangles::.
     
     '''
-    #@+node:ekr.20050920084036.118:sortLines
+    #@+node:AGP.20250415230112.1041:sortLines
     def sortLines (self,event,which=None):
         
         '''Sort lines of the selected text by comparing the entire text of a line.
@@ -4442,8 +4438,8 @@ class editCommandsClass (baseEditCommandsClass):
             inum = inum + 1
         w.mark_set('insert',ins)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.118:sortLines
-    #@+node:ekr.20050920084036.119:sortColumns
+    #@-node:AGP.20250415230112.1041:sortLines
+    #@+node:AGP.20250415230112.1042:sortColumns
     def sortColumns (self,event):
         
         '''Sort lines of selected text using only lines in the given columns to do the comparison.'''
@@ -4478,8 +4474,8 @@ class editCommandsClass (baseEditCommandsClass):
              i = i + 1
         w.mark_set('insert',ins)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.119:sortColumns
-    #@+node:ekr.20050920084036.120:sortFields
+    #@-node:AGP.20250415230112.1042:sortColumns
+    #@+node:AGP.20250415230112.1043:sortFields
     def sortFields (self,event,which=None):
         
         '''Divide the selected text into lines and sort by comparing the contents of
@@ -4523,10 +4519,10 @@ class editCommandsClass (baseEditCommandsClass):
             int1 = int1 + 1
         w.mark_set('insert',ins)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.120:sortFields
-    #@-node:ekr.20050920084036.117:sort...
-    #@+node:ekr.20050920084036.121:swap/transpose...
-    #@+node:ekr.20060529184652:swapHelper
+    #@-node:AGP.20250415230112.1043:sortFields
+    #@-node:AGP.20250415230112.1040:sort...
+    #@+node:AGP.20250415230112.1044:swap/transpose...
+    #@+node:AGP.20250415230112.1045:swapHelper
     def swapHelper (self,w,find,ftext,lind,ltext):
     
         w.delete(find,'%s wordend' % find)
@@ -4535,8 +4531,8 @@ class editCommandsClass (baseEditCommandsClass):
         w.insert(lind,ftext)
         self.swapSpots.pop()
         self.swapSpots.pop()
-    #@-node:ekr.20060529184652:swapHelper
-    #@+node:ekr.20050920084036.122:transposeLines
+    #@-node:AGP.20250415230112.1045:swapHelper
+    #@+node:AGP.20250415230112.1046:transposeLines
     def transposeLines (self,event):
         
         '''Transpose the line containing the cursor with the preceding line.'''
@@ -4561,8 +4557,8 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert('1.0',l2+'\n')
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.122:transposeLines
-    #@+node:ekr.20050920084036.123:swapWords
+    #@-node:AGP.20250415230112.1046:transposeLines
+    #@+node:AGP.20250415230112.1047:swapWords
     def swapWords (self,event,swapspots):
         
         '''Transpose the word at the cursor with the preceding word.'''
@@ -4587,8 +4583,8 @@ class editCommandsClass (baseEditCommandsClass):
             swapspots.append(i)
     
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.123:swapWords
-    #@+node:ekr.20060529184652.1:transposeWords (doesn't work)
+    #@-node:AGP.20250415230112.1047:swapWords
+    #@+node:AGP.20250415230112.1048:transposeWords (doesn't work)
     def transposeWords (self,event):
         
         '''Transpose the word at the cursor with the preceding word.'''
@@ -4599,8 +4595,8 @@ class editCommandsClass (baseEditCommandsClass):
         self.beginCommand(undoType='transpose-words')
         self.swapWords(event,self.swapSpots)
         self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20060529184652.1:transposeWords (doesn't work)
-    #@+node:ekr.20050920084036.124:swapCharacters & transeposeCharacters
+    #@-node:AGP.20250415230112.1048:transposeWords (doesn't work)
+    #@+node:AGP.20250415230112.1049:swapCharacters & transeposeCharacters
     def swapCharacters (self,event):
     
         k = self.k
@@ -4620,9 +4616,9 @@ class editCommandsClass (baseEditCommandsClass):
         self.endCommand(changed=True,setLabel=True)
     
     transposeCharacters = swapCharacters
-    #@-node:ekr.20050920084036.124:swapCharacters & transeposeCharacters
-    #@-node:ekr.20050920084036.121:swap/transpose...
-    #@+node:ekr.20050920084036.126:tabify & untabify
+    #@-node:AGP.20250415230112.1049:swapCharacters & transeposeCharacters
+    #@-node:AGP.20250415230112.1044:swap/transpose...
+    #@+node:AGP.20250415230112.1050:tabify & untabify
     def tabify (self,event):
         '''Convert 4 spaces to tabs in the selected text.'''
         self.tabifyHelper (event,which='tabify')
@@ -4651,21 +4647,21 @@ class editCommandsClass (baseEditCommandsClass):
             w.delete(i,end)
             w.insert(i,ntxt)
             self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050920084036.126:tabify & untabify
+    #@-node:AGP.20250415230112.1050:tabify & untabify
     #@-others
-#@-node:ekr.20050920084036.53:editCommandsClass
-#@+node:ekr.20050920084036.161:editFileCommandsClass
+#@-node:AGP.20250415230112.896:editCommandsClass
+#@+node:AGP.20250415230112.1051:editFileCommandsClass
 class editFileCommandsClass (baseEditCommandsClass):
     
     '''A class to load files into buffers and save buffers to files.'''
     
     #@    @+others
-    #@+node:ekr.20050920084036.162: ctor
+    #@+node:AGP.20250415230112.1052: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:ekr.20050920084036.162: ctor
-    #@+node:ekr.20050920084036.163: getPublicCommands (editFileCommandsClass)
+    #@-node:AGP.20250415230112.1052: ctor
+    #@+node:AGP.20250415230112.1053: getPublicCommands (editFileCommandsClass)
     def getPublicCommands (self):
         
         k = self.k
@@ -4679,8 +4675,8 @@ class editFileCommandsClass (baseEditCommandsClass):
             'remove-directory':     self.removeDirectory,
             'save-file':            self.saveFile
         }
-    #@-node:ekr.20050920084036.163: getPublicCommands (editFileCommandsClass)
-    #@+node:ekr.20050920084036.164:deleteFile
+    #@-node:AGP.20250415230112.1053: getPublicCommands (editFileCommandsClass)
+    #@+node:AGP.20250415230112.1054:deleteFile
     def deleteFile (self,event):
         
         '''Prompt for the name of a file and delete it.'''
@@ -4699,8 +4695,8 @@ class editFileCommandsClass (baseEditCommandsClass):
                 k.setLabel('Deleted: %s' % k.arg)
             except:
                 k.setLabel('Not Deleted: %s' % k.arg)
-    #@-node:ekr.20050920084036.164:deleteFile
-    #@+node:ekr.20050920084036.165:diff (revise)
+    #@-node:AGP.20250415230112.1054:deleteFile
+    #@+node:AGP.20250415230112.1055:diff (revise)
     def diff (self,event):
     
         '''Creates a node and puts the diff between 2 files into it.'''
@@ -4723,8 +4719,8 @@ class editFileCommandsClass (baseEditCommandsClass):
             idata.append(z)
         w.delete('1.0','end')
         w.insert('1.0',''.join(idata))
-    #@-node:ekr.20050920084036.165:diff (revise)
-    #@+node:ekr.20050920084036.166:getReadableTextFile
+    #@-node:AGP.20250415230112.1055:diff (revise)
+    #@+node:AGP.20250415230112.1056:getReadableTextFile
     def getReadableTextFile (self):
     
         fname = tkFileDialog and tkFileDialog.askopenfilename()
@@ -4733,8 +4729,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         else:
             f = open(fname,'rt')
             return f, fname
-    #@-node:ekr.20050920084036.166:getReadableTextFile
-    #@+node:ekr.20050920084036.167:insertFile
+    #@-node:AGP.20250415230112.1056:getReadableTextFile
+    #@+node:AGP.20250415230112.1057:insertFile
     def insertFile (self,event):
         
         '''Prompt for the name of a file and put the selected text into it.'''
@@ -4749,8 +4745,8 @@ class editFileCommandsClass (baseEditCommandsClass):
             f.close()
             w.insert('insert',txt)
             w.see('1.0')
-    #@-node:ekr.20050920084036.167:insertFile
-    #@+node:ekr.20050920084036.168:makeDirectory
+    #@-node:AGP.20250415230112.1057:insertFile
+    #@+node:AGP.20250415230112.1058:makeDirectory
     def makeDirectory (self,event):
         
         '''Prompt for the name of a directory and create it.'''
@@ -4769,8 +4765,8 @@ class editFileCommandsClass (baseEditCommandsClass):
                 k.setLabel("Created: %s" % k.arg)
             except:
                 k.setLabel("Not Create: %s" % k.arg)
-    #@-node:ekr.20050920084036.168:makeDirectory
-    #@+node:ekr.20060419123128:open-outline-by-name
+    #@-node:AGP.20250415230112.1058:makeDirectory
+    #@+node:AGP.20250415230112.1059:open-outline-by-name
     def openOutlineByName (self,event):
         
         '''Prompt for the name of a Leo outline and open it.'''
@@ -4786,8 +4782,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         k.resetLabel()
         if fileName and g.os_path_exists(fileName) and not g.os_path_isdir(fileName):
             g.openWithFileName(fileName,c)
-    #@-node:ekr.20060419123128:open-outline-by-name
-    #@+node:ekr.20050920084036.169:removeDirectory
+    #@-node:AGP.20250415230112.1059:open-outline-by-name
+    #@+node:AGP.20250415230112.1060:removeDirectory
     def removeDirectory (self,event):
         
         '''Prompt for the name of a directory and delete it.'''
@@ -4806,8 +4802,8 @@ class editFileCommandsClass (baseEditCommandsClass):
                 k.setLabel('Removed: %s' % k.arg)
             except:
                 k.setLabel('Not Remove: %s' % k.arg)
-    #@-node:ekr.20050920084036.169:removeDirectory
-    #@+node:ekr.20050920084036.170:saveFile
+    #@-node:AGP.20250415230112.1060:removeDirectory
+    #@+node:AGP.20250415230112.1061:saveFile
     def saveFile (self,event):
         
         '''Prompt for the name of a file and put the body text of the selected node into it..'''
@@ -4820,16 +4816,16 @@ class editFileCommandsClass (baseEditCommandsClass):
         if f:
             f.write(txt)
             f.close()
-    #@-node:ekr.20050920084036.170:saveFile
+    #@-node:AGP.20250415230112.1061:saveFile
     #@-others
-#@-node:ekr.20050920084036.161:editFileCommandsClass
-#@+node:ekr.20060205164707:helpCommandsClass
+#@-node:AGP.20250415230112.1051:editFileCommandsClass
+#@+node:AGP.20250415230112.1062:helpCommandsClass
 class helpCommandsClass (baseEditCommandsClass):
     
     '''A class to load files into buffers and save buffers to files.'''
     
     #@    @+others
-    #@+node:ekr.20060205165501:getPublicCommands (helpCommands)
+    #@+node:AGP.20250415230112.1063:getPublicCommands (helpCommands)
     def getPublicCommands (self):
         
         return {
@@ -4840,8 +4836,8 @@ class helpCommandsClass (baseEditCommandsClass):
             'apropos-find-commands':    self.aproposFindCommands,
             'python-help':              self.pythonHelp,
         }
-    #@-node:ekr.20060205165501:getPublicCommands (helpCommands)
-    #@+node:ekr.20051014170754:helpForMinibuffer
+    #@-node:AGP.20250415230112.1063:getPublicCommands (helpCommands)
+    #@+node:AGP.20250415230112.1064:helpForMinibuffer
     def helpForMinibuffer (self,event=None):
         
         '''Print a messages telling you how to get started with Leo.'''
@@ -4874,13 +4870,13 @@ class helpCommandsClass (baseEditCommandsClass):
         
         if not g.app.unitTesting:
             g.es_print(s)
-    #@+node:ekr.20060205165654:test_helpForMinibuffer
+    #@+node:AGP.20250415230112.1065:test_helpForMinibuffer
     def test_help(self):
         
         c.helpCommands.helpForMinibuffer()
-    #@-node:ekr.20060205165654:test_helpForMinibuffer
-    #@-node:ekr.20051014170754:helpForMinibuffer
-    #@+node:ekr.20060417203717:helpForCommand
+    #@-node:AGP.20250415230112.1065:test_helpForMinibuffer
+    #@-node:AGP.20250415230112.1064:helpForMinibuffer
+    #@+node:AGP.20250415230112.1066:helpForCommand
     def helpForCommand (self,event):
         
         '''Prompts for a command name and prints the help message for that command.'''
@@ -4924,8 +4920,8 @@ class helpCommandsClass (baseEditCommandsClass):
         return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data])
             # g.es('%*s %*s %s' % (-n1,s1,-(min(12,n2)),s2,s3))
     #@nonl
-    #@-node:ekr.20060417203717:helpForCommand
-    #@+node:ekr.20060226131603.1:aproposAutocompletion
+    #@-node:AGP.20250415230112.1066:helpForCommand
+    #@+node:AGP.20250415230112.1067:aproposAutocompletion
     def aproposAutocompletion (self,event=None):
         
         '''Prints a discussion of autocompletion.'''
@@ -4991,13 +4987,13 @@ class helpCommandsClass (baseEditCommandsClass):
             # Remove indentation from indentation of this function.
             s = g.adjustTripleString(s,c.tab_width)
             g.es_print(s)
-    #@+node:ekr.20060226132000:test_aproposAutocompletion
+    #@+node:AGP.20250415230112.1068:test_aproposAutocompletion
     def test_aproposAutocompletion (self):
     
         c.helpCommands.aproposAutocompletion()
-    #@-node:ekr.20060226132000:test_aproposAutocompletion
-    #@-node:ekr.20060226131603.1:aproposAutocompletion
-    #@+node:ekr.20060205170335:aproposBindings
+    #@-node:AGP.20250415230112.1068:test_aproposAutocompletion
+    #@-node:AGP.20250415230112.1067:aproposAutocompletion
+    #@+node:AGP.20250415230112.1069:aproposBindings
     def aproposBindings (self,event=None):
         
         '''Prints a discussion of keyboard bindings.'''
@@ -5060,13 +5056,13 @@ class helpCommandsClass (baseEditCommandsClass):
             
         if not g.app.unitTesting:
             g.es_print(s)
-    #@+node:ekr.20060205170435:test_apropos_bindings
+    #@+node:AGP.20250415230112.1070:test_apropos_bindings
     def test_apropos_bindings (self):
     
         c.helpCommands.aproposBindings()
-    #@-node:ekr.20060205170435:test_apropos_bindings
-    #@-node:ekr.20060205170335:aproposBindings
-    #@+node:ekr.20060205170335.1:aproposFindCommands
+    #@-node:AGP.20250415230112.1070:test_apropos_bindings
+    #@-node:AGP.20250415230112.1069:aproposBindings
+    #@+node:AGP.20250415230112.1071:aproposFindCommands
     def aproposFindCommands (self, event=None):
         
         '''Prints a discussion of of Leo's find commands.'''
@@ -5074,7 +5070,7 @@ class helpCommandsClass (baseEditCommandsClass):
         c = self.c
         
         #@    << define s >>
-        #@+node:ekr.20060209082023.1:<< define s >>
+        #@+node:AGP.20250415230112.1072:<< define s >>
         s = '''
         Important: all minibuffer search commands, with the exception of the isearch (incremental) commands, simply provide a minibuffer interface to Leo's legacy find commands.  This means that all the powerful features of Leo's legacy commands are available to the minibuffer search commands.
         
@@ -5167,7 +5163,7 @@ class helpCommandsClass (baseEditCommandsClass):
         
         Here is the list of incremental find commands: isearch-backward, isearch-backward-regexp, isearch-forward and
         isearch-forward-regexp.'''
-        #@-node:ekr.20060209082023.1:<< define s >>
+        #@-node:AGP.20250415230112.1072:<< define s >>
         #@nl
     
         # Remove indentation from s: a workaround of a Leo bug.
@@ -5175,13 +5171,13 @@ class helpCommandsClass (baseEditCommandsClass):
     
         if not g.app.unitTesting:
             g.es_print(s)
-    #@+node:ekr.20060205170552:test_apropos_find_commands
+    #@+node:AGP.20250415230112.1073:test_apropos_find_commands
     def test_apropos_find_commands (self):
     
         c.helpCommands.aproposFindCommands()
-    #@-node:ekr.20060205170552:test_apropos_find_commands
-    #@-node:ekr.20060205170335.1:aproposFindCommands
-    #@+node:ekr.20060602154458:pythonHelp
+    #@-node:AGP.20250415230112.1073:test_apropos_find_commands
+    #@-node:AGP.20250415230112.1071:aproposFindCommands
+    #@+node:AGP.20250415230112.1074:pythonHelp
     def pythonHelp (self,event=None):
         
         '''Prompt for a arg for Python's help function, and put it to the log pane.'''
@@ -5203,21 +5199,21 @@ class helpCommandsClass (baseEditCommandsClass):
                 except Exception: pass
                 g.restoreStderr()
                 g.restoreStdout()
-    #@-node:ekr.20060602154458:pythonHelp
+    #@-node:AGP.20250415230112.1074:pythonHelp
     #@-others
-#@-node:ekr.20060205164707:helpCommandsClass
-#@+node:ekr.20050920084036.171:keyHandlerCommandsClass (add docstrings)
+#@-node:AGP.20250415230112.1062:helpCommandsClass
+#@+node:AGP.20250415230112.1075:keyHandlerCommandsClass (add docstrings)
 class keyHandlerCommandsClass (baseEditCommandsClass):
     
     '''User commands to access the keyHandler class.'''
     
     #@    @+others
-    #@+node:ekr.20050920084036.172: ctor
+    #@+node:AGP.20250415230112.1076: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:ekr.20050920084036.172: ctor
-    #@+node:ekr.20050920084036.173:getPublicCommands (keyHandler)
+    #@-node:AGP.20250415230112.1076: ctor
+    #@+node:AGP.20250415230112.1077:getPublicCommands (keyHandler)
     def getPublicCommands (self):
         
         k = self.k
@@ -5262,16 +5258,16 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
             'toggle-input-state':       k.toggleInputState,
             'universal-argument':       k.universalArgument,
         }
-    #@-node:ekr.20050920084036.173:getPublicCommands (keyHandler)
+    #@-node:AGP.20250415230112.1077:getPublicCommands (keyHandler)
     #@-others
-#@-node:ekr.20050920084036.171:keyHandlerCommandsClass (add docstrings)
-#@+node:ekr.20050920084036.174:killBufferCommandsClass (add docstrings)
+#@-node:AGP.20250415230112.1075:keyHandlerCommandsClass (add docstrings)
+#@+node:AGP.20250415230112.1078:killBufferCommandsClass (add docstrings)
 class killBufferCommandsClass (baseEditCommandsClass):
     
     '''A class to manage the kill buffer.'''
 
     #@    @+others
-    #@+node:ekr.20050920084036.175: ctor & finishCreate
+    #@+node:AGP.20250415230112.1079: ctor & finishCreate
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -5289,8 +5285,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
         
         if self.k.useGlobalKillbuffer:
             self.killBuffer = leoKeys.keyHandlerClass.global_killbuffer
-    #@-node:ekr.20050920084036.175: ctor & finishCreate
-    #@+node:ekr.20050920084036.176: getPublicCommands
+    #@-node:AGP.20250415230112.1079: ctor & finishCreate
+    #@+node:AGP.20250415230112.1080: getPublicCommands
     def getPublicCommands (self):
         
         return {
@@ -5306,8 +5302,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             'yank-pop':                 self.yankPop,
             'zap-to-character':         self.zapToCharacter,
         }
-    #@-node:ekr.20050920084036.176: getPublicCommands
-    #@+node:ekr.20050920084036.183:addToKillBuffer
+    #@-node:AGP.20250415230112.1080: getPublicCommands
+    #@+node:AGP.20250415230112.1081:addToKillBuffer
     def addToKillBuffer (self,text):
         
         killKeys =(
@@ -5324,8 +5320,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             self.killBuffer [0] = self.killBuffer [0] + text
         else:
             self.killBuffer.insert(0,text)
-    #@-node:ekr.20050920084036.183:addToKillBuffer
-    #@+node:ekr.20050920084036.181:backwardKillSentence
+    #@-node:AGP.20250415230112.1081:addToKillBuffer
+    #@+node:AGP.20250415230112.1082:backwardKillSentence
     def backwardKillSentence (self,event):
         
         '''Kill the previous sentence.'''
@@ -5339,8 +5335,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             i2 = w.search('.',i,backwards=True,stopindex='1.0')
             i2 = g.choose(i2=='','1.0',i2+'+1c ')
             self.kill(event,i2,'%s + 1c' % i,undoType='backward-kill-sentence')
-    #@-node:ekr.20050920084036.181:backwardKillSentence
-    #@+node:ekr.20050920084036.180:backwardKillWord & killWord
+    #@-node:AGP.20250415230112.1082:backwardKillSentence
+    #@+node:AGP.20250415230112.1083:backwardKillWord & killWord
     def backwardKillWord (self,event):
         '''Kill the previous word.'''
         c = self.c
@@ -5360,15 +5356,15 @@ class killBufferCommandsClass (baseEditCommandsClass):
         c.frame.body.forceFullRecolor()
         self.endCommand(changed=True,setLabel=True)
     
-    #@-node:ekr.20050920084036.180:backwardKillWord & killWord
-    #@+node:ekr.20051216151811:clearKillRing
+    #@-node:AGP.20250415230112.1083:backwardKillWord & killWord
+    #@+node:AGP.20250415230112.1084:clearKillRing
     def clearKillRing (self,event=None):
         
         '''Clear the kill ring.'''
         
         self.killBuffer = []
-    #@-node:ekr.20051216151811:clearKillRing
-    #@+node:ekr.20050920084036.185:getClipboard
+    #@-node:AGP.20250415230112.1084:clearKillRing
+    #@+node:AGP.20250415230112.1085:getClipboard
     def getClipboard (self,w):
     
         try:
@@ -5380,8 +5376,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
         except: pass
     
         return None
-    #@-node:ekr.20050920084036.185:getClipboard
-    #@+node:ekr.20050920084036.184:iterateKillBuffer
+    #@-node:AGP.20250415230112.1085:getClipboard
+    #@+node:AGP.20250415230112.1086:iterateKillBuffer
     def iterateKillBuffer (self):
     
         while 1:
@@ -5392,8 +5388,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
                         self.reset = False
                         break
                     yield z
-    #@-node:ekr.20050920084036.184:iterateKillBuffer
-    #@+node:ekr.20050920084036.178:kill, killLine
+    #@-node:AGP.20250415230112.1086:iterateKillBuffer
+    #@+node:AGP.20250415230112.1087:kill, killLine
     def kill (self,event,frm,to,undoType=None):
     
         k = self.k
@@ -5414,8 +5410,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
         '''Kill the line containing the cursor.'''
         self.kill(event,'insert linestart','insert lineend+1c',undoType='kill-line')
     #@nonl
-    #@-node:ekr.20050920084036.178:kill, killLine
-    #@+node:ekr.20050920084036.182:killRegion & killRegionSave & helper
+    #@-node:AGP.20250415230112.1087:kill, killLine
+    #@+node:AGP.20250415230112.1088:killRegion & killRegionSave & helper
     def killRegion (self,event):
         '''Kill the text selection.'''
         self.killRegionHelper(event,deleteFlag=True)
@@ -5441,8 +5437,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
         w.clipboard_clear()
         w.clipboard_append(s)
         # self.removeRKeys(w)
-    #@-node:ekr.20050920084036.182:killRegion & killRegionSave & helper
-    #@+node:ekr.20050930095323.1:killSentence
+    #@-node:AGP.20250415230112.1088:killRegion & killRegionSave & helper
+    #@+node:AGP.20250415230112.1089:killSentence
     def killSentence (self,event):
         
         '''Kill the sentence containing the cursor.'''
@@ -5458,8 +5454,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             self.kill(event,i2,'%s + 1c' % i,undoType='kill-sentence')
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050930095323.1:killSentence
-    #@+node:ekr.20050930100733:killWs
+    #@-node:AGP.20250415230112.1089:killSentence
+    #@+node:AGP.20250415230112.1090:killWs
     def killWs (self,event,undoType=None):
         
         ws = ''
@@ -5478,8 +5474,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             if undoType: self.beginCommand(undoType=undoType)
             self.addToKillBuffer(ws)
             if undoType: self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050930100733:killWs
-    #@+node:ekr.20050930091642.1:yank
+    #@-node:AGP.20250415230112.1090:killWs
+    #@+node:AGP.20250415230112.1091:yank
     def yank (self,event):
         
         '''Insert the next entry in the kill ring at the insert point.'''
@@ -5500,8 +5496,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             w.mark_set('insert',i)
             c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
-    #@-node:ekr.20050930091642.1:yank
-    #@+node:ekr.20050930091642.2:yankPop
+    #@-node:AGP.20250415230112.1091:yank
+    #@+node:AGP.20250415230112.1092:yankPop
     def yankPop (self,event):
         
         '''Replaces the just-yanked kill buffer with the contents of the previous kill buffer.'''
@@ -5523,8 +5519,8 @@ class killBufferCommandsClass (baseEditCommandsClass):
             w.tag_delete('kb')
             w.insert('insert',s,('kb'))
             w.mark_set('insert',i)
-    #@-node:ekr.20050930091642.2:yankPop
-    #@+node:ekr.20050920084036.128:zapToCharacter
+    #@-node:AGP.20250415230112.1092:yankPop
+    #@+node:AGP.20250415230112.1093:zapToCharacter
     def zapToCharacter (self,event):
         
         '''Kill characters from the insertion point to a given character.'''
@@ -5548,19 +5544,19 @@ class killBufferCommandsClass (baseEditCommandsClass):
                     s = w.get('insert','%s' % i)
                     self.addToKillBuffer(s)
                     w.delete('insert','%s' % i)
-    #@-node:ekr.20050920084036.128:zapToCharacter
+    #@-node:AGP.20250415230112.1093:zapToCharacter
     #@-others
-#@-node:ekr.20050920084036.174:killBufferCommandsClass (add docstrings)
-#@+node:ekr.20050920084036.186:leoCommandsClass (add docstrings)
+#@-node:AGP.20250415230112.1078:killBufferCommandsClass (add docstrings)
+#@+node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
 class leoCommandsClass (baseEditCommandsClass):
     
     #@    @+others
-    #@+node:ekr.20050920084036.187: ctor
+    #@+node:AGP.20250415230112.1095: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:ekr.20050920084036.187: ctor
-    #@+node:ekr.20050920084036.188:leoCommands.getPublicCommands
+    #@-node:AGP.20250415230112.1095: ctor
+    #@+node:AGP.20250415230112.1096:leoCommands.getPublicCommands
     def getPublicCommands (self):
         
         '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
@@ -5568,7 +5564,7 @@ class leoCommandsClass (baseEditCommandsClass):
         k = self.k ; d2 = {}
         
         #@    << define dictionary d of names and Leo commands >>
-        #@+node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+        #@+node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
         c = self.c ; f = c.frame
         
         d = {
@@ -5729,7 +5725,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
             'write-outline-only':           c.fileCommands.writeOutlineOnly,
         }
-        #@-node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
+        #@-node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
         #@nl
         
         # Create a callback for each item in d.
@@ -5741,14 +5737,14 @@ class leoCommandsClass (baseEditCommandsClass):
             # g.trace('leoCommands %24s = %s' % (f.__name__,name))
             
         return d2
-    #@-node:ekr.20050920084036.188:leoCommands.getPublicCommands
+    #@-node:AGP.20250415230112.1096:leoCommands.getPublicCommands
     #@-others
-#@-node:ekr.20050920084036.186:leoCommandsClass (add docstrings)
-#@+node:ekr.20050920084036.190:macroCommandsClass
+#@-node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
+#@+node:AGP.20250415230112.1098:macroCommandsClass
 class macroCommandsClass (baseEditCommandsClass):
 
     #@    @+others
-    #@+node:ekr.20050920084036.191: ctor
+    #@+node:AGP.20250415230112.1099: ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -5760,8 +5756,8 @@ class macroCommandsClass (baseEditCommandsClass):
         
         # Important: we must not interfere with k.state in startKbdMacro!
         self.recordingMacro = False
-    #@-node:ekr.20050920084036.191: ctor
-    #@+node:ekr.20050920084036.192: getPublicCommands
+    #@-node:AGP.20250415230112.1099: ctor
+    #@+node:AGP.20250415230112.1100: getPublicCommands
     def getPublicCommands (self):
     
         return {
@@ -5772,9 +5768,9 @@ class macroCommandsClass (baseEditCommandsClass):
             'insert-keyboard-macro' :   self.insertKeyboardMacro,
             'start-kbd-macro':          self.startKbdMacro,
         }
-    #@-node:ekr.20050920084036.192: getPublicCommands
-    #@+node:ekr.20050920084036.193:Entry points
-    #@+node:ekr.20050920084036.194:insertKeyboardMacro
+    #@-node:AGP.20250415230112.1100: getPublicCommands
+    #@+node:AGP.20250415230112.1101:Entry points
+    #@+node:AGP.20250415230112.1102:insertKeyboardMacro
     def insertKeyboardMacro (self,event):
     
         '''Save all macros to a file.'''
@@ -5797,7 +5793,7 @@ class macroCommandsClass (baseEditCommandsClass):
                     prompt=prompt,protect=True)
             else:
                 k.updateLabel(event)
-    #@+node:ekr.20050920084036.195:findFirstMatchFromList
+    #@+node:AGP.20250415230112.1103:findFirstMatchFromList
     def findFirstMatchFromList (self,s,aList=None):
     
         '''This method finds the first match it can find in a sorted list'''
@@ -5814,9 +5810,9 @@ class macroCommandsClass (baseEditCommandsClass):
             return mstring
     
         return s
-    #@-node:ekr.20050920084036.195:findFirstMatchFromList
-    #@-node:ekr.20050920084036.194:insertKeyboardMacro
-    #@+node:ekr.20050920084036.196:loadFile & helpers
+    #@-node:AGP.20250415230112.1103:findFirstMatchFromList
+    #@-node:AGP.20250415230112.1102:insertKeyboardMacro
+    #@+node:AGP.20250415230112.1104:loadFile & helpers
     def loadFile (self,event):
     
         '''Asks for a macro file name to load.'''
@@ -5824,7 +5820,7 @@ class macroCommandsClass (baseEditCommandsClass):
         f = tkFileDialog and tkFileDialog.askopenfile()
         if f:
             self._loadMacros(f)
-    #@+node:ekr.20050920084036.197:_loadMacros
+    #@+node:AGP.20250415230112.1105:_loadMacros
     def _loadMacros (self,f):
     
         '''Loads a macro file into the macros dictionary.'''
@@ -5833,9 +5829,9 @@ class macroCommandsClass (baseEditCommandsClass):
         macros = cPickle.load(f)
         for z in macros:
             k.addToDoAltX(z,macros[z])
-    #@-node:ekr.20050920084036.197:_loadMacros
-    #@-node:ekr.20050920084036.196:loadFile & helpers
-    #@+node:ekr.20050920084036.198:nameLastKbdMacro
+    #@-node:AGP.20250415230112.1105:_loadMacros
+    #@-node:AGP.20250415230112.1104:loadFile & helpers
+    #@+node:AGP.20250415230112.1106:nameLastKbdMacro
     def nameLastKbdMacro (self,event):
     
         '''Prompt for the name to be given to the last recorded macro.'''
@@ -5850,8 +5846,8 @@ class macroCommandsClass (baseEditCommandsClass):
             name = k.arg
             k.addToDoAltX(name,self.lastMacro)
             k.setLabelGrey('Macro defined: %s' % name)
-    #@-node:ekr.20050920084036.198:nameLastKbdMacro
-    #@+node:ekr.20050920084036.199:saveMacros & helper
+    #@-node:AGP.20250415230112.1106:nameLastKbdMacro
+    #@+node:AGP.20250415230112.1107:saveMacros & helper
     def saveMacros (self,event,macname):
     
         '''Asks for a file name and saves it.'''
@@ -5862,7 +5858,7 @@ class macroCommandsClass (baseEditCommandsClass):
             f.seek(0)
             if f:
                 self._saveMacros(f,macname)
-    #@+node:ekr.20050920084036.200:_saveMacros
+    #@+node:AGP.20250415230112.1108:_saveMacros
     def _saveMacros( self, f , name ):
         '''Saves the macros as a pickled dictionary'''
         import cPickle
@@ -5877,9 +5873,9 @@ class macroCommandsClass (baseEditCommandsClass):
             f = file( fname, 'w' )
             cPickle.dump( macs, f )
             f.close()
-    #@-node:ekr.20050920084036.200:_saveMacros
-    #@-node:ekr.20050920084036.199:saveMacros & helper
-    #@+node:ekr.20050920084036.204:startKbdMacro
+    #@-node:AGP.20250415230112.1108:_saveMacros
+    #@-node:AGP.20250415230112.1107:saveMacros & helper
+    #@+node:AGP.20250415230112.1109:startKbdMacro
     def startKbdMacro (self,event):
         
         '''Start recording a keyboard macro.'''
@@ -5903,8 +5899,8 @@ class macroCommandsClass (baseEditCommandsClass):
             else:
                 self.macro.append((stroke,event.keycode,event.keysym,event.char))
                 return True
-    #@-node:ekr.20050920084036.204:startKbdMacro
-    #@+node:ekr.20050920084036.206:endKbdMacro
+    #@-node:AGP.20250415230112.1109:startKbdMacro
+    #@+node:AGP.20250415230112.1110:endKbdMacro
     def endKbdMacro (self,event):
         
         '''Stop recording a keyboard macro.'''
@@ -5919,8 +5915,8 @@ class macroCommandsClass (baseEditCommandsClass):
             k.setLabelGrey('Keyboard macro defined, not named')
         else:
             k.setLabelGrey('Empty keyboard macro')
-    #@-node:ekr.20050920084036.206:endKbdMacro
-    #@+node:ekr.20050920084036.202:callLastKeyboardMacro & helper (called from universal command)
+    #@-node:AGP.20250415230112.1110:endKbdMacro
+    #@+node:AGP.20250415230112.1111:callLastKeyboardMacro & helper (called from universal command)
     def callLastKeyboardMacro (self,event):
         
         '''Call the last recorded keyboard macro.'''
@@ -5930,7 +5926,7 @@ class macroCommandsClass (baseEditCommandsClass):
     
         if self.lastMacro:
             self._executeMacro(self.lastMacro,w)
-    #@+node:ekr.20050920084036.203:_executeMacro (revise)
+    #@+node:AGP.20250415230112.1112:_executeMacro (revise)
     def _executeMacro (self,macro,w):
     
         k = self.k
@@ -5949,11 +5945,11 @@ class macroCommandsClass (baseEditCommandsClass):
                     ev.keysym = z [2]
                     ev.char = z [3]
                     k.masterCommand(ev,b.f,'<%s>' % meth)
-    #@-node:ekr.20050920084036.203:_executeMacro (revise)
-    #@-node:ekr.20050920084036.202:callLastKeyboardMacro & helper (called from universal command)
-    #@-node:ekr.20050920084036.193:Entry points
-    #@+node:ekr.20051006065746:Common Helpers
-    #@+node:ekr.20050920085536.15:addToDoAltX
+    #@-node:AGP.20250415230112.1112:_executeMacro (revise)
+    #@-node:AGP.20250415230112.1111:callLastKeyboardMacro & helper (called from universal command)
+    #@-node:AGP.20250415230112.1101:Entry points
+    #@+node:AGP.20250415230112.1113:Common Helpers
+    #@+node:AGP.20250415230112.1114:addToDoAltX
     # Called from loadFile and nameLastKbdMacro.
     
     def addToDoAltX (self,name,macro):
@@ -5973,17 +5969,17 @@ class macroCommandsClass (baseEditCommandsClass):
         c.commandsDict [name] = func
         self.namedMacros [name] = macro
         return True
-    #@-node:ekr.20050920085536.15:addToDoAltX
-    #@-node:ekr.20051006065746:Common Helpers
+    #@-node:AGP.20250415230112.1114:addToDoAltX
+    #@-node:AGP.20250415230112.1113:Common Helpers
     #@-others
-#@-node:ekr.20050920084036.190:macroCommandsClass
-#@+node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
+#@-node:AGP.20250415230112.1098:macroCommandsClass
+#@+node:AGP.20250415230112.1115:queryReplaceCommandsClass (limited to single node)
 class queryReplaceCommandsClass (baseEditCommandsClass):
     
     '''A class to handle query replace commands.'''
 
     #@    @+others
-    #@+node:ekr.20050920084036.208: ctor & init
+    #@+node:AGP.20250415230112.1116: ctor & init
     def __init__ (self,c):
         
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -5994,16 +5990,16 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
         self.qQ = None
         self.qR = None
         self.replaced = 0 # The number of replacements.
-    #@-node:ekr.20050920084036.208: ctor & init
-    #@+node:ekr.20050920084036.209: getPublicCommands
+    #@-node:AGP.20250415230112.1116: ctor & init
+    #@+node:AGP.20250415230112.1117: getPublicCommands
     def getPublicCommands (self):
     
         return {
             'query-replace':        self.queryReplace,
             'query-replace-regex':  self.queryReplaceRegex,
         }
-    #@-node:ekr.20050920084036.209: getPublicCommands
-    #@+node:ekr.20050920084036.210:Entry points
+    #@-node:AGP.20250415230112.1117: getPublicCommands
+    #@+node:AGP.20250415230112.1118:Entry points
     def queryReplace (self,event):
     
         '''Interactively find and replace text.
@@ -6016,9 +6012,9 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
         This is not recommended: Leo's other find and change commands are more capable.'''
         self.regexp = True
         self.stateHandler(event)
-    #@-node:ekr.20050920084036.210:Entry points
-    #@+node:ekr.20051005151838:Helpers
-    #@+node:ekr.20050920084036.212:doOneReplace
+    #@-node:AGP.20250415230112.1118:Entry points
+    #@+node:AGP.20250415230112.1119:Helpers
+    #@+node:AGP.20250415230112.1120:doOneReplace
     def doOneReplace (self,event):
     
         w = self.editWidget(event)
@@ -6028,8 +6024,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
         w.delete(i[0],i[1])
         w.insert('insert',self.qR)
         self.replaced += 1
-    #@-node:ekr.20050920084036.212:doOneReplace
-    #@+node:ekr.20050920084036.219:findNextMatch
+    #@-node:AGP.20250415230112.1120:doOneReplace
+    #@+node:AGP.20250415230112.1121:findNextMatch
     def findNextMatch (self,event):
         
         '''Find the next match and select it.
@@ -6043,7 +6039,7 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
         w.tag_delete('qR')
         if self.regexp:
             #@        << handle regexp >>
-            #@+node:ekr.20051005155611:<< handle regexp >>
+            #@+node:AGP.20250415230112.1122:<< handle regexp >>
             try:
                 regex = re.compile(self.qQ)
             except:
@@ -6066,11 +6062,11 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
             else:
                 self.quitSearch(event)
                 return False
-            #@-node:ekr.20051005155611:<< handle regexp >>
+            #@-node:AGP.20250415230112.1122:<< handle regexp >>
             #@nl
         else:
             #@        << handle plain search >>
-            #@+node:ekr.20051005160923:<< handle plain search >>
+            #@+node:AGP.20250415230112.1123:<< handle plain search >>
             i = w.search(self.qQ,'insert',stopindex='end')
             if i:
                 w.mark_set('insert',i)
@@ -6081,10 +6077,10 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
             else:
                 self.quitSearch(event)
                 return False
-            #@-node:ekr.20051005160923:<< handle plain search >>
+            #@-node:AGP.20250415230112.1123:<< handle plain search >>
             #@nl
-    #@-node:ekr.20050920084036.219:findNextMatch
-    #@+node:ekr.20050920084036.211:getUserResponse
+    #@-node:AGP.20250415230112.1121:findNextMatch
+    #@+node:AGP.20250415230112.1124:getUserResponse
     def getUserResponse (self,event):
         
         w = self.editWidget(event)
@@ -6107,8 +6103,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
                 self.quitSearch(event)
     
         w.see('insert')
-    #@-node:ekr.20050920084036.211:getUserResponse
-    #@+node:ekr.20050920084036.220:quitSearch
+    #@-node:AGP.20250415230112.1124:getUserResponse
+    #@+node:AGP.20250415230112.1125:quitSearch
     def quitSearch (self,event,message=None):
     
         k = self.k
@@ -6120,8 +6116,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
         if message is None:
             message = 'Replaced %d occurences' % self.replaced
         k.setLabelGrey(message)
-    #@-node:ekr.20050920084036.220:quitSearch
-    #@+node:ekr.20050920084036.215:stateHandler
+    #@-node:AGP.20250415230112.1125:quitSearch
+    #@+node:AGP.20250415230112.1126:stateHandler
     def stateHandler (self,event):
         
         k = self.k ; state = k.getState('query-replace')
@@ -6150,15 +6146,15 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
             self.findNextMatch(event)
         elif state == 3:
             self.getUserResponse(event)
-    #@-node:ekr.20050920084036.215:stateHandler
-    #@-node:ekr.20051005151838:Helpers
+    #@-node:AGP.20250415230112.1126:stateHandler
+    #@-node:AGP.20250415230112.1119:Helpers
     #@-others
-#@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
-#@+node:ekr.20050920084036.221:rectangleCommandsClass
+#@-node:AGP.20250415230112.1115:queryReplaceCommandsClass (limited to single node)
+#@+node:AGP.20250415230112.1127:rectangleCommandsClass
 class rectangleCommandsClass (baseEditCommandsClass):
 
     #@    @+others
-    #@+node:ekr.20050920084036.222: ctor & finishCreate
+    #@+node:AGP.20250415230112.1128: ctor & finishCreate
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -6180,16 +6176,16 @@ class rectangleCommandsClass (baseEditCommandsClass):
             't': ('string-rectangle',   self.stringRectangle),
             'y': ('yank-rectangle',     self.yankRectangle),
         }
-    #@-node:ekr.20050920084036.222: ctor & finishCreate
-    #@+node:ekr.20051004112630:check
+    #@-node:AGP.20250415230112.1128: ctor & finishCreate
+    #@+node:AGP.20250415230112.1129:check
     def check (self,event,warning='No rectangle selected'):
         
         '''Return True if there is a selection.
         Otherwise, return False and issue a warning.'''
     
         return self._chckSel(event,warning)
-    #@-node:ekr.20051004112630:check
-    #@+node:ekr.20050920084036.223:getPublicCommands
+    #@-node:AGP.20250415230112.1129:check
+    #@+node:AGP.20250415230112.1130:getPublicCommands
     def getPublicCommands (self):
     
         return {
@@ -6201,8 +6197,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             'string-rectangle': self.stringRectangle,
             'yank-rectangle':   self.yankRectangle,
         }
-    #@-node:ekr.20050920084036.223:getPublicCommands
-    #@+node:ekr.20051215103053:beginCommand & beginCommandWithEvent (rectangle)
+    #@-node:AGP.20250415230112.1130:getPublicCommands
+    #@+node:AGP.20250415230112.1131:beginCommand & beginCommandWithEvent (rectangle)
     def beginCommand (self,undoType='Typing'):
     
         w = baseEditCommandsClass.beginCommand(self,undoType)
@@ -6220,9 +6216,9 @@ class rectangleCommandsClass (baseEditCommandsClass):
         r1, r2, r3, r4 = self.getRectanglePoints(w)
     
         return w, r1, r2, r3, r4
-    #@-node:ekr.20051215103053:beginCommand & beginCommandWithEvent (rectangle)
-    #@+node:ekr.20050920084036.224:Entries
-    #@+node:ekr.20050920084036.225:clearRectangle
+    #@-node:AGP.20250415230112.1131:beginCommand & beginCommandWithEvent (rectangle)
+    #@+node:AGP.20250415230112.1132:Entries
+    #@+node:AGP.20250415230112.1133:clearRectangle
     def clearRectangle (self,event):
         
         '''Clear the rectangle defined by the start and end of selected text.'''
@@ -6240,8 +6236,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w.insert('%s.%s' % (r,r2),s)
             
         self.endCommand()
-    #@-node:ekr.20050920084036.225:clearRectangle
-    #@+node:ekr.20050920084036.226:closeRectangle
+    #@-node:AGP.20250415230112.1133:clearRectangle
+    #@+node:AGP.20250415230112.1134:closeRectangle
     def closeRectangle (self,event):
         
         '''Delete the rectangle if it contains nothing but whitespace..'''
@@ -6261,8 +6257,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             
         self.endCommand()
-    #@-node:ekr.20050920084036.226:closeRectangle
-    #@+node:ekr.20050920084036.227:deleteRectangle
+    #@-node:AGP.20250415230112.1134:closeRectangle
+    #@+node:AGP.20250415230112.1135:deleteRectangle
     def deleteRectangle (self,event):
         
         '''Delete the rectangle defined by the start and end of selected text.'''
@@ -6276,8 +6272,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
             
         self.endCommand()
-    #@-node:ekr.20050920084036.227:deleteRectangle
-    #@+node:ekr.20050920084036.228:killRectangle
+    #@-node:AGP.20250415230112.1135:deleteRectangle
+    #@+node:AGP.20250415230112.1136:killRectangle
     def killRectangle (self,event):
         
         '''Kill the rectangle defined by the start and end of selected text.'''
@@ -6298,8 +6294,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w.mark_set('sel.end','insert')
             
         self.endCommand()
-    #@-node:ekr.20050920084036.228:killRectangle
-    #@+node:ekr.20050920084036.230:openRectangle
+    #@-node:AGP.20250415230112.1136:killRectangle
+    #@+node:AGP.20250415230112.1137:openRectangle
     def openRectangle (self,event):
         
         '''Insert blanks in the rectangle defined by the start and end of selected text.
@@ -6315,8 +6311,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w.insert('%s.%s' % (r,r2),s)
             
         self.endCommand()
-    #@-node:ekr.20050920084036.230:openRectangle
-    #@+node:ekr.20050920084036.229:yankRectangle
+    #@-node:AGP.20250415230112.1137:openRectangle
+    #@+node:AGP.20250415230112.1138:yankRectangle
     def yankRectangle (self,event,killRect=None):
         
         '''Yank into the rectangle defined by the start and end of selected text.'''
@@ -6349,8 +6345,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             i1 += 1
     
         self.endCommand()
-    #@-node:ekr.20050920084036.229:yankRectangle
-    #@+node:ekr.20050920084036.232:stringRectangle
+    #@-node:AGP.20250415230112.1138:yankRectangle
+    #@+node:AGP.20250415230112.1139:stringRectangle
     def stringRectangle (self,event):
         
         '''Prompt for a string, then replace the contents of a rectangle with a string on each line.'''
@@ -6376,18 +6372,18 @@ class rectangleCommandsClass (baseEditCommandsClass):
                 w.insert('%s.%s' % (r,r2),k.arg)
             self.endCommand()
     #@nonl
-    #@-node:ekr.20050920084036.232:stringRectangle
-    #@-node:ekr.20050920084036.224:Entries
+    #@-node:AGP.20250415230112.1139:stringRectangle
+    #@-node:AGP.20250415230112.1132:Entries
     #@-others
-#@-node:ekr.20050920084036.221:rectangleCommandsClass
-#@+node:ekr.20050920084036.234:registerCommandsClass
+#@-node:AGP.20250415230112.1127:rectangleCommandsClass
+#@+node:AGP.20250415230112.1140:registerCommandsClass
 class registerCommandsClass (baseEditCommandsClass):
 
     '''A class to represent registers a-z and the corresponding Emacs commands.'''
 
     #@    @+others
-    #@+node:ekr.20051004095209:Birth
-    #@+node:ekr.20050920084036.235: ctor, finishCreate & init
+    #@+node:AGP.20250415230112.1141:Birth
+    #@+node:AGP.20250415230112.1142: ctor, finishCreate & init
     def __init__ (self,c):
         
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -6408,8 +6404,8 @@ class registerCommandsClass (baseEditCommandsClass):
     
         self.method = None 
         self.registerMode = 0 # Must be an int.
-    #@-node:ekr.20050920084036.235: ctor, finishCreate & init
-    #@+node:ekr.20050920084036.247: getPublicCommands
+    #@-node:AGP.20250415230112.1142: ctor, finishCreate & init
+    #@+node:AGP.20250415230112.1143: getPublicCommands
     def getPublicCommands (self):
         
         return {
@@ -6424,8 +6420,8 @@ class registerCommandsClass (baseEditCommandsClass):
             'prepend-to-register':          self.prependToRegister,
             'view-register':                self.viewRegister,
         }
-    #@-node:ekr.20050920084036.247: getPublicCommands
-    #@+node:ekr.20050920084036.252:addRegisterItems (Not used!)
+    #@-node:AGP.20250415230112.1143: getPublicCommands
+    #@+node:AGP.20250415230112.1144:addRegisterItems (Not used!)
     def addRegisterItems( self ):
         
         methodDict = {
@@ -6455,15 +6451,15 @@ class registerCommandsClass (baseEditCommandsClass):
         }
     
         return methodDict, helpDict
-    #@-node:ekr.20050920084036.252:addRegisterItems (Not used!)
-    #@-node:ekr.20051004095209:Birth
-    #@+node:ekr.20051004123217:checkBodySelection
+    #@-node:AGP.20250415230112.1144:addRegisterItems (Not used!)
+    #@-node:AGP.20250415230112.1141:Birth
+    #@+node:AGP.20250415230112.1145:checkBodySelection
     def checkBodySelection (self,warning='No text selected'):
         
         return self._chckSel(event=None,warning=warning)
-    #@-node:ekr.20051004123217:checkBodySelection
-    #@+node:ekr.20050920084036.236:Entries...
-    #@+node:ekr.20050920084036.238:appendToRegister
+    #@-node:AGP.20250415230112.1145:checkBodySelection
+    #@+node:AGP.20250415230112.1146:Entries...
+    #@+node:AGP.20250415230112.1147:appendToRegister
     def appendToRegister (self,event):
         
         '''Prompt for a register name and append the selected text to the register's contents.'''
@@ -6490,8 +6486,8 @@ class registerCommandsClass (baseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.238:appendToRegister
-    #@+node:ekr.20050920084036.237:prependToRegister
+    #@-node:AGP.20250415230112.1147:appendToRegister
+    #@+node:AGP.20250415230112.1148:prependToRegister
     def prependToRegister (self,event):
         
         '''Prompt for a register name and prepend the selected text to the register's contents.'''
@@ -6518,8 +6514,8 @@ class registerCommandsClass (baseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.237:prependToRegister
-    #@+node:ekr.20050920084036.239:copyRectangleToRegister
+    #@-node:AGP.20250415230112.1148:prependToRegister
+    #@+node:AGP.20250415230112.1149:copyRectangleToRegister
     def copyRectangleToRegister (self,event):
         
         '''Prompt for a register name and append the rectangle defined by selected
@@ -6550,8 +6546,8 @@ class registerCommandsClass (baseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.239:copyRectangleToRegister
-    #@+node:ekr.20050920084036.240:copyToRegister
+    #@-node:AGP.20250415230112.1149:copyRectangleToRegister
+    #@+node:AGP.20250415230112.1150:copyToRegister
     def copyToRegister (self,event):
         
         '''Prompt for a register name and append the selected text to the register's contents.'''
@@ -6579,8 +6575,8 @@ class registerCommandsClass (baseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.240:copyToRegister
-    #@+node:ekr.20050920084036.241:incrementRegister
+    #@-node:AGP.20250415230112.1150:copyToRegister
+    #@+node:AGP.20250415230112.1151:incrementRegister
     def incrementRegister (self,event):
         
         '''Prompt for a register name and increment its value if it has a numeric value.'''
@@ -6606,8 +6602,8 @@ class registerCommandsClass (baseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.241:incrementRegister
-    #@+node:ekr.20050920084036.242:insertRegister
+    #@-node:AGP.20250415230112.1151:incrementRegister
+    #@+node:AGP.20250415230112.1152:insertRegister
     def insertRegister (self,event):
         
         '''Prompt for a register name and and insert the value of another register into its contents.'''
@@ -6636,8 +6632,8 @@ class registerCommandsClass (baseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.242:insertRegister
-    #@+node:ekr.20050920084036.243:jumpToRegister
+    #@-node:AGP.20250415230112.1152:insertRegister
+    #@+node:AGP.20250415230112.1153:jumpToRegister
     def jumpToRegister (self,event):
         
         '''Prompt for a register name and set the insert point to the value in its register.'''
@@ -6664,8 +6660,8 @@ class registerCommandsClass (baseEditCommandsClass):
                 else:
                     k.setLabelGrey('Register %s is empty' % key)
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.243:jumpToRegister
-    #@+node:ekr.20050920084036.244:numberToRegister (not used)
+    #@-node:AGP.20250415230112.1153:jumpToRegister
+    #@+node:AGP.20250415230112.1154:numberToRegister (not used)
     #@+at
     # C-u number C-x r n reg
     #     Store number into register reg (number-to-register).
@@ -6691,8 +6687,8 @@ class registerCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('number-to-register not ready yet.')
             else:
                 k.setLabelGrey('Register must be a letter')
-    #@-node:ekr.20050920084036.244:numberToRegister (not used)
-    #@+node:ekr.20050920084036.245:pointToRegister
+    #@-node:AGP.20250415230112.1154:numberToRegister (not used)
+    #@+node:AGP.20250415230112.1155:pointToRegister
     def pointToRegister (self,event):
         
         '''Prompt for a register name and put a value indicating the insert point in the register.'''
@@ -6715,8 +6711,8 @@ class registerCommandsClass (baseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.245:pointToRegister
-    #@+node:ekr.20050920084036.246:viewRegister
+    #@-node:AGP.20250415230112.1155:pointToRegister
+    #@+node:AGP.20250415230112.1156:viewRegister
     def viewRegister (self,event):
         
         '''Prompt for a register name and print its contents.'''
@@ -6736,18 +6732,18 @@ class registerCommandsClass (baseEditCommandsClass):
             else:
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
-    #@-node:ekr.20050920084036.246:viewRegister
-    #@-node:ekr.20050920084036.236:Entries...
+    #@-node:AGP.20250415230112.1156:viewRegister
+    #@-node:AGP.20250415230112.1146:Entries...
     #@-others
-#@-node:ekr.20050920084036.234:registerCommandsClass
-#@+node:ekr.20051023094009:Search classes
-#@+node:ekr.20060123125256:class minibufferFind( (the findHandler)
+#@-node:AGP.20250415230112.1140:registerCommandsClass
+#@+node:AGP.20250415230112.1157:Search classes
+#@+node:AGP.20250415230112.1158:class minibufferFind( (the findHandler)
 class minibufferFind (baseEditCommandsClass):
 
     '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
 
     #@    @+others
-    #@+node:ekr.20060123125317.2: ctor (minibufferFind)
+    #@+node:AGP.20250415230112.1159: ctor (minibufferFind)
     def __init__(self,c,finder):
         
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -6764,9 +6760,9 @@ class minibufferFind (baseEditCommandsClass):
         s = k.prettyPrintKey(s)
         s = k.shortcutFromSetting(s)
         self.replaceStringShortcut = s
-    #@-node:ekr.20060123125317.2: ctor (minibufferFind)
-    #@+node:ekr.20060124140114: Options
-    #@+node:ekr.20060124123133:setFindScope
+    #@-node:AGP.20250415230112.1159: ctor (minibufferFind)
+    #@+node:AGP.20250415230112.1160: Options
+    #@+node:AGP.20250415230112.1161:setFindScope
     def setFindScope(self,where):
         
         '''Set the find-scope radio buttons.
@@ -6781,8 +6777,8 @@ class minibufferFind (baseEditCommandsClass):
                 h.dict["radio-search-scope"].set(where)
         else:
             g.trace('oops: bad `where` value: %s' % where)
-    #@-node:ekr.20060124123133:setFindScope
-    #@+node:ekr.20060124122844:setOption
+    #@-node:AGP.20250415230112.1161:setFindScope
+    #@+node:AGP.20250415230112.1162:setOption
     def setOption (self, ivar, val):
         
         h = self.finder
@@ -6795,8 +6791,8 @@ class minibufferFind (baseEditCommandsClass):
     
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:ekr.20060124122844:setOption
-    #@+node:ekr.20060125082510:getOption
+    #@-node:AGP.20250415230112.1162:setOption
+    #@+node:AGP.20250415230112.1163:getOption
     def getOption (self,ivar,verbose=False):
         
         h = self.finder
@@ -6809,8 +6805,8 @@ class minibufferFind (baseEditCommandsClass):
         else:
             g.trace('bad ivar name: %s' % ivar)
             return None
-    #@-node:ekr.20060125082510:getOption
-    #@+node:ekr.20060125074939:showFindOptions
+    #@-node:AGP.20250415230112.1163:getOption
+    #@+node:AGP.20250415230112.1164:showFindOptions
     def showFindOptions (self):
         
         '''Show the present find options in the status line.'''
@@ -6854,8 +6850,8 @@ class minibufferFind (baseEditCommandsClass):
             if val: z.append(s)
     
         frame.putStatusLine(' '.join(z))
-    #@-node:ekr.20060125074939:showFindOptions
-    #@+node:ekr.20060124135401:toggleOption
+    #@-node:AGP.20250415230112.1164:showFindOptions
+    #@+node:AGP.20250415230112.1165:toggleOption
     def toggleOption (self, ivar):
         
         h = self.finder
@@ -6867,8 +6863,8 @@ class minibufferFind (baseEditCommandsClass):
             # g.trace('%s = %s' % (ivar,val),var)
         else:
             g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:ekr.20060124135401:toggleOption
-    #@+node:ekr.20060205105950:setupChangePattern
+    #@-node:AGP.20250415230112.1165:toggleOption
+    #@+node:AGP.20250415230112.1166:setupChangePattern
     def setupChangePattern (self,pattern):
         
         h = self.finder ; t = h.change_ctrl
@@ -6879,8 +6875,8 @@ class minibufferFind (baseEditCommandsClass):
         t.insert('1.0',s)
         
         h.update_ivars()
-    #@-node:ekr.20060205105950:setupChangePattern
-    #@+node:ekr.20060125091234:setupSearchPattern
+    #@-node:AGP.20250415230112.1166:setupChangePattern
+    #@+node:AGP.20250415230112.1167:setupSearchPattern
     def setupSearchPattern (self,pattern):
         
         h = self.finder ; t = h.find_ctrl
@@ -6891,9 +6887,9 @@ class minibufferFind (baseEditCommandsClass):
         t.insert('1.0',s)
         
         h.update_ivars()
-    #@-node:ekr.20060125091234:setupSearchPattern
-    #@-node:ekr.20060124140114: Options
-    #@+node:ekr.20060210180352:addChangeStringToLabel
+    #@-node:AGP.20250415230112.1167:setupSearchPattern
+    #@-node:AGP.20250415230112.1160: Options
+    #@+node:AGP.20250415230112.1168:addChangeStringToLabel
     def addChangeStringToLabel (self,protect=True):
         
         c = self.c ; k = c.k ; h = self.finder ; t = h.change_ctrl
@@ -6907,8 +6903,8 @@ class minibufferFind (baseEditCommandsClass):
             s = s[:-1]
     
         k.extendLabel(s,select=True,protect=protect)
-    #@-node:ekr.20060210180352:addChangeStringToLabel
-    #@+node:ekr.20060210164421:addFindStringToLabel
+    #@-node:AGP.20250415230112.1168:addChangeStringToLabel
+    #@+node:AGP.20250415230112.1169:addFindStringToLabel
     def addFindStringToLabel (self,protect=True):
         
         c = self.c ; k = c.k ; h = self.finder ; t = h.find_ctrl
@@ -6921,8 +6917,8 @@ class minibufferFind (baseEditCommandsClass):
             s = s[:-1]
     
         k.extendLabel(s,select=True,protect=protect)
-    #@-node:ekr.20060210164421:addFindStringToLabel
-    #@+node:ekr.20060128080201:cloneFindAll
+    #@-node:AGP.20250415230112.1169:addFindStringToLabel
+    #@+node:AGP.20250415230112.1170:cloneFindAll
     def cloneFindAll (self,event):
     
         c = self.c ; k = self.k ; tag = 'clone-find-all'
@@ -6939,8 +6935,8 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAll=True)
-    #@-node:ekr.20060128080201:cloneFindAll
-    #@+node:ekr.20060204120158:findAgain
+    #@-node:AGP.20250415230112.1170:cloneFindAll
+    #@+node:AGP.20250415230112.1171:findAgain
     def findAgain (self,event):
     
         f = self.finder
@@ -6950,8 +6946,8 @@ class minibufferFind (baseEditCommandsClass):
     
         # This handles the reverse option.
         return f.findAgainCommand()
-    #@-node:ekr.20060204120158:findAgain
-    #@+node:ekr.20060209064140:findAll
+    #@-node:AGP.20250415230112.1171:findAgain
+    #@+node:AGP.20250415230112.1172:findAll
     def findAll (self,event):
     
         k = self.k ; state = k.getState('find-all')
@@ -6966,8 +6962,8 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,findAll=True)
-    #@-node:ekr.20060209064140:findAll
-    #@+node:ekr.20060205105950.1:generalChangeHelper
+    #@-node:AGP.20250415230112.1172:findAll
+    #@+node:AGP.20250415230112.1173:generalChangeHelper
     def generalChangeHelper (self,find_pattern,change_pattern):
         
         # g.trace(repr(change_pattern))
@@ -6983,8 +6979,8 @@ class minibufferFind (baseEditCommandsClass):
     
         # This handles the reverse option.
         self.finder.findNextCommand()
-    #@-node:ekr.20060205105950.1:generalChangeHelper
-    #@+node:ekr.20060124181213.4:generalSearchHelper
+    #@-node:AGP.20250415230112.1173:generalChangeHelper
+    #@+node:AGP.20250415230112.1174:generalSearchHelper
     def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
         
         c = self.c
@@ -7002,16 +6998,16 @@ class minibufferFind (baseEditCommandsClass):
         else:
             # This handles the reverse option.
             self.finder.findNextCommand()
-    #@-node:ekr.20060124181213.4:generalSearchHelper
-    #@+node:ekr.20060210174441:lastStateHelper
+    #@-node:AGP.20250415230112.1174:generalSearchHelper
+    #@+node:AGP.20250415230112.1175:lastStateHelper
     def lastStateHelper (self):
         
         k = self.k
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-    #@-node:ekr.20060210174441:lastStateHelper
-    #@+node:ekr.20050920084036.113:replaceString
+    #@-node:AGP.20250415230112.1175:lastStateHelper
+    #@+node:AGP.20250415230112.1176:replaceString
     def replaceString (self,event):
     
         k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
@@ -7032,8 +7028,8 @@ class minibufferFind (baseEditCommandsClass):
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg)
-    #@-node:ekr.20050920084036.113:replaceString
-    #@+node:ekr.20060124140224.3:reSearchBackward/Forward
+    #@-node:AGP.20250415230112.1176:replaceString
+    #@+node:AGP.20250415230112.1177:reSearchBackward/Forward
     def reSearchBackward (self,event):
     
         k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
@@ -7068,8 +7064,8 @@ class minibufferFind (baseEditCommandsClass):
             self.updateFindList(k.arg)
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@-node:ekr.20060124140224.3:reSearchBackward/Forward
-    #@+node:ekr.20060124140224.1:seachForward/Backward
+    #@-node:AGP.20250415230112.1177:reSearchBackward/Forward
+    #@+node:AGP.20250415230112.1178:seachForward/Backward
     def searchBackward (self,event):
     
         k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
@@ -7105,8 +7101,8 @@ class minibufferFind (baseEditCommandsClass):
             self.updateFindList(k.arg)
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@-node:ekr.20060124140224.1:seachForward/Backward
-    #@+node:ekr.20060125093807:searchWithPresentOptions
+    #@-node:AGP.20250415230112.1178:seachForward/Backward
+    #@+node:AGP.20250415230112.1179:searchWithPresentOptions
     def searchWithPresentOptions (self,event):
     
         k = self.k ; tag = 'search-with-present-options'
@@ -7127,8 +7123,8 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg)
-    #@-node:ekr.20060125093807:searchWithPresentOptions
-    #@+node:ekr.20060124134356:setupArgs
+    #@-node:AGP.20250415230112.1179:searchWithPresentOptions
+    #@+node:AGP.20250415230112.1180:setupArgs
     def setupArgs (self,forward=False,regexp=False,word=False):
         
         h = self.finder ; k = self.k
@@ -7150,8 +7146,8 @@ class minibufferFind (baseEditCommandsClass):
         h.v = p.v
         h.update_ivars()
         self.showFindOptions()
-    #@-node:ekr.20060124134356:setupArgs
-    #@+node:ekr.20060210173041:stateZeroHelper
+    #@-node:AGP.20250415230112.1180:setupArgs
+    #@+node:AGP.20250415230112.1181:stateZeroHelper
     def stateZeroHelper (self,event,tag,prefix,handler,escapes=[]):
     
         k = self.k
@@ -7166,8 +7162,8 @@ class minibufferFind (baseEditCommandsClass):
         k.getArgEscape = None # k.getArg may set this.
         k.getArg(event,tag,1,handler, # enter state 1
             tabList=self.findTextList,completion=True,prefix=prefix)
-    #@-node:ekr.20060210173041:stateZeroHelper
-    #@+node:ekr.20060224171851:updateChange/FindList
+    #@-node:AGP.20250415230112.1181:stateZeroHelper
+    #@+node:AGP.20250415230112.1182:updateChange/FindList
     def updateChangeList (self,s):
     
         if s not in self.changeTextList:
@@ -7177,8 +7173,8 @@ class minibufferFind (baseEditCommandsClass):
     
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@-node:ekr.20060224171851:updateChange/FindList
-    #@+node:ekr.20060124140224.2:wordSearchBackward/Forward
+    #@-node:AGP.20250415230112.1182:updateChange/FindList
+    #@+node:AGP.20250415230112.1183:wordSearchBackward/Forward
     def wordSearchBackward (self,event):
     
         k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
@@ -7200,548 +7196,16 @@ class minibufferFind (baseEditCommandsClass):
         else:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@-node:ekr.20060124140224.2:wordSearchBackward/Forward
+    #@-node:AGP.20250415230112.1183:wordSearchBackward/Forward
     #@-others
-#@-node:ekr.20060123125256:class minibufferFind( (the findHandler)
-#@+node:ekr.20051020120306.6:class findTab (leoFind.leoFind)
-class findTab (leoFind.leoFind):
-    
-    '''An adapter class that implements Leo's Find tab.'''
-
-    #@    @+others
-    #@+node:ekr.20051020120306.10:Birth & death
-    #@+node:ekr.20051020120306.11:__init__
-    def __init__(self,c,parentFrame):
-        
-        # g.trace('findTab')
-    
-        # Init the base class...
-        leoFind.leoFind.__init__(self,c,title='Find Tab')
-        self.c = c
-        self.frame = self.outerFrame = self.top = None
-        
-        #@    << create the tkinter intVars >>
-        #@+node:ekr.20051020120306.12:<< create the tkinter intVars >>
-        self.dict = {}
-        
-        for key in self.intKeys:
-            self.dict[key] = Tk.IntVar()
-        
-        for key in self.newStringKeys:
-            self.dict[key] = Tk.StringVar()
-            
-        self.s_ctrl = Tk.Text() # Used by find.search()
-        #@-node:ekr.20051020120306.12:<< create the tkinter intVars >>
-        #@nl
-        
-        self.optionsOnly = c.config.getBool('show_only_find_tab_options')
-        
-        # These are created later.
-        self.find_ctrl = None
-        self.change_ctrl = None 
-        self.outerScrolledFrame = None
-    
-        self.createFrame(parentFrame)
-        self.createBindings()
-        
-        self.init(c) # New in 4.3: init only once.
-    #@-node:ekr.20051020120306.11:__init__
-    #@+node:ekr.20051023181449:createBindings (findTab)
-    def createBindings (self):
-        
-        c = self.c ; k = c.k
-        
-        def resetWrapCallback(event,self=self,k=k):
-            self.resetWrap(event)
-            return k.masterKeyHandler(event)
-            
-        def findButtonBindingCallback(event=None,self=self):
-            self.findButton()
-            return 'break'
-    
-        table = (
-            ('<Button-1>',  k.masterClickHandler),
-            ('<Double-1>',  k.masterClickHandler),
-            ('<Button-3>',  k.masterClickHandler),
-            ('<Double-3>',  k.masterClickHandler),
-            ('<Key>',       resetWrapCallback),
-            ('<Return>',    findButtonBindingCallback),
-            ("<Escape>",    self.hideTab),
-        )
-    
-        for w in (self.find_ctrl,self.change_ctrl):
-            for event, callback in table:
-                w.bind(event,callback)
-    #@-node:ekr.20051023181449:createBindings (findTab)
-    #@+node:ekr.20051020120306.13:createFrame (findTab)
-    def createFrame (self,parentFrame):
-        
-        c = self.c
-        
-        # g.trace('findTab')
-        
-        #@    << Create the outer frames >>
-        #@+node:ekr.20051020120306.14:<< Create the outer frames >>
-        configName = 'log_pane_Find_tab_background_color'
-        bg = c.config.getColor(configName) or 'MistyRose1'
-        
-        parentFrame.configure(background=bg)
-        
-        self.top = Tk.Frame(parentFrame,background=bg)
-        self.top.pack(side='top',expand=0,fill='both',pady=5)
-            # Don't expand, so the frame goes to the top.
-        
-        self.outerScrolledFrame = Pmw.ScrolledFrame(
-            parentFrame,usehullsize = 1)
-        
-        self.outerFrame = outer = self.outerScrolledFrame.component('frame')
-        self.outerFrame.configure(background=bg)
-        
-        for z in ('borderframe','clipper','frame','hull'):
-            self.outerScrolledFrame.component(z).configure(relief='flat',background=bg)
-        #@-node:ekr.20051020120306.14:<< Create the outer frames >>
-        #@nl
-        #@    << Create the Find and Change panes >>
-        #@+node:ekr.20051020120306.15:<< Create the Find and Change panes >>
-        fc = Tk.Frame(outer, bd="1m",background=bg)
-        fc.pack(anchor="n", fill="x", expand=1)
-        
-        # Removed unused height/width params: using fractions causes problems in some locales!
-        fpane = Tk.Frame(fc, bd=1,background=bg)
-        cpane = Tk.Frame(fc, bd=1,background=bg)
-        
-        fpane.pack(anchor="n", expand=1, fill="x")
-        cpane.pack(anchor="s", expand=1, fill="x")
-        
-        # Create the labels and text fields...
-        flab = Tk.Label(fpane, width=8, text="Find:",background=bg)
-        clab = Tk.Label(cpane, width=8, text="Change:",background=bg)
-        
-        if self.optionsOnly:
-            # Use one-line boxes.
-            self.find_ctrl = ftxt = Tk.Text(
-                fpane,bd=1,relief="groove",height=1,width=25,name='find-text')
-            self.change_ctrl = ctxt = Tk.Text(
-                cpane,bd=1,relief="groove",height=1,width=25,name='change-text')
-        else:
-            # Use bigger boxes for scripts.
-            self.find_ctrl = ftxt = Tk.Text(
-                fpane,bd=1,relief="groove",height=3,width=15,name='find-text')
-            self.change_ctrl = ctxt = Tk.Text(
-                cpane,bd=1,relief="groove",height=3,width=15,name='change-text')
-        #@<< Bind Tab and control-tab >>
-        #@+node:ekr.20051020120306.16:<< Bind Tab and control-tab >>
-        def setFocus(w):
-            c = self.c
-            c.widgetWantsFocusNow(w)
-            g.app.gui.setSelectionRange(w,"1.0","1.0")
-            return "break"
-            
-        def toFind(event,w=ftxt): return setFocus(w)
-        def toChange(event,w=ctxt): return setFocus(w)
-            
-        def insertTab(w):
-            data = g.app.gui.getSelectionRange(w)
-            if data: start,end = data
-            else: start = end = g.app.gui.getInsertPoint(w)
-            g.app.gui.replaceSelectionRangeWithText(w,start,end,"\t")
-            return "break"
-        
-        def insertFindTab(event,w=ftxt): return insertTab(w)
-        def insertChangeTab(event,w=ctxt): return insertTab(w)
-        
-        ftxt.bind("<Tab>",toChange)
-        ctxt.bind("<Tab>",toFind)
-        ftxt.bind("<Control-Tab>",insertFindTab)
-        ctxt.bind("<Control-Tab>",insertChangeTab)
-        #@-node:ekr.20051020120306.16:<< Bind Tab and control-tab >>
-        #@nl
-        
-        if 0: # Add scrollbars.
-            fBar = Tk.Scrollbar(fpane,name='findBar')
-            cBar = Tk.Scrollbar(cpane,name='changeBar')
-            
-            for bar,txt in ((fBar,ftxt),(cBar,ctxt)):
-                txt['yscrollcommand'] = bar.set
-                bar['command'] = txt.yview
-                bar.pack(side="right", fill="y")
-                
-        if self.optionsOnly:
-            flab.pack(side="left") ; ftxt.pack(side="left")
-            clab.pack(side="left") ; ctxt.pack(side="left")
-        else:
-            flab.pack(side="left") ; ftxt.pack(side="right", expand=1, fill="x")
-            clab.pack(side="left") ; ctxt.pack(side="right", expand=1, fill="x")
-        #@-node:ekr.20051020120306.15:<< Create the Find and Change panes >>
-        #@nl
-        #@    << Create two columns of radio and checkboxes >>
-        #@+node:ekr.20051020120306.17:<< Create two columns of radio and checkboxes >>
-        columnsFrame = Tk.Frame(outer,relief="groove",bd=2,background=bg)
-        
-        columnsFrame.pack(expand=0,padx="7p",pady="2p")
-        
-        numberOfColumns = 2 # Number of columns
-        columns = [] ; radioLists = [] ; checkLists = []
-        for i in xrange(numberOfColumns):
-            columns.append(Tk.Frame(columnsFrame,bd=1))
-            radioLists.append([])
-            checkLists.append([])
-        
-        for i in xrange(numberOfColumns):
-            columns[i].pack(side="left",padx="1p") # fill="y" Aligns to top. padx expands columns.
-        
-        radioLists[0] = []
-        
-        checkLists[0] = [
-            # ("Scrip&t Change",self.dict["script_change"]),
-            ("Whole &Word", self.dict["whole_word"]),
-            ("&Ignore Case",self.dict["ignore_case"]),
-            ("Wrap &Around",self.dict["wrap"]),
-            ("&Reverse",    self.dict["reverse"]),
-            ('Rege&xp',     self.dict['pattern_match']),
-            ("Mark &Finds", self.dict["mark_finds"]),
-        ]
-        
-        radioLists[1] = [
-            (self.dict["radio-search-scope"],"&Entire Outline","entire-outline"),
-            (self.dict["radio-search-scope"],"&Suboutline Only","suboutline-only"),  
-            (self.dict["radio-search-scope"],"&Node Only","node-only"),
-        ]
-        
-        checkLists[1] = [
-            ("Search &Headline", self.dict["search_headline"]),
-            ("Search &Body",     self.dict["search_body"]),
-            ("Mark &Changes",    self.dict["mark_changes"]),
-        ]
-        
-        for i in xrange(numberOfColumns):
-            for var,name,val in radioLists[i]:
-                box = self.underlinedTkButton(
-                    "radio",columns[i],anchor="w",text=name,variable=var,value=val,background=bg)
-                box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
-                if val == None: box.button.configure(state="disabled")
-                box.bindHotKey(ftxt)
-                box.bindHotKey(ctxt)
-            for name,var in checkLists[i]:
-                box = self.underlinedTkButton(
-                    "check",columns[i],anchor="w",text=name,variable=var,background=bg)
-                box.button.pack(fill="x")
-                box.button.bind("<Button-1>", self.resetWrap)
-                box.bindHotKey(ftxt)
-                box.bindHotKey(ctxt)
-                if var is None: box.button.configure(state="disabled")
-        #@-node:ekr.20051020120306.17:<< Create two columns of radio and checkboxes >>
-        #@nl
-        
-        if  self.optionsOnly:
-            buttons = []
-        else:
-            #@        << Create two columns of buttons >>
-            #@+node:ekr.20051020120306.18:<< Create two columns of buttons >>
-            # Create the alignment panes.
-            buttons  = Tk.Frame(outer,background=bg)
-            buttons1 = Tk.Frame(buttons,bd=1,background=bg)
-            buttons2 = Tk.Frame(buttons,bd=1,background=bg)
-            buttons.pack(side='top',expand=1)
-            buttons1.pack(side='left')
-            buttons2.pack(side='right')
-            
-            width = 15 ; defaultText = 'Find' ; buttons = []
-            
-            for text,boxKind,frame,callback in (
-                # Column 1...
-                ('Find','button',buttons1,self.findButtonCallback),
-                # ('Incremental','check', buttons1,None),
-                    ## variable=self.dict['incremental'])
-                    ## May affect the file format.
-                ('Find All','button',buttons1,self.findAllButton),
-                # Column 2...
-                ('Change','button',buttons2,self.changeButton),
-                ('Change, Then Find','button',buttons2,self.changeThenFindButton),
-                ('Change All','button',buttons2,self.changeAllButton),
-            ):
-                w = self.underlinedTkButton(boxKind,frame,
-                    text=text,command=callback)
-                buttons.append(w)
-                if text == defaultText:
-                    w.button.configure(width=width-1,bd=4)
-                elif boxKind != 'check':
-                    w.button.configure(width=width)
-                w.button.pack(side='top',anchor='w',pady=2,padx=2)
-            #@-node:ekr.20051020120306.18:<< Create two columns of buttons >>
-            #@nl
-        
-        # Pack this last so buttons don't get squashed when frame is resized.
-        self.outerScrolledFrame.pack(side='top',expand=1,fill='both',padx=2,pady=2)
-    #@-node:ekr.20051020120306.13:createFrame (findTab)
-    #@+node:ekr.20051020120306.19:find.init
-    def init (self,c):
-        
-        # g.trace('Find Tab')
-    
-        # N.B.: separate c.ivars are much more convenient than a dict.
-        for key in self.intKeys:
-            # New in 4.3: get ivars from @settings.
-            val = c.config.getBool(key)
-            setattr(self,key,val)
-            val = g.choose(val,1,0) # Work around major Tk problem.
-            self.dict[key].set(val)
-            # g.trace(key,val)
-    
-        #@    << set find/change widgets >>
-        #@+node:ekr.20051020120306.20:<< set find/change widgets >>
-        self.find_ctrl.delete("1.0","end")
-        self.change_ctrl.delete("1.0","end")
-        
-        # New in 4.3: Get setting from @settings.
-        for w,setting,defaultText in (
-            (self.find_ctrl,"find_text",'<find pattern here>'),
-            (self.change_ctrl,"change_text",''),
-        ):
-            s = c.config.getString(setting)
-            if not s: s = defaultText
-            w.insert("end",s)
-        #@-node:ekr.20051020120306.20:<< set find/change widgets >>
-        #@nl
-        #@    << set radio buttons from ivars >>
-        #@+node:ekr.20051020120306.21:<< set radio buttons from ivars >>
-        found = False
-        for var,setting in (
-            ("pattern_match","pattern-search"),
-            #("script_search","script-search")
-        ):
-            val = self.dict[var].get()
-            if val:
-                self.dict["radio-find-type"].set(setting)
-                found = True ; break
-        if not found:
-            self.dict["radio-find-type"].set("plain-search")
-            
-        found = False
-        for var,setting in (
-            ("suboutline_only","suboutline-only"),
-            ("node_only","node-only"),
-            # ("selection_only","selection-only")
-        ):
-            val = self.dict[var].get()
-            if val:
-                self.dict["radio-search-scope"].set(setting)
-                found = True ; break
-        if not found:
-            self.dict["radio-search-scope"].set("entire-outline")
-        #@-node:ekr.20051020120306.21:<< set radio buttons from ivars >>
-        #@nl
-    #@-node:ekr.20051020120306.19:find.init
-    #@-node:ekr.20051020120306.10:Birth & death
-    #@+node:ekr.20051020120306.22:find.update_ivars
-    def update_ivars (self):
-        
-        """Called just before doing a find to update ivars from the find panel."""
-    
-        self.p = self.c.currentPosition()
-        self.v = self.p.v
-    
-        for key in self.intKeys:
-            val = self.dict[key].get()
-            setattr(self, key, val)
-            # g.trace(key,val)
-    
-        search_scope = self.dict["radio-search-scope"].get()
-        self.suboutline_only = g.choose(search_scope == "suboutline-only",1,0)
-        self.node_only       = g.choose(search_scope == "node-only",1,0)
-    
-        # The caller is responsible for removing most trailing cruft.
-        # Among other things, this allows Leo to search for a single trailing space.
-        s = self.find_ctrl.get("1.0","end")
-        s = g.toUnicode(s,g.app.tkEncoding)
-        if s and s[-1] in ('\r','\n'):
-            s = s[:-1]
-        self.find_text = s
-    
-        s = self.change_ctrl.get("1.0","end")
-        if s and s[-1] in ('\r','\n'):
-            s = s[:-1]
-        s = g.toUnicode(s,g.app.tkEncoding)
-        self.change_text = s
-    #@-node:ekr.20051020120306.22:find.update_ivars
-    #@+node:ekr.20060221074900:Callbacks
-    #@+node:ekr.20060221074900.1:findButtonCallback
-    def findButtonCallback(self,event=None):
-        
-        self.findButton()
-        return 'break'
-    #@-node:ekr.20060221074900.1:findButtonCallback
-    #@+node:ekr.20051020120306.25:hideTab
-    def hideTab (self,event=None):
-        
-        c = self.c
-        c.frame.log.selectTab('Log')
-        c.bodyWantsFocus()
-    #@-node:ekr.20051020120306.25:hideTab
-    #@-node:ekr.20060221074900:Callbacks
-    #@+node:ekr.20051024192602: Top level
-    #@+node:ekr.20060209064832:findAllCommand
-    def findAllCommand (self,event=None):
-    
-        self.setup_command()
-        self.findAll()
-    #@-node:ekr.20060209064832:findAllCommand
-    #@+node:ekr.20060204120158.1:findAgainCommand
-    def findAgainCommand (self):
-        
-        s = g.app.gui.getAllText(self.find_ctrl)
-        
-        if s and s != '<find pattern here>':
-            self.findNextCommand()
-            return True
-        else:
-            # Tell the caller that to get the find args.
-            return False
-    #@-node:ekr.20060204120158.1:findAgainCommand
-    #@+node:ekr.20060128075225:cloneFindAllCommand
-    def cloneFindAllCommand (self,event=None):
-        
-        self.setup_command()
-        self.clone_find_all = True
-        self.findAll()
-        self.clone_find_all = False
-    #@-node:ekr.20060128075225:cloneFindAllCommand
-    #@+node:ekr.20051024192642.2:findNext/PrefCommand
-    def findNextCommand (self,event=None):
-    
-        self.setup_command()
-        self.findNext()
-        
-    def findPrevCommand (self,event=None):
-        
-        self.setup_command()
-        self.reverse = not self.reverse
-        self.findNext()
-        self.reverse = not self.reverse
-    #@-node:ekr.20051024192642.2:findNext/PrefCommand
-    #@+node:ekr.20051024192642.3:change/ThenFindCommand
-    def changeCommand (self,event=None):
-    
-        self.setup_command()
-        self.change()
-        
-    def changeAllCommand (self,event=None):
-    
-        self.setup_command()
-        self.changeAll()
-        
-    def changeThenFindCommand(self,event=None):
-        
-        self.setup_command()
-        self.changeThenFind()
-    #@-node:ekr.20051024192642.3:change/ThenFindCommand
-    #@-node:ekr.20051024192602: Top level
-    #@+node:ekr.20051020120306.26:bringToFront
-    def bringToFront (self):
-    
-        """Bring the Find Tab to the front and select the entire find text."""
-    
-        c = self.c ; w = self.find_ctrl
-            
-        c.widgetWantsFocusNow(w)
-        g.app.gui.selectAllText(w)
-        c.widgetWantsFocus(w)
-    #@-node:ekr.20051020120306.26:bringToFront
-    #@+node:ekr.20051020120306.27:selectAllFindText
-    def selectAllFindText (self,event=None):
-        
-        __pychecker__ = '--no-argsused' # event
-    
-        w = self.frame.focus_get()
-        if g.app.gui.isTextWidget(w):
-            g.app.gui.setTextSelection(w,"1.0","end")
-    
-        return "break"
-    #@-node:ekr.20051020120306.27:selectAllFindText
-    #@+node:ekr.20051020120306.28:Tkinter wrappers
-    def init_s_ctrl (self,s):
-        t = self.s_ctrl
-        t.delete("1.0","end")
-        t.insert("end",s)
-        t.mark_set("insert",g.choose(self.reverse,"end","1.0"))
-        return t
-    #@-node:ekr.20051020120306.28:Tkinter wrappers
-    #@+node:ekr.20051020120306.1:class underlinedTkButton
-    class underlinedTkButton:
-        
-        #@    @+others
-        #@+node:ekr.20051020120306.2:__init__
-        def __init__(self,buttonType,parent_widget,**keywords):
-        
-            self.buttonType = buttonType
-            self.parent_widget = parent_widget
-            self.hotKey = None
-            text = keywords['text']
-        
-            #@    << set self.hotKey if '&' is in the string >>
-            #@+node:ekr.20051020120306.3:<< set self.hotKey if '&' is in the string >>
-            index = text.find('&')
-            
-            if index > -1:
-            
-                if index == len(text)-1:
-                    # The word ends in an ampersand.  Ignore it; there is no hot key.
-                    text = text[:-1]
-                else:
-                    self.hotKey = text [index + 1]
-                    text = text[:index] + text[index+1:]
-            #@-node:ekr.20051020120306.3:<< set self.hotKey if '&' is in the string >>
-            #@nl
-        
-            # Create the button...
-            if self.hotKey:
-                keywords['text'] = text
-                keywords['underline'] = index
-        
-            if buttonType.lower() == "button":
-                self.button = Tk.Button(parent_widget,keywords)
-            elif buttonType.lower() == "check":
-                self.button = Tk.Checkbutton(parent_widget,keywords)
-            elif buttonType.lower() == "radio":
-                self.button = Tk.Radiobutton(parent_widget,keywords)
-            else:
-                g.trace("bad buttonType")
-            
-            self.text = text # for traces
-        #@-node:ekr.20051020120306.2:__init__
-        #@+node:ekr.20051020120306.4:bindHotKey
-        def bindHotKey (self,widget):
-            
-            if self.hotKey:
-                for key in (self.hotKey.lower(),self.hotKey.upper()):
-                    widget.bind("<Alt-%s>" % key,self.buttonCallback)
-        #@-node:ekr.20051020120306.4:bindHotKey
-        #@+node:ekr.20051020120306.5:buttonCallback
-        # The hot key has been hit.  Call the button's command.
-        
-        def buttonCallback (self, event=None):
-            
-            __pychecker__ = '--no-argsused' # the event param must be present.
-        
-            # g.trace(self.text)
-        
-            self.button.invoke ()
-            
-            # See if this helps.
-            return 'break'
-        #@-node:ekr.20051020120306.5:buttonCallback
-        #@-others
-    #@-node:ekr.20051020120306.1:class underlinedTkButton
-    #@-others
-#@-node:ekr.20051020120306.6:class findTab (leoFind.leoFind)
-#@+node:ekr.20050920084036.257:class searchCommandsClass
+#@-node:AGP.20250415230112.1158:class minibufferFind( (the findHandler)
+#@+node:AGP.20250415230112.1184:class searchCommandsClass
 class searchCommandsClass (baseEditCommandsClass):
     
     '''Implements many kinds of searches.'''
 
     #@    @+others
-    #@+node:ekr.20050920084036.258: ctor (searchCommandsClass)
+    #@+node:AGP.20250415230112.1185: ctor (searchCommandsClass)
     def __init__ (self,c):
         
         # g.trace('searchCommandsClass')
@@ -7766,8 +7230,8 @@ class searchCommandsClass (baseEditCommandsClass):
         self.ignoreCase = None
         self.forward = None
         self.regexp = None
-    #@-node:ekr.20050920084036.258: ctor (searchCommandsClass)
-    #@+node:AGP.20230220141809:init()
+    #@-node:AGP.20250415230112.1185: ctor (searchCommandsClass)
+    #@+node:AGP.20250415230112.1186:init()
     def init (self):    #agp
         
         #if self.finder == None:
@@ -7777,8 +7241,8 @@ class searchCommandsClass (baseEditCommandsClass):
         
         pass
     #@nonl
-    #@-node:AGP.20230220141809:init()
-    #@+node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
+    #@-node:AGP.20250415230112.1186:init()
+    #@+node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
     def getPublicCommands (self):
         
         return {
@@ -7833,9 +7297,9 @@ class searchCommandsClass (baseEditCommandsClass):
             'word-search-forward':                  self.wordSearchForward,
             'word-search-backward':                 self.wordSearchBackward,
         }
-    #@-node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
-    #@+node:ekr.20060123131421:Top-level methods
-    #@+node:ekr.20051022212004:Find Tab commands
+    #@-node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
+    #@+node:AGP.20250415230112.1188:Top-level methods
+    #@+node:AGP.20250415230112.1189:Find Tab commands
     # Just open the Find tab if it has never been opened.
     # For minibuffer commands, it would be good to force the Find tab to be visible.
     # However, this leads to unfortunate confusion when executed from a shortcut.
@@ -7871,8 +7335,8 @@ class searchCommandsClass (baseEditCommandsClass):
         '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
         self.finder.changeThenFindCommand()
             
-    #@-node:ekr.20051022212004:Find Tab commands
-    #@+node:ekr.20060124115801:getHandler
+    #@-node:AGP.20250415230112.1189:Find Tab commands
+    #@+node:AGP.20250415230112.1190:getHandler
     def getHandler(self,show=False):
         
         '''Return the minibuffer handler, creating it if necessary.'''
@@ -7887,8 +7351,8 @@ class searchCommandsClass (baseEditCommandsClass):
             self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
     
         return self.minibufferFindHandler
-    #@-node:ekr.20060124115801:getHandler
-    #@+node:ekr.20060123115459:Find options wrappers
+    #@-node:AGP.20250415230112.1190:getHandler
+    #@+node:AGP.20250415230112.1191:Find options wrappers
     def setFindScopeEveryWhere (self, event):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
@@ -7940,8 +7404,8 @@ class searchCommandsClass (baseEditCommandsClass):
         
     def setFindScope (self, where):  self.getHandler().setFindScope(where)
     def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
-    #@-node:ekr.20060123115459:Find options wrappers
-    #@+node:ekr.20060124093828:Find wrappers
+    #@-node:AGP.20250415230112.1191:Find options wrappers
+    #@+node:AGP.20250415230112.1192:Find wrappers
     def cloneFindAll (self,event):
         '''Do search-with-present-options and print all matches in the log pane. It
         also creates a node at the beginning of the outline containing clones of all
@@ -7993,8 +7457,8 @@ class searchCommandsClass (baseEditCommandsClass):
         string in the Find tab and executes a search based on all the settings in
         the Find tab. Recommended as the default search command.'''
         self.getHandler().searchWithPresentOptions(event)
-    #@-node:ekr.20060124093828:Find wrappers
-    #@+node:ekr.20060204120158.2:findAgain
+    #@-node:AGP.20250415230112.1192:Find wrappers
+    #@+node:AGP.20250415230112.1193:findAgain
     def findAgain (self,event):
     
         '''The find-again command is the same as the find-tab-find-next command
@@ -8007,20 +7471,20 @@ class searchCommandsClass (baseEditCommandsClass):
         # In that case, we revert to search-with-present-options.
         if not h.findAgain(event):
             h.searchWithPresentOptions(event)
-    #@-node:ekr.20060204120158.2:findAgain
-    #@-node:ekr.20060123131421:Top-level methods
+    #@-node:AGP.20250415230112.1193:findAgain
+    #@-node:AGP.20250415230112.1188:Top-level methods
     #@-others
-#@-node:ekr.20050920084036.257:class searchCommandsClass
-#@-node:ekr.20051023094009:Search classes
-#@+node:ekr.20051025071455:Spell classes
+#@-node:AGP.20250415230112.1184:class searchCommandsClass
+#@-node:AGP.20250415230112.1157:Search classes
+#@+node:AGP.20250415230112.1194:Spell classes
 #@+others
-#@+node:ekr.20051025071455.1:class spellCommandsClass
+#@+node:AGP.20250415230112.1195:class spellCommandsClass
 class spellCommandsClass (baseEditCommandsClass):
     
     '''Commands to support the Spell Tab.'''
 
     #@    @+others
-    #@+node:ekr.20051025080056:ctor
+    #@+node:AGP.20250415230112.1196:ctor
     def __init__ (self,c):
     
         baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -8028,8 +7492,8 @@ class spellCommandsClass (baseEditCommandsClass):
         self.handler = None
         
         # All the work happens when we first open the frame.
-    #@-node:ekr.20051025080056:ctor
-    #@+node:ekr.20051025080420:getPublicCommands (searchCommandsClass)
+    #@-node:AGP.20250415230112.1196:ctor
+    #@+node:AGP.20250415230112.1197:getPublicCommands (searchCommandsClass)
     def getPublicCommands (self):
         
         return {
@@ -8040,8 +7504,8 @@ class spellCommandsClass (baseEditCommandsClass):
             'spell-ignore':             self.ignore,
             'hide-spell-tab':           self.hide,
         }
-    #@-node:ekr.20051025080420:getPublicCommands (searchCommandsClass)
-    #@+node:ekr.20051025080633:openSpellTab
+    #@-node:AGP.20250415230112.1197:getPublicCommands (searchCommandsClass)
+    #@+node:AGP.20250415230112.1198:openSpellTab
     def openSpellTab (self,event=None):
         
         '''Open the Spell Checker tab in the log pane.'''
@@ -8061,8 +7525,8 @@ class spellCommandsClass (baseEditCommandsClass):
             self.handler = spellTab(c,f)
             
         self.handler.bringToFront()
-    #@-node:ekr.20051025080633:openSpellTab
-    #@+node:ekr.20051025080420.1:commands...
+    #@-node:AGP.20250415230112.1198:openSpellTab
+    #@+node:AGP.20250415230112.1199:commands...
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
     
@@ -8111,559 +7575,17 @@ class spellCommandsClass (baseEditCommandsClass):
             self.handler.ignore()
         else:
             self.openSpellTab()
-    #@-node:ekr.20051025080420.1:commands...
+    #@-node:AGP.20250415230112.1199:commands...
     #@-others
-#@-node:ekr.20051025071455.1:class spellCommandsClass
-#@+node:ekr.20051025071455.18:class spellTab (leoFind.leoFind)
-class spellTab(leoFind.leoFind):
-
-    """A class to create and manage Leo's Spell Check dialog."""
-    
-    #@    @+others
-    #@+node:ekr.20051025071455.19:Birth & death
-    #@+node:ekr.20051025071455.20:spellTab.__init__
-    def __init__(self,c,parentFrame):
-        
-        """Ctor for the Leo Spelling dialog."""
-    
-        leoFind.leoFind.__init__(self,c) # Call the base ctor.
-    
-        self.c = c
-        self.body = c.frame.body
-        self.currentWord = None
-        self.suggestions = []
-        self.messages = [] # List of message to be displayed when hiding the tab.
-        self.outerScrolledFrame = None
-        self.workCtrl = Tk.Text(None) # A text widget for scanning.
-        
-        self.loaded = self.init_aspell(c)
-        if self.loaded:
-            self.createSpellTab(parentFrame)
-            self.createBindings()
-    #@-node:ekr.20051025071455.20:spellTab.__init__
-    #@+node:ekr.20051025094004:init_aspell
-    def init_aspell (self,c):
-    
-        '''Init aspell and related ivars.  Return True if all went well.'''
-    
-        self.local_language_code = c.config.getString('spell_local_language_code') or 'en'
-    
-        self.dictionaryFileName = dictionaryFileName = (
-            c.config.getString('spell_local_dictionary') or
-            os.path.join(g.app.loadDir,"../","plugins",'spellpyx.txt'))
-        
-        if not dictionaryFileName or not g.os_path_exists(dictionaryFileName):
-            g.es_print('Can not open dictionary file: %s' % (
-                dictionaryFileName), color='red')
-            return False
-    
-        self.aspell = AspellClass(c,dictionaryFileName,self.local_language_code)
-        
-        # if not self.aspell.aspell:
-        if not self.aspell:
-            g.es_print('Can not open Aspell',color='red')
-            return False
-            
-        self.dictionary = self.readDictionary(dictionaryFileName)
-        return True
-    #@-node:ekr.20051025094004:init_aspell
-    #@+node:ekr.20051025071455.22:createSpellTab
-    def createSpellTab(self,parentFrame):
-    
-        """Create the Spell tab."""
-        
-        c = self.c
-        
-        # Set the common background color.
-        bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
-        
-        #@    << Create the outer frames >>
-        #@+node:ekr.20051113090322:<< Create the outer frames >>
-        self.outerScrolledFrame = Pmw.ScrolledFrame(
-            parentFrame,usehullsize = 1)
-        
-        self.outerFrame = outer = self.outerScrolledFrame.component('frame')
-        self.outerFrame.configure(background=bg)
-        
-        for z in ('borderframe','clipper','frame','hull'):
-            self.outerScrolledFrame.component(z).configure(
-                relief='flat',background=bg)
-        #@-node:ekr.20051113090322:<< Create the outer frames >>
-        #@nl
-        #@    << Create the text and suggestion panes >>
-        #@+node:ekr.20051025071455.23:<< Create the text and suggestion panes >>
-        f2 = Tk.Frame(outer,bg=bg)
-        f2.pack(side='top',expand=0,fill='x')
-        
-        self.wordLabel = Tk.Label(f2,text="Suggestions for:")
-        self.wordLabel.pack(side='left')
-        self.wordLabel.configure(font=('verdana',10,'bold'))
-        
-        fpane = Tk.Frame(outer,bg=bg,bd=2)
-        fpane.pack(side='top',expand=1,fill='both')
-        
-        self.listBox = Tk.Listbox(fpane,height=6,width=10,selectmode="single")
-        self.listBox.pack(side='left',expand=1,fill='both')
-        self.listBox.configure(font=('verdana',11,'normal'))
-        
-        listBoxBar = Tk.Scrollbar(fpane,name='listBoxBar')
-        
-        bar, txt = listBoxBar, self.listBox
-        txt ['yscrollcommand'] = bar.set
-        bar ['command'] = txt.yview
-        bar.pack(side='right',fill='y')
-        #@-node:ekr.20051025071455.23:<< Create the text and suggestion panes >>
-        #@nl
-        #@    << Create the spelling buttons >>
-        #@+node:ekr.20051025071455.24:<< Create the spelling buttons >>
-        # Create the alignment panes
-        buttons1 = Tk.Frame(outer,bd=1,bg=bg)
-        buttons2 = Tk.Frame(outer,bd=1,bg=bg)
-        buttons3 = Tk.Frame(outer,bd=1,bg=bg)
-        for w in (buttons1,buttons2,buttons3):
-            w.pack(side='top',expand=0,fill='x')
-        
-        buttonList = [] ; font = ('verdana',9,'normal') ; width = 12
-        for frame, text, command in (
-            (buttons1,"Find",self.onFindButton),
-            (buttons1,"Add",self.onAddButton),
-            (buttons2,"Change",self.onChangeButton),
-            (buttons2,"Change, Find",self.onChangeThenFindButton),
-            (buttons3,"Ignore",self.onIgnoreButton),
-            (buttons3,"Hide",self.onHideButton),
-        ):
-            b = Tk.Button(frame,font=font,width=width,text=text,command=command)
-            b.pack(side='left',expand=0,fill='none')
-            buttonList.append(b)
-        
-        # Used to enable or disable buttons.
-        (self.findButton,self.addButton,
-         self.changeButton, self.changeFindButton,
-         self.ignoreButton, self.hideButton) = buttonList
-        #@-node:ekr.20051025071455.24:<< Create the spelling buttons >>
-        #@nl
-        
-        # Pack last so buttons don't get squished.
-        self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
-        
-        self.fillbox([])
-        self.listBox.bind("<Double-1>",self.onChangeThenFindButton)
-        self.listBox.bind("<Button-1>",self.onSelectListBox)
-        self.listBox.bind("<Map>",self.onMap)
-    #@-node:ekr.20051025071455.22:createSpellTab
-    #@+node:ekr.20051025120920:createBindings (spellTab)
-    def createBindings (self):
-        
-        c = self.c ; k = c.k
-        widgets = (self.listBox, self.outerFrame)
-    
-        for w in widgets:
-    
-            # Bind shortcuts for the following commands...
-            for commandName,func in (
-                ('full-command',            k.fullCommand),
-                ('hide-spell-tab',          self.hide),
-                ('spell-add',               self.add),
-                ('spell-find',              self.find),
-                ('spell-ignore',            self.ignore),
-                ('spell-change-then-find',  self.changeThenFind),
-            ):
-                junk, bunchList = c.config.getShortcut(commandName)
-                for bunch in bunchList:
-                    accel = bunch.val
-                    shortcut = k.shortcutFromSetting(accel)
-                    if shortcut:
-                        # g.trace(shortcut,commandName)
-                        w.bind(shortcut,func)
-    #@-node:ekr.20051025120920:createBindings (spellTab)
-    #@+node:ekr.20051025071455.16:readDictionary
-    def readDictionary (self,fileName):
-    
-        """Read the dictionary of words which we use as a local dictionary
-        
-        Although Aspell itself has the functionality to handle this kind of things
-        we duplicate it here so that we can also use it for the "ignore" functionality
-        and so that in future a Python only solution could be developed."""
-        
-        d = {}
-    
-        try:
-            f = open(fileName,"r")
-        except IOError:
-            g.es("Unable to open local dictionary '%s' - using a blank one instead" % fileName)
-            return d
-    
-        try:
-            # Create the dictionary - there are better ways to do this
-            # in later Python's but we stick with this method for compatibility
-            for word in f.readlines():
-                d [word.strip().lower()] = 0
-        finally:
-            f.close()
-    
-        return d
-    #@-node:ekr.20051025071455.16:readDictionary
-    #@-node:ekr.20051025071455.19:Birth & death
-    #@+node:ekr.20051025071455.29:Buttons
-    #@+node:ekr.20051025071455.30:onAddButton
-    def onAddButton(self):
-        """Handle a click in the Add button in the Check Spelling dialog."""
-    
-        self.add()
-    #@-node:ekr.20051025071455.30:onAddButton
-    #@+node:ekr.20051025071455.31:onIgnoreButton
-    def onIgnoreButton(self,event=None):
-    
-        """Handle a click in the Ignore button in the Check Spelling dialog."""
-    
-        self.ignore()
-    #@-node:ekr.20051025071455.31:onIgnoreButton
-    #@+node:ekr.20051025071455.32:onChangeButton & onChangeThenFindButton
-    def onChangeButton(self,event=None):
-    
-        """Handle a click in the Change button in the Spell tab."""
-    
-        self.change()
-        self.updateButtons()
-        
-    
-    def onChangeThenFindButton(self,event=None):
-        
-        """Handle a click in the "Change, Find" button in the Spell tab."""
-    
-        if self.change():
-            self.find()
-        self.updateButtons()
-    #@-node:ekr.20051025071455.32:onChangeButton & onChangeThenFindButton
-    #@+node:ekr.20051025071455.33:onFindButton
-    def onFindButton(self):
-    
-        """Handle a click in the Find button in the Spell tab."""
-    
-        c = self.c
-        self.find()
-        self.updateButtons()
-        c.invalidateFocus()
-        c.bodyWantsFocusNow()
-    #@-node:ekr.20051025071455.33:onFindButton
-    #@+node:ekr.20051025071455.34:onHideButton
-    def onHideButton(self):
-        
-        """Handle a click in the Hide button in the Spell tab."""
-        
-        self.hide()
-    #@-node:ekr.20051025071455.34:onHideButton
-    #@-node:ekr.20051025071455.29:Buttons
-    #@+node:ekr.20051025071455.36:Commands
-    #@+node:ekr.20051025071455.37:add
-    def add(self,event=None):
-        """Add the selected suggestion to the dictionary."""
-        
-        try:
-            f = None
-            try:
-                # Rewrite the dictionary in alphabetical order.
-                f = open(self.dictionaryFileName, "r")
-                words = f.readlines()
-                f.close()
-                words = [word.strip() for word in words]
-                words.append(self.currentWord)
-                words.sort()
-                f = open(self.dictionaryFileName, "w")
-                for word in words:
-                    f.write("%s\n" % word)
-                f.flush()
-                f.close()
-                if 1:
-                    s = 'Spell: added %s' % self.currentWord
-                    self.messages.append(s)
-                else: # Too distracting.
-                    g.es("Adding ", color= "blue", newline= False) 
-                    g.es('%s' % self.currentWord)
-            except IOError:
-                g.es("Can not add %s to dictionary" % self.currentWord, color="red")
-        finally:
-            if f: f.close()
-            
-        self.dictionary[self.currentWord.lower()] = 0
-        self.onFindButton()
-    #@-node:ekr.20051025071455.37:add
-    #@+node:ekr.20051025071455.38:change
-    def change(self,event=None):
-        """Make the selected change to the text"""
-    
-        __pychecker__ = '--no-override --no-argsused'
-             # event param is not used, required, and different from base class.
-    
-        c = self.c ; body = self.body ; t = body.bodyCtrl
-        
-        selection = self.getSuggestion()
-        if selection:
-            start,end = oldSel = g.app.gui.getTextSelection(t)
-            if start:
-                if t.compare(start, ">", end):
-                    start,end = end,start
-                t.delete(start,end)
-                t.insert(start,selection)
-                g.app.gui.setTextSelection(t,start,start + "+%dc" % (len(selection)))
-                c.frame.body.onBodyChanged("Change",oldSel=oldSel)
-                c.invalidateFocus()
-                c.bodyWantsFocusNow()
-                return True
-    
-        # The focus must never leave the body pane.
-        c.invalidateFocus()
-        c.bodyWantsFocusNow()
-        return False
-    #@-node:ekr.20051025071455.38:change
-    #@+node:ekr.20051025071455.40:find
-    def find (self,event=None):
-        """Find the next unknown word."""
-    
-        c = self.c ; body = c.frame.body ; bodyCtrl = body.bodyCtrl
-    
-        # Reload the work pane from the present node.
-        s = bodyCtrl.get("1.0","end").rstrip()
-        self.workCtrl.delete("1.0","end")
-        self.workCtrl.insert("end",s)
-    
-        # Reset the insertion point of the work widget.
-        ins = bodyCtrl.index("insert")
-        self.workCtrl.mark_set("insert",ins)
-    
-        alts, word = self.findNextMisspelledWord()
-        self.currentWord = word # Need to remember this for 'add' and 'ignore'
-    
-        if alts:
-            self.fillbox(alts,word)
-            c.invalidateFocus()
-            c.bodyWantsFocusNow()
-            # Copy the working selection range to the body pane
-            start, end = g.app.gui.getTextSelection(self.workCtrl)
-            g.app.gui.setTextSelection(bodyCtrl,start,end)
-            bodyCtrl.see(start)
-        else:
-            g.es("no more misspellings")
-            self.fillbox([])
-            c.invalidateFocus()
-            c.bodyWantsFocusNow()
-    #@-node:ekr.20051025071455.40:find
-    #@+node:ekr.20051025121408:hide
-    def hide (self,event=None):
-        
-        self.c.frame.log.selectTab('Log')
-        
-        for message in self.messages:
-            g.es(message,color='blue')
-            
-        self.messages = []
-    #@-node:ekr.20051025121408:hide
-    #@+node:ekr.20051025071455.41:ignore
-    def ignore(self,event=None):
-    
-        """Ignore the incorrect word for the duration of this spell check session."""
-        
-        if 1: # Somewhat helpful: applies until the tab is destroyed.
-            s = 'Spell: ignore %s' % self.currentWord
-            self.messages.append(s)
-    
-        if 0: # Too distracting
-            g.es("Ignoring ", color= "blue", newline= False)
-            g.es('%s' % self.currentWord)
-    
-        self.dictionary[self.currentWord.lower()] = 0
-        self.onFindButton()
-    #@-node:ekr.20051025071455.41:ignore
-    #@-node:ekr.20051025071455.36:Commands
-    #@+node:ekr.20051025071455.42:Helpers
-    #@+node:ekr.20051025071455.43:bringToFront
-    def bringToFront (self):
-        
-        self.c.frame.log.selectTab('Spell')
-    #@-node:ekr.20051025071455.43:bringToFront
-    #@+node:ekr.20051025071455.44:fillbox
-    def fillbox(self, alts, word=None):
-        """Update the suggestions listbox in the Check Spelling dialog."""
-        
-        self.suggestions = alts
-        
-        if not word:
-            word = ""
-    
-        self.wordLabel.configure(text= "Suggestions for: " + word)
-        self.listBox.delete(0, "end")
-    
-        for i in xrange(len(self.suggestions)):
-            self.listBox.insert(i, self.suggestions[i])
-        
-        # This doesn't show up because we don't have focus.
-        if len(self.suggestions):
-            self.listBox.select_set(1)
-    #@-node:ekr.20051025071455.44:fillbox
-    #@+node:ekr.20051025071455.45:findNextMisspelledWord
-    def findNextMisspelledWord(self):
-        """Find the next unknown word."""
-        
-        c = self.c ; p = c.currentPosition()
-        aspell = self.aspell ; alts = None ; word = None
-       
-        try:
-            while 1:
-                p, word = self.findNextWord(p) 
-                if not p or not word:
-                    alts = None
-                    break
-                #@            << Skip word if ignored or in local dictionary >>
-                #@+node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
-                #@+at 
-                #@nonl
-                # We don't bother to call apell if the word is in our 
-                # dictionary. The dictionary contains both locally 'allowed' 
-                # words and 'ignored' words. We put the test before aspell 
-                # rather than after aspell because the cost of checking aspell 
-                # is higher than the cost of checking our local dictionary. 
-                # For small local dictionaries this is probably not True and 
-                # this code could easily be located after the aspell call
-                #@-at
-                #@@c
-                
-                if self.dictionary.has_key(word.lower()):
-                    continue
-                #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
-                #@nl
-                alts = aspell.processWord(word)
-                if alts:
-                    c.beginUpdate()
-                    c.frame.tree.expandAllAncestors(p)
-                    c.selectPosition(p)
-                    c.endUpdate()
-                    break
-        except:
-            g.es_exception()
-        return alts, word
-    #@-node:ekr.20051025071455.45:findNextMisspelledWord
-    #@+node:ekr.20051025071455.47:findNextWord
-    # Unicode characters may cause index problems.
-    
-    def findNextWord(self,p):
-    
-        """Scan for the next word, leaving the result in the work widget"""
-    
-        t = self.workCtrl
-    
-        # Allow quotes and underscores in the middle of words, but not at the beginning or end.
-        while 1:
-            line = t.get('insert wordstart','insert lineend')
-            # g.trace('insert',t.index('insert'),'insert wordstart',t.index('insert wordstart'))
-            # Start the word at the first letter.
-            i = 0
-            while i < len(line) and not g.isWordChar1(line[i]):
-                i += 1
-            if i < len(line):
-                # A non-empty word has been found.
-                line = t.get('insert wordstart','insert lineend')
-                j = i
-                while j < len(line) and g.isWordChar(line[j]):
-                    j += 1
-                word = line[i:j]
-                # This trace is important: it verifies that all words have actually been checked.
-                # g.trace(repr(word))
-                x1 = t.index('insert + %dc' % (i))
-                x2 = t.index('insert + %dc' % (i+len(word)))
-                g.app.gui.setTextSelection(t,x1,x2)
-                return p, word
-            else:
-                # End of the line. Bug fix: 9/8/05.
-                t.mark_set('insert','insert lineend + 1c')
-                if t.compare("insert",">=", "end - 1c"):
-                    p.moveToThreadNext()
-                    if not p: return None,None
-                    t.delete("1.0", "end")
-                    t.insert("end", p.bodyString())
-                    t.mark_set("insert", "1.0")
-                    
-        __pychecker__ = '--no-implicitreturns' # This is not really an implicit return.
-    #@nonl
-    #@-node:ekr.20051025071455.47:findNextWord
-    #@+node:ekr.20051025071455.48:getSuggestion
-    def getSuggestion(self):
-        """Return the selected suggestion from the listBox."""
-        
-        # Work around an old Python bug.  Convert strings to ints.
-        items = self.listBox.curselection()
-        try:
-            items = map(int, items)
-        except ValueError: pass
-    
-        if items:
-            n = items[0]
-            suggestion = self.suggestions[n]
-            return suggestion
-        else:
-            return None
-    #@-node:ekr.20051025071455.48:getSuggestion
-    #@+node:ekr.20051025071455.49:onMap
-    def onMap (self, event=None):
-        """Respond to a Tk <Map> event."""
-        
-        self.update(show= False, fill= False)
-    #@-node:ekr.20051025071455.49:onMap
-    #@+node:ekr.20051025071455.50:onSelectListBox
-    def onSelectListBox(self, event=None):
-        """Respond to a click in the selection listBox."""
-        
-        c = self.c
-        self.updateButtons()
-        c.bodyWantsFocus()
-    #@-node:ekr.20051025071455.50:onSelectListBox
-    #@+node:ekr.20051025071455.51:update
-    def update(self,show=True,fill=False):
-        
-        """Update the Spell Check dialog."""
-        
-        c = self.c
-        
-        if fill:
-            self.fillbox([])
-    
-        self.updateButtons()
-    
-        if show:
-            self.bringToFront()
-            c.bodyWantsFocus()
-    #@-node:ekr.20051025071455.51:update
-    #@+node:ekr.20051025071455.52:updateButtons
-    def updateButtons (self):
-    
-        """Enable or disable buttons in the Check Spelling dialog."""
-    
-        c = self.c
-    
-        start, end = g.app.gui.getTextSelection(c.frame.body.bodyCtrl)
-        state = g.choose(self.suggestions and start,"normal","disabled")
-    
-        self.changeButton.configure(state=state)
-        self.changeFindButton.configure(state=state)
-    
-        # state = g.choose(self.c.undoer.canRedo(),"normal","disabled")
-        # self.redoButton.configure(state=state)
-        # state = g.choose(self.c.undoer.canUndo(),"normal","disabled")
-        # self.undoButton.configure(state=state)
-    
-        self.addButton.configure(state='normal')
-        self.ignoreButton.configure(state='normal')
-    #@-node:ekr.20051025071455.52:updateButtons
-    #@-node:ekr.20051025071455.42:Helpers
-    #@-others
-#@-node:ekr.20051025071455.18:class spellTab (leoFind.leoFind)
-#@+node:ekr.20051025071455.6:class AspellClass
+#@-node:AGP.20250415230112.1195:class spellCommandsClass
+#@+node:AGP.20250415230112.1200:class AspellClass
 class AspellClass:
     
     """A wrapper class for Aspell spell checker"""
     
     #@    @+others
-    #@+node:ekr.20051025071455.7:Birth & death
-    #@+node:ekr.20051025071455.8:__init__
+    #@+node:AGP.20250415230112.1201:Birth & death
+    #@+node:AGP.20250415230112.1202:__init__
     def __init__ (self,c,local_dictionary_file,local_language_code):
     
         """Ctor for the Aspell class."""
@@ -8688,8 +7610,8 @@ class AspellClass:
             self.getAspellWithCtypes()
         else:
             self.getAspell()
-    #@-node:ekr.20051025071455.8:__init__
-    #@+node:ekr.20061017125710:getAspell
+    #@-node:AGP.20250415230112.1202:__init__
+    #@+node:AGP.20250415230112.1203:getAspell
     def getAspell (self):
     
         try:
@@ -8702,8 +7624,8 @@ class AspellClass:
         self.aspell = aspell
         self.sc = aspell and aspell.spell_checker(prefix=self.aspell_dir,lang=self.local_language_code)
     #@nonl
-    #@-node:ekr.20061017125710:getAspell
-    #@+node:ekr.20061018111331:getAspellWithCtypes
+    #@-node:AGP.20250415230112.1203:getAspell
+    #@+node:AGP.20250415230112.1204:getAspellWithCtypes
     def getAspellWithCtypes (self):
         
         import ctypes
@@ -8712,7 +7634,7 @@ class AspellClass:
         aspell = ctypes.CDLL(g.os_path_join(self.aspell_bin_dir, "aspell-15.dll"))
     
         #@    << define and configure aspell entry points >>
-        #@+node:ekr.20061018111933:<< define and configure aspell entry points >>
+        #@+node:AGP.20250415230112.1205:<< define and configure aspell entry points >>
         # new_aspell_config
         new_aspell_config = aspell.new_aspell_config 
         new_aspell_config.restype = c_int
@@ -8776,7 +7698,7 @@ class AspellClass:
         suggest.restype = c_int 
         suggest.argtypes = [c_int, c_char_p, c_int]
         #@nonl
-        #@-node:ekr.20061018111933:<< define and configure aspell entry points >>
+        #@-node:AGP.20250415230112.1205:<< define and configure aspell entry points >>
         #@nl
     
         # Remember these functions (bound methods).
@@ -8787,9 +7709,9 @@ class AspellClass:
         self.suggest = suggest
         self.word_list_elements = word_list_elements
         self.word_list_size = word_list_size
-    #@-node:ekr.20061018111331:getAspellWithCtypes
-    #@-node:ekr.20051025071455.7:Birth & death
-    #@+node:ekr.20051025071455.10:processWord
+    #@-node:AGP.20250415230112.1204:getAspellWithCtypes
+    #@-node:AGP.20250415230112.1201:Birth & death
+    #@+node:AGP.20250415230112.1206:processWord
     def processWord(self, word):
         """Pass a word to aspell and return the list of alternatives.
         OK: 
@@ -8811,8 +7733,8 @@ class AspellClass:
                 return None
             else:
                 return self.sc.suggest(word)
-    #@-node:ekr.20051025071455.10:processWord
-    #@+node:ekr.20061018101455.4:suggestions
+    #@-node:AGP.20250415230112.1206:processWord
+    #@+node:AGP.20250415230112.1207:suggestions
     def suggestions(self,word):
     
         "return list of words found"
@@ -8828,8 +7750,8 @@ class AspellClass:
                 aList.append(x)
         return aList
     #@nonl
-    #@-node:ekr.20061018101455.4:suggestions
-    #@+node:ekr.20051025071455.11:updateDictionary
+    #@-node:AGP.20250415230112.1207:suggestions
+    #@+node:AGP.20250415230112.1208:updateDictionary
     def updateDictionary(self):
     
         """Update the aspell dictionary from a list of words.
@@ -8848,15 +7770,15 @@ class AspellClass:
         except Exception, err:
             g.es_print("Unable to update local aspell dictionary: %s" % err)
             return False
-    #@-node:ekr.20051025071455.11:updateDictionary
+    #@-node:AGP.20250415230112.1208:updateDictionary
     #@-others
-#@-node:ekr.20051025071455.6:class AspellClass
+#@-node:AGP.20250415230112.1200:class AspellClass
 #@-others
-#@-node:ekr.20051025071455:Spell classes
+#@-node:AGP.20250415230112.1194:Spell classes
 #@-others
 
 #@<< define classesList >>
-#@+node:ekr.20050922104213:<< define classesList >>
+#@+node:AGP.20250415230112.1209:<< define classesList >>
 classesList = [
     ('abbrevCommands',      abbrevCommandsClass),
     ('bufferCommands',      bufferCommandsClass),
@@ -8875,7 +7797,7 @@ classesList = [
     ('searchCommands',      searchCommandsClass),
     ('spellCommands',       spellCommandsClass),
 ]
-#@-node:ekr.20050922104213:<< define classesList >>
+#@-node:AGP.20250415230112.1209:<< define classesList >>
 #@nl
-#@-node:ekr.20050710142719:@thin leoEditCommands.py
+#@-node:AGP.20250415230112.813:@thin leoEditCommands.py
 #@-leo

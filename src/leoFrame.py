@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3655:@thin leoFrame.py
+#@+node:AGP.20250415230112.2797:@thin leoFrame.py
 """The base classes for all Leo Windows, their body, log and tree panes, key bindings and menus.
 
 These classes should be overridden to create frames for a particular gui."""
@@ -16,7 +16,7 @@ import leoUndo
 import re
 
 #@<< About handling events >>
-#@+node:ekr.20031218072017.2410:<< About handling events >>
+#@+node:AGP.20250415230112.2798:<< About handling events >>
 #@+at
 # Leo must handle events or commands that change the text in the outline or 
 # body
@@ -50,19 +50,17 @@ import re
 # headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-at
-#@-node:ekr.20031218072017.2410:<< About handling events >>
+#@-node:AGP.20250415230112.2798:<< About handling events >>
 #@nl
 
 #@+others
-#@+node:ekr.20031218072017.3656:class leoBody
+#@+node:AGP.20250415230112.2799:class leoBody
 class leoBody:
     
     """The base class for the body pane in Leo windows."""
     
-    __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
     #@    @+others
-    #@+node:ekr.20031218072017.3657:leoBody.__init__
+    #@+node:AGP.20250415230112.2800:leoBody.__init__
     def __init__ (self,frame,parentFrame):
     
         self.frame = frame
@@ -76,18 +74,18 @@ class leoBody:
         
         # Must be overridden in subclasses...
         self.colorizer = None
-    #@-node:ekr.20031218072017.3657:leoBody.__init__
-    #@+node:ekr.20031218072017.3658:oops
+    #@-node:AGP.20250415230112.2800:leoBody.__init__
+    #@+node:AGP.20250415230112.2801:oops
     def oops (self):
         
         g.trace("leoBody oops:", g.callers(), "should be overridden in subclass")
-    #@-node:ekr.20031218072017.3658:oops
-    #@+node:ekr.20031218072017.3659:leoBody.setFontFromConfig
+    #@-node:AGP.20250415230112.2801:oops
+    #@+node:AGP.20250415230112.2802:leoBody.setFontFromConfig
     def setFontFromConfig (self,w=None):
         
         self.oops()
-    #@-node:ekr.20031218072017.3659:leoBody.setFontFromConfig
-    #@+node:ekr.20031218072017.3660:Must be overriden in subclasses
+    #@-node:AGP.20250415230112.2802:leoBody.setFontFromConfig
+    #@+node:AGP.20250415230112.2803:Must be overriden in subclasses
     def createBindings (self,w=None):
         self.oops()
     
@@ -102,12 +100,12 @@ class leoBody:
         
     def setBodyFontFromConfig (self):
         self.oops()
-    #@+node:ekr.20031218072017.3661:Bounding box (Tk spelling)
+    #@+node:AGP.20250415230112.2804:Bounding box (Tk spelling)
     def bbox(self,index):
     
         self.oops()
-    #@-node:ekr.20031218072017.3661:Bounding box (Tk spelling)
-    #@+node:ekr.20031218072017.3662:Color tags (Tk spelling)
+    #@-node:AGP.20250415230112.2804:Bounding box (Tk spelling)
+    #@+node:AGP.20250415230112.2805:Color tags (Tk spelling)
     def tag_add (self,tagName,index1,index2):
     
         self.oops()
@@ -126,8 +124,8 @@ class leoBody:
     
     def tag_remove (self,tagName,index1,index2):
         self.oops()
-    #@-node:ekr.20031218072017.3662:Color tags (Tk spelling)
-    #@+node:ekr.20031218072017.3663:Configuration (Tk spelling)
+    #@-node:AGP.20250415230112.2805:Color tags (Tk spelling)
+    #@+node:AGP.20250415230112.2806:Configuration (Tk spelling)
     def cget(self,*args,**keys):
         
         self.oops()
@@ -135,8 +133,8 @@ class leoBody:
     def configure (self,*args,**keys):
         
         self.oops()
-    #@-node:ekr.20031218072017.3663:Configuration (Tk spelling)
-    #@+node:ekr.20060528174558:Editors
+    #@-node:AGP.20250415230112.2806:Configuration (Tk spelling)
+    #@+node:AGP.20250415230112.2807:Editors
     def addEditor (self,event=None):
         pass
         
@@ -154,8 +152,8 @@ class leoBody:
         
     def updateEditors (self):
         pass
-    #@-node:ekr.20060528174558:Editors
-    #@+node:ekr.20031218072017.3664:Focus
+    #@-node:AGP.20250415230112.2807:Editors
+    #@+node:AGP.20250415230112.2808:Focus
     def hasFocus (self):
         
         self.oops()
@@ -163,8 +161,8 @@ class leoBody:
     def setFocus (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3664:Focus
-    #@+node:ekr.20031218072017.3665:Height & width
+    #@-node:AGP.20250415230112.2808:Focus
+    #@+node:AGP.20250415230112.2809:Height & width
     def getBodyPaneHeight (self):
         
         self.oops()
@@ -172,13 +170,13 @@ class leoBody:
     def getBodyPaneWidth (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3665:Height & width
-    #@+node:ekr.20031218072017.3666:Idle time...
+    #@-node:AGP.20250415230112.2809:Height & width
+    #@+node:AGP.20250415230112.2810:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
     
         self.oops()
-    #@-node:ekr.20031218072017.3666:Idle time...
-    #@+node:ekr.20031218072017.3667:Indices
+    #@-node:AGP.20250415230112.2810:Idle time...
+    #@+node:AGP.20250415230112.2811:Indices
     def adjustIndex (self,index,offset):
         self.oops()
         
@@ -199,8 +197,8 @@ class leoBody:
         
     def setPythonInsertionPoint (self,i,t=None,s=None):
         self.oops()
-    #@-node:ekr.20031218072017.3667:Indices
-    #@+node:ekr.20031218072017.3668:Insert point
+    #@-node:AGP.20250415230112.2811:Indices
+    #@+node:AGP.20250415230112.2812:Insert point
     def getBeforeInsertionPoint (self):
         self.oops()
     
@@ -224,13 +222,13 @@ class leoBody:
         
     def setInsertPointToStartOfLine (self,lineNumber): # zero-based line number
         self.oops()
-    #@-node:ekr.20031218072017.3668:Insert point
-    #@+node:ekr.20031218072017.3669:Menus
+    #@-node:AGP.20250415230112.2812:Insert point
+    #@+node:AGP.20250415230112.2813:Menus
     def bind (self,*args,**keys):
         
         self.oops()
-    #@-node:ekr.20031218072017.3669:Menus
-    #@+node:ekr.20031218072017.3670:Selection
+    #@-node:AGP.20250415230112.2813:Menus
+    #@+node:AGP.20250415230112.2814:Selection
     def deleteTextSelection (self):
         self.oops()
         
@@ -248,9 +246,9 @@ class leoBody:
         
     def setTextSelection (self,i,j=None,insert='sel.end'):
         self.oops()
-    #@-node:ekr.20031218072017.3670:Selection
-    #@+node:ekr.20031218072017.3671:Text
-    #@+node:ekr.20031218072017.3672:delete...
+    #@-node:AGP.20250415230112.2814:Selection
+    #@+node:AGP.20250415230112.2815:Text
+    #@+node:AGP.20250415230112.2816:delete...
     def deleteAllText(self):
         self.oops()
     
@@ -268,8 +266,8 @@ class leoBody:
         
     def deleteRange (self,index1,index2):
         self.oops()
-    #@-node:ekr.20031218072017.3672:delete...
-    #@+node:ekr.20031218072017.3673:get...
+    #@-node:AGP.20250415230112.2816:delete...
+    #@+node:AGP.20250415230112.2817:get...
     def getAllText (self):
         self.oops()
         
@@ -290,8 +288,8 @@ class leoBody:
         
     def getTextRange (self,index1,index2):
         self.oops()
-    #@-node:ekr.20031218072017.3673:get...
-    #@+node:ekr.20031218072017.3674:Insert...
+    #@-node:AGP.20250415230112.2817:get...
+    #@+node:AGP.20250415230112.2818:Insert...
     def insertAtInsertPoint (self,s):
         
         self.oops()
@@ -303,13 +301,13 @@ class leoBody:
     def insertAtStartOfLine (self,lineNumber,s):
         
         self.oops()
-    #@-node:ekr.20031218072017.3674:Insert...
-    #@+node:ekr.20031218072017.3675:setSelectionAreas
+    #@-node:AGP.20250415230112.2818:Insert...
+    #@+node:AGP.20250415230112.2819:setSelectionAreas
     def setSelectionAreas (self,before,sel,after):
         self.oops()
-    #@-node:ekr.20031218072017.3675:setSelectionAreas
-    #@-node:ekr.20031218072017.3671:Text
-    #@+node:ekr.20031218072017.3676:Visibility & scrolling
+    #@-node:AGP.20250415230112.2819:setSelectionAreas
+    #@-node:AGP.20250415230112.2815:Text
+    #@+node:AGP.20250415230112.2820:Visibility & scrolling
     def makeIndexVisible (self,index):
         self.oops()
         
@@ -327,9 +325,9 @@ class leoBody:
         
     def scrollDown (self):
         self.oops()
-    #@-node:ekr.20031218072017.3676:Visibility & scrolling
-    #@-node:ekr.20031218072017.3660:Must be overriden in subclasses
-    #@+node:ekr.20031218072017.3677:Coloring
+    #@-node:AGP.20250415230112.2820:Visibility & scrolling
+    #@-node:AGP.20250415230112.2803:Must be overriden in subclasses
+    #@+node:AGP.20250415230112.2821:Coloring
     # It's weird to have the tree class be responsible for coloring the body pane!
     
     def getColorizer(self):
@@ -340,34 +338,23 @@ class leoBody:
     
         self.colorizer.colorize(p.copy(),incremental)
     
-    def recolor_range(self,p,leading,trailing):
-        
-        self.colorizer.recolor_range(p.copy(),leading,trailing)
     
-    def recolor(self,p,incremental=False):
-        
-        if 0: # Do immediately
-            self.colorizer.colorize(p.copy(),incremental)
-        else: # Do at idle time
-            self.colorizer.schedule(p.copy(),incremental)
         
     def updateSyntaxColorer(self,p):
         
         return self.colorizer.updateSyntaxColorer(p.copy())
-    #@-node:ekr.20031218072017.3677:Coloring
+    #@-node:AGP.20250415230112.2821:Coloring
     #@-others
-#@-node:ekr.20031218072017.3656:class leoBody
-#@+node:ekr.20031218072017.3678:class leoFrame
+#@-node:AGP.20250415230112.2799:class leoBody
+#@+node:AGP.20250415230112.2822:class leoFrame
 class leoFrame:
     
     """The base class for all Leo windows."""
     
-    __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
     instances = 0
     
     #@    @+others
-    #@+node:ekr.20031218072017.3679:  leoFrame.__init__
+    #@+node:AGP.20250415230112.2823:  leoFrame.__init__
     def __init__ (self,gui):
         
         self.c = None # Must be created by subclasses.
@@ -397,9 +384,9 @@ class leoFrame:
         self.startupWindow=False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
-    #@-node:ekr.20031218072017.3679:  leoFrame.__init__
-    #@+node:ekr.20031218072017.3680: Must be defined in subclasses
-    #@+node:ekr.20031218072017.3681: gui-dependent commands
+    #@-node:AGP.20250415230112.2823:  leoFrame.__init__
+    #@+node:AGP.20250415230112.2824: Must be defined in subclasses
+    #@+node:AGP.20250415230112.2825: gui-dependent commands
     # In the Edit menu...
     def OnCopy  (self,event=None): self.oops()
     def OnCut   (self,event=None): self.oops()
@@ -447,8 +434,8 @@ class leoFrame:
     
     # In help menu...
     def leoHelp (self,event=None): self.oops()
-    #@-node:ekr.20031218072017.3681: gui-dependent commands
-    #@+node:ekr.20031218072017.3682:bringToFront, deiconify, lift & update
+    #@-node:AGP.20250415230112.2825: gui-dependent commands
+    #@+node:AGP.20250415230112.2826:bringToFront, deiconify, lift & update
     def bringToFront (self):
         
         self.oops()
@@ -464,27 +451,25 @@ class leoFrame:
     def update (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3682:bringToFront, deiconify, lift & update
-    #@+node:ekr.20031218072017.3683:config stuff...
-    #@+node:ekr.20031218072017.3684:resizePanesToRatio
+    #@-node:AGP.20250415230112.2826:bringToFront, deiconify, lift & update
+    #@+node:AGP.20250415230112.2827:config stuff...
+    #@+node:AGP.20250415230112.2828:resizePanesToRatio
     def resizePanesToRatio (self,ratio,secondary_ratio):
         
         pass
-    #@-node:ekr.20031218072017.3684:resizePanesToRatio
-    #@+node:ekr.20031218072017.3685:setInitialWindowGeometry
+    #@-node:AGP.20250415230112.2828:resizePanesToRatio
+    #@+node:AGP.20250415230112.2829:setInitialWindowGeometry
     def setInitialWindowGeometry (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3685:setInitialWindowGeometry
-    #@+node:ekr.20031218072017.3686:setTopGeometry
+    #@-node:AGP.20250415230112.2829:setInitialWindowGeometry
+    #@+node:AGP.20250415230112.2830:setTopGeometry
     def setTopGeometry (self,w,h,x,y,adjustSize=True):
         
-        __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
-        
         self.oops()
-    #@-node:ekr.20031218072017.3686:setTopGeometry
-    #@-node:ekr.20031218072017.3683:config stuff...
-    #@+node:ekr.20041222055747:leoFrame.unpack/repack...
+    #@-node:AGP.20250415230112.2830:setTopGeometry
+    #@-node:AGP.20250415230112.2827:config stuff...
+    #@+node:AGP.20250415230112.2831:leoFrame.unpack/repack...
     def repackBodyPane (self):
         
         self.oops()
@@ -500,22 +485,22 @@ class leoFrame:
     def unpackBodyPane (self):
         
         self.oops()
-    #@-node:ekr.20041222055747:leoFrame.unpack/repack...
-    #@-node:ekr.20031218072017.3680: Must be defined in subclasses
-    #@+node:ekr.20031218072017.3687:setTabWidth
+    #@-node:AGP.20250415230112.2831:leoFrame.unpack/repack...
+    #@-node:AGP.20250415230112.2824: Must be defined in subclasses
+    #@+node:AGP.20250415230112.2832:setTabWidth
     def setTabWidth (self,w):
         
         # Subclasses may override this to affect drawing.
         self.tab_width = w
-    #@-node:ekr.20031218072017.3687:setTabWidth
-    #@+node:ekr.20031218072017.3688:getTitle & setTitle
+    #@-node:AGP.20250415230112.2832:setTabWidth
+    #@+node:AGP.20250415230112.2833:getTitle & setTitle
     def getTitle (self):
         return self.title
         
     def setTitle (self,title):
         self.title = title
-    #@-node:ekr.20031218072017.3688:getTitle & setTitle
-    #@+node:ekr.20031218072017.3689:initialRatios
+    #@-node:AGP.20250415230112.2833:getTitle & setTitle
+    #@+node:AGP.20250415230112.2834:initialRatios
     def initialRatios (self):
         
         c = self.c
@@ -536,8 +521,8 @@ class leoFrame:
     
         # g.trace(r,r2)
         return verticalFlag,r,r2
-    #@-node:ekr.20031218072017.3689:initialRatios
-    #@+node:ekr.20031218072017.3690:longFileName & shortFileName
+    #@-node:AGP.20250415230112.2834:initialRatios
+    #@+node:AGP.20250415230112.2835:longFileName & shortFileName
     def longFileName (self):
     
         return self.c.mFileName
@@ -545,13 +530,13 @@ class leoFrame:
     def shortFileName (self):
     
         return g.shortFileName(self.c.mFileName)
-    #@-node:ekr.20031218072017.3690:longFileName & shortFileName
-    #@+node:ekr.20031218072017.3691:oops
+    #@-node:AGP.20250415230112.2835:longFileName & shortFileName
+    #@+node:AGP.20250415230112.2836:oops
     def oops(self):
         
         print "leoFrame oops:", g.callers(), "should be overridden in subclass"
-    #@-node:ekr.20031218072017.3691:oops
-    #@+node:ekr.20031218072017.3692:promptForSave
+    #@-node:AGP.20250415230112.2836:oops
+    #@+node:AGP.20250415230112.2837:promptForSave
     def promptForSave (self):
         
         """Prompt the user to save changes.
@@ -574,7 +559,7 @@ class leoFrame:
         else:
             if not c.mFileName:
                 #@            << Put up a file save dialog to set mFileName >>
-                #@+node:ekr.20031218072017.3693:<< Put up a file save dialog to set mFileName >>
+                #@+node:AGP.20250415230112.2838:<< Put up a file save dialog to set mFileName >>
                 # Make sure we never pass None to the ctor.
                 if not c.mFileName:
                     c.mFileName = ""
@@ -585,15 +570,15 @@ class leoFrame:
                     filetypes=[("Leo files", "*.leo")],
                     defaultextension=".leo")
                 c.bringToFront()
-                #@-node:ekr.20031218072017.3693:<< Put up a file save dialog to set mFileName >>
+                #@-node:AGP.20250415230112.2838:<< Put up a file save dialog to set mFileName >>
                 #@nl
             if c.mFileName:
                 ok = c.fileCommands.save(c.mFileName)
                 return not ok # New in 4.2: Veto if the save did not succeed.
             else:
                 return True # Veto.
-    #@-node:ekr.20031218072017.3692:promptForSave
-    #@+node:ekr.20031218072017.1375:scanForTabWidth
+    #@-node:AGP.20250415230112.2837:promptForSave
+    #@+node:AGP.20250415230112.2839:scanForTabWidth
     # Similar to code in scanAllDirectives.
     
     def scanForTabWidth (self,p):
@@ -604,19 +589,19 @@ class leoFrame:
             s = p.v.t.bodyString
             theDict = g.get_directives_dict(s)
             #@        << set w and break on @tabwidth >>
-            #@+node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+            #@+node:AGP.20250415230112.2840:<< set w and break on @tabwidth >>
             if theDict.has_key("tabwidth"):
                 
                 val = g.scanAtTabwidthDirective(s,theDict,issue_error_flag=False)
                 if val and val != 0:
                     w = val
                     break
-            #@-node:ekr.20031218072017.1376:<< set w and break on @tabwidth >>
+            #@-node:AGP.20250415230112.2840:<< set w and break on @tabwidth >>
             #@nl
     
         c.frame.setTabWidth(w)
-    #@-node:ekr.20031218072017.1375:scanForTabWidth
-    #@+node:ekr.20060206093313:xWantsFocus
+    #@-node:AGP.20250415230112.2839:scanForTabWidth
+    #@+node:AGP.20250415230112.2841:xWantsFocus
     # For compatibility with old scripts.
     # Using the commander methods directly is recommended.
     
@@ -631,18 +616,16 @@ class leoFrame:
         
     def minibufferWantsFocus(self):
         return self.c.minibufferWantsFocus()
-    #@-node:ekr.20060206093313:xWantsFocus
+    #@-node:AGP.20250415230112.2841:xWantsFocus
     #@-others
-#@-node:ekr.20031218072017.3678:class leoFrame
-#@+node:ekr.20031218072017.3694:class leoLog
+#@-node:AGP.20250415230112.2822:class leoFrame
+#@+node:AGP.20250415230112.2842:class leoLog
 class leoLog:
     
     """The base class for the log pane in Leo windows."""
     
-    __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
     #@    @+others
-    #@+node:ekr.20031218072017.3695:leoLog.__init__
+    #@+node:AGP.20250415230112.2843:leoLog.__init__
     def __init__ (self,frame,parentFrame):
         
         self.frame = frame
@@ -658,25 +641,23 @@ class leoLog:
         self.logCtrl = self.createControl(parentFrame)
         #self.setFontFromConfig()
         #self.setColorFromConfig()
-    #@-node:ekr.20031218072017.3695:leoLog.__init__
-    #@+node:ekr.20031218072017.3696:leoLog.configure
+    #@-node:AGP.20250415230112.2843:leoLog.__init__
+    #@+node:AGP.20250415230112.2844:leoLog.configure
     def configure (self,*args,**keys):
         
-        __pychecker__ = '--no-argsused'
-        
         self.oops()
-    #@-node:ekr.20031218072017.3696:leoLog.configure
-    #@+node:ekr.20031218072017.3697:leoLog.configureBorder
+    #@-node:AGP.20250415230112.2844:leoLog.configure
+    #@+node:AGP.20250415230112.2845:leoLog.configureBorder
     def configureBorder(self,border):
         
         self.oops()
-    #@-node:ekr.20031218072017.3697:leoLog.configureBorder
-    #@+node:ekr.20031218072017.3698:leoLog.createControl
+    #@-node:AGP.20250415230112.2845:leoLog.configureBorder
+    #@+node:AGP.20250415230112.2846:leoLog.createControl
     def createControl (self,parentFrame):
         
         self.oops()
-    #@-node:ekr.20031218072017.3698:leoLog.createControl
-    #@+node:ekr.20031218072017.3699:leoLog.enable & disable
+    #@-node:AGP.20250415230112.2846:leoLog.createControl
+    #@+node:AGP.20250415230112.2847:leoLog.enable & disable
     def enable (self,enabled=True):
         
         self.enabled = enabled
@@ -684,13 +665,13 @@ class leoLog:
     def disable (self):
         
         self.enabled = False
-    #@-node:ekr.20031218072017.3699:leoLog.enable & disable
-    #@+node:ekr.20031218072017.3700:leoLog.oops
+    #@-node:AGP.20250415230112.2847:leoLog.enable & disable
+    #@+node:AGP.20250415230112.2848:leoLog.oops
     def oops (self):
         
         print "leoLog oops:", g.callers(), "should be overridden in subclass"
-    #@-node:ekr.20031218072017.3700:leoLog.oops
-    #@+node:ekr.20031218072017.3701:leoLog.setFontFromConfig & setColorFromConfig
+    #@-node:AGP.20250415230112.2848:leoLog.oops
+    #@+node:AGP.20250415230112.2849:leoLog.setFontFromConfig & setColorFromConfig
     def setFontFromConfig (self):
         
         self.oops()
@@ -698,13 +679,13 @@ class leoLog:
     def setColorFromConfig (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3701:leoLog.setFontFromConfig & setColorFromConfig
-    #@+node:ekr.20031218072017.3702:leoLog.onActivateLog
+    #@-node:AGP.20250415230112.2849:leoLog.setFontFromConfig & setColorFromConfig
+    #@+node:AGP.20250415230112.2850:leoLog.onActivateLog
     def onActivateLog (self,event=None):
     
         self.c.setLog()
-    #@-node:ekr.20031218072017.3702:leoLog.onActivateLog
-    #@+node:ekr.20031218072017.3703:leoLog.put & putnl
+    #@-node:AGP.20250415230112.2850:leoLog.onActivateLog
+    #@+node:AGP.20250415230112.2851:leoLog.put & putnl
     # All output to the log stream eventually comes here.
     
     def put (self,s,color=None,tabName='Log'):
@@ -712,10 +693,10 @@ class leoLog:
     
     def putnl (self,tabName='Log'):
         self.oops()
-    #@-node:ekr.20031218072017.3703:leoLog.put & putnl
+    #@-node:AGP.20250415230112.2851:leoLog.put & putnl
     #@-others
-#@-node:ekr.20031218072017.3694:class leoLog
-#@+node:ekr.20031218072017.3704:class leoTree
+#@-node:AGP.20250415230112.2842:class leoLog
+#@+node:AGP.20250415230112.2852:class leoTree
 # This would be useful if we removed all the tree redirection routines.
 # However, those routines are pretty ingrained into Leo...
 
@@ -723,10 +704,8 @@ class leoTree:
     
     """The base class for the outline pane in Leo windows."""
     
-    __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
     #@    @+others
-    #@+node:ekr.20031218072017.3705:  tree.__init__ (base class)
+    #@+node:AGP.20250415230112.2853:  tree.__init__ (base class)
     def __init__ (self,frame):
         
         self.frame = frame
@@ -739,9 +718,9 @@ class leoTree:
         # "public" ivars: correspond to setters & getters.
         self._editPosition = None
         self.redrawCount = 0 # For traces
-    #@-node:ekr.20031218072017.3705:  tree.__init__ (base class)
-    #@+node:ekr.20031218072017.3706: Must be defined in subclasses
-    #@+node:ekr.20031218072017.3709:Colors & Fonts
+    #@-node:AGP.20250415230112.2853:  tree.__init__ (base class)
+    #@+node:AGP.20250415230112.2854: Must be defined in subclasses
+    #@+node:AGP.20250415230112.2855:Colors & Fonts
     def setColorFromConfig (self):
         self.oops()
     
@@ -753,19 +732,17 @@ class leoTree:
         
     def setFontFromConfig (self):
         self.oops()
-    #@-node:ekr.20031218072017.3709:Colors & Fonts
-    #@+node:ekr.20031218072017.3707:Drawing
+    #@-node:AGP.20250415230112.2855:Colors & Fonts
+    #@+node:AGP.20250415230112.2856:Drawing
     def drawIcon(self,v,x=None,y=None):
         self.oops()
     
     def redraw_now(self,scroll=True):
         self.oops()
-    #@-node:ekr.20031218072017.3707:Drawing
-    #@+node:ekr.20031218072017.3708:Edit label
+    #@-node:AGP.20250415230112.2856:Drawing
+    #@+node:AGP.20250415230112.2857:Edit label
     def editLabel(self,v,selectAll=False):
         
-        __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
         self.oops()
     
     def endEditLabel(self):
@@ -773,28 +750,26 @@ class leoTree:
     
     def setEditLabelState(self,v,selectAll=False):
         
-        __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
         self.oops()
-    #@-node:ekr.20031218072017.3708:Edit label
-    #@+node:ekr.20031218072017.3711:Scrolling
+    #@-node:AGP.20250415230112.2857:Edit label
+    #@+node:AGP.20250415230112.2858:Scrolling
     def scrollTo(self,p):
         self.oops()
         
     idle_scrollTo = scrollTo # For compatibility.
-    #@-node:ekr.20031218072017.3711:Scrolling
-    #@+node:ekr.20031218072017.3712:Selecting
+    #@-node:AGP.20250415230112.2858:Scrolling
+    #@+node:AGP.20250415230112.2859:Selecting
     def select(self,p,updateBeadList=True):
         
         self.oops()
-    #@-node:ekr.20031218072017.3712:Selecting
-    #@+node:ekr.20031218072017.3713:Tree operations
+    #@-node:AGP.20250415230112.2859:Selecting
+    #@+node:AGP.20250415230112.2860:Tree operations
     def expandAllAncestors(self,v):
         
         self.oops()
-    #@-node:ekr.20031218072017.3713:Tree operations
-    #@-node:ekr.20031218072017.3706: Must be defined in subclasses
-    #@+node:ekr.20031218072017.3716:Getters/Setters (tree)
+    #@-node:AGP.20250415230112.2860:Tree operations
+    #@-node:AGP.20250415230112.2854: Must be defined in subclasses
+    #@+node:AGP.20250415230112.2861:Getters/Setters (tree)
     def getEditTextDict(self,v):
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v,[])
@@ -804,13 +779,13 @@ class leoTree:
     
     def setEditPosition(self,p):
         self._editPosition = p
-    #@-node:ekr.20031218072017.3716:Getters/Setters (tree)
-    #@+node:ekr.20031218072017.3718:oops
+    #@-node:AGP.20250415230112.2861:Getters/Setters (tree)
+    #@+node:AGP.20250415230112.2862:oops
     def oops(self):
         
         print "leoTree oops:", g.callers(), "should be overridden in subclass"
-    #@-node:ekr.20031218072017.3718:oops
-    #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url)
+    #@-node:AGP.20250415230112.2862:oops
+    #@+node:AGP.20250415230112.2863:tree.OnIconDoubleClick (@url)
     def OnIconDoubleClick (self,p):
     
         # Note: "icondclick" hooks handled by vnode callback routine.
@@ -825,7 +800,7 @@ class leoTree:
                 url = lines and lines[0] or ''
             else:
                 #@            << stop the url after any whitespace >>
-                #@+node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
+                #@+node:AGP.20250415230112.2864:<< stop the url after any whitespace  >>
                 # For safety, the URL string should end at the first whitespace, unless quoted.
                 # This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
                 
@@ -846,12 +821,12 @@ class leoTree:
                             g.es("ignoring characters after space in url:"+url[i:])
                             g.es("use %20 instead of spaces")
                         url = url[:i]
-                #@-node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
+                #@-node:AGP.20250415230112.2864:<< stop the url after any whitespace  >>
                 #@nl
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
                 # Note: the UNL plugin has its own notion of what a good url is.
                 #@            << check the url; return if bad >>
-                #@+node:ekr.20031218072017.2314:<< check the url; return if bad >>
+                #@+node:AGP.20250415230112.2865:<< check the url; return if bad >>
                 if not url or len(url) == 0:
                     g.es("no url following @url")
                     return
@@ -878,10 +853,10 @@ class leoTree:
                 if not re.match(urlPattern,url):
                     g.es("invalid url: "+url)
                     return
-                #@-node:ekr.20031218072017.2314:<< check the url; return if bad >>
+                #@-node:AGP.20250415230112.2865:<< check the url; return if bad >>
                 #@nl
                 #@            << pass the url to the web browser >>
-                #@+node:ekr.20031218072017.2315:<< pass the url to the web browser >>
+                #@+node:AGP.20250415230112.2866:<< pass the url to the web browser >>
                 #@+at 
                 #@nonl
                 # Most browsers should handle the following urls:
@@ -906,26 +881,24 @@ class leoTree:
                     g.es("exception opening " + url)
                     g.es_exception()
                 #@nonl
-                #@-node:ekr.20031218072017.2315:<< pass the url to the web browser >>
+                #@-node:AGP.20250415230112.2866:<< pass the url to the web browser >>
                 #@nl
             g.doHook("@url2",c=c,p=p,v=p)
     
         return 'break' # 11/19/06
     #@nonl
-    #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url)
-    #@+node:ekr.20040106095546.1:tree.enableDrawingAfterException
+    #@-node:AGP.20250415230112.2863:tree.OnIconDoubleClick (@url)
+    #@+node:AGP.20250415230112.2867:tree.enableDrawingAfterException
     def enableDrawingAfterException (self):
         pass
-    #@-node:ekr.20040106095546.1:tree.enableDrawingAfterException
+    #@-node:AGP.20250415230112.2867:tree.enableDrawingAfterException
     #@-others
-#@-node:ekr.20031218072017.3704:class leoTree
-#@+node:ekr.20031218072017.2191:class nullBody
+#@-node:AGP.20250415230112.2852:class leoTree
+#@+node:AGP.20250415230112.2868:class nullBody
 class nullBody (leoBody):
     
-    __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
-    #@+node:ekr.20031218072017.2192: nullBody.__init__
+    #@+node:AGP.20250415230112.2869: nullBody.__init__
     def __init__ (self,frame,parentFrame):
         
         leoBody.__init__ (self,frame,parentFrame) # Init the base class.
@@ -935,9 +908,9 @@ class nullBody (leoBody):
         self.s = "" # The body text
         
         self.colorizer = leoColor.nullColorizer(self.c)
-    #@-node:ekr.20031218072017.2192: nullBody.__init__
-    #@+node:ekr.20031218072017.2193:Utils (internal use)
-    #@+node:ekr.20031218072017.2194:findStartOfLine
+    #@-node:AGP.20250415230112.2869: nullBody.__init__
+    #@+node:AGP.20250415230112.2870:Utils (internal use)
+    #@+node:AGP.20250415230112.2871:findStartOfLine
     def findStartOfLine (self,lineNumber):
         
         lines = g.splitLines(self.s)
@@ -947,8 +920,8 @@ class nullBody (leoBody):
             i += 1
             index += len(line)
         return index
-    #@-node:ekr.20031218072017.2194:findStartOfLine
-    #@+node:ekr.20031218072017.2195:scanToStartOfLine
+    #@-node:AGP.20250415230112.2871:findStartOfLine
+    #@+node:AGP.20250415230112.2872:scanToStartOfLine
     def scanToStartOfLine (self,i):
         
         if i <= 0:
@@ -961,8 +934,8 @@ class nullBody (leoBody):
                 return i + 1
         
         return 0
-    #@-node:ekr.20031218072017.2195:scanToStartOfLine
-    #@+node:ekr.20031218072017.2196:scanToEndOfLine
+    #@-node:AGP.20250415230112.2872:scanToStartOfLine
+    #@+node:AGP.20250415230112.2873:scanToEndOfLine
     def scanToEndOfLine (self,i):
         
         if i >= len(self.s):
@@ -975,9 +948,9 @@ class nullBody (leoBody):
                 return i - 1
         
         return i
-    #@-node:ekr.20031218072017.2196:scanToEndOfLine
-    #@-node:ekr.20031218072017.2193:Utils (internal use)
-    #@+node:ekr.20031218072017.2197:Must be overriden in subclasses
+    #@-node:AGP.20250415230112.2873:scanToEndOfLine
+    #@-node:AGP.20250415230112.2870:Utils (internal use)
+    #@+node:AGP.20250415230112.2874:Must be overriden in subclasses
     def createBindings (self,w=None):
         self.oops()
     
@@ -992,11 +965,11 @@ class nullBody (leoBody):
         
     def setBodyFontFromConfig (self):
         self.oops()
-    #@+node:ekr.20031218072017.2198:Bounding box
+    #@+node:AGP.20250415230112.2875:Bounding box
     def bbox(self,index):
         return (0,0)
-    #@-node:ekr.20031218072017.2198:Bounding box
-    #@+node:ekr.20031218072017.2199:Color tags
+    #@-node:AGP.20250415230112.2875:Bounding box
+    #@+node:AGP.20250415230112.2876:Color tags
     def tag_add (self,tagName,index1,index2):
         pass
     
@@ -1011,22 +984,22 @@ class nullBody (leoBody):
     
     def tag_remove (self,tagName,index1,index2):
         pass
-    #@-node:ekr.20031218072017.2199:Color tags
-    #@+node:ekr.20031218072017.2200:Configuration
+    #@-node:AGP.20250415230112.2876:Color tags
+    #@+node:AGP.20250415230112.2877:Configuration
     def cget(self,*args,**keys):
         pass
         
     def configure (self,*args,**keys):
         pass
-    #@-node:ekr.20031218072017.2200:Configuration
-    #@+node:ekr.20031218072017.2201:Focus
+    #@-node:AGP.20250415230112.2877:Configuration
+    #@+node:AGP.20250415230112.2878:Focus
     def hasFocus (self):
         return True
         
     def setFocus (self):
         pass
-    #@-node:ekr.20031218072017.2201:Focus
-    #@+node:ekr.20031218072017.2202:Height & width (use dummy values...)
+    #@-node:AGP.20250415230112.2878:Focus
+    #@+node:AGP.20250415230112.2879:Height & width (use dummy values...)
     def getBodyPaneHeight (self):
         
         return 500
@@ -1034,13 +1007,13 @@ class nullBody (leoBody):
     def getBodyPaneWidth (self):
     
         return 600
-    #@-node:ekr.20031218072017.2202:Height & width (use dummy values...)
-    #@+node:ekr.20031218072017.2203:Idle time...
+    #@-node:AGP.20250415230112.2879:Height & width (use dummy values...)
+    #@+node:AGP.20250415230112.2880:Idle time...
     def scheduleIdleTimeRoutine (self,function,*args,**keys):
     
         g.trace()
-    #@-node:ekr.20031218072017.2203:Idle time...
-    #@+node:ekr.20031218072017.2204:Indices
+    #@-node:AGP.20250415230112.2880:Idle time...
+    #@+node:AGP.20250415230112.2881:Indices
     def adjustIndex (self,index,offset):
         return index + offset
         
@@ -1063,8 +1036,8 @@ class nullBody (leoBody):
         
     def getImageIndex (self,image):
         self.oops()
-    #@-node:ekr.20031218072017.2204:Indices
-    #@+node:ekr.20031218072017.2205:Insert point
+    #@-node:AGP.20250415230112.2881:Indices
+    #@+node:AGP.20250415230112.2882:Insert point
     def getBeforeInsertionPoint (self):
         return self.insertPoint - 1
     
@@ -1090,12 +1063,12 @@ class nullBody (leoBody):
         
     def setInsertPointToStartOfLine (self,lineNumber): # zero-based line number
         self.insertPoint = self.findStartOfLine(lineNumber)
-    #@-node:ekr.20031218072017.2205:Insert point
-    #@+node:ekr.20031218072017.2206:Menus
+    #@-node:AGP.20250415230112.2882:Insert point
+    #@+node:AGP.20250415230112.2883:Menus
     def bind (self,*args,**keys):
         pass
-    #@-node:ekr.20031218072017.2206:Menus
-    #@+node:ekr.20031218072017.2207:Selection
+    #@-node:AGP.20250415230112.2883:Menus
+    #@+node:AGP.20250415230112.2884:Selection
     def deleteTextSelection (self):
         i,j = self.selection
         self.s = self.s[:i] + self.s[j:]
@@ -1123,9 +1096,9 @@ class nullBody (leoBody):
             self.selection = i # a tuple
         else:
             self.selection = i,j
-    #@-node:ekr.20031218072017.2207:Selection
-    #@+node:ekr.20031218072017.2208:Text
-    #@+node:ekr.20031218072017.2209:delete...
+    #@-node:AGP.20250415230112.2884:Selection
+    #@+node:AGP.20250415230112.2885:Text
+    #@+node:AGP.20250415230112.2886:delete...
     def deleteAllText(self):
         self.insertPoint = 0
         self.selection = 0,0
@@ -1151,8 +1124,8 @@ class nullBody (leoBody):
         
     def deleteRange (self,index1,index2):
         del self.s[index1:index2]
-    #@-node:ekr.20031218072017.2209:delete...
-    #@+node:ekr.20031218072017.2210:get...
+    #@-node:AGP.20250415230112.2886:delete...
+    #@+node:AGP.20250415230112.2887:get...
     def getAllText (self):
         return g.toUnicode(self.s,g.app.tkEncoding)
         
@@ -1167,7 +1140,7 @@ class nullBody (leoBody):
     
         s = self.s[index1:index2]
         return g.toUnicode(s,g.app.tkEncoding)
-    #@+node:ekr.20031218072017.2211:getInsertLines
+    #@+node:AGP.20250415230112.2888:getInsertLines
     def getInsertLines (self):
         
         """Return before,ins,after where:
@@ -1192,8 +1165,8 @@ class nullBody (leoBody):
         after  = g.toUnicode(after ,g.app.tkEncoding)
     
         return before,ins,after
-    #@-node:ekr.20031218072017.2211:getInsertLines
-    #@+node:ekr.20031218072017.2212:getSelectionAreas
+    #@-node:AGP.20250415230112.2888:getInsertLines
+    #@+node:AGP.20250415230112.2889:getSelectionAreas
     def getSelectionAreas (self):
         
         """Return before,sel,after where:
@@ -1217,8 +1190,8 @@ class nullBody (leoBody):
         sel    = g.toUnicode(sel,   g.app.tkEncoding)
         after  = g.toUnicode(after ,g.app.tkEncoding)
         return before,sel,after
-    #@-node:ekr.20031218072017.2212:getSelectionAreas
-    #@+node:ekr.20031218072017.2213:getSelectionLines (nullBody)
+    #@-node:AGP.20250415230112.2889:getSelectionAreas
+    #@+node:AGP.20250415230112.2890:getSelectionLines (nullBody)
     def getSelectionLines (self):
         
         """Return before,sel,after where:
@@ -1248,9 +1221,9 @@ class nullBody (leoBody):
         
         g.trace(n1,n2)
         return before,sel,after
-    #@-node:ekr.20031218072017.2213:getSelectionLines (nullBody)
-    #@-node:ekr.20031218072017.2210:get...
-    #@+node:ekr.20031218072017.2214:Insert...
+    #@-node:AGP.20250415230112.2890:getSelectionLines (nullBody)
+    #@-node:AGP.20250415230112.2887:get...
+    #@+node:AGP.20250415230112.2891:Insert...
     def insertAtInsertPoint (self,s):
         
         i = self.insertPoint
@@ -1264,8 +1237,8 @@ class nullBody (leoBody):
         
         i = self.findStartOfLine(lineNumber)
         self.s = self.s[:i] + s + self.s[i:]
-    #@-node:ekr.20031218072017.2214:Insert...
-    #@+node:ekr.20031218072017.2215:setSelectionAreas (nullFrame)
+    #@-node:AGP.20250415230112.2891:Insert...
+    #@+node:AGP.20250415230112.2892:setSelectionAreas (nullFrame)
     def setSelectionAreas (self,before,sel,after):
         
         if before is None: before = ""
@@ -1275,9 +1248,9 @@ class nullBody (leoBody):
         self.s = before + sel + after
         
         self.selection = len(before), len(before) + len(sel)
-    #@-node:ekr.20031218072017.2215:setSelectionAreas (nullFrame)
-    #@-node:ekr.20031218072017.2208:Text
-    #@+node:ekr.20031218072017.2216:Visibility & scrolling
+    #@-node:AGP.20250415230112.2892:setSelectionAreas (nullFrame)
+    #@-node:AGP.20250415230112.2885:Text
+    #@+node:AGP.20250415230112.2893:Visibility & scrolling
     def makeIndexVisible (self,index):
         pass
         
@@ -1295,32 +1268,30 @@ class nullBody (leoBody):
         
     def scrollDown (self):
         pass
-    #@-node:ekr.20031218072017.2216:Visibility & scrolling
-    #@-node:ekr.20031218072017.2197:Must be overriden in subclasses
-    #@+node:ekr.20041217074557:setColorFromConfig & setFontFromConfig
+    #@-node:AGP.20250415230112.2893:Visibility & scrolling
+    #@-node:AGP.20250415230112.2874:Must be overriden in subclasses
+    #@+node:AGP.20250415230112.2894:setColorFromConfig & setFontFromConfig
     def setFontFromConfig (self):
         pass
         
     def setColorFromConfig (self):
         pass
-    #@-node:ekr.20041217074557:setColorFromConfig & setFontFromConfig
-    #@+node:ekr.20031218072017.2217:oops
+    #@-node:AGP.20250415230112.2894:setColorFromConfig & setFontFromConfig
+    #@+node:AGP.20250415230112.2895:oops
     def oops(self):
     
         g.trace("nullBody:", g.callers())
         pass
-    #@-node:ekr.20031218072017.2217:oops
+    #@-node:AGP.20250415230112.2895:oops
     #@-others
-#@-node:ekr.20031218072017.2191:class nullBody
-#@+node:ekr.20031218072017.2222:class nullFrame
+#@-node:AGP.20250415230112.2868:class nullBody
+#@+node:AGP.20250415230112.2896:class nullFrame
 class nullFrame (leoFrame):
     
     """A null frame class for tests and batch execution."""
     
-    __pychecker__ = '--no-argsused' # null classes have many unused args.
-    
     #@    @+others
-    #@+node:ekr.20040327105706: ctor
+    #@+node:AGP.20250415230112.2897: ctor
     def __init__ (self,title,gui,useNullUndoer=False):
     
         leoFrame.__init__(self,gui) # Init the base class.
@@ -1335,8 +1306,8 @@ class nullFrame (leoFrame):
         self.h = 500
         self.x = 40
         self.y = 40
-    #@-node:ekr.20040327105706: ctor
-    #@+node:ekr.20041130065921:deiconfy, lift, update
+    #@-node:AGP.20250415230112.2897: ctor
+    #@+node:AGP.20250415230112.2898:deiconfy, lift, update
     def deiconify (self):
         pass
         
@@ -1345,13 +1316,13 @@ class nullFrame (leoFrame):
         
     def update (self):
         pass
-    #@-node:ekr.20041130065921:deiconfy, lift, update
-    #@+node:ekr.20041120073824:destroySelf
+    #@-node:AGP.20250415230112.2898:deiconfy, lift, update
+    #@+node:AGP.20250415230112.2899:destroySelf
     def destroySelf (self):
         
         pass
-    #@-node:ekr.20041120073824:destroySelf
-    #@+node:ekr.20040327105706.2:finishCreate
+    #@-node:AGP.20250415230112.2899:destroySelf
+    #@+node:AGP.20250415230112.2900:finishCreate
     def finishCreate(self,c):
     
         self.c = c
@@ -1365,8 +1336,8 @@ class nullFrame (leoFrame):
         assert(c.undoer)
         if self.useNullUndoer:
             c.undoer = leoUndo.nullUndoer(c)
-    #@-node:ekr.20040327105706.2:finishCreate
-    #@+node:ekr.20041130065718:get_window_info
+    #@-node:AGP.20250415230112.2900:finishCreate
+    #@+node:AGP.20250415230112.2901:get_window_info
     def get_window_info (self):
     
         """Return the window information."""
@@ -1374,54 +1345,50 @@ class nullFrame (leoFrame):
         # g.trace(self.w,self.h,self.x,self.y)
     
         return self.w,self.h,self.x,self.y
-    #@-node:ekr.20041130065718:get_window_info
-    #@+node:ekr.20041130065921.1:lift
-    #@-node:ekr.20041130065921.1:lift
-    #@+node:ekr.20040327105706.3:oops
+    #@-node:AGP.20250415230112.2901:get_window_info
+    #@+node:AGP.20250415230112.2902:lift
+    #@-node:AGP.20250415230112.2902:lift
+    #@+node:AGP.20250415230112.2903:oops
     def oops(self):
         
         g.trace("nullFrame:", g.callers(5))
-    #@-node:ekr.20040327105706.3:oops
-    #@+node:ekr.20041130090749:setInitialWindowGeometry
+    #@-node:AGP.20250415230112.2903:oops
+    #@+node:AGP.20250415230112.2904:setInitialWindowGeometry
     def setInitialWindowGeometry (self):
         pass
-    #@-node:ekr.20041130090749:setInitialWindowGeometry
-    #@+node:ekr.20041130065718.1:setTopGeometry
+    #@-node:AGP.20250415230112.2904:setInitialWindowGeometry
+    #@+node:AGP.20250415230112.2905:setTopGeometry
     def setTopGeometry (self,w,h,x,y,adjustSize=True):
-        
-        __pychecker__ = '--no-argsused' # adjustSize used in derived classes.
         
         self.w = w
         self.h = h
         self.x = x
         self.y = y
-    #@-node:ekr.20041130065718.1:setTopGeometry
+    #@-node:AGP.20250415230112.2905:setTopGeometry
     #@-others
-#@-node:ekr.20031218072017.2222:class nullFrame
-#@+node:ekr.20031218072017.2232:class nullLog
+#@-node:AGP.20250415230112.2896:class nullFrame
+#@+node:AGP.20250415230112.2906:class nullLog
 class nullLog (leoLog):
     
-    __pychecker__ = '--no-argsused' # null classes have many unused args.
-    
     #@    @+others
-    #@+node:ekr.20041012083237:nullLog.__init__
+    #@+node:AGP.20250415230112.2907:nullLog.__init__
     def __init__ (self,frame=None,parentFrame=None):
             
         # Init the base class.
         leoLog.__init__(self,frame,parentFrame)
         self.isNull = True
-    #@-node:ekr.20041012083237:nullLog.__init__
-    #@+node:ekr.20041012083237.1:createControl
+    #@-node:AGP.20250415230112.2907:nullLog.__init__
+    #@+node:AGP.20250415230112.2908:createControl
     def createControl (self,parentFrame):
         
         return None
-    #@-node:ekr.20041012083237.1:createControl
-    #@+node:ekr.20041012083237.2:oops
+    #@-node:AGP.20250415230112.2908:createControl
+    #@+node:AGP.20250415230112.2909:oops
     def oops(self):
     
         g.trace("nullLog:", g.callers())
-    #@-node:ekr.20041012083237.2:oops
-    #@+node:ekr.20041012083237.3:put and putnl (nullLog)
+    #@-node:AGP.20250415230112.2909:oops
+    #@+node:AGP.20250415230112.2910:put and putnl (nullLog)
     def put (self,s,color=None,tabName='Log'):
         if self.enabled:
             # g.trace('nullLog',s)
@@ -1430,8 +1397,8 @@ class nullLog (leoLog):
     def putnl (self,tabName='Log'):
         if self.enabled:
             g.rawPrint("")
-    #@-node:ekr.20041012083237.3:put and putnl (nullLog)
-    #@+node:ekr.20060124085830:tabs
+    #@-node:AGP.20250415230112.2910:put and putnl (nullLog)
+    #@+node:AGP.20250415230112.2911:tabs
     def clearTab        (self,tabName): pass
     def createTab       (self,tabName): pass
     def deleteTab       (self,tabName): pass
@@ -1441,23 +1408,21 @@ class nullLog (leoLog):
     def renameTab (self,oldName,newName): pass
     def selectTab       (self,tabName): pass
     def setTabBindings  (self,tabName): pass
-    #@-node:ekr.20060124085830:tabs
-    #@+node:ekr.20041012083237.4:setColorFromConfig & setFontFromConfig
+    #@-node:AGP.20250415230112.2911:tabs
+    #@+node:AGP.20250415230112.2912:setColorFromConfig & setFontFromConfig
     def setFontFromConfig (self):
         pass
         
     def setColorFromConfig (self):
         pass
-    #@-node:ekr.20041012083237.4:setColorFromConfig & setFontFromConfig
+    #@-node:AGP.20250415230112.2912:setColorFromConfig & setFontFromConfig
     #@-others
-#@-node:ekr.20031218072017.2232:class nullLog
-#@+node:ekr.20031218072017.2233:class nullTree
+#@-node:AGP.20250415230112.2906:class nullLog
+#@+node:AGP.20250415230112.2913:class nullTree
 class nullTree (leoTree):
     
-    __pychecker__ = '--no-argsused' # null classes have many unused args.
-
     #@    @+others
-    #@+node:ekr.20031218072017.2234: nullTree.__init__
+    #@+node:AGP.20250415230112.2914: nullTree.__init__
     def __init__ (self,frame):
         
         leoTree.__init__(self,frame) # Init the base class.
@@ -1466,16 +1431,16 @@ class nullTree (leoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
-    #@-node:ekr.20031218072017.2234: nullTree.__init__
-    #@+node:ekr.20031218072017.2235:oops
+    #@-node:AGP.20250415230112.2914: nullTree.__init__
+    #@+node:AGP.20250415230112.2915:oops
     def oops(self):
             
         # It is not an error to call this routine...
         g.trace("nullTree:", g.callers())
         pass
-    #@-node:ekr.20031218072017.2235:oops
-    #@+node:ekr.20031218072017.2236:Dummy operations...
-    #@+node:ekr.20031218072017.2237:Drawing
+    #@-node:AGP.20250415230112.2915:oops
+    #@+node:AGP.20250415230112.2916:Dummy operations...
+    #@+node:AGP.20250415230112.2917:Drawing
     def beginUpdate (self):
         pass
         
@@ -1490,11 +1455,9 @@ class nullTree (leoTree):
     
     def redraw_now(self,scroll=True):
         pass
-    #@-node:ekr.20031218072017.2237:Drawing
-    #@+node:ekr.20031218072017.2238:Edit label
+    #@-node:AGP.20250415230112.2917:Drawing
+    #@+node:AGP.20250415230112.2918:Edit label
     def editLabel(self,v,selectAll=False):
-    
-        __pychecker__ = '--no-argsused' # base classes have many unused args.
     
         pass
     
@@ -1503,29 +1466,27 @@ class nullTree (leoTree):
     
     def setEditLabelState(self,v,selectAll=False):
         
-        __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
         pass
-    #@-node:ekr.20031218072017.2238:Edit label
-    #@+node:ekr.20031218072017.2239:Scrolling
+    #@-node:AGP.20250415230112.2918:Edit label
+    #@+node:AGP.20250415230112.2919:Scrolling
     def scrollTo(self,p):
         pass
         
     idle_scrollTo = scrollTo # For compatibility.
-    #@-node:ekr.20031218072017.2239:Scrolling
-    #@+node:ekr.20031218072017.2240:Tree operations
+    #@-node:AGP.20250415230112.2919:Scrolling
+    #@+node:AGP.20250415230112.2920:Tree operations
     def expandAllAncestors(self,v):
     
         pass
-    #@-node:ekr.20031218072017.2240:Tree operations
-    #@+node:ekr.20040725044521:edit_widget
+    #@-node:AGP.20250415230112.2920:Tree operations
+    #@+node:AGP.20250415230112.2921:edit_widget
     def edit_widget (self,c,p):
         
         self.oops()
     #@nonl
-    #@-node:ekr.20040725044521:edit_widget
-    #@-node:ekr.20031218072017.2236:Dummy operations...
-    #@+node:ekr.20031218072017.2241:getFont & setFont
+    #@-node:AGP.20250415230112.2921:edit_widget
+    #@-node:AGP.20250415230112.2916:Dummy operations...
+    #@+node:AGP.20250415230112.2922:getFont & setFont
     def getFont(self):
     
         return self.font
@@ -1534,23 +1495,23 @@ class nullTree (leoTree):
     
         self.font = font
         self.fontName = fontName
-    #@-node:ekr.20031218072017.2241:getFont & setFont
-    #@+node:ekr.20041217135735:setColorFromConfig & setFontFromConfig
+    #@-node:AGP.20250415230112.2922:getFont & setFont
+    #@+node:AGP.20250415230112.2923:setColorFromConfig & setFontFromConfig
     def setColorFromConfig (self):
         pass
         
     def setFontFromConfig (self):
         pass
-    #@-node:ekr.20041217135735:setColorFromConfig & setFontFromConfig
-    #@+node:ekr.20031218072017.2242:select
+    #@-node:AGP.20250415230112.2923:setColorFromConfig & setFontFromConfig
+    #@+node:AGP.20250415230112.2924:select
     def select(self,p,updateBeadList=True):
         
         self.c.setCurrentPosition(p)
     
         self.frame.scanForTabWidth(p)
-    #@-node:ekr.20031218072017.2242:select
+    #@-node:AGP.20250415230112.2924:select
     #@-others
-#@-node:ekr.20031218072017.2233:class nullTree
+#@-node:AGP.20250415230112.2913:class nullTree
 #@-others
-#@-node:ekr.20031218072017.3655:@thin leoFrame.py
+#@-node:AGP.20250415230112.2797:@thin leoFrame.py
 #@-leo

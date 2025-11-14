@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2608:@thin leoApp.py
+#@+node:AGP.20250415230112.14:@thin leoApp.py
 #@@first
 
 #@@language python
@@ -18,7 +18,7 @@ class LeoApp:
     Ivars of this class are Leo's global variables."""
     
     #@    @+others
-    #@+node:ekr.20031218072017.1416:app.__init__
+    #@+node:AGP.20250415230112.15:app.__init__
     def __init__(self):
     
         # These ivars are the global vars of this program.
@@ -77,7 +77,6 @@ class LeoApp:
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
-        self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
         self.user_xresources_path = None # Resource file for Tk/tcl.
         self.windowList = [] # Global list of all frames.  Does not include hidden root window.
     
@@ -85,7 +84,7 @@ class LeoApp:
         self.pythonFrame = None
         
         #@    << Define global constants >>
-        #@+node:ekr.20031218072017.1417:<< define global constants >>
+        #@+node:AGP.20250415230112.16:<< define global constants >>
         self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
         
         # New in leo.py 3.0
@@ -94,10 +93,10 @@ class LeoApp:
         
         # leo.py 3.11
         self.use_unicode = True # True: use new unicode logic.
-        #@-node:ekr.20031218072017.1417:<< define global constants >>
+        #@-node:AGP.20250415230112.16:<< define global constants >>
         #@nl
         #@    << Define global data structures >>
-        #@+node:ekr.20031218072017.368:<< define global data structures >> app
+        #@+node:AGP.20250415230112.17:<< define global data structures >> app
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
             "ada" : "--",
@@ -188,10 +187,10 @@ class LeoApp:
             "txt"   : "plain",
             "tcl"   : "tcltk",
             "w"     : "cweb" }
-        #@-node:ekr.20031218072017.368:<< define global data structures >> app
+        #@-node:AGP.20250415230112.17:<< define global data structures >> app
         #@nl
-    #@-node:ekr.20031218072017.1416:app.__init__
-    #@+node:ekr.20031218072017.2609:app.closeLeoWindow
+    #@-node:AGP.20250415230112.15:app.__init__
+    #@+node:AGP.20250415230112.18:app.closeLeoWindow
     def closeLeoWindow (self,frame):
         
         """Attempt to close a Leo window.
@@ -230,21 +229,19 @@ class LeoApp:
             g.app.finishQuit()
     
         return True # The window has been closed.
-    #@-node:ekr.20031218072017.2609:app.closeLeoWindow
-    #@+node:ekr.20031218072017.2610:app.createTkGui
+    #@-node:AGP.20250415230112.18:app.closeLeoWindow
+    #@+node:AGP.20250415230112.19:app.createTkGui
     def createTkGui (self,fileName=None):
         
         # Do NOT omit fileName param: it is used in plugin code.
-        __pychecker__ = '--no-argsused'
         
         """A convenience routines for plugins to create the default Tk gui class."""
         
         import leoTkinterGui # Do this import after app module is fully imported.
     
         g.app.gui = leoTkinterGui.tkinterGui()
+        
         g.app.root = root = g.app.gui.createRootWindow()
-        
-        
         
         try:
             g.gen_theme()
@@ -252,25 +249,13 @@ class LeoApp:
             import traceback
             traceback.print_exc()
         
-        # Show a dialog and exit immediately if Pmw can not be imported.
-        #g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
         g.app.gui.finishCreate()
         
         # agp color theme
         # agp option
         
-        
-        
-        
-            
-        
-        if 0:
-            if fileName:
-                print "Tk gui created in", g.shortFileName(fileName)
-                
-        
-    #@-node:ekr.20031218072017.2610:app.createTkGui
-    #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
+    #@-node:AGP.20250415230112.19:app.createTkGui
+    #@+node:AGP.20250415230112.20:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
     
         """Try to remove temp files created with the Open With command.
@@ -284,8 +269,8 @@ class LeoApp:
             
         # Delete the list so the gc can recycle Leo windows!
         g.app.openWithFiles = []
-    #@-node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
-    #@+node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
+    #@-node:AGP.20250415230112.20:app.destroyAllOpenWithFiles
+    #@+node:AGP.20250415230112.21:app.destroyOpenWithFilesForFrame
     def destroyOpenWithFilesForFrame (self,frame):
         
         """Close all "Open With" files associated with frame"""
@@ -297,8 +282,8 @@ class LeoApp:
             c = theDict.get("c")
             if c.frame == frame:
                 g.app.destroyOpenWithFileWithDict(theDict)
-    #@-node:ekr.20031218072017.2613:app.destroyOpenWithFilesForFrame
-    #@+node:ekr.20031218072017.2614:app.destroyOpenWithFileWithDict
+    #@-node:AGP.20250415230112.21:app.destroyOpenWithFilesForFrame
+    #@+node:AGP.20250415230112.22:app.destroyOpenWithFileWithDict
     def destroyOpenWithFileWithDict (self,theDict):
         
         path = theDict.get("path")
@@ -311,8 +296,8 @@ class LeoApp:
                 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
-    #@-node:ekr.20031218072017.2614:app.destroyOpenWithFileWithDict
-    #@+node:ekr.20031218072017.2615:app.destroyWindow
+    #@-node:AGP.20250415230112.22:app.destroyOpenWithFileWithDict
+    #@+node:AGP.20250415230112.23:app.destroyWindow
     def destroyWindow (self,frame):
         
         # g.trace(frame in g.app.windowList,frame)
@@ -326,8 +311,8 @@ class LeoApp:
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@-node:ekr.20031218072017.2615:app.destroyWindow
-    #@+node:ekr.20031218072017.1732:app.finishQuit
+    #@-node:AGP.20250415230112.23:app.destroyWindow
+    #@+node:AGP.20250415230112.24:app.finishQuit
     def finishQuit(self):
         
         # forceShutdown may already have fired the "end1" hook.
@@ -352,8 +337,8 @@ class LeoApp:
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
-    #@-node:ekr.20031218072017.1732:app.finishQuit
-    #@+node:ekr.20031218072017.2616:app.forceShutdown
+    #@-node:AGP.20250415230112.24:app.finishQuit
+    #@+node:AGP.20250415230112.25:app.forceShutdown
     def forceShutdown (self):
         
         """Forces an immediate shutdown of Leo at any time.
@@ -370,8 +355,8 @@ class LeoApp:
             self.destroyWindow(w)
     
         self.finishQuit()
-    #@-node:ekr.20031218072017.2616:app.forceShutdown
-    #@+node:ekr.20031218072017.2617:app.onQuit
+    #@-node:AGP.20250415230112.25:app.forceShutdown
+    #@+node:AGP.20250415230112.26:app.onQuit
     def onQuit (self,event=None):
         
         '''Exit Leo, prompting to save unsaved outlines first.'''
@@ -385,8 +370,8 @@ class LeoApp:
     
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
-    #@-node:ekr.20031218072017.2617:app.onQuit
-    #@+node:ekr.20031218072017.2618:app.setEncoding
+    #@-node:AGP.20250415230112.26:app.onQuit
+    #@+node:AGP.20250415230112.27:app.setEncoding
     #@+at 
     #@nonl
     # According to Martin v. Löwis, getdefaultlocale() is broken, and cannot 
@@ -419,8 +404,8 @@ class LeoApp:
             elif encoding:
                 color = g.choose(self.tkEncoding=="ascii","red","blue")
                 g.trace("ignoring invalid %s encoding: %s" % (src,encoding),color=color)
-    #@-node:ekr.20031218072017.2618:app.setEncoding
-    #@+node:ekr.20031218072017.1978:app.setLeoID
+    #@-node:AGP.20250415230112.27:app.setEncoding
+    #@+node:AGP.20250415230112.28:app.setLeoID
     def setLeoID (self,verbose=True):
     
         tag = ".leoID.txt"
@@ -429,12 +414,11 @@ class LeoApp:
         loadDir = g.app.loadDir
         
         verbose = not g.app.unitTesting
-        #@    << return if we can set leoID from sys.leoID >>
-        #@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+        #
+        #@nonl
+        #@<< return if we can set leoID from sys.leoID >>
+        #@+node:AGP.20250415230112.29:<< return if we can set leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
-        
-        # 7/2/04: Use hasattr & getattr to suppress pychecker warning.
-        # We also have to use a "non-constant" attribute to suppress another warning!
         
         nonConstantAttr = "leoID"
         
@@ -444,10 +428,10 @@ class LeoApp:
             return
         else:
             g.app.leoID = None
-        #@-node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
+        #@-node:AGP.20250415230112.29:<< return if we can set leoID from sys.leoID>>
         #@nl
         #@    << return if we can set leoID from "leoID.txt" >>
-        #@+node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+        #@+node:AGP.20250415230112.30:<< return if we can set leoID from "leoID.txt" >>
         for theDir in (homeDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
@@ -470,10 +454,12 @@ class LeoApp:
                     g.app.leoID = None
                     g.es_print('Unexpected exception in app.setLeoID',color='red')
                     g.es_exception()
-        #@-node:ekr.20031218072017.1980:<< return if we can set leoID from "leoID.txt" >>
+        #@-node:AGP.20250415230112.30:<< return if we can set leoID from "leoID.txt" >>
         #@nl
-        #@    << return if we can set leoID from os.getenv('USER') >>
-        #@+node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+        #
+        #@nonl
+        #@<< return if we can set leoID from os.getenv('USER') >>
+        #@+node:AGP.20250415230112.31:<< return if we can set leoID from os.getenv('USER') >>
         try:
             theId = os.getenv('USER')
             if theId:
@@ -483,10 +469,10 @@ class LeoApp:
                 
         except Exception:
             pass
-        #@-node:ekr.20060211140947.1:<< return if we can set leoID from os.getenv('USER') >>
+        #@-node:AGP.20250415230112.31:<< return if we can set leoID from os.getenv('USER') >>
         #@nl
         #@    << put up a dialog requiring a valid id >>
-        #@+node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+        #@+node:AGP.20250415230112.32:<< put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
         
         # Create an emergency gui and a Tk root window.
@@ -497,10 +483,10 @@ class LeoApp:
         
         # g.trace(g.app.leoID)
         g.es_print("leoID = %s" % (repr(g.app.leoID)),color="blue")
-        #@-node:ekr.20031218072017.1981:<< put up a dialog requiring a valid id >>
+        #@-node:AGP.20250415230112.32:<< put up a dialog requiring a valid id >>
         #@nl
         #@    << attempt to create leoID.txt >>
-        #@+node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+        #@+node:AGP.20250415230112.33:<< attempt to create leoID.txt >>
         for theDir in (homeDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
@@ -518,10 +504,10 @@ class LeoApp:
                         g.es(cant,color='red')
                 except IOError:
                     g.es(cant,color='red')
-        #@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
+        #@-node:AGP.20250415230112.33:<< attempt to create leoID.txt >>
         #@nl
-    #@-node:ekr.20031218072017.1978:app.setLeoID
-    #@+node:AGP.20240831204021:app.askLeoID
+    #@-node:AGP.20250415230112.28:app.setLeoID
+    #@+node:AGP.20250415230112.34:app.askLeoID
     def askLeoID (self,verbose=True):
     
         tag = ".leoID.txt"
@@ -531,7 +517,7 @@ class LeoApp:
         
         verbose = not g.app.unitTesting
         #@    << put up a dialog requiring a valid id >>
-        #@+node:AGP.20240831204021.4:<< put up a dialog requiring a valid id >>
+        #@+node:AGP.20250415230112.35:<< put up a dialog requiring a valid id >>
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
         
         
@@ -547,10 +533,10 @@ class LeoApp:
         
         # g.trace(g.app.leoID)
         g.es_print("leoID = %s" % (repr(g.app.leoID)),color="blue")
-        #@-node:AGP.20240831204021.4:<< put up a dialog requiring a valid id >>
+        #@-node:AGP.20250415230112.35:<< put up a dialog requiring a valid id >>
         #@nl
         #@    << attempt to create leoID.txt >>
-        #@+node:AGP.20240831204021.5:<< attempt to create leoID.txt >>
+        #@+node:AGP.20250415230112.36:<< attempt to create leoID.txt >>
         for theDir in (homeDir,globalConfigDir,loadDir):
             # N.B. We would use the _working_ directory if theDir is None!
             if theDir:
@@ -568,10 +554,10 @@ class LeoApp:
                         g.es(cant,color='red')
                 except IOError:
                     g.es(cant,color='red')
-        #@-node:AGP.20240831204021.5:<< attempt to create leoID.txt >>
+        #@-node:AGP.20250415230112.36:<< attempt to create leoID.txt >>
         #@nl
-    #@-node:AGP.20240831204021:app.askLeoID
-    #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
+    #@-node:AGP.20250415230112.34:app.askLeoID
+    #@+node:AGP.20250415230112.37:app.setLog, lockLog, unlocklog
     def setLog (self,log):
     
         """set the frame to which log messages will go"""
@@ -587,8 +573,8 @@ class LeoApp:
     def unlockLog(self):
         """Enable changes to the log"""
         self.logIsLocked = False
-    #@-node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
-    #@+node:ekr.20031218072017.2619:app.writeWaitingLog
+    #@-node:AGP.20250415230112.37:app.setLog, lockLog, unlocklog
+    #@+node:AGP.20250415230112.38:app.writeWaitingLog
     def writeWaitingLog (self):
     
         # g.trace(g.app.gui,self.log)
@@ -600,8 +586,8 @@ class LeoApp:
                 self.logWaiting = []
         else:
             print 'writeWaitingLog: still no log!'
-    #@-node:ekr.20031218072017.2619:app.writeWaitingLog
-    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+    #@-node:AGP.20250415230112.38:app.writeWaitingLog
+    #@+node:AGP.20250415230112.39:app.newLeoCommanderAndFrame
     def newLeoCommanderAndFrame(self,fileName,updateRecentFiles=True):
         
         """Create a commander and its view frame for the Leo main window."""
@@ -612,7 +598,7 @@ class LeoApp:
         
         if not fileName: fileName = ""
         #@    << compute the window title >>
-        #@+node:ekr.20031218072017.2189:<< compute the window title >>
+        #@+node:AGP.20250415230112.40:<< compute the window title >>
         # Set the window title and fileName
         if fileName:
             title = g.computeWindowTitle(fileName)
@@ -623,7 +609,7 @@ class LeoApp:
                 s += str(n)
             title = g.computeWindowTitle(s)
             g.app.numberOfWindows = n+1
-        #@-node:ekr.20031218072017.2189:<< compute the window title >>
+        #@-node:AGP.20250415230112.40:<< compute the window title >>
         #@nl
     
         # Create an unfinished frame to pass to the commanders.
@@ -650,7 +636,7 @@ class LeoApp:
             g.doHook("after-create-leo-frame",c=c)
     
         return c,frame
-    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+    #@-node:AGP.20250415230112.39:app.newLeoCommanderAndFrame
     #@-others
-#@-node:ekr.20031218072017.2608:@thin leoApp.py
+#@-node:AGP.20250415230112.14:@thin leoApp.py
 #@-leo

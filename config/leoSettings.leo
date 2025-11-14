@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.593053735256">
-	<global_window_position top="10" left="10" height="773" width="1526"/>
+<globals body_outline_ratio="0.317824377457">
+	<global_window_position top="10" left="10" height="776" width="1526"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -35,82 +35,8 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20060112110750"><vh>Buttons</vh>
-<v t="ekr.20051010093913"><vh>@@button Save</vh></v>
-<v t="ekr.20051011123608"><vh>@@button align to col</vh></v>
-<v t="ekr.20060112103537.17"><vh>@button Check Bindings</vh>
-<v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
-<v t="ekr.20060112104333"><vh>doSet</vh></v>
-<v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
-<v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
-<v t="ekr.20060112104823"><vh>main</vh></v>
-</v>
-</v>
-<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = False</vh></v>
-<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
-<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
-<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
-<v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
-<v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
-<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
-<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
-<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
-<v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
-<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
-<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = False</vh></v>
-<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
-<v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
-</v>
-</v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
-<v t="LEOX.20231126113647"><vh>@config leo</vh></v>
-<v t="LEOX.20231126113647.1"><vh>config theme</vh></v>
-<v t="ekr.20041213105007.1"><vh>Color Theme</vh>
-<v t="ekr.20041213105007.3" a="E"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = None</vh></v>
-<v t="ekr.20051020125928"><vh>color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20041213105007.2"><vh>Body pane colors</vh>
-<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = #F7E1d7</vh></v>
-<v t="ekr.20051006200015"><vh>@color body_text_selection_background_color = #F7E1d7</vh></v>
-<v t="ekr.20051006200015.1"><vh>@color body_text_selection_foreground_color = None</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = MistyRose1</vh></v>
-<v t="ekr.20060822101942"><vh>@color command_mode_bg_color = None</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20060822101942.2"><vh>@color insert_mode_bg_color = None</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = None</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = None</vh></v>
-</v>
-<v t="ekr.20041119051246.1"><vh>Outline pane colors</vh>
-<v t="ekr.20041119051246.2"><vh>@color headline_text_unselected_background_color = None</vh></v>
-<v t="ekr.20041119050749.6"><vh>@color headline_text_unselected_foreground_color = #F7E1d7</vh></v>
-<v t="ekr.20041119051246.3"><vh>@color headline_text_selected_background_color = None</vh></v>
-<v t="ekr.20041119050749.7"><vh>@color headline_text_selected_foreground_color = None</vh></v>
-<v t="ekr.20041119051901"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20041119050749.8"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20041119050749.9"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20041119051901.1"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20041119050749.12"><vh>@color outline_pane_background_color = None</vh></v>
-</v>
+<v t="AGP.20240920200821" a="TV" tnodeList="AGP.20240920200821"><vh>@file leo.ui</vh></v>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20060828145228" a="E"><vh>Options for old colorizer</vh>
@@ -162,14 +88,13 @@
 </v>
 </v>
 </v>
-</v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
 <v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
@@ -324,7 +249,7 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -419,13 +344,31 @@
 <v t="ekr.20060923114638.28"><vh>@shortcuts EKR: N-Z</vh></v>
 </v>
 </v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
+<v t="ekr.20060603215208.4"><vh>Modes</vh>
+<v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-C)</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E"><vh>@keys No bindings</vh>
+<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
+<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
+<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
+<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060110141538.1"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-<v t="ekr.20060110141538.2" a="E"><vh>@keys Legacy Leo bindings</vh>
+<v t="ekr.20060110141538.2"><vh>@keys Legacy Leo bindings</vh>
 <v t="ekr.20051218203646"><vh>@shortcuts Legacy: A-E</vh></v>
 <v t="ekr.20060112090844.4"><vh>@shortcuts Legacy: F-M</vh></v>
 <v t="ekr.20060112090844.5"><vh>@shortcuts Legacy: N-Z</vh></v>
@@ -519,7 +462,7 @@
 <v t="ekr.20050203090810"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" a="E"><vh>Window</vh>
+<v t="ekr.20041213105954"><vh>Window</vh>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
@@ -560,7 +503,7 @@
 <v t="ekr.20060120123529"><vh>@bool initialClickExpandsOrContractsNode = True</vh></v>
 <v t="ekr.20041119050749.17"><vh>@bool look_for_control_drag_on_mouse_down = True</vh></v>
 <v t="ekr.20041119050749.18"><vh>@bool outline_pane_scrolls_horizontally = True</vh></v>
-<v t="ekr.20061002115414.1" a="TV"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
 <v t="ekr.20041213105954.2" a="E"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
@@ -568,49 +511,62 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060512084639"><vh>Recent</vh>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = False</vh></v>
-<v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
-<v t="ekr.20060216170801" a="M"><vh>@bool enable_calltips = False</vh></v>
-<v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
-<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
-<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
-<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
-<v t="ekr.20051126062830" a="M"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
-<v t="ekr.20060131071947"><vh>@bool trace_masterClickHandler = False</vh></v>
-<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
-<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
-<v t="ekr.20061004150211"><vh>@bool use_sax_based_read = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="AGP.20240925191023" a="E"><vh>backup</vh>
+<v t="AGP.20240927082403"><vh>file languages/c.py</vh>
+<v t="AGP.20240927082403.1"><vh>colorize()</vh></v>
+<v t="AGP.20240927082403.2"><vh>c_parser()</vh></v>
+<v t="AGP.20240927082403.3"><vh>directive_parser()</vh></v>
+<v t="AGP.20240927082403.4"><vh>comment_parser()</vh></v>
+<v t="AGP.20240927082403.5"><vh>blockcomment_parser()</vh></v>
+<v t="AGP.20240927082403.6"><vh>string_parser()</vh></v>
+<v t="AGP.20240927082403.7"><vh>name_parser()</vh></v>
 </v>
-<v t="AGP.20231016211058" a="E"><vh>Log pane colors</vh>
-<v t="AGP.20231016211058.1"><vh>@color log_error_color = red</vh></v>
-<v t="AGP.20231016211058.2"><vh>@color log_text_foreground_color = None</vh></v>
-<v t="AGP.20231016211058.3"><vh>@color log_text_background_color = None</vh></v>
-<v t="AGP.20231016211058.4"><vh>@color log_pane_background_color = None</vh></v>
-<v t="AGP.20231016211058.5"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="AGP.20231016211058.6"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+<v t="AGP.20240928081854"><vh>2file languages/c.py</vh>
+<v t="AGP.20240928081854.1"><vh>colorize()</vh></v>
+<v t="AGP.20240928081854.2"><vh>c_parser()</vh></v>
+<v t="AGP.20240928081854.3"><vh>pDirective()</vh></v>
+<v t="AGP.20240928081854.4"><vh>pComment()</vh></v>
+<v t="AGP.20240928081854.5"><vh>pBlockComment()</vh></v>
+<v t="AGP.20240928081854.6"><vh>pString()</vh></v>
+<v t="AGP.20240928081854.7"><vh>pKeyword()</vh></v>
+<v t="AGP.20240928081854.8"><vh>pLeo()</vh></v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings: Emacs keys + modes</vh>
-<v t="ekr.20060603215208.4"><vh>Modes</vh>
-<v t="ekr.20060603215208.16"><vh>@mode quick-command (Alt-C)</vh></v>
+<v t="AGP.20240928201736"><vh>COLORIZE</vh>
+<v t="AGP.20240926213925.2"><vh>c_parser()</vh></v>
+<v t="AGP.20240926213925.1"><vh>colorize()</vh></v>
+<v t="AGP.20240926213925.3"><vh>pDirective()</vh></v>
+<v t="AGP.20240926213925.4"><vh>pComment()</vh></v>
+<v t="AGP.20240926213925.5"><vh>pBlockComment()</vh></v>
+<v t="AGP.20240926213925.6"><vh>pString()</vh></v>
+<v t="AGP.20240926213925.7"><vh>pKeyword()</vh></v>
 </v>
-<v t="ekr.20060603215208.17"><vh>Shortcuts</vh>
-<v t="ekr.20060608191518.2"><vh>@shortcuts top-level keys (like emacs: uses Alt-c as gateway to modes)</vh></v>
-<v t="ekr.20061018061727"><vh>@@shortcuts Cursor moves using special keys: DWIM</vh></v>
-<v t="ekr.20061018061727.1"><vh>@shortcuts Cursor moves using special keys: the old way</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves using plain keys</vh></v>
-<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
-<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
-<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands/bindings</vh></v>
-<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
-<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
-<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+<v t="AGP.20240928211205"><vh>AGP COLORIZER</vh>
+<v t="AGP.20240928211205.1"><vh>new_colorize()</vh></v>
+<v t="AGP.20240928211205.2"><vh>xlang_parser()</vh></v>
+<v t="AGP.20240928211205.3"><vh>pDirective()</vh></v>
+<v t="AGP.20240928211205.4"><vh>pComment()</vh></v>
+<v t="AGP.20240928211205.5"><vh>pBlockComment()</vh></v>
+<v t="AGP.20240928211205.6"><vh>pString()</vh></v>
+<v t="AGP.20240928211205.7"><vh>pKeyword()</vh></v>
+</v>
+<v t="AGP.20240929101124"><vh>AGP COLORIZER</vh>
+<v t="AGP.20240929101124.1" a="M"><vh>new_colorize()</vh></v>
+<v t="AGP.20240929101124.2"><vh>xlang_parser()</vh></v>
+<v t="AGP.20240929101124.3"><vh>pDirective()</vh></v>
+<v t="AGP.20240929101124.4"><vh>pComment()</vh></v>
+<v t="AGP.20240929101124.5"><vh>pBlockComment()</vh></v>
+<v t="AGP.20240929101124.6"><vh>pString()</vh></v>
+<v t="AGP.20240929101124.7"><vh>pKeyword()</vh></v>
 </v>
 </v>
+<v t="AGP.20240923174705" a="E"><vh>languages</vh>
+<v t="AGP.20240926213925" a="E" tnodeList="AGP.20240926213925,AGP.20250422135319"><vh>@file languages/c.py</vh>
+<v t="AGP.20250422135319"><vh>colorize_head()</vh></v>
+</v>
+<v t="AGP.20240923194316" tnodeList="AGP.20240923194316"><vh>@file languages/python.py</vh></v>
+<v t="AGP.20240924201518" a="E" tnodeList="AGP.20240924201518"><vh>@file languages/kconfig.py</vh></v>
+</v>
+<v t="AGP.20241001210922"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="AGP.20230224142427">icon_bar_font_family = verdana
@@ -618,102 +574,1513 @@ icon_bar_font_size = 7
 icon_bar_font_slant = None
 icon_bar_font_weight = bold
 </t>
-<t tx="AGP.20231016211058"></t>
-<t tx="AGP.20231016211058.1">Color for error messages written to the log window.</t>
-<t tx="AGP.20231016211058.2">Foreground color of log text.
+<t tx="AGP.20240920200821" mod="55134c4147502e323032343039323231303236353071002e">#option for new windows
+split_direction = False
+split_ratio1 = 0.33
+split_ratio2 = 0.66
 
-</t>
-<t tx="AGP.20231016211058.3">Background color of log text.</t>
-<t tx="AGP.20231016211058.4">LightYellow1
+#compat
+splitbar_width = 8
+*leotree.font = ('consolas', 13,'normal','roman')
 
-#f2fdff</t>
-<t tx="AGP.20231016211058.5">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="AGP.20231016211058.6">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
-<t tx="LEOX.20231126113647">
+# must be defined before shade(u) is used, wich interpolate from background(0.0) to foreground(1.0)
+# or from specified colors as in shade(0.5,'black','white')
+background = '#08090A'
+foreground = '#F8F0F4'
+#some widely used shortcut
+bg = background
+fg = foreground
 
-
-</t>
-<t tx="LEOX.20231126113647.1">#defined first, used by shade()
-*background = '#08090A'
-*foreground = '#FFF0F0'
-
+#various text tag colors
 accent = '#FF8000'
 info =  '#22BB88'
 warning = '#FF4422'
-error = '#FF4422'
+error = '#FF2211'
 
 keyword = "#A5A5FF"
 string = '#22BB88'
 directive = '#A5A5FF'
 comment = '#777777'
 
+#node icons colors ------------------
 mark = accent
 clone = warning
 content = '#00DDFF'
 dirty = '#808080'
 
-split_bar_color = "#8080B0"
-scrollbar_width = 12
-splitbar_width = 10
-splitbar_color = 10
-
-#Tkinter default options-----------------------------
-*background = '#08090A'
-*foreground = '#FFF0F0'
-
-#*background = '#e8e8FF'
-#*foreground = '#08090A'
-
-*Font = ('arial', 10,'normal','roman')
+#Tkinter global options -----------------------------
+*background = background
+*foreground = foreground
 
 *selectBackground = shade(0.4)
-*selectForeground = shade(0.05)
+*selectForeground = foreground #shade(0.05)
 *insertBackground = shade(0.8)
 
 *highlightBackground = background
 *highlightColor = accent
 *highlightThickness = 0
 
-
 *borderColor = foreground
+*borderWidth = 0
+*relief = 'flat'
+
+*selectColor = foreground
+
+#Tkinter options by class name ------------------------
+*Font = ('arial', 10,'normal','roman')
+
 *Button*relief = 'groove'
-#*Scrollbar*width = 0
 
-#*Menu*BorderWidth = 5
-*Menu*Background = shade(0.3)
-Checkbutton*selectcolor = foreground
+*Checkbutton*selectcolor = foreground
 
+*Menubutton*background = shade(0.3)
+*Menu*borderWidth = 1
+*Menu*borderwidth = 1
+*Menu*background = shade(0.3)
+*Menu*activeBackground = shade(0.5)
 
-#Tkinter default options by widget name----------------
+*ScrollBar*width = 12
+*ScrollBar*height = 12
+*ScrollBar*background = shade(0.1)
+*ScrollBar*inactivecolor = shade(0.2)
+*ScrollBar*activecolor = shade(0.5)
 
+*Splitter*width = 8
+*Splitter*height = 8
+*Splitter*background = shade(0.3)
+
+*Text*padX = 10
+*Text*padY = 10
+*tree.padX = 10
+*tree.padY = 10
+
+#Tkinter options by widget name -----------------------
+*menuframe.background = shade(0.3)
+*toolframe.background = shade(0.25)
+*statusframe.background = shade(0.3)
+#qlinkframe
 
 *logtext.font = ('courier', 12,'normal','roman')
-
-*nodetext.font = ('consolas', 14,'normal','roman')
-#*nodetext.Foreground = '#AAD4FA'
+*log.highlightThickness = 1
+*nodetext.font = ('consolas', 12,'normal','roman')
+*nodetext.Foreground = shade(0.9)
+*tree.font = ('consolas', 13,'normal','roman')
+*tree.highlightThickness = 1
 *bodytext.font = ('consolas', 12,'normal','roman')
-#*bodytext.Foreground = '#9AC4FA'
-*hsplitter.height = 8
-*vsplitter.width = 8
-#'#8AB4F5'
+*bodytext.Foreground = shade(0.9)
+#*bodytext.highlightThickness = 1
+</t>
+<t tx="AGP.20240923174705"></t>
+<t tx="AGP.20240923194316">#alias = ("py","py2")
+
+from string import whitespace,ascii_letters,digits
+
+USE_BLOCKSTRING = True
+LINE_ESCAPE = None
+
+DIRECTIVE_START = None
+
+STRING_DELIMS = "\"'"
+
+COMMENT_START = "#"
+
+BLOCK_COMMENT_START = None
+BLOCK_COMMENT_END = None
+
+VALID_NAME_CHARS = ascii_letters + digits + "_"
+VALID_NAME_START_CHARS = ascii_letters + "_"
+
+keywords = [
+    "and",       "del",       "for",       "is",        "raise",    
+    "assert",    "elif",      "from",      "lambda",    "return",   
+    "break",     "else",      "global",    "not",       "try",      
+    "class",     "except",    "if",        "or",        "yield",   
+    "continue",  "exec",      "import",    "pass",      "while",
+    "def",       "finally",   "in",        "print"]
+    
+</t>
+<t tx="AGP.20240924201518">#alias = None
+
+from string import whitespace,ascii_letters,digits
+
+USE_BLOCKSTRING = False
+LINE_ESCAPE = None
+
+DIRECTIVE_START = None
+
+STRING_DELIMS = "\""
+
+COMMENT_START = "#"
+
+BLOCK_COMMENT_START = None
+BLOCK_COMMENT_END = None
+
+VALID_NAME_CHARS = ascii_letters + digits + "_"
+VALID_NAME_START_CHARS = ascii_letters + "_"
+
+keywords = [
+    "bool",
+"choice",
+"config",
+"default",
+"depend on",
+"endchoice",
+"endif",
+"endmenu",
+"help",
+"if"
+"imply",
+"int",
+"mainmenu",
+"menu",
+"menuconfig",
+"n",
+"prompt",
+"select",
+"source",
+"string",
+"tristate"
+"y",
+    ]
+</t>
+<t tx="AGP.20240925191023">@language c
+
+ "dsd#fdsd</t>
+<t tx="AGP.20240926213925">import string
+
+alias = ("cpp","c++")
+
+from string import whitespace,ascii_letters,digits
+
+USE_BLOCKSTRING = False
+LINE_ESCAPE = "\\"
+
+DIRECTIVE_START = "#"
+
+STRING_DELIMS = "\""
+
+COMMENT_START = "//"
+
+BLOCK_COMMENT_START = "/*"
+BLOCK_COMMENT_END = "*/"
+
+VALID_NAME_CHARS = ascii_letters + digits + "_"
+VALID_NAME_START_CHARS = ascii_letters + "_"
 
 
+keywords = [
+    # C keywords
+    "auto","break","case","continue",
+    "default","do","double","else","enum","extern",
+    "float","for","goto","if","int","long","register","return",
+    "short","signed","sizeof","static","struct","switch",
+    "typedef","union","unsigned","void","volatile","while",
+    # C++ keywords
+    "asm","bool","catch","class","const","const_cast",
+    "delete","dynamic_cast","explicit","false","friend",
+    "inline","mutable","namespace","new","operator",
+    "private","protected","public","reinterpret_cast","static_cast",
+    "template","this","throw","true","try",
+    "typeid","typename","using","virtual",
+    # types
+    "uint8_t","uint16_t","uint32_t","size_t","char","wchar_t",
+    
+    #misc
+    "NULL",
+    ]
+    
+symbols = {
+    "USE_BLOCKSTRING":False,
+    "LINE_ESCAPE" : "\\",
+    "DIRECTIVE_START" : "#",
+    "STRING_DELIMS" : "\"",
+    "COMMENT_START" : "//",
+    "BLOCK_COMMENT_START" : "/*",
+    "BLOCK_COMMENT_END" : "*/",
+    "VALID_NAME_CHARS" : ascii_letters + digits + "_",
+    "VALID_NAME_START_CHARS" : ascii_letters + "_",
+    "keywords" : keywords,
+}
 
+@others
 
-
-
-
+</t>
+<t tx="AGP.20240926213925.1">def colorize(s=None,leokwords = None):    
+    global lines,line_index,len_lines,line,index,len_line,results
+    global EOL,EOF,leoKeywords
+    global SUBSTRING
+    
+    if leokwords:
+        leoKeywords = leokwords
+    
+    if s != None:
+        lines = s.splitlines()
+        line_index = 1
+        line = lines.pop(0)
+        index = 0
+        len_line = len(line)
+        len_lines = len(lines)
+        
+    res = None
+    
+    while 1:    
+        #print line[index:]
+        while index &lt; len_line and res == None:            
+            
+            
+            SUBSTRING = line[index:]
+            CHAR = line[index]
+            EOL = index == (len_line-1)
+            EOF = EOL and (len_lines == 0)
+            
+            if len(parsers) &gt; 0:
+                for p in reversed(parsers):
+                    res = p(CHAR)
+                    
+                    if res != None:
+                        parsers.remove(p)
+                        
+                        if res != False:    # no result, just remove the parser
+                            results.append(res)
+                        else:
+                            res = None
+        
+                if len(parsers) == 0:
+                    res = results
+                    results = []
+                    #return res
+                    
+                #return None
+            else:
+            
+                res = c_parser(CHAR)
+            
+            index += 1
+            
+        
+        if res != None:
+            return res
+        
+        if len_lines &gt; 0:
+            line_index += 1
+            line = lines.pop(0)
+            index = 0
+            
+            len_line = len(line)
+            len_lines = len(lines)
+            
+            
+            
+        else:
+            break
+        
+    return None</t>
+<t tx="AGP.20240926213925.2">def c_parser(ch):
+        
+    if ch in VALID_NAME_START_CHARS:
+        pKeyword(ch,True)
+    elif SUBSTRING.startswith(DIRECTIVE_START):
+        pDirective(ch,True)
+    elif SUBSTRING.startswith(STRING_START):
+        pString(ch,True)   
+    elif SUBSTRING.startswith(COMMENT_START):
+        pComment(ch,True)
+    elif SUBSTRING.startswith(BLOCK_COMMENT_START):
+        pBlockComment(ch,True)
+    elif ch == "@":
+        pKeyword(ch,True)
+    
+    return None</t>
+<t tx="AGP.20240926213925.3">def pDirective(ch,start=False):    
+    #pp directives are multi-lined with \ , support for some form of comment
+    
+    if start:
+        pDirective.start = (line_index,index)
+        #pDirective.name = None
+        parsers.append(pDirective)
+    
+    else:
+        
+        start = pDirective.start
+        #name = pDirective.name
+        
+        #if not name and ch in whitespace:    
+        #    name = line[start[1]:index]
+        #    print name
+        
+        #pDirective.name = name
+        
+        if SUBSTRING.startswith(COMMENT_START):
+            pComment(ch,True)
+        elif SUBSTRING.startswith(BLOCK_COMMENT_START):
+            pBlockComment(ch,True)
+    
+        if EOL: #end of line
+            
+            #if not name:
+            #    name = line[start[1]:index]
+            
+            if ch != "\\" or EOF:  #do not continue on next line
+                return [ "pp", "%i.%i" % start, "%i.%i" % (line_index,index+1) ]
     
     
+    return None
+    </t>
+<t tx="AGP.20240926213925.4">def pComment(ch,start=False):
+    
+    if start:
+        pComment.start = (line_index,index)
+        parsers.append(pComment)
+    elif EOL:
+        return [ "comment", "%i.%i" % pComment.start, "%i.%i" % (line_index,len_line) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240926213925.5">def pBlockComment(ch,start=False):
+    
+    if start:
+        pBlockComment.start = (line_index,index)
+        parsers.append(pBlockComment)
+        
+    elif SUBSTRING.startswith(BLOCK_COMMENT_END) or EOF:
+
+        return [ "comment", "%i.%i" % pBlockComment.start, "%i.%i" % (line_index,index+len(BLOCK_COMMENT_END)) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240926213925.6">def pString(ch,start=False):
+    
+    if start:
+        pString.start = (line_index,index)
+        parsers.append(pString)
+        
+    elif SUBSTRING.startswith(STRING_END) or EOF:#EOF
+        
+        return [ "string", "%i.%i" % pString.start, "%i.%i" % (line_index,index+len(STRING_END)) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240926213925.7">def pKeyword(ch,start=False):    
+    
+    if start:
+        pKeyword.start = (line_index,index)
+        parsers.append(pKeyword)
+        return None
+        
+    if SUBSTRING.startswith(DIRECTIVE_START):
+        pDirective(ch,True)
+    elif SUBSTRING.startswith(STRING_START):
+        pString(ch,True)   
+    elif SUBSTRING.startswith(COMMENT_START):
+        pComment(ch,True)
+    elif SUBSTRING.startswith(BLOCK_COMMENT_START):
+        pBlockComment(ch,True)
+    
+    offset = None
+    
+    valid = ch in VALID_NAME_CHARS
+    
+    if not valid or EOL:
+        
+        if EOL and valid:
+            offset=1
+        else:
+            offset=0
+        
+        start = pKeyword.start
+        name = line[start[1]:index+offset]
+        
+        #print name
+        
+        if name[0] == "@":
+            if start[1] != 0 and name not in ("@others","@all"):
+                return False
+            if name in leoKeywords:
+                return [ "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+                
+        elif name in keywords:
+            return [ "keyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+        
+        return False
+    
+    
+    
+    
+    return None</t>
+<t tx="AGP.20240927082403">from string import whitespace,ascii_letters
+
+
+
+alias = ("cpp","c++")
+
+preprocessor = True
+string_delims = ("\"")
+comment_start = "//"
+comment_delims = ("/*","*/")
+
+keywords = [
+    # C keywords
+    "auto","break","case","char","continue",
+    "default","do","double","else","enum","extern",
+    "float","for","goto","if","int","long","register","return",
+    "short","signed","sizeof","static","struct","switch",
+    "typedef","union","unsigned","void","volatile","while",
+    # C++ keywords
+    "asm","bool","catch","class","const","const_cast",
+    "delete","dynamic_cast","explicit","false","friend",
+    "inline","mutable","namespace","new","operator",
+    "private","protected","public","reinterpret_cast","static_cast",
+    "template","this","throw","true","try",
+    "typeid","typename","using","virtual","wchar_t"]
+    
+
+
+lines = 0
+line_index = 0
+line = ""
+index= 0 
+
+len_line = 0
+len_lines = 0
+
+parsers = []
+results = []
+
+directive_start = None
+directive_name = None
+directive_value = None
+
+comment_start = None
+blockcomment_start = None
+string_start = None
+name_start = None
+
+@others
 
 
 
 </t>
+<t tx="AGP.20240927082403.1">def colorize(s=None):
+    global lines,line_index,len_lines,line,index,len_line
+    
+    if s != None:
+        
+        lines = s.splitlines()
+        line_index = 1
+        line = lines.pop(0)
+        index = 0
+        len_line = len(line)
+        len_lines = len(lines)
+        
+    res = None
+    
+    while 1:    
+        #print line[index:]
+        while index &lt; len_line and res == None:            
+            
+            res = c_parser(line[index])
+            index += 1
+        
+        if res != None:
+            return res
+        
+        if len_lines &gt; 0:
+            line_index += 1
+            line = lines.pop(0)
+            index = 0
+            
+            len_line = len(line)
+            len_lines = len(lines)
+            
+        else:
+            break
+        
+    return None</t>
+<t tx="AGP.20240927082403.2">def c_parser(ch):
+    global lines,line_index,line,index,results
+    global directive_start,comment_start,blockcomment_start,string_start,name_start
+    
+    if len(parsers) &gt; 0:
+        for p in reversed(parsers):
+            res = p(ch)
+            if res != None:
+                parsers.remove(p)
+                if res != False:    # no result, just remove the parser
+                    results.append(res)                
+        
+        if len(parsers) == 0:
+            res = results
+            results = []
+            return res
+                    
+        return None
+    
+    if ch.isalnum() or ch == "_":
+        name_start = (line_index,index)
+        parsers.append(name_parser)
+    
+    if ch == "#":
+        directive_start = (line_index,index)
+        parsers.append(directive_parser)
+        
+    if ch == "\"":
+        string_start = (line_index,index)
+        parsers.append(string_parser)
+                
+    if line[index:].startswith("//"):
+        comment_start = (line_index,index)
+        parsers.append(comment_parser)
+    
+    if line[index:].startswith("/*"):
+        blockcomment_start = (line_index,index)
+        parsers.append(blockcomment_parser)
+
+    
+    
+    return None</t>
+<t tx="AGP.20240927082403.3">def directive_parser(ch):
+    global lines,line_index,line,index,directive_start,directive_name,comment_start,blockcomment_start
+    
+    #pp directives are multi-lined with \ , support for some form of comment
+
+    
+    
+    if directive_name == None and ch in whitespace:    
+        directive_name = line[directive_start[1]:index]
+        print directive_name
+    
+    if line[index:].startswith("//"):
+        comment_start = (line_index,index)
+        parsers.append(comment_parser)
+
+                
+    if line[index:].startswith("/*"):
+        blockcomment_start = (line_index,index)
+        parsers.append(blockcomment_parser)
+    
+    
+    
+    if index == len_line-1: #end of line
+        
+        if directive_name == None:
+            directive_name = line[directive_start[1]:index]
+            
+        
+        if ch == "\\":  #continue on next line
+            return None
+        
+        else:           #finished, return result
+            return [ "pp", "%i.%i" % directive_start, "%i.%i" % (line_index,index+1) ]
+    
+    
+    </t>
+<t tx="AGP.20240927082403.4">def comment_parser(ch):    
+    
+    if index == len_line-1:
+        return [ "comment", "%i.%i" % comment_start, "%i.%i" % (line_index,len_line) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240927082403.5">def blockcomment_parser(ch):
+    
+    if line[index:].startswith("*/") or (len(lines)==0 and index == len_line-1):
+        return [ "comment", "%i.%i" % blockcomment_start, "%i.%i" % (line_index,index+2) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240927082403.6">def string_parser(ch):
+    
+    if line[index:].startswith("\"") or (len(lines)==0 and index == len_line-1):
+        return [ "string", "%i.%i" % string_start, "%i.%i" % (line_index,index+1) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240927082403.7">def name_parser(ch):
+    global index,directive_start,comment_start,blockcomment_start,string_start,name_start
+    
+    if ch == "#":
+        directive_start = (line_index,index)
+        parsers.append(directive_parser)
+        
+    if ch == "\"":
+        string_start = (line_index,index)
+        parsers.append(string_parser)
+                
+    if line[index:].startswith("//"):
+        comment_start = (line_index,index)
+        parsers.append(comment_parser)
+
+    if line[index:].startswith("/*"):
+        blockcomment_start = (line_index,index)
+        parsers.append(blockcomment_parser)
+    
+    if (not ch.isalnum() and  ch != "_") or index == len_line-1:
+        
+        if index == len_line-1:
+            name = line[name_start[1]:index+1]
+        else:
+            name = line[name_start[1]:index]
+            
+        print name
+        
+        if name in keywords:
+            return [ "keyword", "%i.%i" % name_start, "%i.%i" % (line_index,index) ]
+        else:
+            return False
+    
+    
+    
+    
+    return None</t>
+<t tx="AGP.20240928081854">from string import whitespace,ascii_letters
+
+
+
+alias = ("cpp","c++")
+
+preprocessor = True
+string_delims = ("\"")
+comment_start = "//"
+comment_delims = ("/*","*/")
+
+keywords = [
+    # C keywords
+    "auto","break","case","char","continue",
+    "default","do","double","else","enum","extern",
+    "float","for","goto","if","int","long","register","return",
+    "short","signed","sizeof","static","struct","switch",
+    "typedef","union","unsigned","void","volatile","while",
+    # C++ keywords
+    "asm","bool","catch","class","const","const_cast",
+    "delete","dynamic_cast","explicit","false","friend",
+    "inline","mutable","namespace","new","operator",
+    "private","protected","public","reinterpret_cast","static_cast",
+    "template","this","throw","true","try",
+    "typeid","typename","using","virtual","wchar_t"]
+    
+leoKeywords = []
+
+EOL = False
+EOF = False
+
+lines = 0
+line_index = 0
+line = ""
+index= 0 
+
+len_line = 0
+len_lines = 0
+
+parsers = []
+results = []
+
+
+@others
+
+
+</t>
+<t tx="AGP.20240928081854.1">def colorize(s=None,leokwords = None):    
+    global lines,line_index,len_lines,line,index,len_line
+    global EOL,EOF,leoKeywords
+    
+    if leokwords:
+        leoKeywords = leokwords
+    
+    if s != None:
+        lines = s.splitlines()
+        line_index = 1
+        line = lines.pop(0)
+        index = 0
+        len_line = len(line)
+        len_lines = len(lines)
+        
+    res = None
+    EOL = index == len_line-1
+    EOF = EOL and (len_lines == 0)
+    
+    while 1:    
+        #print line[index:]
+        while index &lt; len_line and res == None:            
+            
+            res = c_parser(line[index])
+            
+            index += 1
+            EOL = index == (len_line-1)
+        
+        if res != None:
+            return res
+        
+        if len_lines &gt; 0:
+            line_index += 1
+            line = lines.pop(0)
+            index = 0
+            
+            len_line = len(line)
+            len_lines = len(lines)
+            
+            EOL = index == (len_line-1)
+            EOF = EOL and (len_lines == 0)
+            
+        else:
+            break
+        
+    return None</t>
+<t tx="AGP.20240928081854.2">def c_parser(ch):
+    global lines,line_index,line,index,results
+    
+    if len(parsers) &gt; 0:
+        for p in reversed(parsers):
+            res = p(ch)
+            if res != None:
+                parsers.remove(p)
+                if res != False:    # no result, just remove the parser
+                    results.append(res)                
+        
+        if len(parsers) == 0:
+            res = results
+            results = []
+            return res
+                    
+        return None
+    
+    if ch.isalnum() or ch == "_":
+        pKeyword(ch,True)
+    elif ch == "#":
+        pDirective(ch,True)
+    elif ch == "\"":
+        pString(ch,True)   
+    elif line[index:].startswith("//"):
+        pComment(ch,True)
+    elif line[index:].startswith("/*"):
+        pBlockComment(ch,True)
+    elif ch == "@":
+        pLeo(ch,True)
+    
+    return None</t>
+<t tx="AGP.20240928081854.3">def pDirective(ch,start=False):    
+    #pp directives are multi-lined with \ , support for some form of comment
+    
+    if start:
+        pDirective.start = (line_index,index)
+        pDirective.name = None
+        parsers.append(pDirective)
+    
+    else:
+        
+        start = pDirective.start
+        name = pDirective.name
+        
+        if not name and ch in whitespace:    
+            name = line[start[1]:index]
+            print name
+        
+        pDirective.name = name
+        
+        if line[index:].startswith("//"):
+            pComment(ch,True)
+        elif line[index:].startswith("/*"):
+            pBlockComment(ch,True)
+    
+        if EOL: #end of line
+            
+            if not name:
+                name = line[start[1]:index]
+            
+            if ch != "\\" or EOF:  #do not continue on next line
+                return [ "pp", "%i.%i" % start, "%i.%i" % (line_index,index+1) ]
+    
+    
+    return None
+    </t>
+<t tx="AGP.20240928081854.4">def pComment(ch,start=False):
+    
+    if start:
+        pComment.start = (line_index,index)
+        parsers.append(pComment)
+    elif EOL:
+        return [ "comment", "%i.%i" % pComment.start, "%i.%i" % (line_index,len_line) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240928081854.5">def pBlockComment(ch,start=False):
+    
+    if start:
+        pBlockComment.start = (line_index,index)
+        parsers.append(pBlockComment)
+        
+    elif line[index:].startswith("*/") or EOF:
+
+        return [ "comment", "%i.%i" % pBlockComment.start, "%i.%i" % (line_index,index+2) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240928081854.6">def pString(ch,start=False):
+    
+    if start:
+        pString.start = (line_index,index)
+        parsers.append(pString)
+        
+    elif ch == "\"" or EOF:#EOF
+        
+        return [ "string", "%i.%i" % pString.start, "%i.%i" % (line_index,index+1) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240928081854.7">def pKeyword(ch,start=False):    
+    
+    if start:
+        pKeyword.start = (line_index,index)
+        parsers.append(pKeyword)
+        return None
+        
+    if ch == "#":
+        pDirective(ch,True)
+    elif ch == "\"":
+        pString(ch,True)          
+    elif line[index:].startswith("//"):
+        pComment(ch,True)
+    elif line[index:].startswith("/*"):
+        pBlockComment(ch,True)
+    
+    if (not ch.isalnum() and  ch != "_") or EOL:
+        
+        start = pKeyword.start
+        offset = 0
+        if EOL and (ch.isalnum() or ch == "_"):
+            offset = 1
+        
+        name = line[start[1]:index+offset]
+        
+        if name in keywords:
+            return [ "keyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+        else:
+            return False
+    
+    
+    
+    
+    return None</t>
+<t tx="AGP.20240928081854.8">def pLeo(ch,start=False):    
+        
+    if start:
+        pLeo.start = (line_index,index)
+        parsers.append(pLeo)
+        return None
+        
+    if ch == "#":
+        pDirective(ch,True)
+    elif ch == "\"":
+        pString(ch,True) 
+    elif line[index:].startswith("//"):
+        pComment(ch,True)
+    elif line[index:].startswith("/*"):
+        pBlockComment(ch,True)
+        
+    if (not ch.isalnum() and  ch != "_") or EOL:
+        
+        start = pLeo.start
+        
+        offset = 0
+        if EOL and (ch.isalnum() or ch == "_"):
+            offset = 1
+        
+        name = line[start[1]:index+offset]
+        
+        if start[1] != 0 and name not in ("@others","@all"):
+            return False
+        
+        if name in leoKeywords:
+            return [ "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+        else:
+            return False
+    
+    return None</t>
+<t tx="AGP.20240928201736">from string import whitespace,ascii_letters,digits
+
+DIRECTIVE_START = "#"
+
+STRING_START = "\""
+STRING_END = "\""
+
+COMMENT_START = "//"
+
+BLOCK_COMMENT_START = "/*"
+BLOCK_COMMENT_END = "*/"
+
+VALID_NAME_CHARS = ascii_letters + digits + "_"
+VALID_NAME_START_CHARS = ascii_letters + "_"
+
+leoKeywords = []
+
+EOL = False
+EOF = False
+
+lines = 0
+line_index = 0
+line = ""
+index= 0 
+
+len_line = 0
+len_lines = 0
+
+parsers = []
+results = []</t>
+<t tx="AGP.20240928211205">from string import whitespace,ascii_letters,digits
+
+DIRECTIVE_START = "#"
+
+#STRING_START = "\""
+#STRING_END = "\""
+STRING_DELIMS = "\"'"
+
+COMMENT_START = "//"
+
+BLOCK_COMMENT_START = "/*"
+BLOCK_COMMENT_END = "*/"
+
+VALID_NAME_CHARS = ascii_letters + digits + "_"
+VALID_NAME_START_CHARS = ascii_letters + "_"
+
+keywords = None
+#leoKeywords = []
+
+EOL = False
+EOF = False
+
+lines = 0
+line_index = 0
+line = ""
+index= 0 
+
+len_line = 0
+len_lines = 0
+
+parsers = []
+results = []</t>
+<t tx="AGP.20240928211205.1">def new_colorize(s=None):    
+    global lines,line_index,len_lines,line,index,len_line,results
+    global EOL,EOF,leoKeywords
+    global SUBSTRING
+
+    if s != None:
+        lines = s.splitlines()
+        line_index = 1
+        line = lines.pop(0)
+        index = 0
+        len_line = len(line)
+        len_lines = len(lines)
+        
+    res = None
+    
+    while 1:    
+        #print line[index:]
+        while index &lt; len_line and res == None:            
+            
+            
+            SUBSTRING = line[index:]
+            CHAR = line[index]
+            EOL = index == (len_line-1)
+            EOF = EOL and (len_lines == 0)
+            
+            if len(parsers) &gt; 0:
+                for p in reversed(parsers):
+                    res = p(CHAR)
+                    
+                    if res != None:
+                        parsers.remove(p)
+                        
+                        if res != False:    # no result, just remove the parser
+                            results.append(res)
+                        else:
+                            res = None
+        
+                if len(parsers) == 0:
+                    res = results
+                    results = []
+                    #return res
+                    
+                #return None
+            else:
+            
+                res = xlang_parser(CHAR)
+            
+            index += 1
+            
+        
+        if res != None:
+            return res
+        
+        if len_lines &gt; 0:
+            line_index += 1
+            line = lines.pop(0)
+            index = 0
+            
+            len_line = len(line)
+            len_lines = len(lines)
+            
+            
+            
+        else:
+            break
+        
+    return None</t>
+<t tx="AGP.20240928211205.2">def xlang_parser(ch):
+        
+    if ch in VALID_NAME_START_CHARS:
+        pKeyword(ch,True)
+    elif DIRECTIVE_START and SUBSTRING.startswith(DIRECTIVE_START):
+        pDirective(ch,True)
+    elif ch in STRING_DELIMS:   #SUBSTRING.startswith(STRING_START):
+        pString(ch,True)   
+    elif SUBSTRING.startswith(COMMENT_START):
+        pComment(ch,True)
+    elif BLOCK_COMMENT_START and SUBSTRING.startswith(BLOCK_COMMENT_START):
+        pBlockComment(ch,True)
+    elif ch == "@":
+        pKeyword(ch,True)
+    
+    return None</t>
+<t tx="AGP.20240928211205.3">def pDirective(ch,start=False):    
+    #pp directives are multi-lined with \ , support for some form of comment
+    
+    if start and not EOF:
+        pDirective.start = (line_index,index)
+        #pDirective.name = None
+        parsers.append(pDirective)
+    
+    else:
+        
+        start = pDirective.start
+        #name = pDirective.name
+        
+        #if not name and ch in whitespace:    
+        #    name = line[start[1]:index]
+        #    print name
+        
+        #pDirective.name = name
+        
+        if SUBSTRING.startswith(COMMENT_START):
+            pComment(ch,True)
+        elif SUBSTRING.startswith(BLOCK_COMMENT_START):
+            pBlockComment(ch,True)
+    
+        if EOL: #end of line
+            
+            #if not name:
+            #    name = line[start[1]:index]
+            
+            if ch != "\\" or EOF:  #do not continue on next line
+                return [ "pp", "%i.%i" % start, "%i.%i" % (line_index,index+1) ]
+    
+    
+    return None
+    </t>
+<t tx="AGP.20240928211205.4">def pComment(ch,start=False):
+    
+    if start:
+        pComment.start = (line_index,index)
+        parsers.append(pComment)
+    elif EOL:
+        return [ "comment", "%i.%i" % pComment.start, "%i.%i" % (line_index,len_line) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240928211205.5">def pBlockComment(ch,start=False):
+    
+    if start and not EOF:
+        pBlockComment.start = (line_index,index)
+        parsers.append(pBlockComment)
+        
+    elif SUBSTRING.startswith(BLOCK_COMMENT_END) or EOF:
+
+        return [ "comment", "%i.%i" % pBlockComment.start, "%i.%i" % (line_index,index+len(BLOCK_COMMENT_END)) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240928211205.6">def pString(ch,start=False):
+    
+    if start and not EOF:
+        pString.start = (line_index,index)
+        pString.delim = ch
+        parsers.append(pString)
+        
+        
+    #elif SUBSTRING.startswith(STRING_END) or EOF:#EOF 
+    elif ch == pString.delim or EOF:    
+        return [ "string", "%i.%i" % pString.start, "%i.%i" % (line_index,index+1) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240928211205.7">def pKeyword(ch,start=False):    
+    
+    if start:
+        if not EOF:
+            pKeyword.start = (line_index,index)
+            parsers.append(pKeyword)
+        return None
+        
+    if SUBSTRING.startswith(DIRECTIVE_START):
+        pDirective(ch,True)
+    elif ch in STRING_DELIMS:   #SUBSTRING.startswith(STRING_START):
+        pString(ch,True)   
+    elif SUBSTRING.startswith(COMMENT_START):
+        pComment(ch,True)
+    elif SUBSTRING.startswith(BLOCK_COMMENT_START):
+        pBlockComment(ch,True)
+    
+    offset = None
+    
+    valid = ch in VALID_NAME_CHARS
+    
+    if not valid or EOL:
+        
+        if EOL and valid:
+            offset=1
+        else:
+            offset=0
+        
+        start = pKeyword.start
+        name = line[start[1]:index+offset]
+        
+        #print name
+        
+        if name[0] == "@":
+            if start[1] != 0 and name not in ("@others","@all"):
+                return False
+            if name in leoKeywords:
+                return [ "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+                
+        elif name in keywords:
+            return [ "keyword", "%i.%i" % start, "%i.%i" % (line_index,index+offset) ]
+        
+        return False
+    
+    
+    
+    
+    return None</t>
+<t tx="AGP.20240929101124"># todo:
+# whitespace
+# string -&gt; single line
+# implement blockstring</t>
+<t tx="AGP.20240929101124.1">def new_colorize(self,lang,s=None):    
+    #global lines,line_index,len_lines,line,index,len_line,results
+    #global EOL,EOF,leoKeywords
+    #global SUBSTRING
+
+    print "func:",self.xlang_parser.func_code
+
+    
+    if s != None:
+        lines = s.splitlines()
+        line_index = 1
+        line = lines.pop(0)
+        index = 0
+        len_line = len(line)
+        len_lines = len(lines)
+    else:
+        CHAR, SUBSTRING, line, len_line, index, lines, len_lines, line_index, EOL, EOF = self.c_state
+    
+    res = None
+    parsers = self.parsers
+    results = self.results
+    
+    while 1:    
+        #print line[index:]
+        while index &lt; len_line and res == None:            
+            
+            EOL = index == (len_line-1)
+            EOF = EOL and (len_lines == 0)
+            #(CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF)
+            args = self.c_state = (line[index], line[index:], line, len_line, index, lines, len_lines, line_index, EOL, EOF)
+            
+            if len(parsers) &gt; 0:
+                for p in reversed(parsers):
+                    res = p(args,lang)
+                    
+                    if res != None:
+                        parsers.remove(p)
+                        
+                        if res != False:    # no result, just remove the parser
+                            results.append(res)
+                        else:
+                            res = None
+        
+                if len(parsers) == 0:
+                    res = results
+                    results = self.results = []
+                    #return res
+                    
+                #return None
+            else:
+            
+                res = self.xlang_parser(args,lang)
+            
+            index += 1
+            
+        
+        if res != None:
+            #EOL = index == (len_line-1)
+            #EOF = EOL and (len_lines == 0)
+            self.c_state = (None, None, line, len_line, index, lines, len_lines, line_index, EOL, EOF)
+            return res
+        
+        if len_lines &gt; 0:
+            line_index += 1
+            line = lines.pop(0)
+            index = 0
+            
+            len_line = len(line)
+            len_lines = len(lines)
+        else:
+            EOL = index == (len_line-1)
+            EOF = EOL and (len_lines == 0)
+            #self.c_state = (None, None, line, len_line, index, lines, len_lines, line_index, EOL, EOF)
+            break
+        
+    return None
+</t>
+<t tx="AGP.20240929101124.2">def xlang_parser(self,args,lang):
+        
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    if CHAR in lang.VALID_NAME_START_CHARS:
+        self.pKeyword(args,lang,True)
+    elif DIRECTIVE_START and SUBSTRING.startswith(lang.DIRECTIVE_START):
+        self.pDirective(args,lang,True)
+    elif CHAR in lang.STRING_DELIMS:   #SUBSTRING.startswith(STRING_START):
+        self.pString(args,lang,True)   
+    elif SUBSTRING.startswith(lang.COMMENT_START):
+        self.pComment(args,lang,True)
+    elif BLOCK_COMMENT_START and SUBSTRING.startswith(lang.BLOCK_COMMENT_START):
+        self.pBlockComment(args,lang,True)
+    elif CHAR == "@":
+        self.pKeyword(args,lang,True)
+    
+    return None</t>
+<t tx="AGP.20240929101124.3">def pDirective(self,args,lang,start=False):    
+    #pp directives are multi-lined with \ , support for some form of comment
+    
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    
+    if start and not EOF:
+        self.pDirective_start = (LINE_INDEX,INDEX)
+        #pDirective.name = None
+        self.parsers.append(self.pDirective)
+    
+    else:
+        
+        start = self.pDirective_start
+        #name = pDirective.name
+        
+        #if not name and ch in whitespace:    
+        #    name = line[start[1]:index]
+        #    print name
+        
+        #pDirective.name = name
+        
+        if SUBSTRING.startswith(lang.COMMENT_START):
+            self.pComment(args,lang,True)
+        elif SUBSTRING.startswith(lang.BLOCK_COMMENT_START):
+            self.pBlockComment(args,lang,True)
+    
+        if EOL: #end of line
+            
+            #if not name:
+            #    name = line[start[1]:index]
+            
+            if CHAR != "\\" or EOF:  #do not continue on next line
+                return [ "pp", "%i.%i" % start, "%i.%i" % (LINE_INDEX,INDEX+1) ]
+    
+    
+    return None
+    
+</t>
+<t tx="AGP.20240929101124.4">def pComment(self,args,lang,start=False):
+    
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    if start:
+        self.pComment_start = (LINE_INDEX,INDEX)
+        self.parsers.append(self.pComment)
+    elif EOL:
+        return [ "comment", "%i.%i" % self.pComment_start, "%i.%i" % (LINE_INDEX,LEN_LINE) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240929101124.5">def pBlockComment(self,args,lang,start=False):
+    
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    if start and not EOF:
+        self.pBlockComment_start = (LINE_INDEX,INDEX)
+        self.parsers.append(self.pBlockComment)
+        
+    elif SUBSTRING.startswith(lang.BLOCK_COMMENT_END) or EOF:
+
+        return [ "comment", "%i.%i" % self.pBlockComment_start, "%i.%i" % (LINE_INDEX,INDEX+len(lang.BLOCK_COMMENT_END)) ]        
+    
+    
+    return None</t>
+<t tx="AGP.20240929101124.6">def pString(self,args,lang,start=False):
+    
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    if start and not EOF:
+        self.pString_start = (LINE_INDEX,INDEX)
+        self.pString_delim = CHAR
+        self.parsers.append(self.pString)
+        
+        
+    #elif SUBSTRING.startswith(STRING_END) or EOF:#EOF 
+    elif CHAR == self.pString_delim or EOF:    
+        return [ "string", "%i.%i" % self.pString_start, "%i.%i" % (LINE_INDEX,INDEX+1) ]
+    
+    
+    return None</t>
+<t tx="AGP.20240929101124.7">def pKeyword(self,args,lang,start=False):
+
+    (CHAR, SUBSTRING, LINE, LEN_LINE, INDEX, LINES, LEN_LINES, LINE_INDEX, EOL, EOF) = args
+    
+    if start:
+        if not EOF:
+            self.pKeyword_start = (LINE_INDEX,INDEX)
+            self.parsers.append(self.pKeyword)
+        return None
+        
+    if SUBSTRING.startswith(lang.DIRECTIVE_START):
+        self.pDirective(args,lang,True)
+    elif CHAR in lang.STRING_DELIMS:   #SUBSTRING.startswith(STRING_START):
+        self.pString(args,lang,True)   
+    elif SUBSTRING.startswith(lang.COMMENT_START):
+        self.pComment(args,lang,True)
+    elif SUBSTRING.startswith(lang.BLOCK_COMMENT_START):
+        self.pBlockComment(args,lang,True)
+    
+    offset = None
+    
+    valid = CHAR in lang.VALID_NAME_CHARS
+    
+    if not valid or EOL:
+        
+        if EOL and valid:
+            offset=1
+        else:
+            offset=0
+        
+        start = self.pKeyword_start
+        name = LINE[start[1]:INDEX+offset]
+        
+        #print name
+        
+        if name[0] == "@":
+            if start[1] != 0 and name not in ("@others","@all"):
+                return False
+            if name in leoKeywords:
+                return [ "leoKeyword", "%i.%i" % start, "%i.%i" % (LINE_INDEX,INDEX+offset) ]
+                
+        elif name in lang.keywords:
+            return [ "keyword", "%i.%i" % start, "%i.%i" % (LINE_INDEX,INDEX+offset) ]
+        
+        return False
+    
+    
+    
+    
+    return None</t>
+<t tx="AGP.20241001210922">@language c
+
+</t>
+<t tx="AGP.20250422135319">
+def colorize_head(head):
+    params_e = head.rfind(")")
+    
+    
+    if head[0] not in VALID_NAME_START_CHARS:
+        return None
+    
+    if params_e &gt; -1:
+        params_s = head.find("(",0,params_e)
+        if params_s == -1:
+            return None
+        
+        #process possible base class constructor initialisation
+        head = head.replace("::",";;")
+        
+        head = " ".join(head.split())
+        
+        tctors = head.split(":")
+        head = tctors.pop(0)#put actual funct in head
+        #ctors = ""
+        #for c in tctors:
+        #    ctors += ":"+c		
+        ctors = ":".join(tctors)
+        
+        #extract dest from ctors and append to head
+        if ctors != "":
+            p_e = ctors.rfind(")")
+            head += ctors[p_e+1:]
+            ctors = ctors[:p_e+1]
+            #Error("xcc :","dest found:"+head)
+        
+        head = head.replace(";;","::")
+        
+        #remove the double space and so on
+        #head = head.split()
+        #head = string.join(head)
+        head = string.join(head.split())
+        
+        
+        
+        #find "()" position
+        params_e = head.rfind(")")
+        params_s = head.rfind("(",0,params_e)
+        
+        if params_s &gt; -1:
+            # pure &amp; dest ----------------------
+            pure_s = head.find("=0",params_e)
+            if pure_s &gt; -1:				
+                pure = (head[pure_s:pure_s+2],pure_s,pure_s+2)
+                dest = (head[pure_s+2:],pure_s+2,len(head))
+            else:
+                pure = ("",-1,-1)
+                dest = (head[params_e+1:],params_e+1,len(head))                    
+            
+            # params ------------------------			
+            params = (head[params_s:params_e+1],params_s,params_e+1)			
+            
+            # name ---------------------------
+            name_s = head.find("operator")
+            if name_s == -1:
+                name_s = head.rfind(" ",0,params_s)
+                if name_s &gt; -1:
+                    name_s += 1
+            
+            if name_s &gt; 0:
+                name = (head[name_s:params_s],name_s,params_s)
+                
+                if name[0].startswith("~"): #ctors have no return value, all preceding name is specifier
+                    ret = ("",-1,-1)
+                    spec = (head[:name_s],0,name_s)
+                else:
+                    ret_s = head.rfind(" ",0,name_s-1)
+                
+                    if ret_s &gt; -1:
+                        ret = (head[ret_s+1:name_s-1],ret_s+1,name_s-1)
+                        spec = (head[:ret_s],0,ret_s)
+                    else:
+                        ret = (head[:name_s],0,name_s)
+                        spec = ("",-1,-1)
+                    
+            else:
+                name = (head[:params_s],0,params_s)
+                ret = ("",-1,-1)
+                spec = ("",-1,-1)
+            
+            r = (spec,ret,name,params,pure,dest,ctors)
+            return r
+    return None</t>
 <t tx="ekr.20041119034357.1">#@nocolor</t>
 <t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.7"></t>
@@ -799,14 +2166,6 @@ Valid values: any nonzero positive integer.</t>
 <t tx="ekr.20041119034357.39">True: Wrap body text.
 
 </t>
-<t tx="ekr.20041119034357.40">
-
-Foreground color for the cursor in body text.
-
-</t>
-<t tx="ekr.20041119034357.41">Background color for the cursor in body text.
-
-</t>
 <t tx="ekr.20041119034357.42">The format string used when creating the Time/Date string for the Insert Time/Date command.
 See the Python documentation for time.strftime for full details.
 
@@ -826,17 +2185,6 @@ False: auto-indent increases indentation by one tab for Python only.</t>
 body_text_font_size = 12
 body_text_font_slant = None
 body_text_font_weight = None
-</t>
-<t tx="ekr.20041119034357.48">Foreground color of body text.
-
-Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="ekr.20041119034357.49">Background color of body text.
-
-#ffecea
-
-Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="ekr.20041119034357.50">Color of insertion cursor
-
 </t>
 <t tx="ekr.20041119034357.53">Additional border in body text pane, in pixels.</t>
 <t tx="ekr.20041119034357.54"></t>
@@ -1206,16 +2554,6 @@ False: Don't issue such messages.
 0: Only clicks in a node's plus/minus box expands or contracts the node.
 
 Note:  @bool expanded_click_area = True conflicts with the UniversalScrolling plugin.</t>
-<t tx="ekr.20041119050749.6">Foreground color of unselected headline text.</t>
-<t tx="ekr.20041119050749.7">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="ekr.20041119050749.8">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119050749.9">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
 <t tx="ekr.20041119050749.10">The format string used when creating the Time/Date string for the Insert Time/Date command.
 
 See the Python documentation for time.strftime for full details.
@@ -1233,46 +2571,20 @@ Thu, 30 Jan 2003 16:57:12
 <t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
 
 False: use local time.</t>
-<t tx="ekr.20041119050749.12">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
 <t tx="ekr.20041119050749.17">This option controls the interpretation of the control key when dragging nodes in the outline pane.
 
 True: A drag is a control-drag if the control key is down at the start of the drag.
 
 False: A drag is a control-drag if the control key is down at the end of the drag.</t>
 <t tx="ekr.20041119050749.18">True: Use horizontal scrollbar in outline pane.</t>
-<t tx="ekr.20041119051246.1"></t>
-<t tx="ekr.20041119051246.2">Background color of unselected headline text.
-
-LavenderBlush1
-
-#ffffec</t>
-<t tx="ekr.20041119051246.3">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
 <t tx="ekr.20041119051246.4">headline_text_font_family = courier
 headline_text_font_size = 12
 headline_text_font_slant = roman
 headline_text_font_weight = bold
 </t>
-<t tx="ekr.20041119051901">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119051901.1">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
-<t tx="ekr.20041119052015">Color for error messages written to the log window.</t>
 <t tx="ekr.20041119052015.1">True: Wrap body text.
 
 </t>
-<t tx="ekr.20041119052015.2">Foreground color of log text.
-
-</t>
-<t tx="ekr.20041119053445">Background color of log text.</t>
 <t tx="ekr.20041119105509">Not implemented yet.
 
 Creates a permanent value that can be tested later with @if. That is, it alters
@@ -1364,9 +2676,6 @@ weight: bold, normal, None
 slant: roman, italic, None
 
 Use the show-fonts command to pick fonts, then copy the values shown by the show-fonts command to the values here.</t>
-<t tx="ekr.20041213105007.1"></t>
-<t tx="ekr.20041213105007.2"></t>
-<t tx="ekr.20041213105007.3"></t>
 <t tx="ekr.20041213105508"># The font for the log pane. Default is default font for Tk.Text widgets.
 # Tk translates invalid font names to another font in a system-dependent way.
 # 
@@ -1381,9 +2690,6 @@ log_text_font_weight = normal
 Warning: the number of pixels per inch varies...</t>
 <t tx="ekr.20041213105954.1"></t>
 <t tx="ekr.20041213105954.2"></t>
-<t tx="ekr.20041217184352.2">LightYellow1
-
-#f2fdff</t>
 <t tx="ekr.20050126083026">node granularity: start a new undo unit when typing moves to a new node.
 line granularity: start a new undo unit when typing moves to new line.
 word granularity: start a new undo unit when typing starts a new word.
@@ -1410,11 +2716,6 @@ rapidq, rebol, shell, tcltk
 For instructions on how to add support for a new languages, see leoPy.leo:
 
 Notes--&gt;@thin ../doc/leoNotes.txt--&gt;How to...--&gt;How to add support for a new language</t>
-<t tx="ekr.20051006200015">Use a light selectbackground value so syntax coloring looks good.
-
-Default is Gray80.
-CadetBlue3 has been suggested.</t>
-<t tx="ekr.20051006200015.1">Default is white.</t>
 <t tx="ekr.20051007193321"># append-next-kill                  = None
 # apply settings                    = None
 # call-last-keyboard-macro          = None
@@ -1621,29 +2922,7 @@ KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
 KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
 KP_F1, KP_F2, KP_F3, KP_F4,
 KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
-<t tx="ekr.20051010093913">c.save()</t>
 <t tx="ekr.20051010112558">@color</t>
-<t tx="ekr.20051011123608">n = len('insert-newline              ')
-
-s = p.bodyString()
-result = []
-for line in g.splitLines(s):
-    i = line.find('=')
-    if i == -1 or i &lt;= n:
-        result.append(line)
-    else:
-        result.append(line[:n] + line[i:])
-
-result = ''.join(result)
-# print result
-p.setBodyString(result)</t>
-<t tx="ekr.20051020125928">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="ekr.20051025070845">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
 <t tx="ekr.20051025084017">How to install the Aspell spell checker for the Spell tab
 
 1.  Download and install the Aspell package from http://aspell.sourceforge.net/
@@ -3747,179 +5026,6 @@ yank                                = None
 yank-pop                            = None
 yank-rectangle                      = None
 zap-to-character                    = None</t>
-<t tx="ekr.20060112103537.17">'''This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.'''
-
-import leoConfig
-import leoTest
-
-u = leoTest.testUtils(c)
-parser = leoConfig.settingsTreeParser(c)
-
-# Add these as required to handle commands defined by plugins.
-optionalCommandPrefixes = ['group-operations']
-optionalCommandNames = [
-    # These are the command names as defined by the slideshow plugin.
-    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
-    'next-slide-command','next-slide-show-command',
-    'prev-slide-command','prev-slide-show-command']
-
-setNames = []
-setsDict = {} # keys are set names, values are dicts of command names.
-shortcutsDict = {}
-
-@others
-
-main()
-</t>
-<t tx="ekr.20060112104119">def defineSetNames():
-    
-    global setNames
-
-    if 1:
-        setNames = []
-        for p in c.allNodes_iter():
-            h = p.headString()
-            if h.startswith('@keys'):
-                h = h[5:].strip()
-                if h not in setNames:
-                    setNames.append(h)
-        g.es('Found these sets...')
-        for setName in setNames:
-            g.es_print('  %s' % str(setName))
-    else:
-        setNames = [
-            'Default Emacs shortcuts',
-            'Legacy Leo bindings',
-            'Legacy Leo shortcuts with important Emacs bindings',
-            'No bindings',
-            'EKR bindings: a mix',
-            'EKR bindings: Mode-oriented',
-        ]
-    
-    setNames.sort()</t>
-<t tx="ekr.20060112104333">def doSet(p,name):
-    
-    global shortcutsDict
-    
-    shortcutsDict = {}
-
-    for p in p.subtree_iter():
-        if p.headString().startswith('@shortcuts'):
-            doShortcuts(p,name)</t>
-<t tx="ekr.20060112104333.1">def checkSets():
-    
-    global setNames, optionalCommandPrefixes, optionalCommandNames
-
-    # Compute the union of all the command names.
-    allNames = {}
-    for setName in setNames:
-        d = setsDict.get(setName)
-        if d:
-            for key in d.keys():
-                allNames[key] = key
-        else:
-            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-            
-    k = c.keyHandler
-    keys = allNames.keys()
-    keys.sort()
-            
-    # Warn about missing names.
-    for setName in ('No bindings',): # setNames:
-        d = setsDict.get(setName)
-        if not d:
-            g.es_print("'@keys No bindings' not found",color='red')
-        for key in keys:
-            if key not in ('none','None',None) and key not in d.keys():
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if (
-                    not (key.startswith('enter-') and key.endswith('-mode')) and
-                    not (key.startswith('press-') and key.endswith('-button'))
-                ):
-                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
-                    
-    # Warn about undefined commands.
-    for key in keys:
-        if not c.commandsDict.get(key):
-            ok = False
-            # full-command and quick command are weird special cases.
-            if key not in ('None',None,'full-command','quick-command'):
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if key.startswith('enter-') and key.endswith('-mode'):
-                    ok = True
-                elif key.startswith('press-') and key.endswith('-button'):
-                    ok = True
-                for prefix in optionalCommandPrefixes:
-                    if key.startswith(prefix):
-                        ok = True
-                for optionalCommand in optionalCommandNames:
-                    if key == optionalCommand:
-                        ok = True
-                if not ok:
-                    g.es_print('Undefined command name: %s' % (key))</t>
-<t tx="ekr.20060112104823">def main ():
-    
-    global setNames
-    defineSetNames()
-    
-    # root = u.findNodeAnywhere('Keyboard shortcuts')
-    # for p in root.self_and_subtree_iter():
-
-    g.es_print('-' * 40)
-    seen = {}
-    for p in c.allNodes_iter():
-        h = p.headString()
-        if h.startswith('@keys'):
-            h = h[5:].strip()
-            if not seen.get(h):
-                seen[h] = True
-                doSet(p,h)
-    checkSets()
-    g.es('Check Bindings done')</t>
-<t tx="ekr.20060112105523">def doShortcuts(p,setName):
-    
-    global parser,setsDict,shortcutsDict
-    
-    d = setsDict.get(setName,{})
-    s = p.bodyString()
-    lines = g.splitLines(s)
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('#'):
-            commandName,bunch = parser.parseShortcutLine(line)
-            if not bunch:
-                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
-                    p.headString(),repr(line)),color='red')
-            else:
-                # Having multiple shortcuts for a command if fine,
-                # But having multiple commands for a shortcut is not.
-                shortcut = bunch and bunch.val
-                pane = bunch and bunch.pane
-                if shortcut not in (None,'None','none'):
-                    aList = shortcutsDict.get(shortcut,[])
-                    if aList:
-                        for commandName2,pane2 in aList:
-                            if pane == pane2:
-                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
-                                    shortcut,setName,commandName2),color='red')
-                        else:
-                            aList.append((commandName,pane),)
-                    else:
-                        shortcutsDict [shortcut] = [(commandName,pane),]
-        
-                data = d.get(commandName)
-                if data:
-                    shortcut2,pane2 = data
-                    if shortcut == shortcut2 and pane == pane2:
-                        g.es_print('duplicate %s in set %s' % (
-                            commandName,setName),color='red')
-                else:
-                    data = shortcut,pane
-                    d[commandName] = data
-                
-    setsDict[setName] = d</t>
-<t tx="ekr.20060112110750"></t>
 <t tx="ekr.20060112112006"></t>
 <t tx="ekr.20060114073238">If True, Leo will report to the console which bindings have been created.
 
@@ -5064,7 +6170,6 @@ group-operations-transfer           = Alt-Ctrl-Shift-d</t>
 <t tx="ekr.20060504140408"></t>
 <t tx="ekr.20060504140408.1"></t>
 <t tx="ekr.20060504140408.2"></t>
-<t tx="ekr.20060512084639">@nocolor</t>
 <t tx="ekr.20060513100933">The number of times the colorizer's main loop in colorOneChunk executes before pausing to check for events.
 A reasonable value is 10.</t>
 <t tx="ekr.20060513100933.1">The number of times the colorizer's main loop in colorOneChunk executes before actually colorizing text.
@@ -5246,22 +6351,6 @@ The valid values are::
 ignore:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20060605081712">Recommended:
-    
-white                   if top_level_unbound_key_action is command
-a color like MistyRose1 if top_level_unbound_key_action is insert or overwrite.</t>
-<t tx="ekr.20060605081712.3">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060606085536">Overrides body_text_background_color.
-
-wheat1
-PeachPuff1
-LemonChiffon1
-cornsilk1
-honeydew1
-LavenderBlush1
-azure2
-aquamarine1</t>
-<t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060607182402"></t>
 <t tx="ekr.20060608191518.2"># Keyboard-quit sets the input state to the *default* input state
 # Specified by @strings top_level_unbound_key_action.
@@ -5305,9 +6394,6 @@ menu_text_font_weight = None</t>
 <t tx="ekr.20060807103220.9">This is the format of the year node headline if a whole year is inserted.</t>
 <t tx="ekr.20060807103220.10">True: Omit saturdays if a whole year is inserted</t>
 <t tx="ekr.20060807103220.11">True: Omit sundays if a whole year is inserted</t>
-<t tx="ekr.20060822101942">Overrides body_text_background_color.</t>
-<t tx="ekr.20060822101942.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060822101942.2">Overrides body_text_background_color.</t>
 <t tx="ekr.20060826152759"></t>
 <t tx="ekr.20060827102902"></t>
 <t tx="ekr.20060827102902.1"></t>
@@ -6143,27 +7229,6 @@ False: Use Leo's legacy xml parser code.</t>
 False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
 False: Put the cursor at the end of the headline text.</t>
-<t tx="ekr.20061011082224">@nocolor
-
-myLeoSettings.leo is a major improvement in how Leo handles settings. You can
-'override' settings defined in any leoSettings.leo file by placing your own
-settings in myLeoSettings.leo, either in your HOME directory or in the
-leo/config directory (the directory containing this file.) Distributions of Leo
-leave myLeoSettings.leo along, and myLeoSettings.leo is not part of Leo's cvs
-repository, so Leo never changes myLeoSettings.leo.
-
-This section lists settings that would be natural candidates for inclusion in
-myLeoSettings.leo. That is, you may have strong preferences for these settings
-that differ from mine.
-
-Notes:
-
-- The actual settings here have no effect because they are not in an @settings
-tree. However, their *clones* have effect elsewhere in this file. You can use
-the Go To Next Clone (Alt-N) to find clones elsewhere in the file.
-
-- I have not included any keyboard shortcuts here because they are highly personal.
-  However, the ignore_unbound_non_ascii_keys option affects how Leo handles 'plain' keys.</t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
 <t tx="ekr.20061018061727"># The 'special' keys are the arrow keys and the Home, End keys, PageUp and PageDn keys.

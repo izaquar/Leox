@@ -1,11 +1,11 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3320:@thin leoNodes.py
+#@+node:AGP.20250415230112.2096:@thin leoNodes.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
 
 #@<< About the vnode and tnode classes >>
-#@+node:ekr.20031218072017.2412:<< About the vnode and tnode classes >>
+#@+node:AGP.20250415230112.2097:<< About the vnode and tnode classes >>
 #@+at 
 #@nonl
 # The vnode and tnode classes represent most of the data contained in the 
@@ -70,10 +70,10 @@
 # @file tree may make several @file trees dirty if the change is made to a 
 # node with clones in those @file trees.
 #@-at
-#@-node:ekr.20031218072017.2412:<< About the vnode and tnode classes >>
+#@-node:AGP.20250415230112.2097:<< About the vnode and tnode classes >>
 #@nl
 #@<< About clones >>
-#@+node:ekr.20031218072017.2408:<< About clones >>
+#@+node:AGP.20250415230112.2098:<< About clones >>
 #@+at 
 #@nonl
 # This is the design document for clones in Leo. It covers all important 
@@ -215,7 +215,7 @@
 # list with one pass through the vnodes.  Leo then converts each list to a 
 # circular list with one additional pass through the tnodes.
 #@-at
-#@-node:ekr.20031218072017.2408:<< About clones >>
+#@-node:AGP.20250415230112.2098:<< About clones >>
 #@nl
 
 from __future__ import generators # To make the code work in Python 2.2.
@@ -223,7 +223,7 @@ from __future__ import generators # To make the code work in Python 2.2.
 use_zodb = False
 
 #@<< imports >>
-#@+node:ekr.20060904165452.1:<< imports >>
+#@+node:AGP.20250415230112.2099:<< imports >>
 if use_zodb:
     # It may be important to import ZODB first.
     try:
@@ -236,19 +236,14 @@ else:
 
 import leoGlobals as g
 
-if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
-    try: from psyco.classes import *
-    except ImportError: pass
-
 import string
 import time
 #@nonl
-#@-node:ekr.20060904165452.1:<< imports >>
+#@-node:AGP.20250415230112.2099:<< imports >>
 #@nl
 
 #@+others
-#@+node:ekr.20031218072017.3321:class tnode
+#@+node:AGP.20250415230112.2100:class tnode
 if use_zodb and ZODB:
     class baseTnode (ZODB.Persistence.Persistent):
         pass
@@ -259,15 +254,15 @@ else:
 class tnode (baseTnode):
     """A class that implements tnodes."""
     #@    << tnode constants >>
-    #@+node:ekr.20031218072017.3322:<< tnode constants >>
+    #@+node:AGP.20250415230112.2101:<< tnode constants >>
     dirtyBit    = 0x01
     richTextBit = 0x02 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x04
     writeBit    = 0x08 # Set: write the tnode.
-    #@-node:ekr.20031218072017.3322:<< tnode constants >>
+    #@-node:AGP.20250415230112.2101:<< tnode constants >>
     #@nl
     #@    @+others
-    #@+node:ekr.20031218072017.2006:t.__init__
+    #@+node:AGP.20250415230112.2102:t.__init__
     # All params have defaults, so t = tnode() is valid.
     
     def __init__ (self,bodyString=None,headString=None):
@@ -290,15 +285,15 @@ class tnode (baseTnode):
         self.vnodeList = [] # List of all vnodes pointing to this tnode.
         self._firstChild = None
     #@nonl
-    #@-node:ekr.20031218072017.2006:t.__init__
-    #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
+    #@-node:AGP.20250415230112.2102:t.__init__
+    #@+node:AGP.20250415230112.2103:t.__repr__ & t.__str__
     def __repr__ (self):
         
         return "<tnode %d>" % (id(self))
             
     __str__ = __repr__
-    #@-node:ekr.20031218072017.3323:t.__repr__ & t.__str__
-    #@+node:ekr.20060908205857:t.__hash__ (only for zodb)
+    #@-node:AGP.20250415230112.2103:t.__repr__ & t.__str__
+    #@+node:AGP.20250415230112.2104:t.__hash__ (only for zodb)
     if use_zodb and ZODB:
         
         # The only required property is that objects
@@ -310,14 +305,14 @@ class tnode (baseTnode):
             
             # return sum([ord(ch) for ch in g.app.nodeIndices.toString(self.fileIndex)])
     #@nonl
-    #@-node:ekr.20060908205857:t.__hash__ (only for zodb)
-    #@+node:ekr.20031218072017.3325:Getters
-    #@+node:EKR.20040625161602:getBody
+    #@-node:AGP.20250415230112.2104:t.__hash__ (only for zodb)
+    #@+node:AGP.20250415230112.2105:Getters
+    #@+node:AGP.20250415230112.2106:getBody
     def getBody (self):
     
         return self.bodyString
-    #@-node:EKR.20040625161602:getBody
-    #@+node:ekr.20031218072017.3326:t.hasBody
+    #@-node:AGP.20250415230112.2106:getBody
+    #@+node:AGP.20250415230112.2107:t.hasBody
     def hasBody (self):
         
         '''Return True if this tnode contains body text.'''
@@ -325,33 +320,33 @@ class tnode (baseTnode):
         s = self.bodyString
     
         return s and len(s) > 0
-    #@-node:ekr.20031218072017.3326:t.hasBody
-    #@+node:ekr.20031218072017.3327:Status bits
-    #@+node:ekr.20031218072017.3328:isDirty
+    #@-node:AGP.20250415230112.2107:t.hasBody
+    #@+node:AGP.20250415230112.2108:Status bits
+    #@+node:AGP.20250415230112.2109:isDirty
     def isDirty (self):
     
         return (self.statusBits & self.dirtyBit) != 0
-    #@-node:ekr.20031218072017.3328:isDirty
-    #@+node:ekr.20031218072017.3329:isRichTextBit
+    #@-node:AGP.20250415230112.2109:isDirty
+    #@+node:AGP.20250415230112.2110:isRichTextBit
     def isRichTextBit (self):
     
         return (self.statusBits & self.richTextBit) != 0
-    #@-node:ekr.20031218072017.3329:isRichTextBit
-    #@+node:ekr.20031218072017.3330:isVisited
+    #@-node:AGP.20250415230112.2110:isRichTextBit
+    #@+node:AGP.20250415230112.2111:isVisited
     def isVisited (self):
     
         return (self.statusBits & self.visitedBit) != 0
-    #@-node:ekr.20031218072017.3330:isVisited
-    #@+node:EKR.20040503094727:isWriteBit
+    #@-node:AGP.20250415230112.2111:isVisited
+    #@+node:AGP.20250415230112.2112:isWriteBit
     def isWriteBit (self):
     
         return (self.statusBits & self.writeBit) != 0
-    #@-node:EKR.20040503094727:isWriteBit
-    #@-node:ekr.20031218072017.3327:Status bits
-    #@-node:ekr.20031218072017.3325:Getters
-    #@+node:ekr.20031218072017.3331:Setters
-    #@+node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.1485:setTnodeText
+    #@-node:AGP.20250415230112.2112:isWriteBit
+    #@-node:AGP.20250415230112.2108:Status bits
+    #@-node:AGP.20250415230112.2105:Getters
+    #@+node:AGP.20250415230112.2113:Setters
+    #@+node:AGP.20250415230112.2114:Setting body text
+    #@+node:AGP.20250415230112.2115:setTnodeText
     # This sets the text in the tnode from the given string.
     
     def setTnodeText (self,s,encoding="utf-8",loading=False):
@@ -377,79 +372,79 @@ class tnode (baseTnode):
             self.mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
         
     #@nonl
-    #@-node:ekr.20031218072017.1485:setTnodeText
-    #@+node:ekr.20031218072017.1486:setSelection
+    #@-node:AGP.20250415230112.2115:setTnodeText
+    #@+node:AGP.20250415230112.2116:setSelection
     def setSelection (self,start,length):
     
         self.selectionStart = start
         self.selectionLength = length
-    #@-node:ekr.20031218072017.1486:setSelection
-    #@-node:ekr.20031218072017.1484:Setting body text
-    #@+node:ekr.20031218072017.3332:Status bits
-    #@+node:ekr.20031218072017.3333:clearDirty
+    #@-node:AGP.20250415230112.2116:setSelection
+    #@-node:AGP.20250415230112.2114:Setting body text
+    #@+node:AGP.20250415230112.2117:Status bits
+    #@+node:AGP.20250415230112.2118:clearDirty
     def clearDirty (self):
     
         self.statusBits &= ~ self.dirtyBit
-    #@-node:ekr.20031218072017.3333:clearDirty
-    #@+node:ekr.20031218072017.3334:clearRichTextBit
+    #@-node:AGP.20250415230112.2118:clearDirty
+    #@+node:AGP.20250415230112.2119:clearRichTextBit
     def clearRichTextBit (self):
     
         self.statusBits &= ~ self.richTextBit
-    #@-node:ekr.20031218072017.3334:clearRichTextBit
-    #@+node:ekr.20031218072017.3335:clearVisited
+    #@-node:AGP.20250415230112.2119:clearRichTextBit
+    #@+node:AGP.20250415230112.2120:clearVisited
     def clearVisited (self):
     
         self.statusBits &= ~ self.visitedBit
-    #@-node:ekr.20031218072017.3335:clearVisited
-    #@+node:EKR.20040503093844:clearWriteBit
+    #@-node:AGP.20250415230112.2120:clearVisited
+    #@+node:AGP.20250415230112.2121:clearWriteBit
     def clearWriteBit (self):
     
         self.statusBits &= ~ self.writeBit
-    #@-node:EKR.20040503093844:clearWriteBit
-    #@+node:ekr.20031218072017.3336:setDirty
+    #@-node:AGP.20250415230112.2121:clearWriteBit
+    #@+node:AGP.20250415230112.2122:setDirty
     def setDirty (self):
     
         self.statusBits |= self.dirtyBit
-    #@-node:ekr.20031218072017.3336:setDirty
-    #@+node:ekr.20031218072017.3337:setRichTextBit
+    #@-node:AGP.20250415230112.2122:setDirty
+    #@+node:AGP.20250415230112.2123:setRichTextBit
     def setRichTextBit (self):
     
         self.statusBits |= self.richTextBit
-    #@-node:ekr.20031218072017.3337:setRichTextBit
-    #@+node:ekr.20031218072017.3338:setVisited
+    #@-node:AGP.20250415230112.2123:setRichTextBit
+    #@+node:AGP.20250415230112.2124:setVisited
     def setVisited (self):
     
         self.statusBits |= self.visitedBit
-    #@-node:ekr.20031218072017.3338:setVisited
-    #@+node:EKR.20040503094727.1:setWriteBit
+    #@-node:AGP.20250415230112.2124:setVisited
+    #@+node:AGP.20250415230112.2125:setWriteBit
     def setWriteBit (self):
     
         self.statusBits |= self.writeBit
-    #@-node:EKR.20040503094727.1:setWriteBit
-    #@-node:ekr.20031218072017.3332:Status bits
-    #@+node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
+    #@-node:AGP.20250415230112.2125:setWriteBit
+    #@-node:AGP.20250415230112.2117:Status bits
+    #@+node:AGP.20250415230112.2126:setCloneIndex (used in 3.x)
     def setCloneIndex (self, index):
     
         self.cloneIndex = index
-    #@-node:ekr.20031218072017.3339:setCloneIndex (used in 3.x)
-    #@+node:ekr.20031218072017.3340:setFileIndex
+    #@-node:AGP.20250415230112.2126:setCloneIndex (used in 3.x)
+    #@+node:AGP.20250415230112.2127:setFileIndex
     def setFileIndex (self, index):
     
         self.fileIndex = index
-    #@-node:ekr.20031218072017.3340:setFileIndex
-    #@+node:ekr.20050418101546:t.setHeadString (new in 4.3)
+    #@-node:AGP.20250415230112.2127:setFileIndex
+    #@+node:AGP.20250415230112.2128:t.setHeadString (new in 4.3)
     def setHeadString (self,s,encoding="utf-8"):
         
         t = self
     
         s = g.toUnicode(s,encoding,reportErrors=True)
         t.headString = s
-    #@-node:ekr.20050418101546:t.setHeadString (new in 4.3)
-    #@-node:ekr.20031218072017.3331:Setters
+    #@-node:AGP.20250415230112.2128:t.setHeadString (new in 4.3)
+    #@-node:AGP.20250415230112.2113:Setters
     #@-others
 #@nonl
-#@-node:ekr.20031218072017.3321:class tnode
-#@+node:ekr.20031218072017.3341:class vnode
+#@-node:AGP.20250415230112.2100:class tnode
+#@+node:AGP.20250415230112.2129:class vnode
 if use_zodb and ZODB:
     class baseVnode (ZODB.Persistence.Persistent):
         pass
@@ -459,7 +454,7 @@ else:
     
 class vnode (baseVnode):
     #@    << vnode constants >>
-    #@+node:ekr.20031218072017.951:<< vnode constants >>
+    #@+node:AGP.20250415230112.2130:<< vnode constants >>
     # Define the meaning of status bits in new vnodes.
     
     # Archived...
@@ -476,18 +471,18 @@ class vnode (baseVnode):
     dirtyBit    = 0x060
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
-    #@-node:ekr.20031218072017.951:<< vnode constants >>
+    #@-node:AGP.20250415230112.2130:<< vnode constants >>
     #@nl
     #@    @+others
-    #@+node:ekr.20031218072017.3342:Birth & death
-    #@+node:ekr.20031218072017.3343:v.__cmp__ (not used)
+    #@+node:AGP.20250415230112.2131:Birth & death
+    #@+node:AGP.20250415230112.2132:v.__cmp__ (not used)
     if 0: # not used
         def __cmp__(self,other):
             
             g.trace(self,other)
             return not (self is other) # Must return 0, 1 or -1
-    #@-node:ekr.20031218072017.3343:v.__cmp__ (not used)
-    #@+node:ekr.20031218072017.3344:v.__init__
+    #@-node:AGP.20250415230112.2132:v.__cmp__ (not used)
+    #@+node:AGP.20250415230112.2133:v.__init__
     def __init__ (self,t):
     
         assert(t)
@@ -501,8 +496,8 @@ class vnode (baseVnode):
         # Structure links.
         self._parent = self._next = self._back = None
     #@nonl
-    #@-node:ekr.20031218072017.3344:v.__init__
-    #@+node:ekr.20031218072017.3345:v.__repr__ & v.__str__
+    #@-node:AGP.20250415230112.2133:v.__init__
+    #@+node:AGP.20250415230112.2134:v.__repr__ & v.__str__
     def __repr__ (self):
         
         if self.t:
@@ -511,8 +506,8 @@ class vnode (baseVnode):
             return "<vnode %d:NULL tnode>" % (id(self))
             
     __str__ = __repr__
-    #@-node:ekr.20031218072017.3345:v.__repr__ & v.__str__
-    #@+node:ekr.20040312145256:v.dump
+    #@-node:AGP.20250415230112.2134:v.__repr__ & v.__str__
+    #@+node:AGP.20250415230112.2135:v.dump
     def dumpLink (self,link):
         return g.choose(link,link,"<none>")
     
@@ -536,16 +531,16 @@ class vnode (baseVnode):
             print "vnodeList"
             for v in v.t.vnodeList:
                 print v
-    #@-node:ekr.20040312145256:v.dump
-    #@+node:ekr.20060910100316:v.__hash__ (only for zodb)
+    #@-node:AGP.20250415230112.2135:v.dump
+    #@+node:AGP.20250415230112.2136:v.__hash__ (only for zodb)
     if use_zodb and ZODB:
         def __hash__(self):
             return self.t.__hash__()
     #@nonl
-    #@-node:ekr.20060910100316:v.__hash__ (only for zodb)
-    #@-node:ekr.20031218072017.3342:Birth & death
-    #@+node:ekr.20031218072017.3346:v.Comparisons
-    #@+node:ekr.20040705201018:v.findAtFileName (new in 4.2 b3)
+    #@-node:AGP.20250415230112.2136:v.__hash__ (only for zodb)
+    #@-node:AGP.20250415230112.2131:Birth & death
+    #@+node:AGP.20250415230112.2137:v.Comparisons
+    #@+node:AGP.20250415230112.2138:v.findAtFileName (new in 4.2 b3)
     def findAtFileName (self,names):
         
         """Return the name following one of the names in nameList.
@@ -564,8 +559,8 @@ class vnode (baseVnode):
             return name
         else:
             return ""
-    #@-node:ekr.20040705201018:v.findAtFileName (new in 4.2 b3)
-    #@+node:ekr.20031218072017.3350:anyAtFileNodeName
+    #@-node:AGP.20250415230112.2138:v.findAtFileName (new in 4.2 b3)
+    #@+node:AGP.20250415230112.2139:anyAtFileNodeName
     def anyAtFileNodeName (self):
         
         """Return the file name following an @file node or an empty string."""
@@ -578,8 +573,8 @@ class vnode (baseVnode):
             "@write","@nosent", "@file-nosent", "@nosentinelsfile")
     
         return self.findAtFileName(names)
-    #@-node:ekr.20031218072017.3350:anyAtFileNodeName
-    #@+node:ekr.20031218072017.3348:at...FileNodeName
+    #@-node:AGP.20250415230112.2139:anyAtFileNodeName
+    #@+node:AGP.20250415230112.2140:at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
     
@@ -607,16 +602,16 @@ class vnode (baseVnode):
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
     atNorefFileNodeName   = atRawFileNodeName
     atAsisFileNodeName     = atSilentFileNodeName
-    #@-node:ekr.20031218072017.3348:at...FileNodeName
-    #@+node:EKR.20040430152000:isAtAllNode
+    #@-node:AGP.20250415230112.2140:at...FileNodeName
+    #@+node:AGP.20250415230112.2141:isAtAllNode
     def isAtAllNode (self):
     
         """Returns True if the receiver contains @others in its body at the start of a line."""
     
         flag, i = g.is_special(self.t.bodyString,0,"@all")
         return flag
-    #@-node:EKR.20040430152000:isAtAllNode
-    #@+node:ekr.20040326031436:isAnyAtFileNode good
+    #@-node:AGP.20250415230112.2141:isAtAllNode
+    #@+node:AGP.20250415230112.2142:isAnyAtFileNode good
     def isAnyAtFileNode (self):
         
         """Return True if v is any kind of @file or related node."""
@@ -626,8 +621,8 @@ class vnode (baseVnode):
     
         h = self.headString()
         return h and h[0] == '@' and self.anyAtFileNodeName()
-    #@-node:ekr.20040326031436:isAnyAtFileNode good
-    #@+node:ekr.20040325073709:isAt...FileNode (vnode)
+    #@-node:AGP.20250415230112.2142:isAnyAtFileNode good
+    #@+node:AGP.20250415230112.2143:isAt...FileNode (vnode)
     def isAtFileNode (self):
         return g.choose(self.atFileNodeName(),True,False)
         
@@ -647,24 +642,24 @@ class vnode (baseVnode):
     isAtNoSentFileNode = isAtNoSentinelsFileNode
     isAtNorefFileNode  = isAtRawFileNode
     isAtAsisFileNode   = isAtSilentFileNode
-    #@-node:ekr.20040325073709:isAt...FileNode (vnode)
-    #@+node:ekr.20031218072017.3351:isAtIgnoreNode
+    #@-node:AGP.20250415230112.2143:isAt...FileNode (vnode)
+    #@+node:AGP.20250415230112.2144:isAtIgnoreNode
     def isAtIgnoreNode (self):
     
         """Returns True if the receiver contains @ignore in its body at the start of a line."""
     
         flag, i = g.is_special(self.t.bodyString, 0, "@ignore")
         return flag
-    #@-node:ekr.20031218072017.3351:isAtIgnoreNode
-    #@+node:ekr.20031218072017.3352:isAtOthersNode
+    #@-node:AGP.20250415230112.2144:isAtIgnoreNode
+    #@+node:AGP.20250415230112.2145:isAtOthersNode
     def isAtOthersNode (self):
     
         """Returns True if the receiver contains @others in its body at the start of a line."""
     
         flag, i = g.is_special(self.t.bodyString,0,"@others")
         return flag
-    #@-node:ekr.20031218072017.3352:isAtOthersNode
-    #@+node:ekr.20031218072017.3353:matchHeadline
+    #@-node:AGP.20250415230112.2145:isAtOthersNode
+    #@+node:AGP.20250415230112.2146:matchHeadline
     def matchHeadline (self,pattern):
     
         """Returns True if the headline matches the pattern ignoring whitespace and case.
@@ -680,28 +675,28 @@ class vnode (baseVnode):
         pattern = pattern.lower().replace(' ','').replace('\t','')
         
         return h.startswith(pattern)
-    #@-node:ekr.20031218072017.3353:matchHeadline
-    #@-node:ekr.20031218072017.3346:v.Comparisons
-    #@+node:ekr.20031218072017.3359:Getters (vnode)
-    #@+node:ekr.20040306214240:Tree Traversal getters
-    #@+node:ekr.20031218072017.3406:v.back
+    #@-node:AGP.20250415230112.2146:matchHeadline
+    #@-node:AGP.20250415230112.2137:v.Comparisons
+    #@+node:AGP.20250415230112.2147:Getters (vnode)
+    #@+node:AGP.20250415230112.2148:Tree Traversal getters
+    #@+node:AGP.20250415230112.2149:v.back
     # Compatibility routine for scripts
     
     def back (self):
     
         return self._back
-    #@-node:ekr.20031218072017.3406:v.back
-    #@+node:ekr.20031218072017.3409:v.next
+    #@-node:AGP.20250415230112.2149:v.back
+    #@+node:AGP.20250415230112.2150:v.next
     # Compatibility routine for scripts
     # Used by p.findAllPotentiallyDirtyNodes.
     
     def next (self):
     
         return self._next
-    #@-node:ekr.20031218072017.3409:v.next
-    #@-node:ekr.20040306214240:Tree Traversal getters
-    #@+node:ekr.20031218072017.3360:Children
-    #@+node:ekr.20040303212445:v.childIndex
+    #@-node:AGP.20250415230112.2150:v.next
+    #@-node:AGP.20250415230112.2148:Tree Traversal getters
+    #@+node:AGP.20250415230112.2151:Children
+    #@+node:AGP.20250415230112.2152:v.childIndex
     def childIndex(self):
         
         v = self
@@ -714,29 +709,29 @@ class vnode (baseVnode):
             n += 1
             v = v._back
         return n
-    #@-node:ekr.20040303212445:v.childIndex
-    #@+node:ekr.20031218072017.3362:v.firstChild (changed for 4.2)
+    #@-node:AGP.20250415230112.2152:v.childIndex
+    #@+node:AGP.20250415230112.2153:v.firstChild (changed for 4.2)
     def firstChild (self):
         
         return self.t._firstChild
-    #@-node:ekr.20031218072017.3362:v.firstChild (changed for 4.2)
-    #@+node:ekr.20040307085922:v.hasChildren & hasFirstChild
+    #@-node:AGP.20250415230112.2153:v.firstChild (changed for 4.2)
+    #@+node:AGP.20250415230112.2154:v.hasChildren & hasFirstChild
     def hasChildren (self):
         
         v = self
         return v.firstChild()
     
     hasFirstChild = hasChildren
-    #@-node:ekr.20040307085922:v.hasChildren & hasFirstChild
-    #@+node:ekr.20031218072017.3364:v.lastChild
+    #@-node:AGP.20250415230112.2154:v.hasChildren & hasFirstChild
+    #@+node:AGP.20250415230112.2155:v.lastChild
     def lastChild (self):
     
         child = self.firstChild()
         while child and child.next():
             child = child.next()
         return child
-    #@-node:ekr.20031218072017.3364:v.lastChild
-    #@+node:ekr.20031218072017.3365:v.nthChild
+    #@-node:AGP.20250415230112.2155:v.lastChild
+    #@+node:AGP.20250415230112.2156:v.nthChild
     # childIndex and nthChild are zero-based.
     
     def nthChild (self, n):
@@ -747,8 +742,8 @@ class vnode (baseVnode):
             n -= 1
             child = child.next()
         return child
-    #@-node:ekr.20031218072017.3365:v.nthChild
-    #@+node:ekr.20031218072017.3366:v.numberOfChildren (n)
+    #@-node:AGP.20250415230112.2156:v.nthChild
+    #@+node:AGP.20250415230112.2157:v.numberOfChildren (n)
     def numberOfChildren (self):
     
         n = 0
@@ -757,56 +752,56 @@ class vnode (baseVnode):
             n += 1
             child = child.next()
         return n
-    #@-node:ekr.20031218072017.3366:v.numberOfChildren (n)
-    #@-node:ekr.20031218072017.3360:Children
-    #@+node:ekr.20031218072017.3367:Status Bits
-    #@+node:ekr.20031218072017.3368:v.isCloned (4.2)
+    #@-node:AGP.20250415230112.2157:v.numberOfChildren (n)
+    #@-node:AGP.20250415230112.2151:Children
+    #@+node:AGP.20250415230112.2158:Status Bits
+    #@+node:AGP.20250415230112.2159:v.isCloned (4.2)
     def isCloned (self):
         
         return len(self.t.vnodeList) > 1
-    #@-node:ekr.20031218072017.3368:v.isCloned (4.2)
-    #@+node:ekr.20031218072017.3369:isDirty
+    #@-node:AGP.20250415230112.2159:v.isCloned (4.2)
+    #@+node:AGP.20250415230112.2160:isDirty
     def isDirty (self):
     
         return self.t.isDirty()
-    #@-node:ekr.20031218072017.3369:isDirty
-    #@+node:ekr.20031218072017.3370:isExpanded
+    #@-node:AGP.20250415230112.2160:isDirty
+    #@+node:AGP.20250415230112.2161:isExpanded
     def isExpanded (self):
     
         return ( self.statusBits & self.expandedBit ) != 0
-    #@-node:ekr.20031218072017.3370:isExpanded
-    #@+node:ekr.20031218072017.3371:isMarked
+    #@-node:AGP.20250415230112.2161:isExpanded
+    #@+node:AGP.20250415230112.2162:isMarked
     def isMarked (self):
     
         return ( self.statusBits & vnode.markedBit ) != 0
-    #@-node:ekr.20031218072017.3371:isMarked
-    #@+node:ekr.20031218072017.3372:isOrphan
+    #@-node:AGP.20250415230112.2162:isMarked
+    #@+node:AGP.20250415230112.2163:isOrphan
     def isOrphan (self):
     
         return ( self.statusBits & vnode.orphanBit ) != 0
-    #@-node:ekr.20031218072017.3372:isOrphan
-    #@+node:ekr.20031218072017.3373:isSelected
+    #@-node:AGP.20250415230112.2163:isOrphan
+    #@+node:AGP.20250415230112.2164:isSelected
     def isSelected (self):
     
         return ( self.statusBits & vnode.selectedBit ) != 0
-    #@-node:ekr.20031218072017.3373:isSelected
-    #@+node:ekr.20031218072017.3374:isTopBitSet
+    #@-node:AGP.20250415230112.2164:isSelected
+    #@+node:AGP.20250415230112.2165:isTopBitSet
     def isTopBitSet (self):
     
         return ( self.statusBits & self.topBit ) != 0
-    #@-node:ekr.20031218072017.3374:isTopBitSet
-    #@+node:ekr.20031218072017.3376:isVisited
+    #@-node:AGP.20250415230112.2165:isTopBitSet
+    #@+node:AGP.20250415230112.2166:isVisited
     def isVisited (self):
     
         return ( self.statusBits & vnode.visitedBit ) != 0
-    #@-node:ekr.20031218072017.3376:isVisited
-    #@+node:ekr.20031218072017.3377:status
+    #@-node:AGP.20250415230112.2166:isVisited
+    #@+node:AGP.20250415230112.2167:status
     def status (self):
     
         return self.statusBits
-    #@-node:ekr.20031218072017.3377:status
-    #@-node:ekr.20031218072017.3367:Status Bits
-    #@+node:ekr.20031218072017.3378:v.bodyString
+    #@-node:AGP.20250415230112.2167:status
+    #@-node:AGP.20250415230112.2158:Status Bits
+    #@+node:AGP.20250415230112.2168:v.bodyString
     # Compatibility routine for scripts
     
     def bodyString (self):
@@ -818,8 +813,8 @@ class vnode (baseVnode):
     
         # Make _sure_ we return a unicode string.
         return g.toUnicode(self.t.bodyString,g.app.tkEncoding)
-    #@-node:ekr.20031218072017.3378:v.bodyString
-    #@+node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
+    #@-node:AGP.20250415230112.2168:v.bodyString
+    #@+node:AGP.20250415230112.2169:v.headString & v.cleanHeadString
     def headString (self):
         
         """Return the headline string."""
@@ -836,8 +831,8 @@ class vnode (baseVnode):
         
         s = self.headString()
         return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
-    #@-node:ekr.20031218072017.1581:v.headString & v.cleanHeadString
-    #@+node:ekr.20040323100443:v.directParents (new method in 4.2)
+    #@-node:AGP.20250415230112.2169:v.headString & v.cleanHeadString
+    #@+node:AGP.20250415230112.2170:v.directParents (new method in 4.2)
     def directParents (self):
         
         """(New in 4.2) Return a list of all direct parent vnodes of a vnode.
@@ -850,11 +845,11 @@ class vnode (baseVnode):
             return v._parent.t.vnodeList
         else:
             return []
-    #@-node:ekr.20040323100443:v.directParents (new method in 4.2)
-    #@-node:ekr.20031218072017.3359:Getters (vnode)
-    #@+node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
+    #@-node:AGP.20250415230112.2170:v.directParents (new method in 4.2)
+    #@-node:AGP.20250415230112.2147:Getters (vnode)
+    #@+node:AGP.20250415230112.2171:v.Link/Unlink/Insert methods (used by file read logic)
     # These remain in 4.2: the file read logic calls these before creating positions.
-    #@+node:ekr.20060913091805.1:v.detach
+    #@+node:AGP.20250415230112.2172:v.detach
     def detach (self):
         
         '''Return a standalone copy of a vnode,
@@ -869,8 +864,8 @@ class vnode (baseVnode):
         
         return vnode(t2)
     #@nonl
-    #@-node:ekr.20060913091805.1:v.detach
-    #@+node:ekr.20031218072017.3419:v.insertAfter
+    #@-node:AGP.20250415230112.2172:v.detach
+    #@+node:AGP.20250415230112.2173:v.insertAfter
     def insertAfter (self,t=None):
     
         """Inserts a new vnode after self"""
@@ -882,8 +877,8 @@ class vnode (baseVnode):
         v.linkAfter(self)
     
         return v
-    #@-node:ekr.20031218072017.3419:v.insertAfter
-    #@+node:ekr.20031218072017.3421:v.insertAsNthChild
+    #@-node:AGP.20250415230112.2173:v.insertAfter
+    #@+node:AGP.20250415230112.2174:v.insertAsNthChild
     def insertAsNthChild (self,n,t=None):
     
         """Inserts a new node as the the nth child of the receiver.
@@ -896,8 +891,8 @@ class vnode (baseVnode):
         v.linkAsNthChild(self,n)
     
         return v
-    #@-node:ekr.20031218072017.3421:v.insertAsNthChild
-    #@+node:ekr.20031218072017.2355:v.linkAfter
+    #@-node:AGP.20250415230112.2174:v.insertAsNthChild
+    #@+node:AGP.20250415230112.2175:v.linkAfter
     def linkAfter (self,v):
     
         """Link self after v."""
@@ -908,8 +903,8 @@ class vnode (baseVnode):
         v._next = self
         if self._next:
             self._next._back = self
-    #@-node:ekr.20031218072017.2355:v.linkAfter
-    #@+node:ekr.20031218072017.3425:v.linkAsNthChild
+    #@-node:AGP.20250415230112.2175:v.linkAfter
+    #@+node:AGP.20250415230112.2176:v.linkAsNthChild
     def linkAsNthChild (self,pv,n):
     
         """Links self as the n'th child of vnode pv"""
@@ -931,8 +926,8 @@ class vnode (baseVnode):
             prev._next = v
             if v._next:
                 v._next._back = v
-    #@-node:ekr.20031218072017.3425:v.linkAsNthChild
-    #@+node:ekr.20031218072017.3426:v.linkAsRoot
+    #@-node:AGP.20250415230112.2176:v.linkAsNthChild
+    #@+node:AGP.20250415230112.2177:v.linkAsRoot
     def linkAsRoot (self,oldRoot):
         
         """Link a vnode as the root node and set the root _position_."""
@@ -954,8 +949,8 @@ class vnode (baseVnode):
         # we want to start with a pristine tree.
         if oldRoot: oldRoot._back = v
     #@nonl
-    #@-node:ekr.20031218072017.3426:v.linkAsRoot
-    #@+node:ekr.20031218072017.3422:v.moveToRoot
+    #@-node:AGP.20250415230112.2177:v.linkAsRoot
+    #@+node:AGP.20250415230112.2178:v.moveToRoot
     def moveToRoot (self,oldRoot=None):
     
         '''Moves a vnode to the root position.
@@ -969,8 +964,8 @@ class vnode (baseVnode):
         
         return v
     #@nonl
-    #@-node:ekr.20031218072017.3422:v.moveToRoot
-    #@+node:ekr.20031218072017.3438:v.unlink
+    #@-node:AGP.20250415230112.2178:v.moveToRoot
+    #@+node:AGP.20250415230112.2179:v.unlink
     def unlink (self):
     
         """Unlinks a vnode from the tree."""
@@ -992,38 +987,38 @@ class vnode (baseVnode):
         v._parent = v._next = v._back = None
         # v.parentsList = []
     #@nonl
-    #@-node:ekr.20031218072017.3438:v.unlink
-    #@-node:ekr.20040301071824:v.Link/Unlink/Insert methods (used by file read logic)
-    #@+node:ekr.20031218072017.3384:Setters
-    #@+node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20031218072017.3389:clearClonedBit
+    #@-node:AGP.20250415230112.2179:v.unlink
+    #@-node:AGP.20250415230112.2171:v.Link/Unlink/Insert methods (used by file read logic)
+    #@+node:AGP.20250415230112.2180:Setters
+    #@+node:AGP.20250415230112.2181: v.Status bits
+    #@+node:AGP.20250415230112.2182:clearClonedBit
     def clearClonedBit (self):
     
         self.statusBits &= ~ self.clonedBit
-    #@-node:ekr.20031218072017.3389:clearClonedBit
-    #@+node:ekr.20031218072017.3390:v.clearDirty (no change needed)
+    #@-node:AGP.20250415230112.2182:clearClonedBit
+    #@+node:AGP.20250415230112.2183:v.clearDirty (no change needed)
     def clearDirty (self):
     
         v = self
         v.t.clearDirty()
     #@nonl
-    #@-node:ekr.20031218072017.3390:v.clearDirty (no change needed)
-    #@+node:ekr.20031218072017.3391:v.clearMarked
+    #@-node:AGP.20250415230112.2183:v.clearDirty (no change needed)
+    #@+node:AGP.20250415230112.2184:v.clearMarked
     def clearMarked (self):
     
         self.statusBits &= ~ self.markedBit
-    #@-node:ekr.20031218072017.3391:v.clearMarked
-    #@+node:ekr.20031218072017.3392:clearOrphan
+    #@-node:AGP.20250415230112.2184:v.clearMarked
+    #@+node:AGP.20250415230112.2185:clearOrphan
     def clearOrphan (self):
     
         self.statusBits &= ~ self.orphanBit
-    #@-node:ekr.20031218072017.3392:clearOrphan
-    #@+node:ekr.20031218072017.3393:clearVisited
+    #@-node:AGP.20250415230112.2185:clearOrphan
+    #@+node:AGP.20250415230112.2186:clearVisited
     def clearVisited (self):
     
         self.statusBits &= ~ self.visitedBit
-    #@-node:ekr.20031218072017.3393:clearVisited
-    #@+node:ekr.20031218072017.3395:contract & expand & initExpandedBit
+    #@-node:AGP.20250415230112.2186:clearVisited
+    #@+node:AGP.20250415230112.2187:contract & expand & initExpandedBit
     def contract(self):
     
         self.statusBits &= ~ self.expandedBit
@@ -1039,13 +1034,13 @@ class vnode (baseVnode):
     def initExpandedBit (self):
     
         self.statusBits |= self.expandedBit
-    #@-node:ekr.20031218072017.3395:contract & expand & initExpandedBit
-    #@+node:ekr.20031218072017.3396:initStatus
+    #@-node:AGP.20250415230112.2187:contract & expand & initExpandedBit
+    #@+node:AGP.20250415230112.2188:initStatus
     def initStatus (self, status):
     
         self.statusBits = status
-    #@-node:ekr.20031218072017.3396:initStatus
-    #@+node:ekr.20031218072017.3397:setClonedBit & initClonedBit
+    #@-node:AGP.20250415230112.2188:initStatus
+    #@+node:AGP.20250415230112.2189:setClonedBit & initClonedBit
     def setClonedBit (self):
     
         self.statusBits |= self.clonedBit
@@ -1056,8 +1051,8 @@ class vnode (baseVnode):
             self.statusBits |= self.clonedBit
         else:
             self.statusBits &= ~ self.clonedBit
-    #@-node:ekr.20031218072017.3397:setClonedBit & initClonedBit
-    #@+node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
+    #@-node:AGP.20250415230112.2189:setClonedBit & initClonedBit
+    #@+node:AGP.20250415230112.2190:v.setMarked & initMarkedBit
     def setMarked (self):
     
         self.statusBits |= self.markedBit
@@ -1065,28 +1060,28 @@ class vnode (baseVnode):
     def initMarkedBit (self):
     
         self.statusBits |= self.markedBit
-    #@-node:ekr.20031218072017.3398:v.setMarked & initMarkedBit
-    #@+node:ekr.20031218072017.3399:setOrphan
+    #@-node:AGP.20250415230112.2190:v.setMarked & initMarkedBit
+    #@+node:AGP.20250415230112.2191:setOrphan
     def setOrphan (self):
     
         self.statusBits |= self.orphanBit
-    #@-node:ekr.20031218072017.3399:setOrphan
-    #@+node:ekr.20031218072017.3400:setSelected (vnode)
+    #@-node:AGP.20250415230112.2191:setOrphan
+    #@+node:AGP.20250415230112.2192:setSelected (vnode)
     # This only sets the selected bit.
     
     def setSelected (self):
     
         self.statusBits |= self.selectedBit
-    #@-node:ekr.20031218072017.3400:setSelected (vnode)
-    #@+node:ekr.20031218072017.3401:t.setVisited
+    #@-node:AGP.20250415230112.2192:setSelected (vnode)
+    #@+node:AGP.20250415230112.2193:t.setVisited
     # Compatibility routine for scripts
     
     def setVisited (self):
     
         self.statusBits |= self.visitedBit
-    #@-node:ekr.20031218072017.3401:t.setVisited
-    #@-node:ekr.20031218072017.3386: v.Status bits
-    #@+node:ekr.20031218072017.3385:v.computeIcon & setIcon
+    #@-node:AGP.20250415230112.2193:t.setVisited
+    #@-node:AGP.20250415230112.2181: v.Status bits
+    #@+node:AGP.20250415230112.2194:v.computeIcon & setIcon
     def computeIcon (self):
     
         val = 0 ; v = self
@@ -1099,8 +1094,8 @@ class vnode (baseVnode):
     def setIcon (self):
     
         pass # Compatibility routine for old scripts
-    #@-node:ekr.20031218072017.3385:v.computeIcon & setIcon
-    #@+node:ekr.20040315032144:v.initHeadString
+    #@-node:AGP.20250415230112.2194:v.computeIcon & setIcon
+    #@+node:AGP.20250415230112.2195:v.initHeadString
     def initHeadString (self,s,encoding="utf-8"):
         
         v = self
@@ -1109,20 +1104,20 @@ class vnode (baseVnode):
         #if g.c.loading == False:
         #    g.SetUAModStamp(self)
         # g.trace(g.callers(5))
-    #@-node:ekr.20040315032144:v.initHeadString
-    #@+node:ekr.20031218072017.3402:v.setSelection
+    #@-node:AGP.20250415230112.2195:v.initHeadString
+    #@+node:AGP.20250415230112.2196:v.setSelection
     def setSelection (self, start, length):
     
         self.t.setSelection ( start, length )
-    #@-node:ekr.20031218072017.3402:v.setSelection
-    #@+node:ekr.20040315042106:v.setTnodeText
+    #@-node:AGP.20250415230112.2196:v.setSelection
+    #@+node:AGP.20250415230112.2197:v.setTnodeText
     def setTnodeText (self,s,encoding="utf-8"):
         
         return self.t.setTnodeText(s,encoding)
-    #@-node:ekr.20040315042106:v.setTnodeText
-    #@-node:ekr.20031218072017.3384:Setters
-    #@+node:EKR.20040528151551:v.Iterators
-    #@+node:EKR.20040528151551.2:self_subtree_iter
+    #@-node:AGP.20250415230112.2197:v.setTnodeText
+    #@-node:AGP.20250415230112.2180:Setters
+    #@+node:AGP.20250415230112.2198:v.Iterators
+    #@+node:AGP.20250415230112.2199:self_subtree_iter
     def subtree_iter(self):
     
         """Return all nodes of self's tree in outline order."""
@@ -1138,8 +1133,8 @@ class vnode (baseVnode):
                 child = child.next()
                 
     self_and_subtree_iter = subtree_iter
-    #@-node:EKR.20040528151551.2:self_subtree_iter
-    #@+node:EKR.20040528151551.3:unique_subtree_iter
+    #@-node:AGP.20250415230112.2199:self_subtree_iter
+    #@+node:AGP.20250415230112.2200:unique_subtree_iter
     def unique_subtree_iter(self,marks=None):
     
         """Return all vnodes in self's tree, discarding duplicates """
@@ -1161,12 +1156,12 @@ class vnode (baseVnode):
                 v = v._next
                 
     self_and_unique_subtree_iter = unique_subtree_iter
-    #@-node:EKR.20040528151551.3:unique_subtree_iter
-    #@-node:EKR.20040528151551:v.Iterators
+    #@-node:AGP.20250415230112.2200:unique_subtree_iter
+    #@-node:AGP.20250415230112.2198:v.Iterators
     #@-others
 #@nonl
-#@-node:ekr.20031218072017.3341:class vnode
-#@+node:ekr.20031218072017.1991:class nodeIndices
+#@-node:AGP.20250415230112.2129:class vnode
+#@+node:AGP.20250415230112.2201:class nodeIndices
 # Indices are Python dicts containing 'id','loc','time' and 'n' keys.
 
 class nodeIndices (object):
@@ -1174,7 +1169,7 @@ class nodeIndices (object):
     """A class to implement global node indices (gnx's)."""
     
     #@    @+others
-    #@+node:ekr.20031218072017.1992:nodeIndices.__init__
+    #@+node:AGP.20250415230112.2202:nodeIndices.__init__
     def __init__ (self,id):
         
         """ctor for nodeIndices class"""
@@ -1183,8 +1178,8 @@ class nodeIndices (object):
         self.defaultId = id
         self.lastIndex = None
         self.timeString = None
-    #@-node:ekr.20031218072017.1992:nodeIndices.__init__
-    #@+node:ekr.20031218072017.1993:areEqual
+    #@-node:AGP.20250415230112.2202:nodeIndices.__init__
+    #@+node:AGP.20250415230112.2203:areEqual
     def areEqual (self,gnx1,gnx2):
         
         """Return True if all fields of gnx1 and gnx2 are equal"""
@@ -1197,8 +1192,8 @@ class nodeIndices (object):
         id2,time2,n2 = gnx2
         # g.trace(id1==id2 and time1==time2 and n1==n2,gnx1,gnx2)
         return id1==id2 and time1==time2 and n1==n2
-    #@-node:ekr.20031218072017.1993:areEqual
-    #@+node:ekr.20031218072017.1994:get/setDefaultId
+    #@-node:AGP.20250415230112.2203:areEqual
+    #@+node:AGP.20250415230112.2204:get/setDefaultId
     # These are used by the fileCommands read/write code.
     
     def getDefaultId (self):
@@ -1210,8 +1205,8 @@ class nodeIndices (object):
         
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
-    #@-node:ekr.20031218072017.1994:get/setDefaultId
-    #@+node:ekr.20031218072017.1995:getNewIndex
+    #@-node:AGP.20250415230112.2204:get/setDefaultId
+    #@+node:AGP.20250415230112.2205:getNewIndex
     def getNewIndex (self):
         
         """Create a new gnx using self.timeString and self.lastIndex"""
@@ -1235,16 +1230,16 @@ class nodeIndices (object):
         self.lastIndex = d
         # g.trace(d)
         return d
-    #@-node:ekr.20031218072017.1995:getNewIndex
-    #@+node:ekr.20031218072017.1996:isGnx
+    #@-node:AGP.20250415230112.2205:getNewIndex
+    #@+node:AGP.20250415230112.2206:isGnx
     def isGnx (self,gnx):
         try:
             theId,t,n = gnx
             return t != None
         except:
             return False
-    #@-node:ekr.20031218072017.1996:isGnx
-    #@+node:ekr.20031218072017.1997:scanGnx
+    #@-node:AGP.20250415230112.2206:isGnx
+    #@+node:AGP.20250415230112.2207:scanGnx
     def scanGnx (self,s,i):
         
         """Create a gnx from its string representation"""
@@ -1270,8 +1265,8 @@ class nodeIndices (object):
             except: pass
     
         return theId,t,n
-    #@-node:ekr.20031218072017.1997:scanGnx
-    #@+node:ekr.20031218072017.1998:setTimeStamp
+    #@-node:AGP.20250415230112.2207:scanGnx
+    #@+node:AGP.20250415230112.2208:setTimeStamp
     def setTimestamp (self):
     
         """Set the timestamp string to be used by getNewIndex until further notice"""
@@ -1279,8 +1274,8 @@ class nodeIndices (object):
         self.timeString = time.strftime(
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
-    #@-node:ekr.20031218072017.1998:setTimeStamp
-    #@+node:ekr.20031218072017.1999:toString
+    #@-node:AGP.20250415230112.2208:setTimeStamp
+    #@+node:AGP.20250415230112.2209:toString
     def toString (self,index,removeDefaultId=False):
         
         """Convert a gnx (a tuple) to its string representation"""
@@ -1297,12 +1292,12 @@ class nodeIndices (object):
             g.trace('unusual gnx',repr(index))
             return repr(index)
     #@nonl
-    #@-node:ekr.20031218072017.1999:toString
+    #@-node:AGP.20250415230112.2209:toString
     #@-others
-#@-node:ekr.20031218072017.1991:class nodeIndices
-#@+node:ekr.20031218072017.889:class position
+#@-node:AGP.20250415230112.2201:class nodeIndices
+#@+node:AGP.20250415230112.2210:class position
 #@<< about the position class >>
-#@+node:ekr.20031218072017.890:<< about the position class >>
+#@+node:AGP.20250415230112.2211:<< about the position class >>
 #@@killcolor
 
 #@+at 
@@ -1344,10 +1339,10 @@ class nodeIndices (object):
 # - Several lookahead routines compute whether a position exists without 
 # computing the actual position.
 #@-at
-#@-node:ekr.20031218072017.890:<< about the position class >>
+#@-node:AGP.20250415230112.2211:<< about the position class >>
 #@nl
 #@<< positions may become invalid when outlines change >>
-#@+node:ekr.20050524082843:<< positions may become invalid when outlines change >>
+#@+node:AGP.20250415230112.2212:<< positions may become invalid when outlines change >>
 #@@killcolor
 
 #@+at 
@@ -1363,15 +1358,15 @@ class nodeIndices (object):
 # t.vnodeList
 # may invalidate existing positions!
 #@-at
-#@-node:ekr.20050524082843:<< positions may become invalid when outlines change >>
+#@-node:AGP.20250415230112.2212:<< positions may become invalid when outlines change >>
 #@nl
 
 # Positions should *never* be saved by the ZOBD.
 
 class basePosition (object):
     #@    @+others
-    #@+node:ekr.20040228094013: ctor & other special methods...
-    #@+node:ekr.20031218072017.893:p.__cmp__
+    #@+node:AGP.20250415230112.2213: ctor & other special methods...
+    #@+node:AGP.20250415230112.2214:p.__cmp__
     def __cmp__(self,p2):
     
         """Return 0 if two postions are equivalent."""
@@ -1396,8 +1391,8 @@ class basePosition (object):
             return 1 # notEqual
     
         return 0 # equal
-    #@-node:ekr.20031218072017.893:p.__cmp__
-    #@+node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
+    #@-node:AGP.20250415230112.2214:p.__cmp__
+    #@+node:AGP.20250415230112.2215:p.__getattr__  ON:  must be ON if use_plugins
     if 1: # Good for compatibility, bad for finding conversion problems.
     
         def __getattr__ (self,attr):
@@ -1416,16 +1411,15 @@ class basePosition (object):
                     import traceback ; traceback.print_stack()
                 raise AttributeError,attr
     #@nonl
-    #@-node:ekr.20040117170612:p.__getattr__  ON:  must be ON if use_plugins
-    #@+node:ekr.20031218072017.892:p.__init__
+    #@-node:AGP.20250415230112.2215:p.__getattr__  ON:  must be ON if use_plugins
+    #@+node:AGP.20250415230112.2216:p.__init__
     # New in Leo 4.4.2: make stack default to None.
     
     def __init__ (self,v,stack=None,trace=True):
-    
+        
+        
         """Create a new position."""
         
-        __pychecker__ = '--no-argsused' # trace not used.
-    
         # To support ZODB the code must set vort._p_changed = 1 whenever
         # t.vnodeList (or any mutable tnode or vnode object) changes.
     
@@ -1450,8 +1444,8 @@ class basePosition (object):
         
         
     #@nonl
-    #@-node:ekr.20031218072017.892:p.__init__
-    #@+node:ekr.20040117173448:p.__nonzero__
+    #@-node:AGP.20250415230112.2216:p.__init__
+    #@+node:AGP.20250415230112.2217:p.__nonzero__
     #@+at
     # Tests such as 'if p' or 'if not p' are the _only_ correct ways to test 
     # whether a position p is valid.
@@ -1467,8 +1461,8 @@ class basePosition (object):
         # if g.app.trace: "__nonzero__",self.v
     
         return self.v is not None
-    #@-node:ekr.20040117173448:p.__nonzero__
-    #@+node:ekr.20040301205720:p.__str__ and p.__repr__
+    #@-node:AGP.20250415230112.2217:p.__nonzero__
+    #@+node:AGP.20250415230112.2218:p.__str__ and p.__repr__
     def __str__ (self):
         
         p = self
@@ -1479,8 +1473,8 @@ class basePosition (object):
             return "<pos %d        [%d] None>" % (id(p),len(p.stack))
             
     __repr__ = __str__
-    #@-node:ekr.20040301205720:p.__str__ and p.__repr__
-    #@+node:ekr.20061006092649:p.archivedPosition
+    #@-node:AGP.20250415230112.2218:p.__str__ and p.__repr__
+    #@+node:AGP.20250415230112.2219:p.archivedPosition
     def archivedPosition (self):
         
         '''Return a representation of a position suitable for use in .leo files.'''
@@ -1490,8 +1484,8 @@ class basePosition (object):
         aList.reverse()
         return aList
     #@nonl
-    #@-node:ekr.20061006092649:p.archivedPosition
-    #@+node:ekr.20040117171654:p.copy
+    #@-node:AGP.20250415230112.2219:p.archivedPosition
+    #@+node:AGP.20250415230112.2220:p.copy
     # Using this routine can generate huge numbers of temporary positions during a tree traversal.
     
     def copy (self):
@@ -1501,8 +1495,8 @@ class basePosition (object):
         # if g.app.tracePositions: g.trace(g.callers())
     
         return position(self.v,self.stack,trace=False)
-    #@-node:ekr.20040117171654:p.copy
-    #@+node:ekr.20040310153624:p.dump & p.vnodeListIds
+    #@-node:AGP.20250415230112.2220:p.copy
+    #@+node:AGP.20250415230112.2221:p.dump & p.vnodeListIds
     def dumpLink (self,link):
     
         return g.choose(link,link,"<none>")
@@ -1518,8 +1512,8 @@ class basePosition (object):
         
         p = self
         return [id(v) for v in p.v.t.vnodeList]
-    #@-node:ekr.20040310153624:p.dump & p.vnodeListIds
-    #@+node:ekr.20040325142015:p.equal & isEqual
+    #@-node:AGP.20250415230112.2221:p.dump & p.vnodeListIds
+    #@+node:AGP.20250415230112.2222:p.equal & isEqual
     def equal(self,p2):
     
         """Return True if two postions are equivalent.
@@ -1539,8 +1533,8 @@ class basePosition (object):
             p1.childIndex() == p2.childIndex())
             
     isEqual = equal
-    #@-node:ekr.20040325142015:p.equal & isEqual
-    #@+node:ekr.20060202090907:p.key (new in 4.4b2)
+    #@-node:AGP.20250415230112.2222:p.equal & isEqual
+    #@+node:AGP.20250415230112.2223:p.key (new in 4.4b2)
     def key (self):
         
         p = self
@@ -1550,11 +1544,11 @@ class basePosition (object):
             p.childIndex(),
             ','.join([str(id(v)) for v in p.stack])
         )
-    #@-node:ekr.20060202090907:p.key (new in 4.4b2)
-    #@-node:ekr.20040228094013: ctor & other special methods...
-    #@+node:ekr.20040306212636:Getters
-    #@+node:ekr.20040306210951: vnode proxies
-    #@+node:ekr.20040306211032:p.Comparisons
+    #@-node:AGP.20250415230112.2223:p.key (new in 4.4b2)
+    #@-node:AGP.20250415230112.2213: ctor & other special methods...
+    #@+node:AGP.20250415230112.2224:Getters
+    #@+node:AGP.20250415230112.2225: vnode proxies
+    #@+node:AGP.20250415230112.2226:p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
@@ -1585,8 +1579,8 @@ class basePosition (object):
     # Utilities.
     def matchHeadline (self,pattern): return self.v.matchHeadline(pattern)
     ## def afterHeadlineMatch (self,s): return self.v.afterHeadlineMatch(s)
-    #@-node:ekr.20040306211032:p.Comparisons
-    #@+node:ekr.20040306220230:p.Headline & body strings
+    #@-node:AGP.20250415230112.2226:p.Comparisons
+    #@+node:AGP.20250415230112.2227:p.Headline & body strings
     def bodyString (self):
         
         return self.v.bodyString()
@@ -1598,8 +1592,8 @@ class basePosition (object):
     def cleanHeadString (self):
         
         return self.v.cleanHeadString()
-    #@-node:ekr.20040306220230:p.Headline & body strings
-    #@+node:ekr.20040306214401:p.Status bits
+    #@-node:AGP.20250415230112.2227:p.Headline & body strings
+    #@+node:AGP.20250415230112.2228:p.Status bits
     def isDirty     (self): return self.v.isDirty()
     def isExpanded  (self): return self.v.isExpanded()
     def isMarked    (self): return self.v.isMarked()
@@ -1608,13 +1602,13 @@ class basePosition (object):
     def isTopBitSet (self): return self.v.isTopBitSet()
     def isVisited   (self): return self.v.isVisited()
     def status      (self): return self.v.status()
-    #@-node:ekr.20040306214401:p.Status bits
-    #@+node:ekr.20040323160302:p.directParents
+    #@-node:AGP.20250415230112.2228:p.Status bits
+    #@+node:AGP.20250415230112.2229:p.directParents
     def directParents (self):
         
         return self.v.directParents()
-    #@-node:ekr.20040323160302:p.directParents
-    #@+node:ekr.20040326064330:p.childIndex
+    #@-node:AGP.20250415230112.2229:p.directParents
+    #@+node:AGP.20250415230112.2230:p.childIndex
     def childIndex(self):
         
         p = self ; v = p.v
@@ -1631,23 +1625,23 @@ class basePosition (object):
             v = v._back
     
         return n
-    #@-node:ekr.20040326064330:p.childIndex
-    #@-node:ekr.20040306210951: vnode proxies
-    #@+node:ekr.20040306214240.2:children
-    #@+node:ekr.20040306214240.3:p.hasChildren
+    #@-node:AGP.20250415230112.2230:p.childIndex
+    #@-node:AGP.20250415230112.2225: vnode proxies
+    #@+node:AGP.20250415230112.2231:children
+    #@+node:AGP.20250415230112.2232:p.hasChildren
     def hasChildren(self):
         
         p = self
         # g.trace(p,p.v)
         return p.v and p.v.t and p.v.t._firstChild
-    #@-node:ekr.20040306214240.3:p.hasChildren
-    #@+node:ekr.20040306212636.1:p.numberOfChildren
+    #@-node:AGP.20250415230112.2232:p.hasChildren
+    #@+node:AGP.20250415230112.2233:p.numberOfChildren
     def numberOfChildren (self):
         
         return self.v.numberOfChildren()
-    #@-node:ekr.20040306212636.1:p.numberOfChildren
-    #@-node:ekr.20040306214240.2:children
-    #@+node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines
+    #@-node:AGP.20250415230112.2233:p.numberOfChildren
+    #@-node:AGP.20250415230112.2231:children
+    #@+node:AGP.20250415230112.2234:p.getX & vnode compatibility traversal routines
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
     
@@ -1680,8 +1674,8 @@ class basePosition (object):
     threadNext    = getThreadNext
     visBack       = getVisBack
     visNext       = getVisNext
-    #@-node:ekr.20031218072017.915:p.getX & vnode compatibility traversal routines
-    #@+node:ekr.20040227212621:p.hasX
+    #@-node:AGP.20250415230112.2234:p.getX & vnode compatibility traversal routines
+    #@+node:AGP.20250415230112.2235:p.hasX
     def hasBack(self):
         return self.v and self.v._back
     
@@ -1697,7 +1691,7 @@ class basePosition (object):
         return self.hasParent() or self.hasBack() # Much cheaper than computing the actual value.
         
     hasVisBack = hasThreadBack
-    #@+node:ekr.20040227224946:hasThreadNext (the only complex hasX method)
+    #@+node:AGP.20250415230112.2236:hasThreadNext (the only complex hasX method)
     def hasThreadNext(self):
     
         p = self ; v = p.v
@@ -1715,9 +1709,9 @@ class basePosition (object):
             return False
     
     hasVisNext = hasThreadNext
-    #@-node:ekr.20040227224946:hasThreadNext (the only complex hasX method)
-    #@-node:ekr.20040227212621:p.hasX
-    #@+node:ekr.20060920203352:p.findRootPosition (New in 4.4.2)
+    #@-node:AGP.20250415230112.2236:hasThreadNext (the only complex hasX method)
+    #@-node:AGP.20250415230112.2235:p.hasX
+    #@+node:AGP.20250415230112.2237:p.findRootPosition (New in 4.4.2)
     def findRootPosition (self):
         
         p = self.copy()
@@ -1727,8 +1721,8 @@ class basePosition (object):
             p.moveToBack()
         return p
     #@nonl
-    #@-node:ekr.20060920203352:p.findRootPosition (New in 4.4.2)
-    #@+node:ekr.20040307104131.1:p.isAncestorOf
+    #@-node:AGP.20250415230112.2237:p.findRootPosition (New in 4.4.2)
+    #@+node:AGP.20250415230112.2238:p.isAncestorOf
     def isAncestorOf (self, p2):
         
         p = self
@@ -1748,20 +1742,20 @@ class basePosition (object):
             v2,n = p2.vParentWithStack(v2,p2.stack,n)
     
         return False
-    #@-node:ekr.20040307104131.1:p.isAncestorOf
-    #@+node:ekr.20040306215056:p.isCloned
+    #@-node:AGP.20250415230112.2238:p.isAncestorOf
+    #@+node:AGP.20250415230112.2239:p.isCloned
     def isCloned (self):
         
         return len(self.v.t.vnodeList) > 1
-    #@-node:ekr.20040306215056:p.isCloned
-    #@+node:ekr.20040307104131.2:p.isRoot
+    #@-node:AGP.20250415230112.2239:p.isCloned
+    #@+node:AGP.20250415230112.2240:p.isRoot
     def isRoot (self):
         
         p = self
     
         return not p.hasParent() and not p.hasBack()
-    #@-node:ekr.20040307104131.2:p.isRoot
-    #@+node:ekr.20040117162509.16:p.isVisible
+    #@-node:AGP.20250415230112.2240:p.isRoot
+    #@+node:AGP.20250415230112.2241:p.isVisible
     def isVisible (self):
         
         """Return True if all of a position's parents are expanded."""
@@ -1779,8 +1773,8 @@ class basePosition (object):
             v,n = p.vParentWithStack(v,p.stack,n)
     
         return True
-    #@-node:ekr.20040117162509.16:p.isVisible
-    #@+node:ekr.20040227214711:p.level & simpleLevel
+    #@-node:AGP.20250415230112.2241:p.isVisible
+    #@+node:AGP.20250415230112.2242:p.level & simpleLevel
     def simpleLevel(self):
         
         return len([p for p in self.parents_iter()])
@@ -1803,11 +1797,11 @@ class basePosition (object):
                 # if g.app.debug: assert(level==self.simpleLevel())
                 break
         return level
-    #@-node:ekr.20040227214711:p.level & simpleLevel
-    #@-node:ekr.20040306212636:Getters
-    #@+node:ekr.20040305222924:Setters
-    #@+node:ekr.20040306220634:vnode proxies
-    #@+node:ekr.20040306220634.9: Status bits (position)
+    #@-node:AGP.20250415230112.2242:p.level & simpleLevel
+    #@-node:AGP.20250415230112.2224:Getters
+    #@+node:AGP.20250415230112.2243:Setters
+    #@+node:AGP.20250415230112.2244:vnode proxies
+    #@+node:AGP.20250415230112.2245: Status bits (position)
     # Clone bits are no longer used.
     # Dirty bits are handled carefully by the position class.
     
@@ -1826,8 +1820,8 @@ class basePosition (object):
     def setOrphan   (self): return self.v.setOrphan()
     def setSelected (self): return self.v.setSelected()
     def setVisited  (self): return self.v.setVisited()
-    #@-node:ekr.20040306220634.9: Status bits (position)
-    #@+node:ekr.20040306220634.8:p.computeIcon & p.setIcon
+    #@-node:AGP.20250415230112.2245: Status bits (position)
+    #@+node:AGP.20250415230112.2246:p.computeIcon & p.setIcon
     def computeIcon (self):
         
         return self.v.computeIcon()
@@ -1835,20 +1829,20 @@ class basePosition (object):
     def setIcon (self):
     
         pass # Compatibility routine for old scripts
-    #@-node:ekr.20040306220634.8:p.computeIcon & p.setIcon
-    #@+node:ekr.20040306220634.29:p.setSelection
+    #@-node:AGP.20250415230112.2246:p.computeIcon & p.setIcon
+    #@+node:AGP.20250415230112.2247:p.setSelection
     def setSelection (self,start,length):
     
         return self.v.setSelection(start,length)
-    #@-node:ekr.20040306220634.29:p.setSelection
-    #@+node:ekr.20040315034158:p.setTnodeText
+    #@-node:AGP.20250415230112.2247:p.setSelection
+    #@+node:AGP.20250415230112.2248:p.setTnodeText
     def setTnodeText (self,s,encoding="utf-8"):
         
         return self.v.setTnodeText(s,encoding)
-    #@-node:ekr.20040315034158:p.setTnodeText
-    #@-node:ekr.20040306220634:vnode proxies
-    #@+node:ekr.20040315031401:Head & body text (position)
-    #@+node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
+    #@-node:AGP.20250415230112.2248:p.setTnodeText
+    #@-node:AGP.20250415230112.2244:vnode proxies
+    #@+node:AGP.20250415230112.2249:Head & body text (position)
+    #@+node:AGP.20250415230112.2250:p.setHeadString & p.initHeadString
     def setHeadString (self,s,encoding="utf-8"):
         
         p = self
@@ -1859,8 +1853,8 @@ class basePosition (object):
         
         p = self
         p.v.initHeadString(s,encoding)
-    #@-node:ekr.20040305222924.1:p.setHeadString & p.initHeadString
-    #@+node:ekr.20040315031445:p.scriptSetBodyString
+    #@-node:AGP.20250415230112.2250:p.setHeadString & p.initHeadString
+    #@+node:AGP.20250415230112.2251:p.scriptSetBodyString
     def scriptSetBodyString (self,s,encoding="utf-8"):
         
         """Update the body string for the receiver.
@@ -1868,34 +1862,34 @@ class basePosition (object):
         Should be called only from scripts: does NOT update body text."""
     
         self.v.t.bodyString = g.toUnicode(s,encoding)
-    #@-node:ekr.20040315031445:p.scriptSetBodyString
-    #@-node:ekr.20040315031401:Head & body text (position)
-    #@+node:ekr.20040312015908:Visited bits
-    #@+node:ekr.20040306220634.17:p.clearVisitedInTree
+    #@-node:AGP.20250415230112.2251:p.scriptSetBodyString
+    #@-node:AGP.20250415230112.2249:Head & body text (position)
+    #@+node:AGP.20250415230112.2252:Visited bits
+    #@+node:AGP.20250415230112.2253:p.clearVisitedInTree
     # Compatibility routine for scripts.
     
     def clearVisitedInTree (self):
         
         for p in self.self_and_subtree_iter():
             p.clearVisited()
-    #@-node:ekr.20040306220634.17:p.clearVisitedInTree
-    #@+node:ekr.20031218072017.3388:p.clearAllVisitedInTree (4.2)
+    #@-node:AGP.20250415230112.2253:p.clearVisitedInTree
+    #@+node:AGP.20250415230112.2254:p.clearAllVisitedInTree (4.2)
     def clearAllVisitedInTree (self):
         
         for p in self.self_and_subtree_iter():
             p.v.clearVisited()
             p.v.t.clearVisited()
             p.v.t.clearWriteBit()
-    #@-node:ekr.20031218072017.3388:p.clearAllVisitedInTree (4.2)
-    #@-node:ekr.20040312015908:Visited bits
-    #@+node:ekr.20040305162628:p.Dirty bits
-    #@+node:ekr.20040311113514:p.clearDirty
+    #@-node:AGP.20250415230112.2254:p.clearAllVisitedInTree (4.2)
+    #@-node:AGP.20250415230112.2252:Visited bits
+    #@+node:AGP.20250415230112.2255:p.Dirty bits
+    #@+node:AGP.20250415230112.2256:p.clearDirty
     def clearDirty (self):
     
         p = self
         p.v.clearDirty()
-    #@-node:ekr.20040311113514:p.clearDirty
-    #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+    #@-node:AGP.20250415230112.2256:p.clearDirty
+    #@+node:AGP.20250415230112.2257:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
         
         p = self 
@@ -1919,8 +1913,8 @@ class basePosition (object):
     
         # g.trace(len(nodes))
         return nodes
-    #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
-    #@+node:ekr.20040702104823:p.inAtIgnoreRange
+    #@-node:AGP.20250415230112.2257:p.findAllPotentiallyDirtyNodes
+    #@+node:AGP.20250415230112.2258:p.inAtIgnoreRange
     def inAtIgnoreRange (self):
         
         """Returns True if position p or one of p's parents is an @ignore node."""
@@ -1932,8 +1926,8 @@ class basePosition (object):
                 return True
     
         return False
-    #@-node:ekr.20040702104823:p.inAtIgnoreRange
-    #@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+    #@-node:AGP.20250415230112.2258:p.inAtIgnoreRange
+    #@+node:AGP.20250415230112.2259:p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     
         p = self
@@ -1959,8 +1953,8 @@ class basePosition (object):
     
         return dirtyVnodeList
     #@nonl
-    #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
-    #@+node:ekr.20040303163330:p.setDirty
+    #@-node:AGP.20250415230112.2259:p.setAllAncestorAtFileNodesDirty
+    #@+node:AGP.20250415230112.2260:p.setDirty
     def setDirty (self,setDescendentsDirty=True):
         
         '''Mark a node and all ancestor @file nodes dirty.'''
@@ -1979,16 +1973,16 @@ class basePosition (object):
         dirtyVnodeList.extend(dirtyVnodeList2)
        
         return dirtyVnodeList
-    #@-node:ekr.20040303163330:p.setDirty
-    #@-node:ekr.20040305162628:p.Dirty bits
-    #@-node:ekr.20040305222924:Setters
-    #@+node:ekr.20040315023430:File Conversion
+    #@-node:AGP.20250415230112.2260:p.setDirty
+    #@-node:AGP.20250415230112.2255:p.Dirty bits
+    #@-node:AGP.20250415230112.2243:Setters
+    #@+node:AGP.20250415230112.2261:File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be vnode methods because they 
     # uses level().
     # - moreBody could be anywhere: it may as well be a postion method.
     #@-at
-    #@+node:ekr.20040315023430.1:convertTreeToString
+    #@+node:AGP.20250415230112.2262:convertTreeToString
     def convertTreeToString (self):
         
         """Convert a positions  suboutline to a string in MORE format."""
@@ -2003,22 +1997,19 @@ class basePosition (object):
                 array.append(body +'\n')
     
         return ''.join(array)
-    #@-node:ekr.20040315023430.1:convertTreeToString
-    #@+node:ekr.20040315023430.2:moreHead
+    #@-node:AGP.20250415230112.2262:convertTreeToString
+    #@+node:AGP.20250415230112.2263:moreHead
     def moreHead (self, firstLevel,useVerticalBar=False):
         
         """Return the headline string in MORE format."""
-        
-        # useVerticalBar is unused, but it would be useful in over-ridden methods.
-        __pychecker__ = '--no-argsused'
     
         p = self
         level = self.level() - firstLevel
         plusMinus = g.choose(p.hasChildren(), "+", "-")
         
         return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
-    #@-node:ekr.20040315023430.2:moreHead
-    #@+node:ekr.20040315023430.3:moreBody
+    #@-node:AGP.20250415230112.2263:moreHead
+    #@+node:AGP.20250415230112.2264:moreBody
     #@+at 
     #     + test line
     #     - test line
@@ -2044,9 +2035,9 @@ class basePosition (object):
                 s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
-    #@-node:ekr.20040315023430.3:moreBody
-    #@-node:ekr.20040315023430:File Conversion
-    #@+node:ekr.20040305162628.1:p.Iterators
+    #@-node:AGP.20250415230112.2264:moreBody
+    #@-node:AGP.20250415230112.2261:File Conversion
+    #@+node:AGP.20250415230112.2265:p.Iterators
     #@+at 
     #@nonl
     # A crucial optimization:
@@ -2056,7 +2047,7 @@ class basePosition (object):
     #@@c
     
     #@+others
-    #@+node:EKR.20040529103843:p.tnodes_iter & unique_tnodes_iter
+    #@+node:AGP.20250415230112.2266:p.tnodes_iter & unique_tnodes_iter
     def tnodes_iter(self):
         
         """Return all tnode's in a positions subtree."""
@@ -2075,8 +2066,8 @@ class basePosition (object):
             if p.v.t not in marks:
                 marks[p.v.t] = p.v.t
                 yield p.v.t
-    #@-node:EKR.20040529103843:p.tnodes_iter & unique_tnodes_iter
-    #@+node:EKR.20040529103945:p.vnodes_iter & unique_vnodes_iter
+    #@-node:AGP.20250415230112.2266:p.tnodes_iter & unique_tnodes_iter
+    #@+node:AGP.20250415230112.2267:p.vnodes_iter & unique_vnodes_iter
     def vnodes_iter(self):
         
         """Return all vnode's in a positions subtree."""
@@ -2095,14 +2086,14 @@ class basePosition (object):
             if p.v not in marks:
                 marks[p.v] = p.v
                 yield p.v
-    #@-node:EKR.20040529103945:p.vnodes_iter & unique_vnodes_iter
-    #@+node:ekr.20040305173559:p.subtree_iter
+    #@-node:AGP.20250415230112.2267:p.vnodes_iter & unique_vnodes_iter
+    #@+node:AGP.20250415230112.2268:p.subtree_iter
     class subtree_iter_class:
     
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
     
         #@    @+others
-        #@+node:ekr.20040305173559.1:__init__ & __iter__
+        #@+node:AGP.20250415230112.2269:__init__ & __iter__
         def __init__(self,p,copy,includeSelf):
             
             if includeSelf:
@@ -2121,8 +2112,8 @@ class basePosition (object):
         def __iter__(self):
         
             return self
-        #@-node:ekr.20040305173559.1:__init__ & __iter__
-        #@+node:ekr.20040305173559.2:next
+        #@-node:AGP.20250415230112.2269:__init__ & __iter__
+        #@+node:AGP.20250415230112.2270:next
         def next(self):
             
             if self.first:
@@ -2137,7 +2128,7 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
-        #@-node:ekr.20040305173559.2:next
+        #@-node:AGP.20250415230112.2270:next
         #@-others
     
     def subtree_iter (self,copy=False):
@@ -2147,14 +2138,14 @@ class basePosition (object):
     def self_and_subtree_iter (self,copy=False):
         
         return self.subtree_iter_class(self,copy,includeSelf=True)
-    #@-node:ekr.20040305173559:p.subtree_iter
-    #@+node:ekr.20040305172211.1:p.children_iter
+    #@-node:AGP.20250415230112.2268:p.subtree_iter
+    #@+node:AGP.20250415230112.2271:p.children_iter
     class children_iter_class:
     
         """Returns a list of children of a position."""
     
         #@    @+others
-        #@+node:ekr.20040305172211.2:__init__ & __iter__
+        #@+node:AGP.20250415230112.2272:__init__ & __iter__
         def __init__(self,p,copy):
         
             if p.hasChildren():
@@ -2168,8 +2159,8 @@ class basePosition (object):
         def __iter__(self):
             
             return self
-        #@-node:ekr.20040305172211.2:__init__ & __iter__
-        #@+node:ekr.20040305172211.3:next
+        #@-node:AGP.20250415230112.2272:__init__ & __iter__
+        #@+node:AGP.20250415230112.2273:next
         def next(self):
             
             if self.first:
@@ -2183,20 +2174,20 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
-        #@-node:ekr.20040305172211.3:next
+        #@-node:AGP.20250415230112.2273:next
         #@-others
     
     def children_iter (self,copy=False):
         
         return self.children_iter_class(self,copy)
-    #@-node:ekr.20040305172211.1:p.children_iter
-    #@+node:ekr.20040305172855:p.parents_iter
+    #@-node:AGP.20250415230112.2271:p.children_iter
+    #@+node:AGP.20250415230112.2274:p.parents_iter
     class parents_iter_class:
     
         """Returns a list of positions of a position."""
     
         #@    @+others
-        #@+node:ekr.20040305172855.1:__init__ & __iter__
+        #@+node:AGP.20250415230112.2275:__init__ & __iter__
         def __init__(self,p,copy,includeSelf):
         
             if includeSelf:
@@ -2212,8 +2203,8 @@ class basePosition (object):
         def __iter__(self):
         
             return self
-        #@-node:ekr.20040305172855.1:__init__ & __iter__
-        #@+node:ekr.20040305172855.2:next
+        #@-node:AGP.20250415230112.2275:__init__ & __iter__
+        #@+node:AGP.20250415230112.2276:next
         def next(self):
             
             if self.first:
@@ -2228,7 +2219,7 @@ class basePosition (object):
                 else:         return self.p
             else:
                 raise StopIteration
-        #@-node:ekr.20040305172855.2:next
+        #@-node:AGP.20250415230112.2276:next
         #@-others
     
     def parents_iter (self,copy=False):
@@ -2238,14 +2229,14 @@ class basePosition (object):
     def self_and_parents_iter(self,copy=False):
         
         return self.parents_iter_class(self,copy,includeSelf=True)
-    #@-node:ekr.20040305172855:p.parents_iter
-    #@+node:ekr.20040305173343:p.siblings_iter
+    #@-node:AGP.20250415230112.2274:p.parents_iter
+    #@+node:AGP.20250415230112.2277:p.siblings_iter
     class siblings_iter_class:
     
         '''Returns a list of siblings of a position, including the position itself!'''
     
         #@    @+others
-        #@+node:ekr.20040305173343.1:__init__ & __iter__
+        #@+node:AGP.20250415230112.2278:__init__ & __iter__
         def __init__(self,p,copy,following):
             
             # We always include p, even if following is True.
@@ -2264,8 +2255,8 @@ class basePosition (object):
         def __iter__(self):
             
             return self
-        #@-node:ekr.20040305173343.1:__init__ & __iter__
-        #@+node:ekr.20040305173343.2:next
+        #@-node:AGP.20250415230112.2278:__init__ & __iter__
+        #@+node:AGP.20250415230112.2279:next
         def next(self):
             
             if self.first:
@@ -2279,7 +2270,7 @@ class basePosition (object):
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
-        #@-node:ekr.20040305173343.2:next
+        #@-node:AGP.20250415230112.2279:next
         #@-others
     
     def siblings_iter (self,copy=False,following=False):
@@ -2291,11 +2282,11 @@ class basePosition (object):
     def following_siblings_iter (self,copy=False):
         
         return self.siblings_iter_class(self,copy,following=True)
-    #@-node:ekr.20040305173343:p.siblings_iter
+    #@-node:AGP.20250415230112.2277:p.siblings_iter
     #@-others
-    #@-node:ekr.20040305162628.1:p.Iterators
-    #@+node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
-    #@+node:ekr.20040303175026.8:p.clone (does not need any args)
+    #@-node:AGP.20250415230112.2265:p.Iterators
+    #@+node:AGP.20250415230112.2280:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
+    #@+node:AGP.20250415230112.2281:p.clone (does not need any args)
     def clone (self):
         
         """Create a clone of back.
@@ -2310,8 +2301,8 @@ class basePosition (object):
     
         return p2
     #@nonl
-    #@-node:ekr.20040303175026.8:p.clone (does not need any args)
-    #@+node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
+    #@-node:AGP.20250415230112.2281:p.clone (does not need any args)
+    #@+node:AGP.20250415230112.2282:p.copyTreeAfter, copyTreeTo
     # These used by unit tests and by the group_operations plugin.
     
     def copyTreeAfter(self):
@@ -2327,8 +2318,8 @@ class basePosition (object):
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
-    #@-node:ekr.20040303175026.9:p.copyTreeAfter, copyTreeTo
-    #@+node:ekr.20040303175026.2:p.doDelete
+    #@-node:AGP.20250415230112.2282:p.copyTreeAfter, copyTreeTo
+    #@+node:AGP.20250415230112.2283:p.doDelete
     #@+at 
     #@nonl
     # This is the main delete routine.  It deletes the receiver's entire tree 
@@ -2357,8 +2348,8 @@ class basePosition (object):
         p.setDirty() # Mark @file nodes dirty!
         p.unlink()
         p.deleteLinksInTree()
-    #@-node:ekr.20040303175026.2:p.doDelete
-    #@+node:ekr.20040303175026.3:p.insertAfter
+    #@-node:AGP.20250415230112.2283:p.doDelete
+    #@+node:AGP.20250415230112.2284:p.insertAfter
     def insertAfter (self,t=None):
     
         """Inserts a new position after self.
@@ -2376,8 +2367,8 @@ class basePosition (object):
         p2.linkAfter(p)
     
         return p2
-    #@-node:ekr.20040303175026.3:p.insertAfter
-    #@+node:ekr.20040303175026.4:p.insertAsLastChild
+    #@-node:AGP.20250415230112.2284:p.insertAfter
+    #@+node:AGP.20250415230112.2285:p.insertAsLastChild
     def insertAsLastChild (self,t=None):
     
         """Inserts a new vnode as the last child of self.
@@ -2391,8 +2382,8 @@ class basePosition (object):
             t = tnode(headString="NewHeadline")
         
         return p.insertAsNthChild(n,t)
-    #@-node:ekr.20040303175026.4:p.insertAsLastChild
-    #@+node:ekr.20040303175026.5:p.insertAsNthChild
+    #@-node:AGP.20250415230112.2285:p.insertAsLastChild
+    #@+node:AGP.20250415230112.2286:p.insertAsNthChild
     def insertAsNthChild (self,n,t=None):
     
         """Inserts a new node as the the nth child of self.
@@ -2410,8 +2401,8 @@ class basePosition (object):
         p2.linkAsNthChild(p,n)
     
         return p2
-    #@-node:ekr.20040303175026.5:p.insertAsNthChild
-    #@+node:ekr.20040310062332.1:p.invalidOutline
+    #@-node:AGP.20250415230112.2286:p.insertAsNthChild
+    #@+node:AGP.20250415230112.2287:p.invalidOutline
     def invalidOutline (self, message):
         
         p = self
@@ -2422,8 +2413,8 @@ class basePosition (object):
             node = p
     
         g.alert("invalid outline: %s\n%s" % (message,node))
-    #@-node:ekr.20040310062332.1:p.invalidOutline
-    #@+node:ekr.20040303175026.10:p.moveAfter
+    #@-node:AGP.20250415230112.2287:p.invalidOutline
+    #@+node:AGP.20250415230112.2288:p.moveAfter
     def moveAfter (self,a):
     
         """Move a position after position a."""
@@ -2434,8 +2425,8 @@ class basePosition (object):
     
         return p
     #@nonl
-    #@-node:ekr.20040303175026.10:p.moveAfter
-    #@+node:ekr.20040306060312:p.moveToLastChildOf
+    #@-node:AGP.20250415230112.2288:p.moveAfter
+    #@+node:AGP.20250415230112.2289:p.moveToLastChildOf
     def moveToLastChildOf (self,parent):
     
         """Move a position to the last child of parent."""
@@ -2448,8 +2439,8 @@ class basePosition (object):
             
         return p
     #@nonl
-    #@-node:ekr.20040306060312:p.moveToLastChildOf
-    #@+node:ekr.20040303175026.11:p.moveToNthChildOf
+    #@-node:AGP.20250415230112.2289:p.moveToLastChildOf
+    #@+node:AGP.20250415230112.2290:p.moveToNthChildOf
     def moveToNthChildOf (self,parent,n):
     
         """Move a position to the nth child of parent."""
@@ -2460,8 +2451,8 @@ class basePosition (object):
     
         return p
     #@nonl
-    #@-node:ekr.20040303175026.11:p.moveToNthChildOf
-    #@+node:ekr.20040303175026.6:p.moveToRoot
+    #@-node:AGP.20250415230112.2290:p.moveToNthChildOf
+    #@+node:AGP.20250415230112.2291:p.moveToRoot
     def moveToRoot (self,oldRoot=None):
     
         '''Moves a position to the root position.
@@ -2473,8 +2464,8 @@ class basePosition (object):
         p.linkAsRoot(oldRoot)
         
         return p
-    #@-node:ekr.20040303175026.6:p.moveToRoot
-    #@+node:ekr.20040303175026.13:p.validateOutlineWithParent
+    #@-node:AGP.20250415230112.2291:p.moveToRoot
+    #@+node:AGP.20250415230112.2292:p.validateOutlineWithParent
     # This routine checks the structure of the receiver's tree.
     
     def validateOutlineWithParent (self,pv):
@@ -2486,13 +2477,13 @@ class basePosition (object):
         
         # g.trace(p,parent,pv)
         #@    << validate parent ivar >>
-        #@+node:ekr.20040303175026.14:<< validate parent ivar >>
+        #@+node:AGP.20250415230112.2293:<< validate parent ivar >>
         if parent != pv:
             p.invalidOutline( "Invalid parent link: " + repr(parent))
-        #@-node:ekr.20040303175026.14:<< validate parent ivar >>
+        #@-node:AGP.20250415230112.2293:<< validate parent ivar >>
         #@nl
         #@    << validate childIndex ivar >>
-        #@+node:ekr.20040303175026.15:<< validate childIndex ivar >>
+        #@+node:AGP.20250415230112.2294:<< validate childIndex ivar >>
         if pv:
             if childIndex < 0:
                 p.invalidOutline ( "missing childIndex" + childIndex )
@@ -2500,13 +2491,13 @@ class basePosition (object):
                 p.invalidOutline ( "missing children entry for index: " + childIndex )
         elif childIndex < 0:
             p.invalidOutline ( "negative childIndex" + childIndex )
-        #@-node:ekr.20040303175026.15:<< validate childIndex ivar >>
+        #@-node:AGP.20250415230112.2294:<< validate childIndex ivar >>
         #@nl
         #@    << validate x ivar >>
-        #@+node:ekr.20040303175026.16:<< validate x ivar >>
+        #@+node:AGP.20250415230112.2295:<< validate x ivar >>
         if not p.v.t and pv:
             self.invalidOutline ( "Empty t" )
-        #@-node:ekr.20040303175026.16:<< validate x ivar >>
+        #@-node:AGP.20250415230112.2295:<< validate x ivar >>
         #@nl
     
         # Recursively validate all the children.
@@ -2515,9 +2506,9 @@ class basePosition (object):
             if not r: result = False
     
         return result
-    #@-node:ekr.20040303175026.13:p.validateOutlineWithParent
-    #@-node:ekr.20040303175026:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
-    #@+node:ekr.20031218072017.928:p.moveToX
+    #@-node:AGP.20250415230112.2292:p.validateOutlineWithParent
+    #@-node:AGP.20250415230112.2280:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
+    #@+node:AGP.20250415230112.2296:p.moveToX
     #@+at
     # These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
@@ -2532,7 +2523,7 @@ class basePosition (object):
     # will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@-at
-    #@+node:ekr.20031218072017.930:p.moveToBack
+    #@+node:AGP.20250415230112.2297:p.moveToBack
     def moveToBack (self):
         
         """Move self to its previous sibling."""
@@ -2542,8 +2533,8 @@ class basePosition (object):
         p.v = p.v and p.v._back
         
         return p
-    #@-node:ekr.20031218072017.930:p.moveToBack
-    #@+node:ekr.20031218072017.931:p.moveToFirstChild (pushes stack for cloned nodes)
+    #@-node:AGP.20250415230112.2297:p.moveToBack
+    #@+node:AGP.20250415230112.2298:p.moveToFirstChild (pushes stack for cloned nodes)
     def moveToFirstChild (self):
     
         """Move a position to it's first child's position."""
@@ -2562,8 +2553,8 @@ class basePosition (object):
             
         return p
     
-    #@-node:ekr.20031218072017.931:p.moveToFirstChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.932:p.moveToLastChild (pushes stack for cloned nodes)
+    #@-node:AGP.20250415230112.2298:p.moveToFirstChild (pushes stack for cloned nodes)
+    #@+node:AGP.20250415230112.2299:p.moveToLastChild (pushes stack for cloned nodes)
     def moveToLastChild (self):
         
         """Move a position to it's last child's position."""
@@ -2581,8 +2572,8 @@ class basePosition (object):
                 p.v = None
                 
         return p
-    #@-node:ekr.20031218072017.932:p.moveToLastChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.933:p.moveToLastNode (Big improvement for 4.2)
+    #@-node:AGP.20250415230112.2299:p.moveToLastChild (pushes stack for cloned nodes)
+    #@+node:AGP.20250415230112.2300:p.moveToLastNode (Big improvement for 4.2)
     def moveToLastNode (self):
         
         """Move a position to last node of its tree.
@@ -2596,8 +2587,8 @@ class basePosition (object):
             p.moveToLastChild()
     
         return p
-    #@-node:ekr.20031218072017.933:p.moveToLastNode (Big improvement for 4.2)
-    #@+node:ekr.20031218072017.934:p.moveToNext
+    #@-node:AGP.20250415230112.2300:p.moveToLastNode (Big improvement for 4.2)
+    #@+node:AGP.20250415230112.2301:p.moveToNext
     def moveToNext (self):
         
         """Move a position to its next sibling."""
@@ -2607,8 +2598,8 @@ class basePosition (object):
         p.v = p.v and p.v._next
         
         return p
-    #@-node:ekr.20031218072017.934:p.moveToNext
-    #@+node:ekr.20031218072017.935:p.moveToNodeAfterTree
+    #@-node:AGP.20250415230112.2301:p.moveToNext
+    #@+node:AGP.20250415230112.2302:p.moveToNodeAfterTree
     def moveToNodeAfterTree (self):
         
         """Move a position to the node after the position's tree."""
@@ -2622,8 +2613,8 @@ class basePosition (object):
             p.moveToParent()
     
         return p
-    #@-node:ekr.20031218072017.935:p.moveToNodeAfterTree
-    #@+node:ekr.20031218072017.936:p.moveToNthChild (pushes stack for cloned nodes)
+    #@-node:AGP.20250415230112.2302:p.moveToNodeAfterTree
+    #@+node:AGP.20250415230112.2303:p.moveToNthChild (pushes stack for cloned nodes)
     def moveToNthChild (self,n):
         
         p = self
@@ -2639,8 +2630,8 @@ class basePosition (object):
                 p.v = None
                 
         return p
-    #@-node:ekr.20031218072017.936:p.moveToNthChild (pushes stack for cloned nodes)
-    #@+node:ekr.20031218072017.937:p.moveToParent (pops stack when multiple parents)
+    #@-node:AGP.20250415230112.2303:p.moveToNthChild (pushes stack for cloned nodes)
+    #@+node:AGP.20250415230112.2304:p.moveToParent (pops stack when multiple parents)
     def moveToParent (self):
         
         """Move a position to its parent position."""
@@ -2656,8 +2647,8 @@ class basePosition (object):
         else:
             p.v = None
         return p
-    #@-node:ekr.20031218072017.937:p.moveToParent (pops stack when multiple parents)
-    #@+node:ekr.20031218072017.938:p.moveToThreadBack
+    #@-node:AGP.20250415230112.2304:p.moveToParent (pops stack when multiple parents)
+    #@+node:AGP.20250415230112.2305:p.moveToThreadBack
     def moveToThreadBack (self):
         
         """Move a position to it's threadBack position."""
@@ -2671,8 +2662,8 @@ class basePosition (object):
             p.moveToParent()
     
         return p
-    #@-node:ekr.20031218072017.938:p.moveToThreadBack
-    #@+node:ekr.20031218072017.939:p.moveToThreadNext
+    #@-node:AGP.20250415230112.2305:p.moveToThreadBack
+    #@+node:AGP.20250415230112.2306:p.moveToThreadNext
     def moveToThreadNext (self):
         
         """Move a position to the next a position in threading order."""
@@ -2694,8 +2685,8 @@ class basePosition (object):
                 # not found.
                     
         return p
-    #@-node:ekr.20031218072017.939:p.moveToThreadNext
-    #@+node:ekr.20031218072017.940:p.moveToVisBack
+    #@-node:AGP.20250415230112.2306:p.moveToThreadNext
+    #@+node:AGP.20250415230112.2307:p.moveToVisBack
     def moveToVisBack (self):
         
         """Move a position to the position of the previous visible node."""
@@ -2709,8 +2700,8 @@ class basePosition (object):
     
         assert(not p or p.isVisible())
         return p
-    #@-node:ekr.20031218072017.940:p.moveToVisBack
-    #@+node:ekr.20031218072017.941:p.moveToVisNext
+    #@-node:AGP.20250415230112.2307:p.moveToVisBack
+    #@+node:AGP.20250415230112.2308:p.moveToVisNext
     def moveToVisNext (self):
         
         """Move a position to the position of the next visible node."""
@@ -2722,15 +2713,15 @@ class basePosition (object):
             p.moveToThreadNext()
                 
         return p
-    #@-node:ekr.20031218072017.941:p.moveToVisNext
-    #@-node:ekr.20031218072017.928:p.moveToX
-    #@+node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20040228060340:p.vParentWithStack
+    #@-node:AGP.20250415230112.2308:p.moveToVisNext
+    #@-node:AGP.20250415230112.2296:p.moveToX
+    #@+node:AGP.20250415230112.2309:p.utils...
+    #@+node:AGP.20250415230112.2310:p.vParentWithStack
     # A crucial utility method.
     # The p.level(), p.isVisible() and p.hasThreadNext() methods show how to use this method.
     
     #@<< about the vParentWithStack utility method >>
-    #@+node:ekr.20040228060340.1:<< about the vParentWithStack utility method >>
+    #@+node:AGP.20250415230112.2311:<< about the vParentWithStack utility method >>
     #@+at 
     # This method allows us to simulate calls to p.parent() without generating 
     # any intermediate data.
@@ -2755,7 +2746,7 @@ class basePosition (object):
     #     list2.append(v)
     #     v,n = p.vParentWithStack(v,p.stack,n)
     #@-at
-    #@-node:ekr.20040228060340.1:<< about the vParentWithStack utility method >>
+    #@-node:AGP.20250415230112.2311:<< about the vParentWithStack utility method >>
     #@nl
     
     def vParentWithStack(self,v,stack,n):
@@ -2774,8 +2765,8 @@ class basePosition (object):
             return self.stack[n],n-1 # simulate popping the stack.
         else:
             return None,n
-    #@-node:ekr.20040228060340:p.vParentWithStack
-    #@+node:ekr.20040409203454:p.restoreLinksInTree
+    #@-node:AGP.20250415230112.2310:p.vParentWithStack
+    #@+node:AGP.20250415230112.2312:p.restoreLinksInTree
     def restoreLinksInTree (self):
     
         """Restore links when undoing a delete node operation."""
@@ -2788,8 +2779,8 @@ class basePosition (object):
             
         for p in root.children_iter():
             p.restoreLinksInTree()
-    #@-node:ekr.20040409203454:p.restoreLinksInTree
-    #@+node:ekr.20040409203454.1:p.deleteLinksInTree & allies
+    #@-node:AGP.20250415230112.2312:p.restoreLinksInTree
+    #@+node:AGP.20250415230112.2313:p.deleteLinksInTree & allies
     def deleteLinksInTree (self):
         
         """Delete and otherwise adjust links when deleting node."""
@@ -2800,7 +2791,7 @@ class basePosition (object):
         
         for p in root.children_iter():
             p.adjustParentLinksInSubtree(parent=root)
-    #@+node:ekr.20040410170806:p.deleteLinksInSubtree
+    #@+node:AGP.20250415230112.2314:p.deleteLinksInSubtree
     def deleteLinksInSubtree (self):
     
         root = p = self
@@ -2819,8 +2810,8 @@ class basePosition (object):
             # This node is not shared by other nodes.
             for p in root.children_iter():
                 p.deleteLinksInSubtree()
-    #@-node:ekr.20040410170806:p.deleteLinksInSubtree
-    #@+node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
+    #@-node:AGP.20250415230112.2314:p.deleteLinksInSubtree
+    #@+node:AGP.20250415230112.2315:p.adjustParentLinksInSubtree
     def adjustParentLinksInSubtree (self,parent):
         
         root = p = self
@@ -2833,14 +2824,14 @@ class basePosition (object):
             
         for p in root.children_iter():
             p.adjustParentLinksInSubtree(parent=root)
-    #@-node:ekr.20040410170806.1:p.adjustParentLinksInSubtree
-    #@-node:ekr.20040409203454.1:p.deleteLinksInTree & allies
-    #@-node:ekr.20040228094013.1:p.utils...
-    #@+node:ekr.20040310062332:p.Link/Unlink methods
+    #@-node:AGP.20250415230112.2315:p.adjustParentLinksInSubtree
+    #@-node:AGP.20250415230112.2313:p.deleteLinksInTree & allies
+    #@-node:AGP.20250415230112.2309:p.utils...
+    #@+node:AGP.20250415230112.2316:p.Link/Unlink methods
     # These remain in 4.2:  linking and unlinking does not depend on position.
     
     # These are private routines:  the position class does not define proxies for these.
-    #@+node:ekr.20040310062332.2:p.linkAfter
+    #@+node:AGP.20250415230112.2317:p.linkAfter
     def linkAfter (self,after):
     
         """Link self after v."""
@@ -2869,8 +2860,8 @@ class basePosition (object):
             p.dump(label="p")
             after.dump(label="back")
             if p.hasNext(): p.next().dump(label="next")
-    #@-node:ekr.20040310062332.2:p.linkAfter
-    #@+node:ekr.20040310062332.3:p.linkAsNthChild
+    #@-node:AGP.20250415230112.2317:p.linkAfter
+    #@+node:AGP.20250415230112.2318:p.linkAsNthChild
     def linkAsNthChild (self,parent,n):
     
         """Links self as the n'th child of vnode pv"""
@@ -2912,8 +2903,8 @@ class basePosition (object):
             g.trace('-'*20)
             p.dump(label="p")
             parent.dump(label="parent")
-    #@-node:ekr.20040310062332.3:p.linkAsNthChild
-    #@+node:ekr.20040310062332.4:p.linkAsRoot
+    #@-node:AGP.20250415230112.2318:p.linkAsNthChild
+    #@+node:AGP.20250415230112.2319:p.linkAsRoot
     def linkAsRoot (self,oldRoot):
         
         """Link self as the root node."""
@@ -2941,8 +2932,8 @@ class basePosition (object):
             oldRoot.v._back = v
         
         # p.dump(label="root")
-    #@-node:ekr.20040310062332.4:p.linkAsRoot
-    #@+node:ekr.20040310062332.5:p.unlink
+    #@-node:AGP.20250415230112.2319:p.linkAsRoot
+    #@+node:AGP.20250415230112.2320:p.unlink
     def unlink (self):
     
         """Unlinks a position p from the tree before moving or deleting.
@@ -2992,15 +2983,15 @@ class basePosition (object):
             p.dump(label="p")
             if parent: parent.dump(label="parent")
     #@nonl
-    #@-node:ekr.20040310062332.5:p.unlink
-    #@-node:ekr.20040310062332:p.Link/Unlink methods
+    #@-node:AGP.20250415230112.2320:p.unlink
+    #@-node:AGP.20250415230112.2316:p.Link/Unlink methods
     #@-others
 
 class position (basePosition):
     pass
 #@nonl
-#@-node:ekr.20031218072017.889:class position
+#@-node:AGP.20250415230112.2210:class position
 #@-others
 #@nonl
-#@-node:ekr.20031218072017.3320:@thin leoNodes.py
+#@-node:AGP.20250415230112.2096:@thin leoNodes.py
 #@-leo

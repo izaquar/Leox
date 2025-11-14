@@ -1,22 +1,15 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.2810:@thin leoCommands.py
+#@+node:AGP.20250415230112.329:@thin leoCommands.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
 
 from __future__ import generators # To make the code work in Python 2.2.
 
-__pychecker__ = '--no-constCond -- no-constant1'
-    # Disable checks for constant conditionals.
 
 #@<< imports >>
-#@+node:ekr.20040712045933:<< imports  >> (leoCommands)
+#@+node:AGP.20250415230112.330:<< imports  >> (leoCommands)
 import leoGlobals as g
-
-if g.app and g.app.use_psyco:
-    # print "enabled psyco classes",__file__
-    try: from psyco.classes import *
-    except ImportError: pass
 
 import leoAtFile
 import leoConfig
@@ -34,7 +27,6 @@ import os
 import parser # needed only for weird Python 2.2 parser errors.
 import string
 
-#Pmw        = g.importExtension("Pmw",pluginName=None,verbose=False)
 subprocess = g.importExtension('subprocess',None,verbose=False)
 
 import sys
@@ -46,18 +38,17 @@ import tokenize # for Check Python command
 import Tkinter as Tk
 
 # The following import _is_ used.
-__pychecker__ = '--no-import'
 import token    # for Check Python command
-#@-node:ekr.20040712045933:<< imports  >> (leoCommands)
+#@-node:AGP.20250415230112.330:<< imports  >> (leoCommands)
 #@nl
 
 #@+others
-#@+node:ekr.20041118104831:class commands
+#@+node:AGP.20250415230112.331:class commands
 class baseCommands:
     """The base class for Leo's main commander."""
     #@    @+others
-    #@+node:ekr.20031218072017.2811: c.Birth & death
-    #@+node:ekr.20031218072017.2812:c.__init__
+    #@+node:AGP.20250415230112.332: c.Birth & death
+    #@+node:AGP.20250415230112.333:c.__init__
     def __init__(self,frame,fileName):
     
         g.c = c = self
@@ -67,7 +58,6 @@ class baseCommands:
         c.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
         
-        # Init ivars with self.x instead of c.x to keep Pychecker happy
         self.frame = frame
         self.mFileName = fileName
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
@@ -92,13 +82,13 @@ class baseCommands:
             self.undoer = leoUndo.nullUndoer(self)
         else:
             self.undoer = leoUndo.undoer(self)
-    #@-node:ekr.20031218072017.2812:c.__init__
-    #@+node:ekr.20040731071037:c.initIvars
+    #@-node:AGP.20250415230112.333:c.__init__
+    #@+node:AGP.20250415230112.334:c.initIvars
     def initIvars(self):
     
         c = self
         #@    << initialize ivars >>
-        #@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+        #@+node:AGP.20250415230112.335:<< initialize ivars >> (commands)
         self._currentPosition = self.nullPosition()
         self._rootPosition    = self.nullPosition()
         self._topPosition     = self.nullPosition()
@@ -164,19 +154,19 @@ class baseCommands:
         # For outline navigation.
         self.navPrefix = '' # Must always be a string.
         self.navTime = None
-        #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+        #@-node:AGP.20250415230112.335:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)
         g.app.config.setIvarsFromSettings(c)
-    #@-node:ekr.20040731071037:c.initIvars
-    #@+node:ekr.20031218072017.2814:c.__repr__ & __str__
+    #@-node:AGP.20250415230112.334:c.initIvars
+    #@+node:AGP.20250415230112.336:c.__repr__ & __str__
     def __repr__ (self):
         
         return "Commander %d: %s" % (id(self),repr(self.mFileName))
             
     __str__ = __repr__
-    #@-node:ekr.20031218072017.2814:c.__repr__ & __str__
-    #@+node:ekr.20041130173135:c.hash
+    #@-node:AGP.20250415230112.336:c.__repr__ & __str__
+    #@+node:AGP.20250415230112.337:c.hash
     def hash (self):
     
         c = self
@@ -184,8 +174,8 @@ class baseCommands:
             return g.os_path_abspath(c.mFileName).lower()
         else:
             return 0
-    #@-node:ekr.20041130173135:c.hash
-    #@+node:ekr.20050920093543:c.finishCreate & helper
+    #@-node:AGP.20250415230112.337:c.hash
+    #@+node:AGP.20250415230112.338:c.finishCreate & helper
     def finishCreate (self):  # New in 4.4.
         
         '''Finish creating the commander after frame.finishCreate.
@@ -214,7 +204,7 @@ class baseCommands:
             c.frame.menu.createMenuBar(c.frame)
             
         c.bodyWantsFocusNow()
-    #@+node:ekr.20051007143620:printCommandsDict
+    #@+node:AGP.20250415230112.339:printCommandsDict
     def printCommandsDict (self):
         
         c = self
@@ -226,10 +216,10 @@ class baseCommands:
             command = c.commandsDict.get(key)
             print '%30s = %s' % (key,g.choose(command,command.__name__,'<None>'))
         print
-    #@-node:ekr.20051007143620:printCommandsDict
-    #@-node:ekr.20050920093543:c.finishCreate & helper
-    #@-node:ekr.20031218072017.2811: c.Birth & death
-    #@+node:ekr.20031218072017.2817: doCommand
+    #@-node:AGP.20250415230112.339:printCommandsDict
+    #@-node:AGP.20250415230112.338:c.finishCreate & helper
+    #@-node:AGP.20250415230112.332: c.Birth & death
+    #@+node:AGP.20250415230112.340: doCommand
     command_count = 0
     
     def doCommand (self,command,label,event=None):
@@ -287,24 +277,24 @@ class baseCommands:
             g.doHook("command2",c=c,p=p,v=p,label=label)
                 
         return "break" # Inhibit all other handlers.
-    #@-node:ekr.20031218072017.2817: doCommand
-    #@+node:ekr.20031218072017.2582: version & signon stuff
-    #@+node:ekr.20040629121554:getBuildNumber
+    #@-node:AGP.20250415230112.340: doCommand
+    #@+node:AGP.20250415230112.341: version & signon stuff
+    #@+node:AGP.20250415230112.342:getBuildNumber
     def getBuildNumber(self):
         c = self
         return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
-    #@-node:ekr.20040629121554:getBuildNumber
-    #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
+    #@-node:AGP.20250415230112.342:getBuildNumber
+    #@+node:AGP.20250415230112.343:getSignOnLine (Contains hard-coded version info)
     def getSignOnLine (self):
         c = self
         return "LeoX 2020"
-    #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
-    #@+node:ekr.20040629121554.2:initVersion
+    #@-node:AGP.20250415230112.343:getSignOnLine (Contains hard-coded version info)
+    #@+node:AGP.20250415230112.344:initVersion
     def initVersion (self):
         c = self
         c.ver = "$Revision: 1.83 $" # CVS updates this.
-    #@-node:ekr.20040629121554.2:initVersion
-    #@+node:ekr.20040629121554.3:c.signOnWithVersion
+    #@-node:AGP.20250415230112.344:initVersion
+    #@+node:AGP.20250415230112.345:c.signOnWithVersion
     def signOnWithVersion (self):
     
         c = self
@@ -327,10 +317,10 @@ class baseCommands:
         g.es(signon)
         g.es("Python %d.%d.%d, Tk %s\n%s" % (n1,n2,n3,tkLevel,version))
         g.enl()
-    #@-node:ekr.20040629121554.3:c.signOnWithVersion
-    #@-node:ekr.20031218072017.2582: version & signon stuff
-    #@+node:ekr.20040312090934:c.iterators
-    #@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+    #@-node:AGP.20250415230112.345:c.signOnWithVersion
+    #@-node:AGP.20250415230112.341: version & signon stuff
+    #@+node:AGP.20250415230112.346:c.iterators
+    #@+node:AGP.20250415230112.347:c.all_positions_iter == allNodes_iter
     # New in Leo 4.4.2 (It used to be defined in terms of p.allNodes_iter.)
     
     class allNodes_iter_class:
@@ -338,7 +328,7 @@ class baseCommands:
         """Returns a list of positions in the entire outline."""
     
         #@    @+others
-        #@+node:ekr.20060907085906.1:__init__ & __iter__ (p.allNodesIter)
+        #@+node:AGP.20250415230112.348:__init__ & __iter__ (p.allNodesIter)
         def __init__(self,c,copy):
             
             # g.trace('c.allNodes_iter.__init','p',p,'c',c)
@@ -351,8 +341,8 @@ class baseCommands:
         def __iter__(self):
         
             return self
-        #@-node:ekr.20060907085906.1:__init__ & __iter__ (p.allNodesIter)
-        #@+node:ekr.20060907085906.2:next
+        #@-node:AGP.20250415230112.348:__init__ & __iter__ (p.allNodesIter)
+        #@+node:AGP.20250415230112.349:next
         def next(self):
             
             if self.first:
@@ -366,7 +356,7 @@ class baseCommands:
                 if self.copy: return self.p.copy()
                 else:         return self.p
             else: raise StopIteration
-        #@-node:ekr.20060907085906.2:next
+        #@-node:AGP.20250415230112.349:next
         #@-others
     
     def allNodes_iter (self,copy=False):
@@ -376,8 +366,8 @@ class baseCommands:
     
     all_positions_iter = allNodes_iter
     #@nonl
-    #@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
-    #@+node:EKR.20040529091232.1:c.all_tnodes_iter
+    #@-node:AGP.20250415230112.347:c.all_positions_iter == allNodes_iter
+    #@+node:AGP.20250415230112.350:c.all_tnodes_iter
     def all_tnodes_iter(self):
         
         c = self
@@ -385,8 +375,8 @@ class baseCommands:
             yield p.v.t
     
         # return c.rootPosition().all_tnodes_iter(all=True)
-    #@-node:EKR.20040529091232.1:c.all_tnodes_iter
-    #@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+    #@-node:AGP.20250415230112.350:c.all_tnodes_iter
+    #@+node:AGP.20250415230112.351:c.all_unique_tnodes_iter
     def all_unique_tnodes_iter(self):
         
         c = self ; marks = {}
@@ -395,15 +385,15 @@ class baseCommands:
             if not p.v.t in marks:
                 marks[p.v.t] = p.v.t
                 yield p.v.t
-    #@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
-    #@+node:EKR.20040529091232.3:c.all_vnodes_iter
+    #@-node:AGP.20250415230112.351:c.all_unique_tnodes_iter
+    #@+node:AGP.20250415230112.352:c.all_vnodes_iter
     def all_vnodes_iter(self):
         
         c = self
         for p in c.all_positions_iter():
             yield p.v
-    #@-node:EKR.20040529091232.3:c.all_vnodes_iter
-    #@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+    #@-node:AGP.20250415230112.352:c.all_vnodes_iter
+    #@+node:AGP.20250415230112.353:c.all_unique_vnodes_iter
     def all_unique_vnodes_iter(self):
         
         c = self ; marks = {}
@@ -411,9 +401,9 @@ class baseCommands:
             if not p.v in marks:
                 marks[p.v] = p.v
                 yield p.v
-    #@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
-    #@-node:ekr.20040312090934:c.iterators
-    #@+node:ekr.20051106040126:c.executeMinibufferCommand
+    #@-node:AGP.20250415230112.353:c.all_unique_vnodes_iter
+    #@-node:AGP.20250415230112.346:c.iterators
+    #@+node:AGP.20250415230112.354:c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
         
         c = self ; k = c.k
@@ -428,11 +418,11 @@ class baseCommands:
         else:
             g.trace('no such command: %s' % (commandName),color='red')
             return None
-    #@-node:ekr.20051106040126:c.executeMinibufferCommand
-    #@+node:ekr.20031218072017.2818:Command handlers...
-    #@+node:ekr.20031218072017.2819:File Menu
-    #@+node:ekr.20031218072017.2820:top level (file menu)
-    #@+node:ekr.20031218072017.1623:new
+    #@-node:AGP.20250415230112.354:c.executeMinibufferCommand
+    #@+node:AGP.20250415230112.355:Command handlers...
+    #@+node:AGP.20250415230112.356:File Menu
+    #@+node:AGP.20250415230112.357:top level (file menu)
+    #@+node:AGP.20250415230112.358:new
     def new (self,event=None):
         
         '''Create a new Leo window.'''
@@ -444,12 +434,14 @@ class baseCommands:
         # Use the config params to set the size and location of the window.
         c.beginUpdate()
         try:
-            frame.setInitialWindowGeometry()
-            frame.deiconify()
-            frame.lift()
+            #frame.setInitialWindowGeometry()
+            #frame.deiconify()
+            #frame.lift()
             
-            print "new"
-            frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+            #print "new"
+            #frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+            
+            
             
             t = leoNodes.tnode()
             v = leoNodes.vnode(t)
@@ -464,16 +456,19 @@ class baseCommands:
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
+                
+        frame.show()
+        
         return c # For unit test.
-    #@-node:ekr.20031218072017.1623:new
-    #@+node:ekr.20031218072017.2821:open
+    #@-node:AGP.20250415230112.358:new
+    #@+node:AGP.20250415230112.359:open
     def open (self,event=None):
         
         '''Open a Leo window containing the contents of a .leo file.'''
     
         c = self
         #@    << Set closeFlag if the only open window is empty >>
-        #@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+        #@+node:AGP.20250415230112.360:<< Set closeFlag if the only open window is empty >>
         #@+at 
         #@nonl
         # If this is the only open window was opened when the app started, and 
@@ -487,7 +482,7 @@ class baseCommands:
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-        #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+        #@-node:AGP.20250415230112.360:<< Set closeFlag if the only open window is empty >>
         #@nl
     
         fileName = g.app.gui.runOpenFileDialog(
@@ -504,15 +499,18 @@ class baseCommands:
             if ok and closeFlag:
                 g.app.destroyWindow(c.frame)
                 
+        
+                
         # openWithFileName sets focus if ok.
         if not ok:
             if c.config.getBool('outline_pane_has_initial_focus'):
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
+        
     #@nonl
-    #@-node:ekr.20031218072017.2821:open
-    #@+node:ekr.20031218072017.2823:openWith and allies
+    #@-node:AGP.20250415230112.359:open
+    #@+node:AGP.20250415230112.361:openWith and allies
     def openWith(self,event=None,data=None):
     
         """This routine handles the items in the Open With... menu.
@@ -536,7 +534,7 @@ class baseCommands:
             if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
                 g.enableIdleTimeHook(idleTimeDelay=100)
                 #@            << set ext based on the present language >>
-                #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
+                #@+node:AGP.20250415230112.362:<< set ext based on the present language >>
                 if not ext:
                     theDict = g.scanDirectives(c)
                     language = theDict.get("language")
@@ -549,13 +547,13 @@ class baseCommands:
                     ext = "."+ext
                     
                 # print "ext",ext
-                #@-node:ekr.20031218072017.2824:<< set ext based on the present language >>
+                #@-node:AGP.20250415230112.362:<< set ext based on the present language >>
                 #@nl
                 #@            << create or reopen temp file, testing for conflicting changes >>
-                #@+node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+                #@+node:AGP.20250415230112.363:<< create or reopen temp file, testing for conflicting changes >>
                 theDict = None ; path = None
                 #@<< set dict and path if a temp file already refers to p.v.t >>
-                #@+node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+                #@+node:AGP.20250415230112.364:<<set dict and path if a temp file already refers to p.v.t >>
                 searchPath = c.openWithTempFilePath(p,ext)
                 
                 if g.os_path_exists(searchPath):
@@ -563,11 +561,11 @@ class baseCommands:
                         if p.v == theDict.get('v') and searchPath == theDict.get("path"):
                             path = searchPath
                             break
-                #@-node:ekr.20031218072017.2826:<<set dict and path if a temp file already refers to p.v.t >>
+                #@-node:AGP.20250415230112.364:<<set dict and path if a temp file already refers to p.v.t >>
                 #@nl
                 if path:
                     #@    << create or recreate temp file as needed >>
-                    #@+node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+                    #@+node:AGP.20250415230112.365:<< create or recreate temp file as needed >>
                     #@+at 
                     #@nonl
                     # We test for changes in both p and the temp file:
@@ -596,7 +594,7 @@ class baseCommands:
                     
                     if body_changed and temp_changed:
                         #@    << Raise dialog about conflict and set result >>
-                        #@+node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+                        #@+node:AGP.20250415230112.366:<< Raise dialog about conflict and set result >>
                         message = (
                             "Conflicting changes in outline and temp file\n\n" +
                             "Do you want to use the code in the outline or the temp file?\n\n")
@@ -606,7 +604,7 @@ class baseCommands:
                             yesMessage = "Outline",
                             noMessage = "File",
                             defaultButton = "Cancel")
-                        #@-node:ekr.20031218072017.2828:<< Raise dialog about conflict and set result >>
+                        #@-node:AGP.20250415230112.366:<< Raise dialog about conflict and set result >>
                         #@nl
                         if result == "cancel": return
                         rewrite = result == "outline"
@@ -617,17 +615,17 @@ class baseCommands:
                         path = c.createOpenWithTempFile(p,ext)
                     else:
                         g.es("reopening: " + g.shortFileName(path),color="blue")
-                    #@-node:ekr.20031218072017.2827:<< create or recreate temp file as needed >>
+                    #@-node:AGP.20250415230112.365:<< create or recreate temp file as needed >>
                     #@nl
                 else:
                     path = c.createOpenWithTempFile(p,ext)
                 
                 if not path:
                     return # An error has occured.
-                #@-node:ekr.20031218072017.2825:<< create or reopen temp file, testing for conflicting changes >>
+                #@-node:AGP.20250415230112.363:<< create or reopen temp file, testing for conflicting changes >>
                 #@nl
                 #@            << execute a command to open path in external editor >>
-                #@+node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+                #@+node:AGP.20250415230112.367:<< execute a command to open path in external editor >>
                 try:
                     if arg == None: arg = ""
                     shortPath = path # g.shortFileName(path)
@@ -677,7 +675,7 @@ class baseCommands:
                 except Exception:
                     g.es("exception executing: "+command)
                     g.es_exception()
-                #@-node:ekr.20031218072017.2829:<< execute a command to open path in external editor >>
+                #@-node:AGP.20250415230112.367:<< execute a command to open path in external editor >>
                 #@nl
             g.doHook("openwith2",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext)
         except Exception:
@@ -685,7 +683,7 @@ class baseCommands:
             g.es_exception()
     
         return "break"
-    #@+node:ekr.20031218072017.2830:createOpenWithTempFile
+    #@+node:AGP.20250415230112.368:createOpenWithTempFile
     def createOpenWithTempFile (self,p,ext):
         
         c = self
@@ -715,13 +713,13 @@ class baseCommands:
                 "f":theFile, "path":path, "time":time,
                 "p":p, "v":p.v }
             #@        << remove previous entry from app.openWithFiles if it exists >>
-            #@+node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+            #@+node:AGP.20250415230112.369:<< remove previous entry from app.openWithFiles if it exists >>
             for d in g.app.openWithFiles[:]:
                 p2 = d.get("p")
                 if p.v.t == p2.v.t:
                     # print "removing previous entry in g.app.openWithFiles for",p.headString()
                     g.app.openWithFiles.remove(d)
-            #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
+            #@-node:AGP.20250415230112.369:<< remove previous entry from app.openWithFiles if it exists >>
             #@nl
             g.app.openWithFiles.append(theDict)
             return path
@@ -732,8 +730,8 @@ class baseCommands:
             g.es("exception creating temp file",color="red")
             g.es_exception()
             return None
-    #@-node:ekr.20031218072017.2830:createOpenWithTempFile
-    #@+node:ekr.20031218072017.2832:c.openWithTempFilePath
+    #@-node:AGP.20250415230112.368:createOpenWithTempFile
+    #@+node:AGP.20250415230112.370:c.openWithTempFilePath
     def openWithTempFilePath (self,p,ext):
         
         """Return the path to the temp file corresponding to p and ext."""
@@ -771,16 +769,16 @@ class baseCommands:
             path = g.os_path_join(td,name)
         
             return path
-    #@-node:ekr.20031218072017.2832:c.openWithTempFilePath
-    #@-node:ekr.20031218072017.2823:openWith and allies
-    #@+node:ekr.20031218072017.2833:close
+    #@-node:AGP.20250415230112.370:c.openWithTempFilePath
+    #@-node:AGP.20250415230112.361:openWith and allies
+    #@+node:AGP.20250415230112.371:close
     def close (self,event=None):
         
         '''Close the Leo window, prompting to save it if it has been changed.'''
     
         g.app.closeLeoWindow(self.frame)
-    #@-node:ekr.20031218072017.2833:close
-    #@+node:ekr.20031218072017.2834:save
+    #@-node:AGP.20250415230112.371:close
+    #@+node:AGP.20250415230112.372:save
     def save (self,event=None):
         
         '''Save a Leo outline to a file.'''
@@ -815,8 +813,8 @@ class baseCommands:
                 c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
-    #@-node:ekr.20031218072017.2834:save
-    #@+node:ekr.20031218072017.2835:saveAs
+    #@-node:AGP.20250415230112.372:save
+    #@+node:AGP.20250415230112.373:saveAs
     def saveAs (self,event=None):
         
         '''Save a Leo outline to a file with a new filename.'''
@@ -847,8 +845,8 @@ class baseCommands:
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
-    #@-node:ekr.20031218072017.2835:saveAs
-    #@+node:ekr.20031218072017.2836:saveTo
+    #@-node:AGP.20250415230112.373:saveAs
+    #@+node:AGP.20250415230112.374:saveTo
     def saveTo (self,event=None):
         
         '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
@@ -875,8 +873,8 @@ class baseCommands:
             fileName = g.ensure_extension(fileName, ".leo")
             c.fileCommands.saveTo(fileName)
             c.updateRecentFiles(fileName)
-    #@-node:ekr.20031218072017.2836:saveTo
-    #@+node:ekr.20031218072017.2837:revert
+    #@-node:AGP.20250415230112.374:saveTo
+    #@+node:AGP.20250415230112.375:revert
     def revert (self,event=None):
         
         '''Revert the contents of a Leo outline to last saved contents.'''
@@ -904,10 +902,13 @@ class baseCommands:
             g.app.destroyWindow(c.frame)
         else:
             c.mFileName = fileName
-    #@-node:ekr.20031218072017.2837:revert
-    #@-node:ekr.20031218072017.2820:top level (file menu)
-    #@+node:ekr.20031218072017.2079:Recent Files submenu & allies
-    #@+node:ekr.20031218072017.2080:clearRecentFiles
+        
+        
+    #@nonl
+    #@-node:AGP.20250415230112.375:revert
+    #@-node:AGP.20250415230112.357:top level (file menu)
+    #@+node:AGP.20250415230112.376:Recent Files submenu & allies
+    #@+node:AGP.20250415230112.377:clearRecentFiles
     def clearRecentFiles (self,event=None):
         
         """Clear the recent files list, then add the present file."""
@@ -927,15 +928,15 @@ class baseCommands:
         g.app.config.appendToRecentFiles(c.recentFiles)
         
         u.afterClearRecentFiles(bunch)
-    #@-node:ekr.20031218072017.2080:clearRecentFiles
-    #@+node:ekr.20031218072017.2081:openRecentFile
+    #@-node:AGP.20250415230112.377:clearRecentFiles
+    #@+node:AGP.20250415230112.378:openRecentFile
     def openRecentFile(self,name=None):
         
         if not name: return
     
         c = self ; v = c.currentVnode()
         #@    << Set closeFlag if the only open window is empty >>
-        #@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+        #@+node:AGP.20250415230112.379:<< Set closeFlag if the only open window is empty >>
         #@+at 
         #@nonl
         # If this is the only open window was opened when the app started, and 
@@ -949,7 +950,7 @@ class baseCommands:
             c.frame.startupWindow and # The window was open on startup
             not c.changed and not c.frame.saved and # The window has never been changed
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
-        #@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+        #@-node:AGP.20250415230112.379:<< Set closeFlag if the only open window is empty >>
         #@nl
         
         fileName = name
@@ -961,8 +962,8 @@ class baseCommands:
                 c.setLog() # Sets the log stream for g.es()
     
         g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
-    #@-node:ekr.20031218072017.2081:openRecentFile
-    #@+node:ekr.20031218072017.2083:c.updateRecentFiles
+    #@-node:AGP.20250415230112.378:openRecentFile
+    #@+node:AGP.20250415230112.380:c.updateRecentFiles
     def updateRecentFiles (self,fileName):
         
         """Create the RecentFiles menu.  May be called with Null fileName."""
@@ -990,10 +991,10 @@ class baseCommands:
         else:
             for frame in g.app.windowList:
                 frame.menu.createRecentFilesMenuItems()
-    #@-node:ekr.20031218072017.2083:c.updateRecentFiles
-    #@-node:ekr.20031218072017.2079:Recent Files submenu & allies
-    #@+node:ekr.20031218072017.2838:Read/Write submenu
-    #@+node:ekr.20031218072017.2839:readOutlineOnly
+    #@-node:AGP.20250415230112.380:c.updateRecentFiles
+    #@-node:AGP.20250415230112.376:Recent Files submenu & allies
+    #@+node:AGP.20250415230112.381:Read/Write submenu
+    #@+node:AGP.20250415230112.382:readOutlineOnly
     def readOutlineOnly (self,event=None):
         
         '''Open a Leo outline from a .leo file, but do not read any derived files.'''
@@ -1015,8 +1016,8 @@ class baseCommands:
             c.fileCommands.readOutlineOnly(theFile,fileName) # closes file.
         except:
             g.es("can not open:" + fileName)
-    #@-node:ekr.20031218072017.2839:readOutlineOnly
-    #@+node:ekr.20031218072017.1839:readAtFileNodes (commands)
+    #@-node:AGP.20250415230112.382:readOutlineOnly
+    #@+node:AGP.20250415230112.383:readAtFileNodes (commands)
     def readAtFileNodes (self,event=None):
         
         '''Read all @file nodes in the presently selected outline.'''
@@ -1030,8 +1031,8 @@ class baseCommands:
             u.afterChangeTree(p,'Read @file Nodes',undoData)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.1839:readAtFileNodes (commands)
-    #@+node:ekr.20031218072017.1809:importDerivedFile
+    #@-node:AGP.20250415230112.383:readAtFileNodes (commands)
+    #@+node:AGP.20250415230112.384:importDerivedFile
     def importDerivedFile (self,event=None):
         
         """Create a new outline from a 4.0 derived file."""
@@ -1057,36 +1058,36 @@ class baseCommands:
     
         if names:
             c.importCommands.importDerivedFiles(parent=p,paths=names)
-    #@-node:ekr.20031218072017.1809:importDerivedFile
-    #@-node:ekr.20031218072017.2838:Read/Write submenu
-    #@+node:ekr.20031218072017.2841:Tangle submenu
-    #@+node:ekr.20031218072017.2842:tangleAll
+    #@-node:AGP.20250415230112.384:importDerivedFile
+    #@-node:AGP.20250415230112.381:Read/Write submenu
+    #@+node:AGP.20250415230112.385:Tangle submenu
+    #@+node:AGP.20250415230112.386:tangleAll
     def tangleAll (self,event=None):
         
         '''Tangle all @root nodes in the entire outline.'''
         
         c = self
         c.tangleCommands.tangleAll()
-    #@-node:ekr.20031218072017.2842:tangleAll
-    #@+node:ekr.20031218072017.2843:tangleMarked
+    #@-node:AGP.20250415230112.386:tangleAll
+    #@+node:AGP.20250415230112.387:tangleMarked
     def tangleMarked (self,event=None):
         
         '''Tangle all marked @root nodes in the entire outline.'''
     
         c = self
         c.tangleCommands.tangleMarked()
-    #@-node:ekr.20031218072017.2843:tangleMarked
-    #@+node:ekr.20031218072017.2844:tangle
+    #@-node:AGP.20250415230112.387:tangleMarked
+    #@+node:AGP.20250415230112.388:tangle
     def tangle (self,event=None):
         
         '''Tangle all @root nodes in the selected outline.'''
     
         c = self
         c.tangleCommands.tangle()
-    #@-node:ekr.20031218072017.2844:tangle
-    #@-node:ekr.20031218072017.2841:Tangle submenu
-    #@+node:ekr.20031218072017.2845:Untangle submenu
-    #@+node:ekr.20031218072017.2846:untangleAll
+    #@-node:AGP.20250415230112.388:tangle
+    #@-node:AGP.20250415230112.385:Tangle submenu
+    #@+node:AGP.20250415230112.389:Untangle submenu
+    #@+node:AGP.20250415230112.390:untangleAll
     def untangleAll (self,event=None):
         
         '''Untangle all @root nodes in the entire outline.'''
@@ -1094,8 +1095,8 @@ class baseCommands:
         c = self
         c.tangleCommands.untangleAll()
         c.undoer.clearUndoState()
-    #@-node:ekr.20031218072017.2846:untangleAll
-    #@+node:ekr.20031218072017.2847:untangleMarked
+    #@-node:AGP.20250415230112.390:untangleAll
+    #@+node:AGP.20250415230112.391:untangleMarked
     def untangleMarked (self,event=None):
         
         '''Untangle all marked @root nodes in the entire outline.'''
@@ -1103,8 +1104,8 @@ class baseCommands:
         c = self
         c.tangleCommands.untangleMarked()
         c.undoer.clearUndoState()
-    #@-node:ekr.20031218072017.2847:untangleMarked
-    #@+node:ekr.20031218072017.2848:untangle
+    #@-node:AGP.20250415230112.391:untangleMarked
+    #@+node:AGP.20250415230112.392:untangle
     def untangle (self,event=None):
         
         '''Untangle all @root nodes in the selected outline.'''
@@ -1112,10 +1113,10 @@ class baseCommands:
         c = self
         c.tangleCommands.untangle()
         c.undoer.clearUndoState()
-    #@-node:ekr.20031218072017.2848:untangle
-    #@-node:ekr.20031218072017.2845:Untangle submenu
-    #@+node:ekr.20031218072017.2849:Import&Export submenu
-    #@+node:ekr.20031218072017.2850:exportHeadlines
+    #@-node:AGP.20250415230112.392:untangle
+    #@-node:AGP.20250415230112.389:Untangle submenu
+    #@+node:AGP.20250415230112.393:Import&Export submenu
+    #@+node:AGP.20250415230112.394:exportHeadlines
     def exportHeadlines (self,event=None):
         
         '''Export all headlines to an external file.'''
@@ -1134,8 +1135,8 @@ class baseCommands:
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
             c.importCommands.exportHeadlines(fileName)
-    #@-node:ekr.20031218072017.2850:exportHeadlines
-    #@+node:ekr.20031218072017.2851:flattenOutline
+    #@-node:AGP.20250415230112.394:exportHeadlines
+    #@+node:AGP.20250415230112.395:flattenOutline
     def flattenOutline (self,event=None):
         
         '''Export the selected outline to an external file.
@@ -1155,8 +1156,8 @@ class baseCommands:
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
             c.importCommands.flattenOutline(fileName)
-    #@-node:ekr.20031218072017.2851:flattenOutline
-    #@+node:ekr.20031218072017.2852:importAtRoot
+    #@-node:AGP.20250415230112.395:flattenOutline
+    #@+node:AGP.20250415230112.396:importAtRoot
     def importAtRoot (self,event=None):
         
         '''Import one or more external files, creating @root trees.'''
@@ -1183,8 +1184,8 @@ class baseCommands:
     
         if names:
             c.importCommands.importFilesCommand (names,"@root")
-    #@-node:ekr.20031218072017.2852:importAtRoot
-    #@+node:ekr.20031218072017.2853:importAtFile
+    #@-node:AGP.20250415230112.396:importAtRoot
+    #@+node:AGP.20250415230112.397:importAtFile
     def importAtFile (self,event=None):
         
         '''Import one or more external files, creating @file trees.'''
@@ -1211,8 +1212,8 @@ class baseCommands:
     
         if names:
             c.importCommands.importFilesCommand(names,"@file")
-    #@-node:ekr.20031218072017.2853:importAtFile
-    #@+node:ekr.20031218072017.2854:importCWEBFiles
+    #@-node:AGP.20250415230112.397:importAtFile
+    #@+node:AGP.20250415230112.398:importCWEBFiles
     def importCWEBFiles (self,event=None):
         
         '''Import one or more external CWEB files, creating @file trees.'''
@@ -1233,8 +1234,8 @@ class baseCommands:
     
         if names:
             c.importCommands.importWebCommand(names,"cweb")
-    #@-node:ekr.20031218072017.2854:importCWEBFiles
-    #@+node:ekr.20031218072017.2855:importFlattenedOutline
+    #@-node:AGP.20250415230112.398:importCWEBFiles
+    #@+node:AGP.20250415230112.399:importFlattenedOutline
     def importFlattenedOutline (self,event=None):
         
         '''Import an external created by the flatten-outline command.'''
@@ -1252,8 +1253,8 @@ class baseCommands:
     
         if names:
             c.importCommands.importFlattenedOutline(names)
-    #@-node:ekr.20031218072017.2855:importFlattenedOutline
-    #@+node:ekr.20031218072017.2856:importNowebFiles
+    #@-node:AGP.20250415230112.399:importFlattenedOutline
+    #@+node:AGP.20250415230112.400:importNowebFiles
     def importNowebFiles (self,event=None):
         
         '''Import one or more external noweb files, creating @file trees.'''
@@ -1274,8 +1275,8 @@ class baseCommands:
     
         if names:
             c.importCommands.importWebCommand(names,"noweb")
-    #@-node:ekr.20031218072017.2856:importNowebFiles
-    #@+node:ekr.20031218072017.2857:outlineToCWEB
+    #@-node:AGP.20250415230112.400:importNowebFiles
+    #@+node:AGP.20250415230112.401:outlineToCWEB
     def outlineToCWEB (self,event=None):
         
         '''Export the selected outline to an external file.
@@ -1298,8 +1299,8 @@ class baseCommands:
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
             c.importCommands.outlineToWeb(fileName,"cweb")
-    #@-node:ekr.20031218072017.2857:outlineToCWEB
-    #@+node:ekr.20031218072017.2858:outlineToNoweb
+    #@-node:AGP.20250415230112.401:outlineToCWEB
+    #@+node:AGP.20250415230112.402:outlineToNoweb
     def outlineToNoweb (self,event=None):
         
         '''Export the selected outline to an external file.
@@ -1323,8 +1324,8 @@ class baseCommands:
             g.setGlobalOpenDir(fileName)
             c.importCommands.outlineToWeb(fileName,"noweb")
             c.outlineToNowebDefaultFileName = fileName
-    #@-node:ekr.20031218072017.2858:outlineToNoweb
-    #@+node:ekr.20031218072017.2859:removeSentinels
+    #@-node:AGP.20250415230112.402:outlineToNoweb
+    #@+node:AGP.20250415230112.403:removeSentinels
     def removeSentinels (self,event=None):
         
         '''Import one or more files, removing any sentinels.'''
@@ -1351,8 +1352,8 @@ class baseCommands:
     
         if names:
             c.importCommands.removeSentinelsCommand (names)
-    #@-node:ekr.20031218072017.2859:removeSentinels
-    #@+node:ekr.20031218072017.2860:weave
+    #@-node:AGP.20250415230112.403:removeSentinels
+    #@+node:AGP.20250415230112.404:weave
     def weave (self,event=None):
         
         '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
@@ -1371,12 +1372,12 @@ class baseCommands:
         if fileName and len(fileName) > 0:
             g.setGlobalOpenDir(fileName)
             c.importCommands.weave(fileName)
-    #@-node:ekr.20031218072017.2860:weave
-    #@-node:ekr.20031218072017.2849:Import&Export submenu
-    #@-node:ekr.20031218072017.2819:File Menu
-    #@+node:ekr.20031218072017.2861:Edit Menu...
-    #@+node:ekr.20031218072017.2862:Edit top level
-    #@+node:ekr.20031218072017.2140:c.executeScript
+    #@-node:AGP.20250415230112.404:weave
+    #@-node:AGP.20250415230112.393:Import&Export submenu
+    #@-node:AGP.20250415230112.356:File Menu
+    #@+node:AGP.20250415230112.405:Edit Menu...
+    #@+node:AGP.20250415230112.406:Edit top level
+    #@+node:AGP.20250415230112.407:c.executeScript
     def executeScript(self,event=None,p=None,script=None,
         useSelectedText=True,define_g=True,define_name='__main__',silent=False):
     
@@ -1388,12 +1389,12 @@ class baseCommands:
         if not script:
             script = g.getScript(c,p,useSelectedText=useSelectedText)
         #@    << redirect output >>
-        #@+node:ekr.20031218072017.2143:<< redirect output >>
+        #@+node:AGP.20250415230112.408:<< redirect output >>
         if c.config.redirect_execute_script_output_to_log_pane:
         
             g.redirectStdout() # Redirect stdout
             g.redirectStderr() # Redirect stderr
-        #@-node:ekr.20031218072017.2143:<< redirect output >>
+        #@-node:AGP.20250415230112.408:<< redirect output >>
         #@nl
         try:
             log = c.frame.log
@@ -1418,27 +1419,27 @@ class baseCommands:
                 g.es("no script selected",color="blue",tabName=tabName)
         finally: # New in 4.3 beta 2: unredirect output last.
             #@        << unredirect output >>
-            #@+node:EKR.20040627100424:<< unredirect output >>
+            #@+node:AGP.20250415230112.409:<< unredirect output >>
             if c.exists and c.config.redirect_execute_script_output_to_log_pane:
             
                 g.restoreStderr()
                 g.restoreStdout()
-            #@-node:EKR.20040627100424:<< unredirect output >>
+            #@-node:AGP.20250415230112.409:<< unredirect output >>
             #@nl
-    #@-node:ekr.20031218072017.2140:c.executeScript
-    #@+node:ekr.20031218072017.2864:goToLineNumber & allies
+    #@-node:AGP.20250415230112.407:c.executeScript
+    #@+node:AGP.20250415230112.410:goToLineNumber & allies
     def goToLineNumber (self,event=None,root=None,lines=None,n=None,scriptFind=False):
         
         '''Place the cursor on the n'th line of a derived file or script.'''
         #print "gtln",n
-        __pychecker__ = 'maxlines=400'
+        
         
         
         c = self ; p = c.currentPosition()
         root1 = root
         if root is None:
             #@        << set root >>
-            #@+node:ekr.20031218072017.2865:<< set root >>
+            #@+node:AGP.20250415230112.411:<< set root >>
             # First look for ancestor @file node.
             fileName = None
             for p in p.self_and_parents_iter():
@@ -1469,11 +1470,11 @@ class baseCommands:
                 if 0:
                     for line in lines:
                         print line,
-            #@-node:ekr.20031218072017.2865:<< set root >>
+            #@-node:AGP.20250415230112.411:<< set root >>
             #@nl
         if lines is None:
             #@        << read the file into lines >>
-            #@+node:ekr.20031218072017.2866:<< read the file into lines >>
+            #@+node:AGP.20250415230112.412:<< read the file into lines >>
             # 1/26/03: calculate the full path.
             d = g.scanDirectives(c)
             path = d.get("path")
@@ -1485,15 +1486,15 @@ class baseCommands:
             except:
                 g.es("not found: " + fileName)
                 return
-            #@-node:ekr.20031218072017.2866:<< read the file into lines >>
+            #@-node:AGP.20250415230112.412:<< read the file into lines >>
             #@nl
         if n is None:
             #@        << get n, the line number, from a dialog >>
-            #@+node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+            #@+node:AGP.20250415230112.413:<< get n, the line number, from a dialog >>
             n = g.app.gui.runAskOkCancelNumberDialog(c,"Enter Line Number","Line number:")
             if n == -1:
                 return
-            #@-node:ekr.20031218072017.2867:<< get n, the line number, from a dialog >>
+            #@-node:AGP.20250415230112.413:<< get n, the line number, from a dialog >>
             #@nl
         n = self.applyLineNumberMappingIfAny(n) #bwm
         if n==1:
@@ -1503,7 +1504,7 @@ class baseCommands:
             n2 = p.bodyString().count('\n')
         elif root.isAtAsisFileNode():
             #@        << count outline lines, setting p,n2,found >>
-            #@+node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent only)
+            #@+node:AGP.20250415230112.414:<< count outline lines, setting p,n2,found >> (@file-nosent only)
             p = lastv = root
             prev = 0 ; found = False
             
@@ -1520,7 +1521,7 @@ class baseCommands:
             
             p = lastv
             n2 = max(1,n-prev)
-            #@-node:ekr.20031218072017.2868:<< count outline lines, setting p,n2,found >> (@file-nosent only)
+            #@-node:AGP.20250415230112.414:<< count outline lines, setting p,n2,found >> (@file-nosent only)
             #@nl
         else:
             vnodeName,childIndex,gnx,n2,delim = self.convertLineToVnodeNameIndexLine(lines,n,root,scriptFind)
@@ -1529,20 +1530,20 @@ class baseCommands:
                 g.es("error handling: " + root.headString())
                 return
             #@        << set p to the node given by vnodeName, etc. >>
-            #@+node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+            #@+node:AGP.20250415230112.415:<< set p to the node given by vnodeName, etc. >>
             if scriptFind:
                 #@    << just scan for the node name >>
-                #@+node:ekr.20041111093404:<< just scan for the node name >>
+                #@+node:AGP.20250415230112.416:<< just scan for the node name >>
                 # This is safe enough because clones are not much of an issue.
                 found = False
                 for p in root.self_and_subtree_iter():
                     if p.matchHeadline(vnodeName):
                         found = True ; break
-                #@-node:ekr.20041111093404:<< just scan for the node name >>
+                #@-node:AGP.20250415230112.416:<< just scan for the node name >>
                 #@nl
             elif gnx:
                 #@    << 4.2: get node from gnx >>
-                #@+node:EKR.20040609110138:<< 4.2: get node from gnx >>
+                #@+node:AGP.20250415230112.417:<< 4.2: get node from gnx >>
                 found = False
                 gnx = g.app.nodeIndices.scanGnx(gnx,0)
                 
@@ -1558,11 +1559,11 @@ class baseCommands:
                 if not found:
                     g.es("not found: " + vnodeName, color="red")
                     return
-                #@-node:EKR.20040609110138:<< 4.2: get node from gnx >>
+                #@-node:AGP.20250415230112.417:<< 4.2: get node from gnx >>
                 #@nl
             elif childIndex == -1:
                 #@    << 4.x: scan for the node using tnodeList and n >>
-                #@+node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+                #@+node:AGP.20250415230112.418:<< 4.x: scan for the node using tnodeList and n >>
                 # This is about the best that can be done without replicating the entire atFile write logic.
                 
                 ok = True
@@ -1575,7 +1576,7 @@ class baseCommands:
                 if ok:
                     tnodeList = root.v.t.tnodeList
                     #@    << set tnodeIndex to the number of +node sentinels before line n >>
-                    #@+node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+                    #@+node:AGP.20250415230112.419:<< set tnodeIndex to the number of +node sentinels before line n >>
                     tnodeIndex = -1 # Don't count the @file node.
                     scanned = 0 # count of lines scanned.
                     
@@ -1589,11 +1590,11 @@ class baseCommands:
                                 # g.trace(tnodeIndex,s.rstrip())
                                 tnodeIndex += 1
                         scanned += 1
-                    #@-node:ekr.20031218072017.2871:<< set tnodeIndex to the number of +node sentinels before line n >>
+                    #@-node:AGP.20250415230112.419:<< set tnodeIndex to the number of +node sentinels before line n >>
                     #@nl
                     tnodeIndex = max(0,tnodeIndex)
                     #@    << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
-                    #@+node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+                    #@+node:AGP.20250415230112.420:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
                     #@+at 
                     #@nonl
                     # We use the tnodeList to find a _tnode_ corresponding to 
@@ -1634,13 +1635,13 @@ class baseCommands:
                             s = "Invalid computed tnodeIndex: %d" % tnodeIndex
                             g.es_print(s, color = "red")
                         ok = False
-                    #@-node:ekr.20031218072017.2872:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
+                    #@-node:AGP.20250415230112.420:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
                     #@nl
                             
                 if not ok:
                     # Fall back to the old logic.
                     #@    << set p to the first node whose headline matches vnodeName >>
-                    #@+node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+                    #@+node:AGP.20250415230112.421:<< set p to the first node whose headline matches vnodeName >>
                     found = False
                     for p in root.self_and_subtree_iter():
                         if p.matchHeadline(vnodeName):
@@ -1650,13 +1651,13 @@ class baseCommands:
                         s = "not found: " + vnodeName
                         g.es_print(s, color="red")
                         return
-                    #@-node:ekr.20031218072017.2873:<< set p to the first node whose headline matches vnodeName >>
+                    #@-node:AGP.20250415230112.421:<< set p to the first node whose headline matches vnodeName >>
                     #@nl
-                #@-node:ekr.20031218072017.2870:<< 4.x: scan for the node using tnodeList and n >>
+                #@-node:AGP.20250415230112.418:<< 4.x: scan for the node using tnodeList and n >>
                 #@nl
             else:
                 #@    << 3.x: scan for the node with the given childIndex >>
-                #@+node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+                #@+node:AGP.20250415230112.422:<< 3.x: scan for the node with the given childIndex >>
                 found = False
                 for p in root.self_and_subtree_iter():
                     if p.matchHeadline(vnodeName):
@@ -1666,22 +1667,22 @@ class baseCommands:
                 if not found:
                     g.es("not found: " + vnodeName, color="red")
                     return
-                #@-node:ekr.20031218072017.2874:<< 3.x: scan for the node with the given childIndex >>
+                #@-node:AGP.20250415230112.422:<< 3.x: scan for the node with the given childIndex >>
                 #@nl
-            #@-node:ekr.20031218072017.2869:<< set p to the node given by vnodeName, etc. >>
+            #@-node:AGP.20250415230112.415:<< set p to the node given by vnodeName, etc. >>
             #@nl
         #@    << select p and make it visible >>
-        #@+node:ekr.20031218072017.2875:<< select p and make it visible >>
+        #@+node:AGP.20250415230112.423:<< select p and make it visible >>
         c.beginUpdate()
         try:
             c.frame.tree.expandAllAncestors(p)
             c.selectVnode(p)
         finally:
             c.endUpdate()
-        #@-node:ekr.20031218072017.2875:<< select p and make it visible >>
+        #@-node:AGP.20250415230112.423:<< select p and make it visible >>
         #@nl
         #@    << put the cursor on line n2 of the body text >>
-        #@+node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+        #@+node:AGP.20250415230112.424:<< put the cursor on line n2 of the body text >>
         if found:
             c.frame.body.setInsertPointToStartOfLine(n2-1)
         else:
@@ -1690,9 +1691,9 @@ class baseCommands:
         
         c.bodyWantsFocusNow()
         c.frame.body.makeInsertPointVisible()
-        #@-node:ekr.20031218072017.2876:<< put the cursor on line n2 of the body text >>
+        #@-node:AGP.20250415230112.424:<< put the cursor on line n2 of the body text >>
         #@nl
-    #@+node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
+    #@+node:AGP.20250415230112.425:convertLineToVnodeNameIndexLine
     #@+at 
     #@nonl
     # We count "real" lines in the derived files, ignoring all sentinels that 
@@ -1716,7 +1717,7 @@ class baseCommands:
         childIndex = 0 ; gnx = None ; newDerivedFile = False
         thinFile = root.isAtThinFileNode()
         #@    << set delim, leoLine from the @+leo line >>
-        #@+node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+        #@+node:AGP.20250415230112.426:<< set delim, leoLine from the @+leo line >>
         # Find the @+leo line.
         tag = "@+leo"
         i = 0 
@@ -1731,13 +1732,13 @@ class baseCommands:
             else:     delim = None
         else:
             delim = None
-        #@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
+        #@-node:AGP.20250415230112.426:<< set delim, leoLine from the @+leo line >>
         #@nl
         if not delim:
             g.es("bad @+leo sentinel")
             return None,None,None,None,None
         #@    << scan back to @+node, setting offset,nodeSentinelLine >>
-        #@+node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+        #@+node:AGP.20250415230112.427:<< scan back to  @+node, setting offset,nodeSentinelLine >>
         offset = 0 # This is essentially the Tk line number.
         nodeSentinelLine = -1
         line = n - 1
@@ -1747,7 +1748,7 @@ class baseCommands:
             i = g.skip_ws(s,0)
             if g.match(s,i,delim):
                 #@        << handle delim while scanning backward >>
-                #@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+                #@+node:AGP.20250415230112.428:<< handle delim while scanning backward >>
                 if line == n:
                     g.es("line "+str(n)+" is a sentinel line")
                 i += len(delim)
@@ -1760,12 +1761,12 @@ class baseCommands:
                     break
                 elif g.match(s,i,"<<") or g.match(s,i,"@first"):
                     offset += 1 # Count these as a "real" lines.
-                #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
+                #@-node:AGP.20250415230112.428:<< handle delim while scanning backward >>
                 #@nl
             else:
                 offset += 1 # Assume the line is real.  A dubious assumption.
             line -= 1
-        #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
+        #@-node:AGP.20250415230112.427:<< scan back to  @+node, setting offset,nodeSentinelLine >>
         #@nl
         if nodeSentinelLine == -1:
             # The line precedes the first @+node sentinel
@@ -1774,7 +1775,7 @@ class baseCommands:
         s = lines[nodeSentinelLine]
         # g.trace(s)
         #@    << set vnodeName and (childIndex or gnx) from s >>
-        #@+node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
+        #@+node:AGP.20250415230112.429:<< set vnodeName and (childIndex or gnx) from s >>
         if scriptFind:
             # The vnode name follows the first ':'
             i = s.find(':',i)
@@ -1814,12 +1815,12 @@ class baseCommands:
         if not vnodeName:
             vnodeName = None
             g.es("bad @+node sentinel")
-        #@-node:ekr.20031218072017.2881:<< set vnodeName and (childIndex or gnx) from s >>
+        #@-node:AGP.20250415230112.429:<< set vnodeName and (childIndex or gnx) from s >>
         #@nl
         # g.trace("childIndex,offset",childIndex,offset,vnodeName)
         return vnodeName,childIndex,gnx,offset,delim
-    #@-node:ekr.20031218072017.2877:convertLineToVnodeNameIndexLine
-    #@+node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
+    #@-node:AGP.20250415230112.425:convertLineToVnodeNameIndexLine
+    #@+node:AGP.20250415230112.430:skipToMatchingNodeSentinel
     def skipToMatchingNodeSentinel (self,lines,n,delim):
         
         s = lines[n]
@@ -1846,9 +1847,9 @@ class baseCommands:
             
         # g.trace(n)
         return n
-    #@-node:ekr.20031218072017.2882:skipToMatchingNodeSentinel
-    #@-node:ekr.20031218072017.2864:goToLineNumber & allies
-    #@+node:bwmulder.20041231211219:gotoLineNumberOpen
+    #@-node:AGP.20250415230112.430:skipToMatchingNodeSentinel
+    #@-node:AGP.20250415230112.410:goToLineNumber & allies
+    #@+node:AGP.20250415230112.431:gotoLineNumberOpen
     def gotoLineNumberOpen(self, *args, **kw):
         """
         Hook for mod_shadow plugin.
@@ -1857,15 +1858,15 @@ class baseCommands:
         lines = theFile.readlines()
         theFile.close()
         return lines
-    #@-node:bwmulder.20041231211219:gotoLineNumberOpen
-    #@+node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny
+    #@-node:AGP.20250415230112.431:gotoLineNumberOpen
+    #@+node:AGP.20250415230112.432:applyLineNumberMappingIfAny
     def applyLineNumberMappingIfAny(self, n):
         """
         Hook for mod_shadow plugin.
         """
         return n
-    #@-node:bwmulder.20041231211219.1:applyLineNumberMappingIfAny
-    #@+node:EKR.20040612232221:goToScriptLineNumber
+    #@-node:AGP.20250415230112.432:applyLineNumberMappingIfAny
+    #@+node:AGP.20250415230112.433:goToScriptLineNumber
     def goToScriptLineNumber (self,root,script,n):
     
         """Go to line n of a script."""
@@ -1876,8 +1877,8 @@ class baseCommands:
         
         lines = g.splitLines(script)
         c.goToLineNumber(root=root,lines=lines,n=n,scriptFind=True)
-    #@-node:EKR.20040612232221:goToScriptLineNumber
-    #@+node:ekr.20031218072017.2088:fontPanel
+    #@-node:AGP.20250415230112.433:goToScriptLineNumber
+    #@+node:AGP.20250415230112.434:fontPanel
     def fontPanel (self,event=None):
         
         '''Open the font dialog.'''
@@ -1888,8 +1889,8 @@ class baseCommands:
             frame.fontPanel = g.app.gui.createFontPanel(c)
             
         frame.fontPanel.bringToFront()
-    #@-node:ekr.20031218072017.2088:fontPanel
-    #@+node:ekr.20031218072017.2090:colorPanel
+    #@-node:AGP.20250415230112.434:fontPanel
+    #@+node:AGP.20250415230112.435:colorPanel
     def colorPanel (self,event=None):
         
         '''Open the color dialog.'''
@@ -1900,8 +1901,8 @@ class baseCommands:
             frame.colorPanel = g.app.gui.createColorPanel(c)
             
         frame.colorPanel.bringToFront()
-    #@-node:ekr.20031218072017.2090:colorPanel
-    #@+node:ekr.20031218072017.2883:show/hide/toggleInvisibles
+    #@-node:AGP.20250415230112.435:colorPanel
+    #@+node:AGP.20250415230112.436:show/hide/toggleInvisibles
     def hideInvisibles (self,event=None):
         c = self ; c.showInvisiblesHelper(False)
     
@@ -1926,18 +1927,18 @@ class baseCommands:
             else:   frame.menu.setMenuLabel(menu,"Hide Invisibles","Show Invisibles")
     
         c.frame.body.recolor_now(p)
-    #@-node:ekr.20031218072017.2883:show/hide/toggleInvisibles
-    #@+node:ekr.20031218072017.2086:preferences
+    #@-node:AGP.20250415230112.436:show/hide/toggleInvisibles
+    #@+node:AGP.20250415230112.437:preferences
     def preferences (self,event=None):
         
         '''Handle the preferences command.'''
         
         c = self
         c.openLeoSettings()
-    #@-node:ekr.20031218072017.2086:preferences
-    #@-node:ekr.20031218072017.2862:Edit top level
-    #@+node:ekr.20031218072017.2884:Edit Body submenu
-    #@+node:ekr.20031218072017.1704:convertAllBlanks
+    #@-node:AGP.20250415230112.437:preferences
+    #@-node:AGP.20250415230112.406:Edit top level
+    #@+node:AGP.20250415230112.438:Edit Body submenu
+    #@+node:AGP.20250415230112.439:convertAllBlanks
     def convertAllBlanks (self,event=None):
         
         '''Convert all blanks to tabs in the selected outline.'''
@@ -1984,8 +1985,8 @@ class baseCommands:
             g.es("blanks converted to tabs in %d nodes" % count) # Must come before c.endUpdate().
         finally:
             c.endUpdate(count > 0)
-    #@-node:ekr.20031218072017.1704:convertAllBlanks
-    #@+node:ekr.20031218072017.1705:convertAllTabs
+    #@-node:AGP.20250415230112.439:convertAllBlanks
+    #@+node:AGP.20250415230112.440:convertAllTabs
     def convertAllTabs (self,event=None):
         
         '''Convert all tabs to blanks in the selected outline.'''
@@ -2030,8 +2031,8 @@ class baseCommands:
             g.es("tabs converted to blanks in %d nodes" % count)
         finally:
             c.endUpdate(count > 0)
-    #@-node:ekr.20031218072017.1705:convertAllTabs
-    #@+node:ekr.20031218072017.1821:convertBlanks
+    #@-node:AGP.20250415230112.440:convertAllTabs
+    #@+node:AGP.20250415230112.441:convertBlanks
     def convertBlanks (self,event=None):
         
         '''Convert all blanks to tabs in the selected node.'''
@@ -2062,8 +2063,8 @@ class baseCommands:
             dirtyVnodeList = []
     
         return changed,dirtyVnodeList
-    #@-node:ekr.20031218072017.1821:convertBlanks
-    #@+node:ekr.20031218072017.1822:convertTabs
+    #@-node:AGP.20250415230112.441:convertBlanks
+    #@+node:AGP.20250415230112.442:convertTabs
     def convertTabs (self,event=None):
         
         '''Convert all tabs to blanks in the selected node.'''
@@ -2095,8 +2096,8 @@ class baseCommands:
             dirtyVnodeList = []
             
         return changed,dirtyVnodeList
-    #@-node:ekr.20031218072017.1822:convertTabs
-    #@+node:ekr.20031218072017.1823:createLastChildNode
+    #@-node:AGP.20250415230112.442:convertTabs
+    #@+node:AGP.20250415230112.443:createLastChildNode
     def createLastChildNode (self,parent,headline,body):
         
         '''A helper function for the three extract commands.'''
@@ -2114,8 +2115,8 @@ class baseCommands:
         p.setDirty()
         c.validateOutline()
         return p
-    #@-node:ekr.20031218072017.1823:createLastChildNode
-    #@+node:ekr.20031218072017.1824:dedentBody
+    #@-node:AGP.20250415230112.443:createLastChildNode
+    #@+node:AGP.20250415230112.444:dedentBody
     def dedentBody (self,event=None):
         
         '''Remove one tab's worth of indentation from all presently selected lines.'''
@@ -2140,8 +2141,8 @@ class baseCommands:
         if changed:
             result = string.join(result,'\n')
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20031218072017.1824:dedentBody
-    #@+node:ekr.20031218072017.1706:extract
+    #@-node:AGP.20250415230112.444:dedentBody
+    #@+node:AGP.20250415230112.445:extract
     def extract (self,event=None):
         
         '''Create child node from the elected body text, deleting all selected text.
@@ -2181,8 +2182,8 @@ class baseCommands:
             u.afterChangeGroup(current,undoType)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.1706:extract
-    #@+node:ekr.20031218072017.1708:extractSection
+    #@-node:AGP.20250415230112.445:extract
+    #@+node:AGP.20250415230112.446:extractSection
     def extractSection (self,event=None):
         
         '''Create a section definition node from the selected body text.
@@ -2201,7 +2202,7 @@ class baseCommands:
         line1 = '\n' + lines[0]
         headline = lines[0].strip() ; del lines[0]
         #@    << Set headline for extractSection >>
-        #@+node:ekr.20031218072017.1709:<< Set headline for extractSection >>
+        #@+node:AGP.20250415230112.447:<< Set headline for extractSection >>
         if len(headline) < 5:
             oops = True
         else:
@@ -2214,7 +2215,7 @@ class baseCommands:
         if oops:
             g.es("Selected text should start with a section name",color="blue")
             return
-        #@-node:ekr.20031218072017.1709:<< Set headline for extractSection >>
+        #@-node:AGP.20250415230112.447:<< Set headline for extractSection >>
         #@nl
         
         if not lines:
@@ -2239,8 +2240,8 @@ class baseCommands:
             u.afterChangeGroup(current,undoType)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.1708:extractSection
-    #@+node:ekr.20031218072017.1710:extractSectionNames
+    #@-node:AGP.20250415230112.446:extractSection
+    #@+node:AGP.20250415230112.448:extractSectionNames
     def extractSectionNames(self,event=None):
         
         '''Create child nodes for every section reference in the selected text.
@@ -2263,7 +2264,7 @@ class baseCommands:
                 found = False
                 for s in lines:
                     #@                << Find the next section name >>
-                    #@+node:ekr.20031218072017.1711:<< Find the next section name >>
+                    #@+node:AGP.20250415230112.449:<< Find the next section name >>
                     head1 = string.find(s,"<<")
                     if head1 > -1:
                         head2 = string.find(s,">>",head1)
@@ -2276,7 +2277,7 @@ class baseCommands:
                         name = None
                     else:
                         name = s[head1:head2+2]
-                    #@-node:ekr.20031218072017.1711:<< Find the next section name >>
+                    #@-node:AGP.20250415230112.449:<< Find the next section name >>
                     #@nl
                     if name:
                         undoData = u.beforeInsertNode(current)
@@ -2294,8 +2295,8 @@ class baseCommands:
         # Restore the selection.
         body.setTextSelection(oldSel)
         body.setFocus()
-    #@-node:ekr.20031218072017.1710:extractSectionNames
-    #@+node:ekr.20031218072017.1825:findBoundParagraph
+    #@-node:AGP.20250415230112.448:extractSectionNames
+    #@+node:AGP.20250415230112.450:findBoundParagraph
     def findBoundParagraph (self,event=None):
         
         c = self
@@ -2309,7 +2310,7 @@ class baseCommands:
     
         if 0:
             #@        << trace head_lines, ins, tail_lines >>
-            #@+node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+            #@+node:AGP.20250415230112.451:<< trace head_lines, ins, tail_lines >>
             if 0:
                 print ; print "head_lines"
                 for line in head_lines: print line
@@ -2320,7 +2321,7 @@ class baseCommands:
                 g.es("head_lines: ",head_lines)
                 g.es("ins: ",ins)
                 g.es("tail_lines: ",tail_lines)
-            #@-node:ekr.20031218072017.1826:<< trace head_lines, ins, tail_lines >>
+            #@-node:AGP.20250415230112.451:<< trace head_lines, ins, tail_lines >>
             #@nl
     
         # Scan backwards.
@@ -2356,8 +2357,8 @@ class baseCommands:
     
         # DTHEIN 18-JAN-2004: added trailingNL to return value list
         return head,result,tail,trailingNL # string, list, string, bool
-    #@-node:ekr.20031218072017.1825:findBoundParagraph
-    #@+node:ekr.20031218072017.1827:findMatchingBracket
+    #@-node:AGP.20250415230112.450:findBoundParagraph
+    #@+node:AGP.20250415230112.452:findMatchingBracket
     def findMatchingBracket (self,event=None):
         
         '''Selecte the text between matching brackets.'''
@@ -2393,7 +2394,7 @@ class baseCommands:
             body.makeIndexVisible(adj_index)
         else:
             g.es("unmatched '%s'",ch)
-    #@+node:ekr.20031218072017.1828:findMatchingBracket
+    #@+node:AGP.20250415230112.453:findMatchingBracket
     # To do: replace comments with blanks before scanning.
     # Test  unmatched())
     def findSingleMatchingBracket(self,ch,index):
@@ -2425,13 +2426,10 @@ class baseCommands:
                 return None
             adj = g.choose(forward,1,-1)
             index = body.adjustIndex(index,adj)
-        return 0 # unreachable: keeps pychecker happy.
-    # Test  (
-    # ([(x){y}]))
-    # Test  ((x)(unmatched
-    #@-node:ekr.20031218072017.1828:findMatchingBracket
-    #@-node:ekr.20031218072017.1827:findMatchingBracket
-    #@+node:ekr.20031218072017.1829:getBodyLines
+        return 0
+    #@-node:AGP.20250415230112.453:findMatchingBracket
+    #@-node:AGP.20250415230112.452:findMatchingBracket
+    #@+node:AGP.20250415230112.454:getBodyLines
     def getBodyLines (self,expandSelection=False):
         
         """Return head,lines,tail where:
@@ -2456,8 +2454,8 @@ class baseCommands:
         lines = string.split(lines,'\n') # It would be better to use g.splitLines.
     
         return head,lines,tail,oldSel,oldVview
-    #@-node:ekr.20031218072017.1829:getBodyLines
-    #@+node:ekr.20031218072017.1830:indentBody
+    #@-node:AGP.20250415230112.454:getBodyLines
+    #@+node:AGP.20250415230112.455:indentBody
     def indentBody (self,event=None):
         
         '''The indent-region command indents each line of the selected body text,
@@ -2485,8 +2483,8 @@ class baseCommands:
         if changed:
             result = string.join(result,'\n')
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20031218072017.1830:indentBody
-    #@+node:ekr.20031218072017.1831:insertBodyTime & allies
+    #@-node:AGP.20250415230112.455:indentBody
+    #@+node:AGP.20250415230112.456:insertBodyTime & allies
     def insertBodyTime (self,event=None):
         
         '''Insert a time/date stamp at the cursor.'''
@@ -2503,7 +2501,7 @@ class baseCommands:
     
         c.frame.body.insertAtInsertPoint(s)
         c.frame.body.onBodyChanged(undoType,oldSel=oldSel)
-    #@+node:ekr.20031218072017.1832:getTime & test
+    #@+node:AGP.20250415230112.457:getTime & test
     def getTime (self,body=True):
     
         c = self
@@ -2533,10 +2531,10 @@ class baseCommands:
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format,time.gmtime())
         return s
-    #@-node:ekr.20031218072017.1832:getTime & test
-    #@-node:ekr.20031218072017.1831:insertBodyTime & allies
-    #@+node:ekr.20050312114529:insert/removeComments
-    #@+node:ekr.20050312114529.1:addComments
+    #@-node:AGP.20250415230112.457:getTime & test
+    #@-node:AGP.20250415230112.456:insertBodyTime & allies
+    #@+node:AGP.20250415230112.458:insert/removeComments
+    #@+node:AGP.20250415230112.459:addComments
     def addComments (self,event=None):
         
         '''Convert all selected lines in the body text to comment lines.'''
@@ -2573,8 +2571,8 @@ class baseCommands:
     
         result = string.join(result,'\n')
         c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20050312114529.1:addComments
-    #@+node:ekr.20050312114529.2:deleteComments
+    #@-node:AGP.20250415230112.459:addComments
+    #@+node:AGP.20250415230112.460:deleteComments
     def deleteComments (self,event=None):
         
         '''Remove one level of comment delimiters from all selected lines in the body text.'''
@@ -2626,9 +2624,9 @@ class baseCommands:
     
         result = string.join(result,'\n')
         c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20050312114529.2:deleteComments
-    #@-node:ekr.20050312114529:insert/removeComments
-    #@+node:ekr.20031218072017.1833:reformatParagraph
+    #@-node:AGP.20250415230112.460:deleteComments
+    #@-node:AGP.20250415230112.458:insert/removeComments
+    #@+node:AGP.20250415230112.461:reformatParagraph
     def reformatParagraph (self,event=None):
     
         """Reformat a text paragraph in a Tk.Text widget
@@ -2653,7 +2651,7 @@ class baseCommands:
             return
     
         #@    << compute vars for reformatParagraph >>
-        #@+node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+        #@+node:AGP.20250415230112.462:<< compute vars for reformatParagraph >>
         theDict = g.scanDirectives(c)
         pageWidth = theDict.get("pagewidth")
         tabWidth  = theDict.get("tabwidth")
@@ -2662,11 +2660,11 @@ class baseCommands:
         oldSel   = body.getTextSelection()
         oldYview = body.getYScrollPosition()
         head,lines,tail,trailingNL = c.findBoundParagraph() # DTHEIN 18-JAN-2004: add trailingNL
-        #@-node:ekr.20031218072017.1834:<< compute vars for reformatParagraph >>
+        #@-node:AGP.20250415230112.462:<< compute vars for reformatParagraph >>
         #@nl
         if lines:
             #@        << compute the leading whitespace >>
-            #@+node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+            #@+node:AGP.20250415230112.463:<< compute the leading whitespace >>
             indents = [0,0] ; leading_ws = ["",""]
             
             for i in (0,1):
@@ -2678,10 +2676,10 @@ class baseCommands:
             indents[1] = max(indents)
             if len(lines) == 1:
                 leading_ws[1] = leading_ws[0]
-            #@-node:ekr.20031218072017.1835:<< compute the leading whitespace >>
+            #@-node:AGP.20250415230112.463:<< compute the leading whitespace >>
             #@nl
             #@        << compute the result of wrapping all lines >>
-            #@+node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+            #@+node:AGP.20250415230112.464:<< compute the result of wrapping all lines >>
             # Remember whether the last line ended with a newline.
             lastLine = lines[-1]
             if 0: # DTHEIN 18-JAN-2004: removed because findBoundParagraph now gives trailingNL
@@ -2710,10 +2708,10 @@ class baseCommands:
             if 0: # DTHEIN 18-JAN-2004:  No need to do this.
                 if trailingNL:
                     result += '\n'
-            #@-node:ekr.20031218072017.1836:<< compute the result of wrapping all lines >>
+            #@-node:AGP.20250415230112.464:<< compute the result of wrapping all lines >>
             #@nl
             #@        << update the body, selection & undo state >>
-            #@+node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+            #@+node:AGP.20250415230112.465:<< update the body, selection & undo state >>
             sel_start, sel_end = body.setSelectionAreas(head,result,tail)
             
             changed = original != head + result + tail
@@ -2726,10 +2724,10 @@ class baseCommands:
             body.makeIndexVisible(sel_end)
             
             c.recolor()
-            #@-node:ekr.20031218072017.1837:<< update the body, selection & undo state >>
+            #@-node:AGP.20250415230112.465:<< update the body, selection & undo state >>
             #@nl
-    #@-node:ekr.20031218072017.1833:reformatParagraph
-    #@+node:ekr.20031218072017.1838:updateBodyPane (handles changeNodeContents)
+    #@-node:AGP.20250415230112.461:reformatParagraph
+    #@+node:AGP.20250415230112.466:updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview,setSel=True):
         
         c = self ; body = c.frame.body ; p = c.currentPosition()
@@ -2765,10 +2763,10 @@ class baseCommands:
         body.setFocus()
         c.recolor()
         return dirtyVnodeList
-    #@-node:ekr.20031218072017.1838:updateBodyPane (handles changeNodeContents)
-    #@-node:ekr.20031218072017.2884:Edit Body submenu
-    #@+node:ekr.20031218072017.2885:Edit Headline submenu
-    #@+node:ekr.20031218072017.2886:editHeadline
+    #@-node:AGP.20250415230112.466:updateBodyPane (handles changeNodeContents)
+    #@-node:AGP.20250415230112.438:Edit Body submenu
+    #@+node:AGP.20250415230112.467:Edit Headline submenu
+    #@+node:AGP.20250415230112.468:editHeadline
     def editHeadline (self,event=None):
         
         '''Begin editing the headline of the selected node.'''
@@ -2784,8 +2782,8 @@ class baseCommands:
             k.showStateAndMode()
     
         tree.editLabel(c.currentPosition())
-    #@-node:ekr.20031218072017.2886:editHeadline
-    #@+node:ekr.20031218072017.2290:toggleAngleBrackets
+    #@-node:AGP.20250415230112.468:editHeadline
+    #@+node:AGP.20250415230112.469:toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
         
         '''Add or remove double angle brackets from the headline of the selected node.'''
@@ -2813,18 +2811,18 @@ class baseCommands:
             w.delete("1.0","end")
             w.insert("1.0",s)
             c.frame.tree.onHeadChanged(v,'Toggle Angle Brackets')
-    #@-node:ekr.20031218072017.2290:toggleAngleBrackets
-    #@-node:ekr.20031218072017.2885:Edit Headline submenu
-    #@+node:ekr.20031218072017.2887:Find submenu (frame methods)
-    #@+node:ekr.20051013084200:dismissFindPanel
+    #@-node:AGP.20250415230112.469:toggleAngleBrackets
+    #@-node:AGP.20250415230112.467:Edit Headline submenu
+    #@+node:AGP.20250415230112.470:Find submenu (frame methods)
+    #@+node:AGP.20250415230112.471:dismissFindPanel
     def dismissFindPanel (self,event=None):
         
         c = self
         
         if c.frame.findPanel:
             c.frame.findPanel.dismiss()
-    #@-node:ekr.20051013084200:dismissFindPanel
-    #@+node:ekr.20031218072017.2888:showFindPanel
+    #@-node:AGP.20250415230112.471:dismissFindPanel
+    #@+node:AGP.20250415230112.472:showFindPanel
     def showFindPanel (self,event=None):
     
         '''Open Leo's legacy Find dialog.'''
@@ -2835,8 +2833,8 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.bringToFront()
-    #@-node:ekr.20031218072017.2888:showFindPanel
-    #@+node:ekr.20031218072017.2889:findNext
+    #@-node:AGP.20250415230112.472:showFindPanel
+    #@+node:AGP.20250415230112.473:findNext
     def findNext (self,event=None):
     
         c = self
@@ -2845,8 +2843,8 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.findNextCommand(c)
-    #@-node:ekr.20031218072017.2889:findNext
-    #@+node:ekr.20031218072017.2890:findPrevious
+    #@-node:AGP.20250415230112.473:findNext
+    #@+node:AGP.20250415230112.474:findPrevious
     def findPrevious (self,event=None):
     
         c = self
@@ -2855,8 +2853,8 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.findPreviousCommand(c)
-    #@-node:ekr.20031218072017.2890:findPrevious
-    #@+node:ekr.20031218072017.2891:replace
+    #@-node:AGP.20250415230112.474:findPrevious
+    #@+node:AGP.20250415230112.475:replace
     def replace (self,event=None):
     
         c = self
@@ -2865,8 +2863,8 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.changeCommand(c)
-    #@-node:ekr.20031218072017.2891:replace
-    #@+node:ekr.20031218072017.2892:replaceThenFind
+    #@-node:AGP.20250415230112.475:replace
+    #@+node:AGP.20250415230112.476:replaceThenFind
     def replaceThenFind (self,event=None):
     
         c = self
@@ -2875,8 +2873,8 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.changeThenFindCommand(c)
-    #@-node:ekr.20031218072017.2892:replaceThenFind
-    #@+node:ekr.20051013083241:replaceAll
+    #@-node:AGP.20250415230112.476:replaceThenFind
+    #@+node:AGP.20250415230112.477:replaceAll
     def replaceAll (self,event=None):
     
         c = self
@@ -2885,18 +2883,18 @@ class baseCommands:
             c.frame.findPanel = g.app.gui.createFindPanel(c)
     
         c.frame.findPanel.changeAllCommand(c)
-    #@-node:ekr.20051013083241:replaceAll
-    #@-node:ekr.20031218072017.2887:Find submenu (frame methods)
-    #@+node:ekr.20031218072017.2893:notValidInBatchMode
+    #@-node:AGP.20250415230112.477:replaceAll
+    #@-node:AGP.20250415230112.470:Find submenu (frame methods)
+    #@+node:AGP.20250415230112.478:notValidInBatchMode
     def notValidInBatchMode(self, commandName):
         
         g.es("%s command is not valid in batch mode" % commandName)
-    #@-node:ekr.20031218072017.2893:notValidInBatchMode
-    #@-node:ekr.20031218072017.2861:Edit Menu...
-    #@+node:ekr.20031218072017.2894:Outline menu...
-    #@+node:ekr.20031218072017.2895: Top Level... (Commands)
-    #@+node:ekr.20031218072017.1548:Cut & Paste Outlines
-    #@+node:ekr.20031218072017.1549:cutOutline
+    #@-node:AGP.20250415230112.478:notValidInBatchMode
+    #@-node:AGP.20250415230112.405:Edit Menu...
+    #@+node:AGP.20250415230112.479:Outline menu...
+    #@+node:AGP.20250415230112.480: Top Level... (Commands)
+    #@+node:AGP.20250415230112.481:Cut & Paste Outlines
+    #@+node:AGP.20250415230112.482:cutOutline
     def cutOutline (self,event=None):
         
         '''Delete the selected outline and send it to the clipboard.'''
@@ -2906,8 +2904,8 @@ class baseCommands:
             c.copyOutline()
             c.deleteOutline("Cut Node")
             c.recolor()
-    #@-node:ekr.20031218072017.1549:cutOutline
-    #@+node:ekr.20031218072017.1550:copyOutline
+    #@-node:AGP.20250415230112.482:cutOutline
+    #@+node:AGP.20250415230112.483:copyOutline
     def copyOutline (self,event=None):
         
         '''Copy the selected outline to the clipboard.'''
@@ -2918,8 +2916,8 @@ class baseCommands:
         c.fileCommands.assignFileIndices()
         s = c.fileCommands.putLeoOutline()
         g.app.gui.replaceClipboardWith(s)
-    #@-node:ekr.20031218072017.1550:copyOutline
-    #@+node:ekr.20031218072017.1551:pasteOutline
+    #@-node:AGP.20250415230112.483:copyOutline
+    #@+node:AGP.20250415230112.484:pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
     
     def pasteOutline(self,event=None,reassignIndices=True):
@@ -2941,7 +2939,7 @@ class baseCommands:
         tnodeInfoDict = {}
         if pasteAsClone:
             #@        << remember all data for undo/redo Paste As Clone >>
-            #@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+            #@+node:AGP.20250415230112.485:<< remember all data for undo/redo Paste As Clone >>
             #@+at
             # 
             # We don't know yet which nodes will be affected by the paste, so 
@@ -2962,7 +2960,7 @@ class baseCommands:
                 if t not in tnodeInfoDict.keys():
                     tnodeInfoDict[t] = g.Bunch(
                         t=t,head=p.headString(),body=p.bodyString())
-            #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+            #@-node:AGP.20250415230112.485:<< remember all data for undo/redo Paste As Clone >>
             #@nl
     
         if isLeo:
@@ -2976,7 +2974,7 @@ class baseCommands:
             copiedBunchList = []
             if pasteAsClone:
                 #@            << put only needed info in copiedBunchList >>
-                #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+                #@+node:AGP.20250415230112.486:<< put only needed info in copiedBunchList >>
                 # Create a dict containing only copied tnodes.
                 copiedTnodeDict = {}
                 for p in pasted.self_and_subtree_iter():
@@ -2991,7 +2989,7 @@ class baseCommands:
                         copiedBunchList.append(bunch)
                 
                 # g.trace('copiedBunchList',copiedBunchList)
-                #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+                #@-node:AGP.20250415230112.486:<< put only needed info in copiedBunchList >>
                 #@nl
             undoData = u.beforeInsertNode(current,
                 pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
@@ -3009,8 +3007,8 @@ class baseCommands:
         finally:
             c.endUpdate()
             c.recolor()
-    #@-node:ekr.20031218072017.1551:pasteOutline
-    #@+node:EKR.20040610130943:pasteOutlineRetainingClones
+    #@-node:AGP.20250415230112.484:pasteOutline
+    #@+node:AGP.20250415230112.487:pasteOutlineRetainingClones
     def pasteOutlineRetainingClones (self,event=None):
         
         '''Paste an outline into the present outline from the clipboard.
@@ -3019,9 +3017,9 @@ class baseCommands:
         c = self
     
         return c.pasteOutline(reassignIndices=False)
-    #@-node:EKR.20040610130943:pasteOutlineRetainingClones
-    #@-node:ekr.20031218072017.1548:Cut & Paste Outlines
-    #@+node:ekr.20031218072017.2028:Hoist & dehoist
+    #@-node:AGP.20250415230112.487:pasteOutlineRetainingClones
+    #@-node:AGP.20250415230112.481:Cut & Paste Outlines
+    #@+node:AGP.20250415230112.488:Hoist & dehoist
     def dehoist (self,event=None):
         
         '''Undo a previous hoist of an outline.'''
@@ -3060,9 +3058,9 @@ class baseCommands:
             c.frame.clearStatusLine()
             c.frame.putStatusLine("Hoist: " + p.headString())
             c.undoer.afterHoist(p,'Hoist')
-    #@-node:ekr.20031218072017.2028:Hoist & dehoist
-    #@+node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
-    #@+node:ekr.20031218072017.1760:c.checkMoveWithParentWithWarning
+    #@-node:AGP.20250415230112.488:Hoist & dehoist
+    #@+node:AGP.20250415230112.489:Insert, Delete & Clone (Commands)
+    #@+node:AGP.20250415230112.490:c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning (self,root,parent,warningFlag):
         
         """Return False if root or any of root's descedents is a clone of
@@ -3086,8 +3084,8 @@ class baseCommands:
                     g.alert(message)
                 return False
         return True
-    #@-node:ekr.20031218072017.1760:c.checkMoveWithParentWithWarning
-    #@+node:ekr.20031218072017.1193:c.deleteOutline
+    #@-node:AGP.20250415230112.490:c.checkMoveWithParentWithWarning
+    #@+node:AGP.20250415230112.491:c.deleteOutline
     def deleteOutline (self,event=None,op_name="Delete Node"):
         
         """Deletes the selected outline."""
@@ -3112,8 +3110,8 @@ class baseCommands:
             c.endUpdate()
     
         c.validateOutline()
-    #@-node:ekr.20031218072017.1193:c.deleteOutline
-    #@+node:ekr.20031218072017.1761:c.insertHeadline
+    #@-node:AGP.20250415230112.491:c.deleteOutline
+    #@+node:AGP.20250415230112.492:c.insertHeadline
     def insertHeadline (self,event=None,op_name="Insert Node"):
         
         '''Insert a node after the presently selected node.'''
@@ -3149,8 +3147,8 @@ class baseCommands:
             c.endUpdate(False)
     
         return p # for mod_labels plugin.
-    #@-node:ekr.20031218072017.1761:c.insertHeadline
-    #@+node:ekr.20031218072017.1762:c.clone
+    #@-node:AGP.20250415230112.492:c.insertHeadline
+    #@+node:AGP.20250415230112.493:c.clone
     def clone (self,event=None):
         
         '''Create a clone of the selected outline.'''
@@ -3171,8 +3169,8 @@ class baseCommands:
             c.endUpdate()
     
         return clone # For mod_labels and chapters plugins.
-    #@-node:ekr.20031218072017.1762:c.clone
-    #@+node:ekr.20031218072017.1765:c.validateOutline
+    #@-node:AGP.20250415230112.493:c.clone
+    #@+node:AGP.20250415230112.494:c.validateOutline
     # Makes sure all nodes are valid.
     
     def validateOutline (self,event=None):
@@ -3189,9 +3187,9 @@ class baseCommands:
             return root.validateOutlineWithParent(parent)
         else:
             return True
-    #@-node:ekr.20031218072017.1765:c.validateOutline
-    #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
-    #@+node:ekr.20050415134809:c.sortChildren
+    #@-node:AGP.20250415230112.494:c.validateOutline
+    #@-node:AGP.20250415230112.489:Insert, Delete & Clone (Commands)
+    #@+node:AGP.20250415230112.495:c.sortChildren
     def sortChildren (self,event=None):
         
         '''Sort the children of a node.'''
@@ -3210,8 +3208,8 @@ class baseCommands:
             u.afterChangeGroup(p,undoType,dirtyVnodeList=dirtyVnodeList)
         finally:
             c.endUpdate()
-    #@-node:ekr.20050415134809:c.sortChildren
-    #@+node:ekr.20040303175026.12:c.sortChildrenHelper
+    #@-node:AGP.20250415230112.495:c.sortChildren
+    #@+node:AGP.20250415230112.496:c.sortChildrenHelper
     def sortChildrenHelper (self,p):
         
         c = self ; u = c.undoer
@@ -3228,8 +3226,8 @@ class baseCommands:
             u.afterMoveNode(child,'Sort',undoData)
             index += 1
     #@nonl
-    #@-node:ekr.20040303175026.12:c.sortChildrenHelper
-    #@+node:ekr.20050415134809.1:c.sortSiblings
+    #@-node:AGP.20250415230112.496:c.sortChildrenHelper
+    #@+node:AGP.20250415230112.497:c.sortSiblings
     def sortSiblings (self,event=None):
         
         '''Sort the siblings of a node.'''
@@ -3252,8 +3250,8 @@ class baseCommands:
                 u.afterChangeGroup(p,'Sort Siblings',dirtyVnodeList=dirtyVnodeList)
             finally:
                 c.endUpdate()
-    #@-node:ekr.20050415134809.1:c.sortSiblings
-    #@+node:ekr.20031218072017.2896:c.sortTopLevel
+    #@-node:AGP.20250415230112.497:c.sortSiblings
+    #@+node:AGP.20250415230112.498:c.sortTopLevel
     def sortTopLevel (self,event=None):
         
         '''Sort the top-level nodes of an outline.'''
@@ -3290,10 +3288,10 @@ class baseCommands:
             u.afterChangeGroup(root,undoType,dirtyVnodeList=dirtyVnodeList)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2896:c.sortTopLevel
-    #@-node:ekr.20031218072017.2895: Top Level... (Commands)
-    #@+node:ekr.20040711135959.2:Check Outline submenu...
-    #@+node:ekr.20031218072017.2072:c.checkOutline
+    #@-node:AGP.20250415230112.498:c.sortTopLevel
+    #@-node:AGP.20250415230112.480: Top Level... (Commands)
+    #@+node:AGP.20250415230112.499:Check Outline submenu...
+    #@+node:AGP.20250415230112.500:c.checkOutline
     def checkOutline (self,event=None,verbose=True,unittest=False,full=True):
         
         """Report any possible clone errors in the outline.
@@ -3311,7 +3309,7 @@ class baseCommands:
             try:
                 count += 1
                 #@            << remove unused tnodeList >>
-                #@+node:ekr.20040313150633:<< remove unused tnodeList >>
+                #@+node:AGP.20250415230112.501:<< remove unused tnodeList >>
                 # Empty tnodeLists are not errors.
                 v = p.v
                 
@@ -3322,11 +3320,11 @@ class baseCommands:
                         print ; g.es_print(s,color="blue")
                     delattr(v.t,"tnodeList")
                     v.t._p_changed = True
-                #@-node:ekr.20040313150633:<< remove unused tnodeList >>
+                #@-node:AGP.20250415230112.501:<< remove unused tnodeList >>
                 #@nl
                 if full: # Unit tests usually set this false.
                     #@                << do full tests >>
-                    #@+node:ekr.20040323155951:<< do full tests >>
+                    #@+node:AGP.20250415230112.502:<< do full tests >>
                     if not unittest:
                         if count % 100 == 0:
                             g.es('.',newline=False)
@@ -3334,7 +3332,7 @@ class baseCommands:
                             g.enl()
                     
                     #@+others
-                    #@+node:ekr.20040314035615:assert consistency of threadNext & threadBack links
+                    #@+node:AGP.20250415230112.503:assert consistency of threadNext & threadBack links
                     threadBack = p.threadBack()
                     threadNext = p.threadNext()
                     
@@ -3343,8 +3341,8 @@ class baseCommands:
                     
                     if threadNext:
                         assert p == threadNext.threadBack(), "p==threadNext.threadBack"
-                    #@-node:ekr.20040314035615:assert consistency of threadNext & threadBack links
-                    #@+node:ekr.20040314035615.1:assert consistency of next and back links
+                    #@-node:AGP.20250415230112.503:assert consistency of threadNext & threadBack links
+                    #@+node:AGP.20250415230112.504:assert consistency of next and back links
                     back = p.back()
                     next = p.next()
                     
@@ -3353,8 +3351,8 @@ class baseCommands:
                             
                     if next:
                         assert p == next.back(), "p==next.back"
-                    #@-node:ekr.20040314035615.1:assert consistency of next and back links
-                    #@+node:ekr.20040314035615.2:assert consistency of parent and child links
+                    #@-node:AGP.20250415230112.504:assert consistency of next and back links
+                    #@+node:AGP.20250415230112.505:assert consistency of parent and child links
                     if p.hasParent():
                         n = p.childIndex()
                         assert p == p.parent().moveToNthChild(n), "p==parent.moveToNthChild"
@@ -3367,8 +3365,8 @@ class baseCommands:
                         
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
-                    #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20040323155951.1:assert consistency of directParents and parent
+                    #@-node:AGP.20250415230112.505:assert consistency of parent and child links
+                    #@+node:AGP.20250415230112.506:assert consistency of directParents and parent
                     if p.hasParent():
                         t = p.parent().v.t
                         for v in p.directParents():
@@ -3381,8 +3379,8 @@ class baseCommands:
                                 print "v.t",v.t
                                 print "t = p.parent().v.t",t
                                 raise AssertionError,"v.t == t"
-                    #@-node:ekr.20040323155951.1:assert consistency of directParents and parent
-                    #@+node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
+                    #@-node:AGP.20250415230112.506:assert consistency of directParents and parent
+                    #@+node:AGP.20250415230112.507:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
                     if p.isCloned():
                         parents = p.v.t.vnodeList
                         for child in p.children_iter():
@@ -3392,8 +3390,8 @@ class baseCommands:
                                 assert parent in vparents, "parent in vparents"
                             for parent in vparents:
                                 assert parent in parents, "parent in parents"
-                    #@-node:ekr.20040323161837:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
-                    #@+node:ekr.20040323162707:assert that clones actually share subtrees
+                    #@-node:AGP.20250415230112.507:assert consistency of p.v.t.vnodeList, & v.parents for cloned nodes
+                    #@+node:AGP.20250415230112.508:assert that clones actually share subtrees
                     if p.isCloned() and p.hasChildren():
                         childv = p.firstChild().v
                         assert childv == p.v.t._firstChild, "childv == p.v.t._firstChild"
@@ -3401,8 +3399,8 @@ class baseCommands:
                         for v in p.v.t.vnodeList:
                             assert v.t._firstChild == childv, "v.t._firstChild == childv"
                             assert id(v.t._firstChild) == id(childv), "id(v.t._firstChild) == id(childv)"
-                    #@-node:ekr.20040323162707:assert that clones actually share subtrees
-                    #@+node:ekr.20040314043623:assert consistency of vnodeList
+                    #@-node:AGP.20250415230112.508:assert that clones actually share subtrees
+                    #@+node:AGP.20250415230112.509:assert consistency of vnodeList
                     vnodeList = p.v.t.vnodeList
                         
                     for v in vnodeList:
@@ -3423,8 +3421,8 @@ class baseCommands:
                         else:
                             assert not v.isCloned(), "not v.isCloned"
                             assert len(vnodeList) == 1, "len(vnodeList) == 1"
-                    #@-node:ekr.20040314043623:assert consistency of vnodeList
-                    #@+node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+                    #@-node:AGP.20250415230112.509:assert consistency of vnodeList
+                    #@+node:AGP.20250415230112.510:assert that p.headString() matches p.edit_text.get
                     # Not a great test: it only tests visible nodes.
                     # This test may fail if a joined node is being editred.
                     
@@ -3433,21 +3431,21 @@ class baseCommands:
                         if t:
                             s = t.get("1.0","end")
                             assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
-                    #@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+                    #@-node:AGP.20250415230112.510:assert that p.headString() matches p.edit_text.get
                     #@-others
-                    #@-node:ekr.20040323155951:<< do full tests >>
+                    #@-node:AGP.20250415230112.502:<< do full tests >>
                     #@nl
             except AssertionError,message:
                 errors += 1
                 #@            << give test failed message >>
-                #@+node:ekr.20040314044652:<< give test failed message >>
+                #@+node:AGP.20250415230112.511:<< give test failed message >>
                 s = "test failed: %s %s" % (message,repr(p))
                 print s ; g.es_print(s,color="red")
-                #@-node:ekr.20040314044652:<< give test failed message >>
+                #@-node:AGP.20250415230112.511:<< give test failed message >>
                 #@nl
         if verbose or not unittest:
             #@        << print summary message >>
-            #@+node:ekr.20040314043900:<<print summary message >>
+            #@+node:AGP.20250415230112.512:<<print summary message >>
             if full:
                 print
                 g.enl()
@@ -3457,12 +3455,12 @@ class baseCommands:
                 g.es_print(s,color="red")
             elif verbose:
                 g.es(s,color="green")
-            #@-node:ekr.20040314043900:<<print summary message >>
+            #@-node:AGP.20250415230112.512:<<print summary message >>
             #@nl
         return errors
-    #@-node:ekr.20031218072017.2072:c.checkOutline
-    #@+node:ekr.20040723094220:Check Outline commands & allies
-    #@+node:ekr.20040723094220.1:checkAllPythonCode
+    #@-node:AGP.20250415230112.500:c.checkOutline
+    #@+node:AGP.20250415230112.513:Check Outline commands & allies
+    #@+node:AGP.20250415230112.514:checkAllPythonCode
     def checkAllPythonCode(self,event=None,unittest=False,ignoreAtIgnore=True):
         
         '''Check all nodes in the selected tree for syntax and tab errors.'''
@@ -3474,13 +3472,13 @@ class baseCommands:
             count += 1
             if not unittest:
                 #@            << print dots >>
-                #@+node:ekr.20040723094220.2:<< print dots >>
+                #@+node:AGP.20250415230112.515:<< print dots >>
                 if count % 100 == 0:
                     g.es('.',newline=False)
                 
                 if count % 2000 == 0:
                     g.enl()
-                #@-node:ekr.20040723094220.2:<< print dots >>
+                #@-node:AGP.20250415230112.515:<< print dots >>
                 #@nl
     
             if g.scanForAtLanguage(c,p) == "python":
@@ -3500,8 +3498,8 @@ class baseCommands:
             g.es("Check complete",color="blue")
             
         return result
-    #@-node:ekr.20040723094220.1:checkAllPythonCode
-    #@+node:ekr.20040723094220.3:checkPythonCode
+    #@-node:AGP.20250415230112.514:checkAllPythonCode
+    #@+node:AGP.20250415230112.516:checkPythonCode
     def checkPythonCode (self,event=None,unittest=False,ignoreAtIgnore=True,suppressErrors=False):
         
         '''Check the selected tree for syntax and tab errors.'''
@@ -3516,13 +3514,13 @@ class baseCommands:
             count += 1
             if not unittest:
                 #@            << print dots >>
-                #@+node:ekr.20040723094220.4:<< print dots >>
+                #@+node:AGP.20250415230112.517:<< print dots >>
                 if count % 100 == 0:
                     g.es('.',newline=False)
                 
                 if count % 2000 == 0:
                     g.enl()
-                #@-node:ekr.20040723094220.4:<< print dots >>
+                #@-node:AGP.20250415230112.517:<< print dots >>
                 #@nl
     
             if g.scanForAtLanguage(c,p) == "python":
@@ -3541,8 +3539,8 @@ class baseCommands:
             
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
-    #@-node:ekr.20040723094220.3:checkPythonCode
-    #@+node:ekr.20040723094220.5:checkPythonNode
+    #@-node:AGP.20250415230112.516:checkPythonCode
+    #@+node:AGP.20250415230112.518:checkPythonNode
     def checkPythonNode (self,p,unittest=False,suppressErrors=False):
     
         c = self
@@ -3564,8 +3562,8 @@ class baseCommands:
                 c.setMarked(p)
     
         c.tabNannyNode(p,h,body,unittest,suppressErrors)
-    #@-node:ekr.20040723094220.5:checkPythonNode
-    #@+node:ekr.20040723094220.6:tabNannyNode
+    #@-node:AGP.20250415230112.518:checkPythonNode
+    #@+node:AGP.20250415230112.519:tabNannyNode
     # This code is based on tabnanny.check.
     
     def tabNannyNode (self,p,headline,body,unittest=False,suppressErrors=False):
@@ -3605,9 +3603,9 @@ class baseCommands:
     
         if unittest: raise
         else: c.setMarked(p)
-    #@-node:ekr.20040723094220.6:tabNannyNode
-    #@-node:ekr.20040723094220:Check Outline commands & allies
-    #@+node:ekr.20040412060927:c.dumpOutline
+    #@-node:AGP.20250415230112.519:tabNannyNode
+    #@-node:AGP.20250415230112.513:Check Outline commands & allies
+    #@+node:AGP.20250415230112.520:c.dumpOutline
     def dumpOutline (self,event=None):
         
         """ Dump all nodes in the outline."""
@@ -3616,9 +3614,9 @@ class baseCommands:
     
         for p in c.allNodes_iter():
             p.dump()
-    #@-node:ekr.20040412060927:c.dumpOutline
-    #@+node:ekr.20040711135959.1:Pretty Print commands
-    #@+node:ekr.20040712053025:prettyPrintAllPythonCode
+    #@-node:AGP.20250415230112.520:c.dumpOutline
+    #@+node:AGP.20250415230112.521:Pretty Print commands
+    #@+node:AGP.20250415230112.522:prettyPrintAllPythonCode
     def prettyPrintAllPythonCode (self,event=None,dump=False):
         
         '''Reformat all Python code in the outline to make it look more beautiful.'''
@@ -3638,8 +3636,8 @@ class baseCommands:
     def beautifyAllPythonCode (self,event=None,dump=False):
         return self.prettyPrintAllPythonCode (event,dump)
     #@nonl
-    #@-node:ekr.20040712053025:prettyPrintAllPythonCode
-    #@+node:ekr.20040712053025.1:prettyPrintPythonCode
+    #@-node:AGP.20250415230112.522:prettyPrintAllPythonCode
+    #@+node:AGP.20250415230112.523:prettyPrintPythonCode
     def prettyPrintPythonCode (self,event=None,p=None,dump=False):
         
         '''Reformat all Python code in the selected tree to make it look more beautiful.'''
@@ -3664,8 +3662,8 @@ class baseCommands:
     def beautifyPythonCode (self,event=None,dump=False):
         return self.prettyPrintPythonCode (event,dump)
     
-    #@-node:ekr.20040712053025.1:prettyPrintPythonCode
-    #@+node:ekr.20050729211526:prettyPrintPythonNode
+    #@-node:AGP.20250415230112.523:prettyPrintPythonCode
+    #@+node:AGP.20250415230112.524:prettyPrintPythonNode
     def prettyPrintPythonNode (self,p=None,dump=False):
     
         c = self
@@ -3680,12 +3678,12 @@ class baseCommands:
             pp.prettyPrintNode(p,dump=dump)
               
         pp.endUndo()
-    #@-node:ekr.20050729211526:prettyPrintPythonNode
-    #@+node:ekr.20040711135244.5:class prettyPrinter
+    #@-node:AGP.20250415230112.524:prettyPrintPythonNode
+    #@+node:AGP.20250415230112.525:class prettyPrinter
     class prettyPrinter:
         
         #@    @+others
-        #@+node:ekr.20040711135244.6:__init__
+        #@+node:AGP.20250415230112.526:__init__
         def __init__ (self,c):
             
             self.array = []
@@ -3710,7 +3708,7 @@ class baseCommands:
             self.startline = True # True: the token starts a line.
             self.tracing = False
             #@    << define dispatch dict >>
-            #@+node:ekr.20041021100850:<< define dispatch dict >>
+            #@+node:AGP.20250415230112.527:<< define dispatch dict >>
             self.dispatchDict = {
                 
                 "comment":    self.doMultiLine,
@@ -3725,14 +3723,14 @@ class baseCommands:
                 "op":         self.doOp,
                 "string":     self.doMultiLine,
             }
-            #@-node:ekr.20041021100850:<< define dispatch dict >>
+            #@-node:AGP.20250415230112.527:<< define dispatch dict >>
             #@nl
-        #@-node:ekr.20040711135244.6:__init__
-        #@+node:ekr.20040713093048:clear
+        #@-node:AGP.20250415230112.526:__init__
+        #@+node:AGP.20250415230112.528:clear
         def clear (self):
             self.lines = []
-        #@-node:ekr.20040713093048:clear
-        #@+node:ekr.20040713064323:dumpLines
+        #@-node:AGP.20250415230112.528:clear
+        #@+node:AGP.20250415230112.529:dumpLines
         def dumpLines (self,p,lines):
         
             encoding = g.app.tkEncoding
@@ -3748,8 +3746,8 @@ class baseCommands:
                     line = lines[i]
                     line = g.toEncodedString(line,encoding,reportErrors=True)
                     print "%3d" % i, repr(lines[i])
-        #@-node:ekr.20040713064323:dumpLines
-        #@+node:ekr.20040711135244.7:dumpToken
+        #@-node:AGP.20250415230112.529:dumpLines
+        #@+node:AGP.20250415230112.530:dumpToken
         def dumpToken (self,token5tuple):
         
             t1,t2,t3,t4,t5 = token5tuple
@@ -3764,8 +3762,8 @@ class baseCommands:
             self.line = srow
         
             print "%10s (%2d,%2d) %-8s" % (name,scol,ecol,repr(val))
-        #@-node:ekr.20040711135244.7:dumpToken
-        #@+node:ekr.20040713091855:endUndo
+        #@-node:AGP.20250415230112.530:dumpToken
+        #@+node:AGP.20250415230112.531:endUndo
         def endUndo (self):
             
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
@@ -3774,8 +3772,8 @@ class baseCommands:
             if self.changed:
                 # Tag the end of the command.
                 u.afterChangeGroup(current,undoType,dirtyVnodeList=self.dirtyVnodeList)
-        #@-node:ekr.20040713091855:endUndo
-        #@+node:ekr.20040711135244.8:get
+        #@-node:AGP.20250415230112.531:endUndo
+        #@+node:AGP.20250415230112.532:get
         def get (self):
             
             if self.lastName != 'newline' and self.lines:
@@ -3783,8 +3781,8 @@ class baseCommands:
                 self.lines[-1] = self.lines[-1].rstrip()
             
             return self.lines
-        #@-node:ekr.20040711135244.8:get
-        #@+node:ekr.20040711135244.4:prettyPrintNode
+        #@-node:AGP.20250415230112.532:get
+        #@+node:AGP.20250415230112.533:prettyPrintNode
         def prettyPrintNode(self,p,dump):
         
             c = self.c
@@ -3808,8 +3806,8 @@ class baseCommands:
                 self.dumpLines(p,lines)
             else:
                 self.replaceBody(p,lines)
-        #@-node:ekr.20040711135244.4:prettyPrintNode
-        #@+node:ekr.20040711135244.9:put
+        #@-node:AGP.20250415230112.533:prettyPrintNode
+        #@+node:AGP.20250415230112.534:put
         def put (self,s,strip=True):
             
             """Put s to self.array, and strip trailing whitespace if strip is True."""
@@ -3825,8 +3823,8 @@ class baseCommands:
                     self.array[-1] = prev.rstrip()
         
             self.array.append(s)
-        #@-node:ekr.20040711135244.9:put
-        #@+node:ekr.20041021104237:putArray
+        #@-node:AGP.20250415230112.534:put
+        #@+node:AGP.20250415230112.535:putArray
         def putArray (self):
             
             """Add the next text by joining all the strings is self.array"""
@@ -3834,8 +3832,8 @@ class baseCommands:
             self.lines.append(''.join(self.array))
             self.array = []
             self.lineParenLevel = 0
-        #@-node:ekr.20041021104237:putArray
-        #@+node:ekr.20040711135244.10:putNormalToken & allies
+        #@-node:AGP.20250415230112.535:putArray
+        #@+node:AGP.20250415230112.536:putNormalToken & allies
         def putNormalToken (self,token5tuple):
         
             t1,t2,t3,t4,t5 = token5tuple
@@ -3854,12 +3852,12 @@ class baseCommands:
             self.trace()
             f()
             self.lastName = self.name
-        #@+node:ekr.20041021102938:doEndMarker
+        #@+node:AGP.20250415230112.537:doEndMarker
         def doEndMarker (self):
             
             self.putArray()
-        #@-node:ekr.20041021102938:doEndMarker
-        #@+node:ekr.20041021102340.1:doErrorToken
+        #@-node:AGP.20250415230112.537:doEndMarker
+        #@+node:AGP.20250415230112.538:doErrorToken
         def doErrorToken (self):
             
             self.array.append(self.val)
@@ -3871,8 +3869,8 @@ class baseCommands:
                 ws = self.s[self.scol+1:i]
                 if ws:
                     self.array.append(ws)
-        #@-node:ekr.20041021102340.1:doErrorToken
-        #@+node:ekr.20041021102340.2:doIndent & doDedent
+        #@-node:AGP.20250415230112.538:doErrorToken
+        #@+node:AGP.20250415230112.539:doIndent & doDedent
         def doDedent (self):
             
             pass
@@ -3880,8 +3878,8 @@ class baseCommands:
         def doIndent (self):
             
             self.array.append(self.val)
-        #@-node:ekr.20041021102340.2:doIndent & doDedent
-        #@+node:ekr.20041021102340:doMultiLine (strings, etc).
+        #@-node:AGP.20250415230112.539:doIndent & doDedent
+        #@+node:AGP.20250415230112.540:doMultiLine (strings, etc).
         def doMultiLine (self):
         
             # Ensure a blank before comments not preceded entirely by whitespace.
@@ -3906,8 +3904,8 @@ class baseCommands:
                     
             # Suppress start-of-line logic.
             self.line = self.erow
-        #@-node:ekr.20041021102340:doMultiLine (strings, etc).
-        #@+node:ekr.20041021101911.5:doName
+        #@-node:AGP.20250415230112.540:doMultiLine (strings, etc).
+        #@+node:AGP.20250415230112.541:doName
         def doName(self):
             
             # Ensure whitespace or start-of-line precedes the name.
@@ -3926,8 +3924,8 @@ class baseCommands:
                 self.array.append(' ') # Retain the blank before '('.
         
             self.prevName = self.val
-        #@-node:ekr.20041021101911.5:doName
-        #@+node:ekr.20041021101911.3:doNewline
+        #@-node:AGP.20250415230112.541:doName
+        #@+node:AGP.20250415230112.542:doNewline
         def doNewline (self):
         
             # Remove trailing whitespace.
@@ -3937,13 +3935,13 @@ class baseCommands:
         
             self.array.append('\n')
             self.putArray()
-        #@-node:ekr.20041021101911.3:doNewline
-        #@+node:ekr.20041021101911.6:doNumber
+        #@-node:AGP.20250415230112.542:doNewline
+        #@+node:AGP.20250415230112.543:doNumber
         def doNumber (self):
         
             self.array.append(self.val)
-        #@-node:ekr.20041021101911.6:doNumber
-        #@+node:ekr.20040711135244.11:doOp
+        #@-node:AGP.20250415230112.543:doNumber
+        #@+node:AGP.20250415230112.544:doOp
         def doOp (self):
             
             val = self.val
@@ -4000,8 +3998,8 @@ class baseCommands:
                     self.put(val)
             else:
                 self.put(val)
-        #@-node:ekr.20040711135244.11:doOp
-        #@+node:ekr.20041021112219:doStartLine
+        #@-node:AGP.20250415230112.544:doOp
+        #@+node:AGP.20250415230112.545:doStartLine
         def doStartLine (self):
             
             before = self.s[0:self.scol]
@@ -4010,13 +4008,13 @@ class baseCommands:
              
             if self.ws:
                 self.array.append(self.ws)
-        #@-node:ekr.20041021112219:doStartLine
-        #@+node:ekr.20041021101911.1:oops
+        #@-node:AGP.20250415230112.545:doStartLine
+        #@+node:AGP.20250415230112.546:oops
         def oops(self):
             
             print "unknown PrettyPrinting code: %s" % (self.name)
-        #@-node:ekr.20041021101911.1:oops
-        #@+node:ekr.20041021101911.2:trace
+        #@-node:AGP.20250415230112.546:oops
+        #@+node:AGP.20250415230112.547:trace
         def trace(self):
             
             if self.tracing:
@@ -4025,17 +4023,17 @@ class baseCommands:
                     self.name,
                     repr(g.toEncodedString(self.val,"utf-8"))
                 ))
-        #@-node:ekr.20041021101911.2:trace
-        #@-node:ekr.20040711135244.10:putNormalToken & allies
-        #@+node:ekr.20040711135244.12:putToken
+        #@-node:AGP.20250415230112.547:trace
+        #@-node:AGP.20250415230112.536:putNormalToken & allies
+        #@+node:AGP.20250415230112.548:putToken
         def putToken (self,token5tuple):
             
             if self.dumping:
                 self.dumpToken(token5tuple)
             else:
                 self.putNormalToken(token5tuple)
-        #@-node:ekr.20040711135244.12:putToken
-        #@+node:ekr.20040713070356:replaceBody
+        #@-node:AGP.20250415230112.548:putToken
+        #@+node:AGP.20250415230112.549:replaceBody
         def replaceBody (self,p,lines):
             
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
@@ -4055,14 +4053,14 @@ class baseCommands:
                 dirtyVnodeList2 = p.setDirty()
                 self.dirtyVnodeList.extend(dirtyVnodeList2)
                 u.afterChangeNodeContents(p,undoType,undoData,dirtyVnodeList=self.dirtyVnodeList)
-        #@-node:ekr.20040713070356:replaceBody
+        #@-node:AGP.20250415230112.549:replaceBody
         #@-others
-    #@-node:ekr.20040711135244.5:class prettyPrinter
-    #@-node:ekr.20040711135959.1:Pretty Print commands
-    #@-node:ekr.20040711135959.2:Check Outline submenu...
-    #@+node:ekr.20031218072017.2898:Expand & Contract...
-    #@+node:ekr.20031218072017.2899:Commands
-    #@+node:ekr.20031218072017.2900:contractAllHeadlines
+    #@-node:AGP.20250415230112.525:class prettyPrinter
+    #@-node:AGP.20250415230112.521:Pretty Print commands
+    #@-node:AGP.20250415230112.499:Check Outline submenu...
+    #@+node:AGP.20250415230112.550:Expand & Contract...
+    #@+node:AGP.20250415230112.551:Commands
+    #@+node:AGP.20250415230112.552:contractAllHeadlines
     def contractAllHeadlines (self,event=None):
         
         '''Contract all nodes in the outline.'''
@@ -4083,8 +4081,8 @@ class baseCommands:
             c.treeWantsFocusNow()
     
         c.expansionLevel = 1 # Reset expansion level.
-    #@-node:ekr.20031218072017.2900:contractAllHeadlines
-    #@+node:ekr.20031218072017.2901:contractNode
+    #@-node:AGP.20250415230112.552:contractAllHeadlines
+    #@+node:AGP.20250415230112.553:contractNode
     def contractNode (self,event=None):
         
         '''Contract the presently selected node.'''
@@ -4097,8 +4095,8 @@ class baseCommands:
         finally:
             c.endUpdate()
             c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2901:contractNode
-    #@+node:ekr.20040930064232:contractNodeOrGoToParent
+    #@-node:AGP.20250415230112.553:contractNode
+    #@+node:AGP.20250415230112.554:contractNodeOrGoToParent
     def contractNodeOrGoToParent (self,event=None):
         
         """Simulate the left Arrow Key in folder of Windows Explorer."""
@@ -4109,8 +4107,8 @@ class baseCommands:
             c.contractNode()
         elif p.hasParent():
             c.goToParent()
-    #@-node:ekr.20040930064232:contractNodeOrGoToParent
-    #@+node:ekr.20031218072017.2902:contractParent
+    #@-node:AGP.20250415230112.554:contractNodeOrGoToParent
+    #@+node:AGP.20250415230112.555:contractParent
     def contractParent (self,event=None):
         
         '''Contract the parent of the presently selected node.'''
@@ -4126,8 +4124,8 @@ class baseCommands:
         finally:
             c.endUpdate()
             c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2902:contractParent
-    #@+node:ekr.20031218072017.2903:expandAllHeadlines
+    #@-node:AGP.20250415230112.555:contractParent
+    #@+node:AGP.20250415230112.556:expandAllHeadlines
     def expandAllHeadlines (self,event=None):
         
         '''Expand all headlines.
@@ -4144,8 +4142,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.expansionLevel = 0 # Reset expansion level.
-    #@-node:ekr.20031218072017.2903:expandAllHeadlines
-    #@+node:ekr.20031218072017.2904:expandAllSubheads
+    #@-node:AGP.20250415230112.556:expandAllHeadlines
+    #@+node:AGP.20250415230112.557:expandAllSubheads
     def expandAllSubheads (self,event=None):
         
         '''Expand all children of the presently selected node.'''
@@ -4164,8 +4162,8 @@ class baseCommands:
         finally:
             c.endUpdate()
             c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2904:expandAllSubheads
-    #@+node:ekr.20031218072017.2905:expandLevel1..9
+    #@-node:AGP.20250415230112.557:expandAllSubheads
+    #@+node:AGP.20250415230112.558:expandLevel1..9
     def expandLevel1 (self,event=None):
         '''Expand the outline to level 1'''
         self.expandToLevel(1)
@@ -4201,8 +4199,8 @@ class baseCommands:
     def expandLevel9 (self,event=None):
         '''Expand the outline to level 9'''
         self.expandToLevel(9)
-    #@-node:ekr.20031218072017.2905:expandLevel1..9
-    #@+node:ekr.20031218072017.2906:expandNextLevel
+    #@-node:AGP.20250415230112.558:expandLevel1..9
+    #@+node:AGP.20250415230112.559:expandNextLevel
     def expandNextLevel (self,event=None):
         
         '''Increase the expansion level of the outline and
@@ -4216,8 +4214,8 @@ class baseCommands:
             c.expansionNode = v
             
         self.expandToLevel(c.expansionLevel + 1)
-    #@-node:ekr.20031218072017.2906:expandNextLevel
-    #@+node:ekr.20031218072017.2907:expandNode
+    #@-node:AGP.20250415230112.559:expandNextLevel
+    #@+node:AGP.20250415230112.560:expandNode
     def expandNode (self,event=None):
         
         '''Expand the presently selected node.'''
@@ -4231,8 +4229,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
     #@nonl
-    #@-node:ekr.20031218072017.2907:expandNode
-    #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+    #@-node:AGP.20250415230112.560:expandNode
+    #@+node:AGP.20250415230112.561:expandNodeAnd/OrGoToFirstChild
     def expandNodeAndGoToFirstChild (self,event=None):
         
         """If a node has children, expand it if needed and go to the first child."""
@@ -4270,8 +4268,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
-    #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
+    #@-node:AGP.20250415230112.561:expandNodeAnd/OrGoToFirstChild
+    #@+node:AGP.20250415230112.562:expandOnlyAncestorsOfNode
     def expandOnlyAncestorsOfNode (self,event=None):
         
         '''Contract all nodes in the outline.'''
@@ -4290,8 +4288,8 @@ class baseCommands:
             c.treeWantsFocusNow()
     
         c.expansionLevel = level # Reset expansion level.
-    #@-node:ekr.20060928062431:expandOnlyAncestorsOfNode
-    #@+node:ekr.20031218072017.2908:expandPrevLevel
+    #@-node:AGP.20250415230112.562:expandOnlyAncestorsOfNode
+    #@+node:AGP.20250415230112.563:expandPrevLevel
     def expandPrevLevel (self,event=None):
         
         '''Decrease the expansion level of the outline and
@@ -4305,16 +4303,16 @@ class baseCommands:
             c.expansionNode = v
             
         self.expandToLevel(max(1,c.expansionLevel - 1))
-    #@-node:ekr.20031218072017.2908:expandPrevLevel
-    #@-node:ekr.20031218072017.2899:Commands
-    #@+node:ekr.20031218072017.2909:Utilities
-    #@+node:ekr.20031218072017.2910:contractSubtree
+    #@-node:AGP.20250415230112.563:expandPrevLevel
+    #@-node:AGP.20250415230112.551:Commands
+    #@+node:AGP.20250415230112.564:Utilities
+    #@+node:AGP.20250415230112.565:contractSubtree
     def contractSubtree (self,p):
     
         for p in p.subtree_iter():
             p.contract()
-    #@-node:ekr.20031218072017.2910:contractSubtree
-    #@+node:ekr.20031218072017.2911:expandSubtree
+    #@-node:AGP.20250415230112.565:contractSubtree
+    #@+node:AGP.20250415230112.566:expandSubtree
     def expandSubtree (self,v):
     
         c = self
@@ -4327,8 +4325,8 @@ class baseCommands:
                 v = v.threadNext()
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2911:expandSubtree
-    #@+node:ekr.20031218072017.2912:expandToLevel (rewritten in 4.4)
+    #@-node:AGP.20250415230112.566:expandSubtree
+    #@+node:AGP.20250415230112.567:expandToLevel (rewritten in 4.4)
     def expandToLevel (self,level):
     
         c = self
@@ -4345,11 +4343,11 @@ class baseCommands:
             c.expansionNode = c.currentPosition()
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2912:expandToLevel (rewritten in 4.4)
-    #@-node:ekr.20031218072017.2909:Utilities
-    #@-node:ekr.20031218072017.2898:Expand & Contract...
-    #@+node:ekr.20031218072017.2913:Goto
-    #@+node:ekr.20031218072017.1628:goNextVisitedNode
+    #@-node:AGP.20250415230112.567:expandToLevel (rewritten in 4.4)
+    #@-node:AGP.20250415230112.564:Utilities
+    #@-node:AGP.20250415230112.550:Expand & Contract...
+    #@+node:AGP.20250415230112.568:Goto
+    #@+node:AGP.20250415230112.569:goNextVisitedNode
     def goNextVisitedNode (self,event=None):
         
         '''Select the next visited node.'''
@@ -4368,8 +4366,8 @@ class baseCommands:
                     c.endUpdate()
                 c.treeWantsFocusNow()
                 return
-    #@-node:ekr.20031218072017.1628:goNextVisitedNode
-    #@+node:ekr.20031218072017.1627:goPrevVisitedNode
+    #@-node:AGP.20250415230112.569:goNextVisitedNode
+    #@+node:AGP.20250415230112.570:goPrevVisitedNode
     def goPrevVisitedNode (self,event=None):
         
         '''Select the previously visited node.'''
@@ -4388,8 +4386,8 @@ class baseCommands:
                     c.endUpdate()
                 c.treeWantsFocusNow()
                 return
-    #@-node:ekr.20031218072017.1627:goPrevVisitedNode
-    #@+node:ekr.20031218072017.2914:goToFirstNode
+    #@-node:AGP.20250415230112.570:goPrevVisitedNode
+    #@+node:AGP.20250415230112.571:goToFirstNode
     def goToFirstNode (self,event=None):
         
         '''Select the first node of the entire outline.'''
@@ -4403,8 +4401,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2914:goToFirstNode
-    #@+node:ekr.20051012092453:goToFirstSibling (New in 4.4)
+    #@-node:AGP.20250415230112.571:goToFirstNode
+    #@+node:AGP.20250415230112.572:goToFirstSibling (New in 4.4)
     def goToFirstSibling (self,event=None):
         
         '''Select the first sibling of the selected node.'''
@@ -4421,8 +4419,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20051012092453:goToFirstSibling (New in 4.4)
-    #@+node:ekr.20031218072017.2915:goToLastNode (Bug fix in 4.4)
+    #@-node:AGP.20250415230112.572:goToFirstSibling (New in 4.4)
+    #@+node:AGP.20250415230112.573:goToLastNode (Bug fix in 4.4)
     def goToLastNode (self,event=None):
         
         '''Select the last node in the selected tree.'''
@@ -4439,8 +4437,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2915:goToLastNode (Bug fix in 4.4)
-    #@+node:ekr.20051012092847.1:goToLastSibling (New in 4.4)
+    #@-node:AGP.20250415230112.573:goToLastNode (Bug fix in 4.4)
+    #@+node:AGP.20250415230112.574:goToLastSibling (New in 4.4)
     def goToLastSibling (self,event=None):
         
         '''Select the last sibling of the selected node.'''
@@ -4457,8 +4455,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20051012092847.1:goToLastSibling (New in 4.4)
-    #@+node:ekr.20050711153537:goToLastVisibleNode
+    #@-node:AGP.20250415230112.574:goToLastSibling (New in 4.4)
+    #@+node:AGP.20250415230112.575:goToLastVisibleNode
     def goToLastVisibleNode (self,event=None):
         
         '''Select the last visible node of the entire outline.'''
@@ -4479,8 +4477,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20050711153537:goToLastVisibleNode
-    #@+node:ekr.20031218072017.2916:goToNextClone
+    #@-node:AGP.20250415230112.575:goToLastVisibleNode
+    #@+node:AGP.20250415230112.576:goToNextClone
     def goToNextClone (self,event=None):
         
         '''Select the next node that is a clone of the selected node.'''
@@ -4507,8 +4505,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2916:goToNextClone
-    #@+node:ekr.20031218072017.2917:goToNextDirtyHeadline
+    #@-node:AGP.20250415230112.576:goToNextClone
+    #@+node:AGP.20250415230112.577:goToNextDirtyHeadline
     def goToNextDirtyHeadline (self,event=None):
         
         '''Select the node that is marked as changed.'''
@@ -4536,8 +4534,8 @@ class baseCommands:
         else:
             g.es("done",color="blue")
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2917:goToNextDirtyHeadline
-    #@+node:ekr.20031218072017.2918:goToNextMarkedHeadline
+    #@-node:AGP.20250415230112.577:goToNextDirtyHeadline
+    #@+node:AGP.20250415230112.578:goToNextMarkedHeadline
     def goToNextMarkedHeadline (self,event=None):
         
         '''Select the next marked node.'''
@@ -4559,8 +4557,8 @@ class baseCommands:
         else:
             g.es("done",color="blue")
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2918:goToNextMarkedHeadline
-    #@+node:ekr.20031218072017.2919:goToNextSibling
+    #@-node:AGP.20250415230112.578:goToNextMarkedHeadline
+    #@+node:AGP.20250415230112.579:goToNextSibling
     def goToNextSibling (self,event=None):
         
         '''Select the next sibling of the selected node.'''
@@ -4576,8 +4574,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2919:goToNextSibling
-    #@+node:ekr.20031218072017.2920:goToParent
+    #@-node:AGP.20250415230112.579:goToNextSibling
+    #@+node:AGP.20250415230112.580:goToParent
     def goToParent (self,event=None):
         
         '''Select the parent of the selected node.'''
@@ -4593,8 +4591,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2920:goToParent
-    #@+node:ekr.20031218072017.2921:goToPrevSibling
+    #@-node:AGP.20250415230112.580:goToParent
+    #@+node:AGP.20250415230112.581:goToPrevSibling
     def goToPrevSibling (self,event=None):
         
         '''Select the previous sibling of the selected node.'''
@@ -4610,8 +4608,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2921:goToPrevSibling
-    #@+node:ekr.20031218072017.2994:selectThreadNext
+    #@-node:AGP.20250415230112.581:goToPrevSibling
+    #@+node:AGP.20250415230112.582:selectThreadNext
     def selectThreadNext (self,event=None):
         
         '''Select the node following the selected node in outline order.'''
@@ -4628,8 +4626,8 @@ class baseCommands:
                 c.endUpdate()
         c.treeWantsFocusNow()
     #@nonl
-    #@-node:ekr.20031218072017.2994:selectThreadNext
-    #@+node:ekr.20031218072017.2993:selectThreadBack
+    #@-node:AGP.20250415230112.582:selectThreadNext
+    #@+node:AGP.20250415230112.583:selectThreadBack
     def selectThreadBack (self,event=None):
         
         '''Select the node preceding the selected node in outline order.'''
@@ -4645,8 +4643,8 @@ class baseCommands:
             finally:
                 c.endUpdate()
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2993:selectThreadBack
-    #@+node:ekr.20031218072017.2995:selectVisBack
+    #@-node:AGP.20250415230112.583:selectThreadBack
+    #@+node:AGP.20250415230112.584:selectVisBack
     # This has an up arrow for a control key.
     
     def selectVisBack (self,event=None):
@@ -4666,8 +4664,8 @@ class baseCommands:
             finally:
                 c.endUpdate(redraw)
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2995:selectVisBack
-    #@+node:ekr.20031218072017.2996:selectVisNext
+    #@-node:AGP.20250415230112.584:selectVisBack
+    #@+node:AGP.20250415230112.585:selectVisNext
     def selectVisNext (self,event=None):
         
         '''Select the visible node following the presently selected node.'''
@@ -4686,10 +4684,10 @@ class baseCommands:
                 c.endUpdate(redraw)
     
         c.treeWantsFocusNow()
-    #@-node:ekr.20031218072017.2996:selectVisNext
-    #@-node:ekr.20031218072017.2913:Goto
-    #@+node:ekr.20031218072017.2922:Mark...
-    #@+node:ekr.20031218072017.2923:markChangedHeadlines
+    #@-node:AGP.20250415230112.585:selectVisNext
+    #@-node:AGP.20250415230112.568:Goto
+    #@+node:AGP.20250415230112.586:Mark...
+    #@+node:AGP.20250415230112.587:markChangedHeadlines
     def markChangedHeadlines (self,event=None):
         
         '''Mark all nodes that have been changed.'''
@@ -4710,8 +4708,8 @@ class baseCommands:
             g.es("done",color="blue")
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2923:markChangedHeadlines
-    #@+node:ekr.20031218072017.2924:markChangedRoots
+    #@-node:AGP.20250415230112.587:markChangedHeadlines
+    #@+node:AGP.20250415230112.588:markChangedRoots
     def markChangedRoots (self,event=None):
         
         '''Mark all changed @root nodes.'''
@@ -4735,8 +4733,8 @@ class baseCommands:
             g.es("done",color="blue")
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2924:markChangedRoots
-    #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty (not used)
+    #@-node:AGP.20250415230112.588:markChangedRoots
+    #@+node:AGP.20250415230112.589:markAllAtFileNodesDirty (not used)
     def markAllAtFileNodesDirty (self,event=None):
         
         '''Mark all @file nodes as changed.'''
@@ -4754,8 +4752,8 @@ class baseCommands:
                     p.moveToThreadNext()
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty (not used)
-    #@+node:ekr.20031218072017.2926:markAtFileNodesDirty (not used)
+    #@-node:AGP.20250415230112.589:markAllAtFileNodesDirty (not used)
+    #@+node:AGP.20250415230112.590:markAtFileNodesDirty (not used)
     def markAtFileNodesDirty (self,event=None):
         
         '''Mark all @file nodes in the selected tree as changed.'''
@@ -4776,8 +4774,8 @@ class baseCommands:
                     p.moveToThreadNext()
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2926:markAtFileNodesDirty (not used)
-    #@+node:ekr.20031218072017.2927:markClones
+    #@-node:AGP.20250415230112.590:markAtFileNodesDirty (not used)
+    #@+node:AGP.20250415230112.591:markClones
     def markClones (self,event=None):
         
         '''Mark all clones of the selected node.'''
@@ -4803,8 +4801,8 @@ class baseCommands:
         finally:
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             c.endUpdate()
-    #@-node:ekr.20031218072017.2927:markClones
-    #@+node:ekr.20031218072017.2928:markHeadline
+    #@-node:AGP.20250415230112.591:markClones
+    #@+node:AGP.20250415230112.592:markHeadline
     def markHeadline (self,event=None):
         
         '''Toggle the mark of the selected node.'''
@@ -4825,8 +4823,8 @@ class baseCommands:
             u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
         finally:
             c.endUpdate()
-    #@-node:ekr.20031218072017.2928:markHeadline
-    #@+node:ekr.20031218072017.2929:markSubheads
+    #@-node:AGP.20250415230112.592:markHeadline
+    #@+node:AGP.20250415230112.593:markSubheads
     def markSubheads (self,event=None):
         
         '''Mark all children of the selected node as changed.'''
@@ -4850,8 +4848,8 @@ class baseCommands:
         finally:
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             c.endUpdate()
-    #@-node:ekr.20031218072017.2929:markSubheads
-    #@+node:ekr.20031218072017.2930:unmarkAll
+    #@-node:AGP.20250415230112.593:markSubheads
+    #@+node:AGP.20250415230112.594:unmarkAll
     def unmarkAll (self,event=None):
         
         '''Unmark all nodes in the entire outline.'''
@@ -4876,10 +4874,10 @@ class baseCommands:
             u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
             c.endUpdate()
     #@nonl
-    #@-node:ekr.20031218072017.2930:unmarkAll
-    #@-node:ekr.20031218072017.2922:Mark...
-    #@+node:ekr.20031218072017.1766:Move... (Commands)
-    #@+node:ekr.20031218072017.1767:demote
+    #@-node:AGP.20250415230112.594:unmarkAll
+    #@-node:AGP.20250415230112.586:Mark...
+    #@+node:AGP.20250415230112.595:Move... (Commands)
+    #@+node:AGP.20250415230112.596:demote
     def demote (self,event=None):
         
         '''Make all following siblings children of the selected node.'''
@@ -4916,8 +4914,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(current) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1767:demote
-    #@+node:ekr.20031218072017.1768:moveOutlineDown
+    #@-node:AGP.20250415230112.596:demote
+    #@+node:AGP.20250415230112.597:moveOutlineDown
     #@+at 
     #@nonl
     # Moving down is more tricky than moving up; we can't move p to be a child 
@@ -4954,7 +4952,7 @@ class baseCommands:
             c.endEditing()
             undoData = u.beforeMoveNode(p)
             #@        << Move p down & set moved if successful >>
-            #@+node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+            #@+node:AGP.20250415230112.598:<< Move p down & set moved if successful >>
             parent = p.parent()
             
             if next.hasChildren() and next.isExpanded():
@@ -4974,7 +4972,7 @@ class baseCommands:
             if moved and sparseMove and parent and not parent.isAncestorOf(p):
                 # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
                 parent.contract()
-            #@-node:ekr.20031218072017.1769:<< Move p down & set moved if successful >>
+            #@-node:AGP.20250415230112.598:<< Move p down & set moved if successful >>
             #@nl
             if moved:
                 if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -4990,8 +4988,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1768:moveOutlineDown
-    #@+node:ekr.20031218072017.1770:moveOutlineLeft
+    #@-node:AGP.20250415230112.597:moveOutlineDown
+    #@+node:AGP.20250415230112.599:moveOutlineLeft
     def moveOutlineLeft (self,event=None):
         
         '''Move the selected node left if possible.'''
@@ -5031,8 +5029,8 @@ class baseCommands:
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@nonl
-    #@-node:ekr.20031218072017.1770:moveOutlineLeft
-    #@+node:ekr.20031218072017.1771:moveOutlineRight
+    #@-node:AGP.20250415230112.599:moveOutlineLeft
+    #@+node:AGP.20250415230112.600:moveOutlineRight
     def moveOutlineRight (self,event=None):
         
         '''Move the selected node right if possible.'''
@@ -5069,8 +5067,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1771:moveOutlineRight
-    #@+node:ekr.20031218072017.1772:moveOutlineUp
+    #@-node:AGP.20250415230112.600:moveOutlineRight
+    #@+node:AGP.20250415230112.601:moveOutlineUp
     def moveOutlineUp (self,event=None):
         
         '''Move the selected node up if possible.'''
@@ -5098,7 +5096,7 @@ class baseCommands:
             undoData = u.beforeMoveNode(p)
             dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
             #@        << Move p up >>
-            #@+node:ekr.20031218072017.1773:<< Move p up >>
+            #@+node:AGP.20250415230112.602:<< Move p up >>
             if 0:
                 g.trace("visBack",back)
                 g.trace("visBack2",back2)
@@ -5126,7 +5124,7 @@ class baseCommands:
             if moved and sparseMove and parent and not parent.isAncestorOf(p):
                 # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
                 parent.contract()
-            #@-node:ekr.20031218072017.1773:<< Move p up >>
+            #@-node:AGP.20250415230112.602:<< Move p up >>
             #@nl
             if moved:
                 if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -5143,8 +5141,8 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1772:moveOutlineUp
-    #@+node:ekr.20031218072017.1774:promote
+    #@-node:AGP.20250415230112.601:moveOutlineUp
+    #@+node:AGP.20250415230112.603:promote
     def promote (self,event=None):
         
         '''Make all children of the selected nodes siblings of the selected node.'''
@@ -5180,11 +5178,11 @@ class baseCommands:
             c.endUpdate()
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@-node:ekr.20031218072017.1774:promote
-    #@-node:ekr.20031218072017.1766:Move... (Commands)
-    #@-node:ekr.20031218072017.2894:Outline menu...
-    #@+node:ekr.20031218072017.2931:Window Menu
-    #@+node:ekr.20031218072017.2092:openCompareWindow
+    #@-node:AGP.20250415230112.603:promote
+    #@-node:AGP.20250415230112.595:Move... (Commands)
+    #@-node:AGP.20250415230112.479:Outline menu...
+    #@+node:AGP.20250415230112.604:Window Menu
+    #@+node:AGP.20250415230112.605:openCompareWindow
     def openCompareWindow (self,event=None):
         
         '''Open a dialog for comparing files and directories.'''
@@ -5195,8 +5193,8 @@ class baseCommands:
             frame.comparePanel = g.app.gui.createComparePanel(c)
     
         frame.comparePanel.bringToFront()
-    #@-node:ekr.20031218072017.2092:openCompareWindow
-    #@+node:ekr.20031218072017.2932:openPythonWindow
+    #@-node:AGP.20250415230112.605:openCompareWindow
+    #@+node:AGP.20250415230112.606:openPythonWindow
     def openPythonWindow (self,event=None):
         
         '''Open Python's Idle debugger in a separate process.'''
@@ -5209,10 +5207,10 @@ class baseCommands:
             os.spawnv(os.P_NOWAIT, sys.executable, args)
         else: # Use a pristine environment.
             os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
-    #@-node:ekr.20031218072017.2932:openPythonWindow
-    #@-node:ekr.20031218072017.2931:Window Menu
-    #@+node:ekr.20031218072017.2938:Help Menu
-    #@+node:ekr.20031218072017.2939:about (version number & date)
+    #@-node:AGP.20250415230112.606:openPythonWindow
+    #@-node:AGP.20250415230112.604:Window Menu
+    #@+node:AGP.20250415230112.607:Help Menu
+    #@+node:AGP.20250415230112.608:about (version number & date)
     def about (self,event=None):
         
         '''Bring up an About Leo Dialog.'''
@@ -5227,8 +5225,8 @@ class baseCommands:
         email = ""
     
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
-    #@-node:ekr.20031218072017.2939:about (version number & date)
-    #@+node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
+    #@-node:AGP.20250415230112.608:about (version number & date)
+    #@+node:AGP.20250415230112.609:openLeoSettings and openMyLeoSettings
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''
         self.openSettingsHelper('leoSettings.leo')
@@ -5256,8 +5254,8 @@ class baseCommands:
                 ok, frame = g.openWithFileName(fileName,c)
                 if not ok:
                     g.es("%s not found in %s or %s" % (name,configDir,homeDir))
-    #@-node:ekr.20031218072017.2943:openLeoSettings and openMyLeoSettings
-    #@+node:ekr.20061018094539:openLeoScripts
+    #@-node:AGP.20250415230112.609:openLeoSettings and openMyLeoSettings
+    #@+node:AGP.20250415230112.610:openLeoScripts
     def openLeoScripts (self,event=None):
         
         c = self
@@ -5266,8 +5264,8 @@ class baseCommands:
         ok, frame = g.openWithFileName(fileName,c)
         if not ok:
             g.es('not found: %s' % fileName)
-    #@-node:ekr.20061018094539:openLeoScripts
-    #@+node:ekr.20031218072017.2940:leoDocumentation
+    #@-node:AGP.20250415230112.610:openLeoScripts
+    #@+node:AGP.20250415230112.611:leoDocumentation
     def leoDocumentation (self,event=None):
         
         '''Open LeoDocs.leo in a new Leo window.'''
@@ -5278,8 +5276,11 @@ class baseCommands:
         ok,frame = g.openWithFileName(fileName,c)
         if not ok:
             g.es("not found: %s" % name)
-    #@-node:ekr.20031218072017.2940:leoDocumentation
-    #@+node:ekr.20031218072017.2941:leoHome
+    
+        
+    #@nonl
+    #@-node:AGP.20250415230112.611:leoDocumentation
+    #@+node:AGP.20250415230112.612:leoHome
     def leoHome (self,event=None):
         
         '''Open Leo's Home page in a web browser.'''
@@ -5291,8 +5292,8 @@ class baseCommands:
             webbrowser.open_new(url)
         except:
             g.es("not found: " + url)
-    #@-node:ekr.20031218072017.2941:leoHome
-    #@+node:ekr.20050130152008:leoPlugins
+    #@-node:AGP.20250415230112.612:leoHome
+    #@+node:AGP.20250415230112.613:leoPlugins
     def openLeoPlugins (self,event=None):
         
         '''Open leoPlugins.leo in a new Leo window.'''
@@ -5302,8 +5303,8 @@ class baseCommands:
         ok,frame = g.openWithFileName(fileName,c)
         if not ok:
             g.es("not found: %s" % name)
-    #@-node:ekr.20050130152008:leoPlugins
-    #@+node:ekr.20031218072017.2942:leoTutorial (version number)
+    #@-node:AGP.20250415230112.613:leoPlugins
+    #@+node:AGP.20250415230112.614:leoTutorial (version number)
     def leoTutorial (self,event=None):
         
         '''Open Leo's online tutorial in a web browser.'''
@@ -5318,8 +5319,8 @@ class baseCommands:
             webbrowser.open_new(url)
         except:
             g.es("not found: " + url)
-    #@-node:ekr.20031218072017.2942:leoTutorial (version number)
-    #@+node:ekr.20060613082924:leoUsersGuide
+    #@-node:AGP.20250415230112.614:leoTutorial (version number)
+    #@+node:AGP.20250415230112.615:leoUsersGuide
     def leoUsersGuide (self,event=None):
         
         '''Open Leo's users guide in a web browser.'''
@@ -5336,11 +5337,11 @@ class baseCommands:
             webbrowser.open_new(url)
         except:
             g.es("not found: " + url)
-    #@-node:ekr.20060613082924:leoUsersGuide
-    #@-node:ekr.20031218072017.2938:Help Menu
-    #@-node:ekr.20031218072017.2818:Command handlers...
-    #@+node:ekr.20031218072017.2945:Dragging (commands)
-    #@+node:ekr.20031218072017.2353:c.dragAfter
+    #@-node:AGP.20250415230112.615:leoUsersGuide
+    #@-node:AGP.20250415230112.607:Help Menu
+    #@-node:AGP.20250415230112.355:Command handlers...
+    #@+node:AGP.20250415230112.616:Dragging (commands)
+    #@+node:AGP.20250415230112.617:c.dragAfter
     def dragAfter(self,p,after):
     
         c = self ; u = self.undoer ; undoType = 'Drag'
@@ -5367,8 +5368,8 @@ class baseCommands:
             c.selectPosition(p) # Also sets root position.
             c.endUpdate()
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
-    #@-node:ekr.20031218072017.2353:c.dragAfter
-    #@+node:ekr.20031218072017.2946:c.dragCloneToNthChildOf
+    #@-node:AGP.20250415230112.617:c.dragAfter
+    #@+node:AGP.20250415230112.618:c.dragCloneToNthChildOf
     def dragCloneToNthChildOf (self,p,parent,n):
     
         c = self ; u = c.undoer ; undoType = 'Clone Drag'
@@ -5401,8 +5402,8 @@ class baseCommands:
             c.selectPosition(clone) # Also sets root position.
             c.endUpdate()
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
-    #@-node:ekr.20031218072017.2946:c.dragCloneToNthChildOf
-    #@+node:ekr.20031218072017.2947:c.dragToNthChildOf
+    #@-node:AGP.20250415230112.618:c.dragCloneToNthChildOf
+    #@+node:AGP.20250415230112.619:c.dragToNthChildOf
     def dragToNthChildOf(self,p,parent,n):
     
         c = self ; u = c.undoer ; undoType = 'Drag'
@@ -5429,8 +5430,8 @@ class baseCommands:
             c.selectPosition(p) # Also sets root position.
             c.endUpdate()
         c.updateSyntaxColorer(p) # Dragging can change syntax coloring.
-    #@-node:ekr.20031218072017.2947:c.dragToNthChildOf
-    #@+node:ekr.20031218072017.2948:c.dragCloneAfter
+    #@-node:AGP.20250415230112.619:c.dragToNthChildOf
+    #@+node:AGP.20250415230112.620:c.dragCloneAfter
     def dragCloneAfter (self,p,after):
     
         c = self ; u = c.undoer ; undoType = 'Clone Drag'
@@ -5463,10 +5464,10 @@ class baseCommands:
             c.endUpdate()
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@nonl
-    #@-node:ekr.20031218072017.2948:c.dragCloneAfter
-    #@-node:ekr.20031218072017.2945:Dragging (commands)
-    #@+node:ekr.20031218072017.2949:Drawing Utilities (commands)
-    #@+node:ekr.20031218072017.2950:c.begin/endUpdate
+    #@-node:AGP.20250415230112.620:c.dragCloneAfter
+    #@-node:AGP.20250415230112.616:Dragging (commands)
+    #@+node:AGP.20250415230112.621:Drawing Utilities (commands)
+    #@+node:AGP.20250415230112.622:c.begin/endUpdate
     #@+at
     # **Important** These methods ensure that exactly zero or one (depending 
     # on the
@@ -5503,8 +5504,8 @@ class baseCommands:
     
     BeginUpdate = beginUpdate # Compatibility with old scripts
     EndUpdate = endUpdate # Compatibility with old scripts
-    #@-node:ekr.20031218072017.2950:c.begin/endUpdate
-    #@+node:ekr.20031218072017.2951:c.bringToFront
+    #@-node:AGP.20250415230112.622:c.begin/endUpdate
+    #@+node:AGP.20250415230112.623:c.bringToFront
     def bringToFront(self,set_focus=True):
         print "bringtofront"
         c = self
@@ -5517,8 +5518,8 @@ class baseCommands:
             g.app.gui.set_focus(c,bodyCtrl)
     
     BringToFront = bringToFront # Compatibility with old scripts
-    #@-node:ekr.20031218072017.2951:c.bringToFront
-    #@+node:ekr.20060210102201:c.xWantsFocusNow
+    #@-node:AGP.20250415230112.623:c.bringToFront
+    #@+node:AGP.20250415230112.624:c.xWantsFocusNow
     def bodyWantsFocusNow(self):
         c = self ; body = c.frame.body
         #g.trace(body and body.bodyCtrl)
@@ -5542,8 +5543,8 @@ class baseCommands:
         
     def widgetWantsFocusNow(self,w):
         c = self ; c.set_focus(w,force=True)
-    #@-node:ekr.20060210102201:c.xWantsFocusNow
-    #@+node:ekr.20050120092028:c.xWantsFocus
+    #@-node:AGP.20250415230112.624:c.xWantsFocusNow
+    #@+node:AGP.20250415230112.625:c.xWantsFocus
     def bodyWantsFocus(self):
         c = self ; body = c.frame.body
         c.request_focus(body and body.bodyCtrl)
@@ -5566,15 +5567,15 @@ class baseCommands:
         
     def widgetWantsFocus(self,w):
         c = self ; c.request_focus(w)
-    #@-node:ekr.20050120092028:c.xWantsFocus
-    #@+node:ekr.20060205111103:c.widget_name
+    #@-node:AGP.20250415230112.625:c.xWantsFocus
+    #@+node:AGP.20250415230112.626:c.widget_name
     def widget_name (self,widget):
         
         c = self
         
         return c.gui.widget_name(widget) or ''
-    #@-node:ekr.20060205111103:c.widget_name
-    #@+node:ekr.20060207142332:c.traceFocus
+    #@-node:AGP.20250415230112.626:c.widget_name
+    #@+node:AGP.20250415230112.627:c.traceFocus
     trace_focus_count = 0
     
     def traceFocus (self,w):
@@ -5584,8 +5585,8 @@ class baseCommands:
         if not g.app.unitTesting and c.config.getBool('trace_focus'):
             c.trace_focus_count += 1
             print '%4d' % (c.trace_focus_count),c.widget_name(w),g.callers(8)
-    #@-node:ekr.20060207142332:c.traceFocus
-    #@+node:ekr.20060208143543:c.restoreFocus
+    #@-node:AGP.20250415230112.627:c.traceFocus
+    #@+node:AGP.20250415230112.628:c.restoreFocus
     def restoreFocus (self):
         
         '''Ensure that the focus eventually gets restored.'''
@@ -5610,8 +5611,8 @@ class baseCommands:
             pass # A call to c.masterFocusHandler will surely happen.
         else:
             c.masterFocusHandler() # Do it now.
-    #@-node:ekr.20060208143543:c.restoreFocus
-    #@+node:ekr.20031218072017.2954:c.redraw and c.redraw_now
+    #@-node:AGP.20250415230112.628:c.restoreFocus
+    #@+node:AGP.20250415230112.629:c.redraw and c.redraw_now
     def redraw (self):
         c = self
         c.beginUpdate()
@@ -5634,29 +5635,27 @@ class baseCommands:
     
     # Compatibility with old scripts
     force_redraw = redraw_now
-    #@-node:ekr.20031218072017.2954:c.redraw and c.redraw_now
-    #@+node:ekr.20051216171520:c.recolor_now
+    #@-node:AGP.20250415230112.629:c.redraw and c.redraw_now
+    #@+node:AGP.20250415230112.630:c.recolor_now
     def recolor_now(self,p=None,incremental=False,interruptable=True):
     
         c = self
         if p is None:
             p = c.currentPosition()
     
-        c.frame.body.colorizer.colorize(p,
-            incremental=incremental,interruptable=interruptable)
-    #@-node:ekr.20051216171520:c.recolor_now
-    #@+node:ekr.20031218072017.2953:c.recolor & requestRecolor
+        c.frame.body.colorizer.colorize(p,incremental=incremental)#,interruptable=interruptable)
+    #@-node:AGP.20250415230112.630:c.recolor_now
+    #@+node:AGP.20250415230112.631:c.recolor & requestRecolor
     def recolor(self):
-    
         c = self
-        c.frame.body.recolor(c.currentPosition())
+        c.frame.body.recolor_now(c.currentPosition())
         
     def requestRecolor (self):
         
         c = self
         c.frame.requestRecolorFlag = True
-    #@-node:ekr.20031218072017.2953:c.recolor & requestRecolor
-    #@+node:ekr.20060207140352:c.masterFocusHandler
+    #@-node:AGP.20250415230112.631:c.recolor & requestRecolor
+    #@+node:AGP.20250415230112.632:c.masterFocusHandler
     def masterFocusHandler (self):
         
         c = self ; 
@@ -5684,8 +5683,8 @@ class baseCommands:
             c.bodyWantsFocusNow()
     
     restoreRequestedFocus = masterFocusHandler
-    #@-node:ekr.20060207140352:c.masterFocusHandler
-    #@+node:ekr.20060210103358:c.invalidateFocus
+    #@-node:AGP.20250415230112.632:c.masterFocusHandler
+    #@+node:AGP.20250415230112.633:c.invalidateFocus
     def invalidateFocus (self):
         
         '''Indicate that the focus is in an invalid location, or is unknown.'''
@@ -5694,8 +5693,8 @@ class baseCommands:
         c.requestedFocusWidget = None
         c.hasFocusWidget = None
         # g.trace(g.callers())
-    #@-node:ekr.20060210103358:c.invalidateFocus
-    #@+node:ekr.20060205103842:c.get/request/set_focus
+    #@-node:AGP.20250415230112.633:c.invalidateFocus
+    #@+node:AGP.20250415230112.634:c.get/request/set_focus
     def get_focus (self):
         
         c = self
@@ -5723,11 +5722,11 @@ class baseCommands:
         else: # An optimization.
             c.requestedFocusWidget = w
             c.masterFocusHandler()
-    #@-node:ekr.20060205103842:c.get/request/set_focus
-    #@-node:ekr.20031218072017.2949:Drawing Utilities (commands)
-    #@+node:ekr.20031218072017.2955:Enabling Menu Items
-    #@+node:ekr.20040323172420:Slow routines: no longer used
-    #@+node:ekr.20031218072017.2966:canGoToNextDirtyHeadline (slow)
+    #@-node:AGP.20250415230112.634:c.get/request/set_focus
+    #@-node:AGP.20250415230112.621:Drawing Utilities (commands)
+    #@+node:AGP.20250415230112.635:Enabling Menu Items
+    #@+node:AGP.20250415230112.636:Slow routines: no longer used
+    #@+node:AGP.20250415230112.637:canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline (self):
         
         c = self ; current = c.currentPosition()
@@ -5737,8 +5736,8 @@ class baseCommands:
                 return True
         
         return False
-    #@-node:ekr.20031218072017.2966:canGoToNextDirtyHeadline (slow)
-    #@+node:ekr.20031218072017.2967:canGoToNextMarkedHeadline (slow)
+    #@-node:AGP.20250415230112.637:canGoToNextDirtyHeadline (slow)
+    #@+node:AGP.20250415230112.638:canGoToNextMarkedHeadline (slow)
     def canGoToNextMarkedHeadline (self):
         
         c = self ; current = c.currentPosition()
@@ -5748,8 +5747,8 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2967:canGoToNextMarkedHeadline (slow)
-    #@+node:ekr.20031218072017.2968:canMarkChangedHeadline (slow)
+    #@-node:AGP.20250415230112.638:canGoToNextMarkedHeadline (slow)
+    #@+node:AGP.20250415230112.639:canMarkChangedHeadline (slow)
     def canMarkChangedHeadlines (self):
         
         c = self
@@ -5759,8 +5758,8 @@ class baseCommands:
                 return True
         
         return False
-    #@-node:ekr.20031218072017.2968:canMarkChangedHeadline (slow)
-    #@+node:ekr.20031218072017.2969:canMarkChangedRoots (slow)
+    #@-node:AGP.20250415230112.639:canMarkChangedHeadline (slow)
+    #@+node:AGP.20250415230112.640:canMarkChangedRoots (slow)
     def canMarkChangedRoots (self):
         
         c = self
@@ -5770,9 +5769,9 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2969:canMarkChangedRoots (slow)
-    #@-node:ekr.20040323172420:Slow routines: no longer used
-    #@+node:ekr.20040131170659:canClone (new for hoist)
+    #@-node:AGP.20250415230112.640:canMarkChangedRoots (slow)
+    #@-node:AGP.20250415230112.636:Slow routines: no longer used
+    #@+node:AGP.20250415230112.641:canClone (new for hoist)
     def canClone (self):
     
         c = self
@@ -5783,8 +5782,8 @@ class baseCommands:
             return current != bunch.p
         else:
             return True
-    #@-node:ekr.20040131170659:canClone (new for hoist)
-    #@+node:ekr.20031218072017.2956:canContractAllHeadlines
+    #@-node:AGP.20250415230112.641:canClone (new for hoist)
+    #@+node:AGP.20250415230112.642:canContractAllHeadlines
     def canContractAllHeadlines (self):
         
         c = self
@@ -5794,8 +5793,8 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2956:canContractAllHeadlines
-    #@+node:ekr.20031218072017.2957:canContractAllSubheads
+    #@-node:AGP.20250415230112.642:canContractAllHeadlines
+    #@+node:AGP.20250415230112.643:canContractAllSubheads
     def canContractAllSubheads (self):
     
         c = self ; current = c.currentPosition()
@@ -5805,14 +5804,14 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2957:canContractAllSubheads
-    #@+node:ekr.20031218072017.2958:canContractParent
+    #@-node:AGP.20250415230112.643:canContractAllSubheads
+    #@+node:AGP.20250415230112.644:canContractParent
     def canContractParent (self):
     
         c = self
         return c.currentPosition().parent()
-    #@-node:ekr.20031218072017.2958:canContractParent
-    #@+node:ekr.20031218072017.2959:canContractSubheads
+    #@-node:AGP.20250415230112.644:canContractParent
+    #@+node:AGP.20250415230112.645:canContractSubheads
     def canContractSubheads (self):
         
         c = self ; current = c.currentPosition()
@@ -5822,8 +5821,8 @@ class baseCommands:
                 return True
             
         return False
-    #@-node:ekr.20031218072017.2959:canContractSubheads
-    #@+node:ekr.20031218072017.2960:canCutOutline & canDeleteHeadline
+    #@-node:AGP.20250415230112.645:canContractSubheads
+    #@+node:AGP.20250415230112.646:canCutOutline & canDeleteHeadline
     def canDeleteHeadline (self):
         
         c = self ; p = c.currentPosition()
@@ -5831,14 +5830,14 @@ class baseCommands:
         return p.hasParent() or p.hasThreadBack() or p.hasNext()
     
     canCutOutline = canDeleteHeadline
-    #@-node:ekr.20031218072017.2960:canCutOutline & canDeleteHeadline
-    #@+node:ekr.20031218072017.2961:canDemote
+    #@-node:AGP.20250415230112.646:canCutOutline & canDeleteHeadline
+    #@+node:AGP.20250415230112.647:canDemote
     def canDemote (self):
     
         c = self
         return c.currentPosition().hasNext()
-    #@-node:ekr.20031218072017.2961:canDemote
-    #@+node:ekr.20031218072017.2962:canExpandAllHeadlines
+    #@-node:AGP.20250415230112.647:canDemote
+    #@+node:AGP.20250415230112.648:canExpandAllHeadlines
     def canExpandAllHeadlines (self):
         
         c = self
@@ -5848,8 +5847,8 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2962:canExpandAllHeadlines
-    #@+node:ekr.20031218072017.2963:canExpandAllSubheads
+    #@-node:AGP.20250415230112.648:canExpandAllHeadlines
+    #@+node:AGP.20250415230112.649:canExpandAllSubheads
     def canExpandAllSubheads (self):
     
         c = self
@@ -5859,8 +5858,8 @@ class baseCommands:
                 return True
             
         return False
-    #@-node:ekr.20031218072017.2963:canExpandAllSubheads
-    #@+node:ekr.20031218072017.2964:canExpandSubheads
+    #@-node:AGP.20250415230112.649:canExpandAllSubheads
+    #@+node:AGP.20250415230112.650:canExpandSubheads
     def canExpandSubheads (self):
     
         c = self ; current = c.currentPosition()
@@ -5870,8 +5869,8 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2964:canExpandSubheads
-    #@+node:ekr.20031218072017.2287:canExtract, canExtractSection & canExtractSectionNames
+    #@-node:AGP.20250415230112.650:canExpandSubheads
+    #@+node:AGP.20250415230112.651:canExtract, canExtractSection & canExtractSectionNames
     def canExtract (self):
     
         c = self ; body = c.frame.body
@@ -5880,8 +5879,6 @@ class baseCommands:
     canExtractSectionNames = canExtract
             
     def canExtractSection (self):
-        
-        __pychecker__ = '--no-implicitreturns' # Suppress bad warning.
     
         c = self ; body = c.frame.body
         if not body: return False
@@ -5895,16 +5892,16 @@ class baseCommands:
         i2 = line.find("@<")
         j2 = line.find("@>")
         return -1 < i1 < j1 or -1 < i2 < j2
-    #@-node:ekr.20031218072017.2287:canExtract, canExtractSection & canExtractSectionNames
-    #@+node:ekr.20031218072017.2965:canFindMatchingBracket
+    #@-node:AGP.20250415230112.651:canExtract, canExtractSection & canExtractSectionNames
+    #@+node:AGP.20250415230112.652:canFindMatchingBracket
     def canFindMatchingBracket (self):
         
         c = self ; brackets = "()[]{}"
         c1 = c.frame.body.getCharAtInsertPoint()
         c2 = c.frame.body.getCharBeforeInsertPoint()
         return (c1 and c1 in brackets) or (c2 and c2 in brackets)
-    #@-node:ekr.20031218072017.2965:canFindMatchingBracket
-    #@+node:ekr.20040303165342:canHoist & canDehoist
+    #@-node:AGP.20250415230112.652:canFindMatchingBracket
+    #@+node:AGP.20250415230112.653:canHoist & canDehoist
     def canDehoist(self):
         
         return len(self.hoistStack) > 0
@@ -5921,8 +5918,8 @@ class baseCommands:
             return c.currentPositionHasNext()
         else:
             return True
-    #@-node:ekr.20040303165342:canHoist & canDehoist
-    #@+node:ekr.20031218072017.2970:canMoveOutlineDown
+    #@-node:AGP.20250415230112.653:canHoist & canDehoist
+    #@+node:AGP.20250415230112.654:canMoveOutlineDown
     def canMoveOutlineDown (self):
     
         c = self ; current = c.currentPosition()
@@ -5936,8 +5933,8 @@ class baseCommands:
             return p and p != bunch.p and bunch.p.isAncestorOf(p)
         else:
             return p
-    #@-node:ekr.20031218072017.2970:canMoveOutlineDown
-    #@+node:ekr.20031218072017.2971:canMoveOutlineLeft
+    #@-node:AGP.20250415230112.654:canMoveOutlineDown
+    #@+node:AGP.20250415230112.655:canMoveOutlineLeft
     def canMoveOutlineLeft (self):
     
         c = self ; p = c.currentPosition()
@@ -5951,8 +5948,8 @@ class baseCommands:
                 return False
         else:
             return p and p.hasParent()
-    #@-node:ekr.20031218072017.2971:canMoveOutlineLeft
-    #@+node:ekr.20031218072017.2972:canMoveOutlineRight
+    #@-node:AGP.20250415230112.655:canMoveOutlineLeft
+    #@+node:AGP.20250415230112.656:canMoveOutlineRight
     def canMoveOutlineRight (self):
     
         c = self ; p = c.currentPosition()
@@ -5962,8 +5959,8 @@ class baseCommands:
             return p and p.hasBack() and p != bunch.p
         else:
             return p and p.hasBack()
-    #@-node:ekr.20031218072017.2972:canMoveOutlineRight
-    #@+node:ekr.20031218072017.2973:canMoveOutlineUp
+    #@-node:AGP.20250415230112.656:canMoveOutlineRight
+    #@+node:AGP.20250415230112.657:canMoveOutlineUp
     def canMoveOutlineUp (self):
     
         c = self ; p = c.currentPosition()
@@ -5977,8 +5974,8 @@ class baseCommands:
             return bunch.p != p and bunch.p.isAncestorOf(pback)
         else:
             return True
-    #@-node:ekr.20031218072017.2973:canMoveOutlineUp
-    #@+node:ekr.20031218072017.2974:canPasteOutline
+    #@-node:AGP.20250415230112.657:canMoveOutlineUp
+    #@+node:AGP.20250415230112.658:canPasteOutline
     def canPasteOutline (self,s=None):
     
         c = self
@@ -5994,21 +5991,21 @@ class baseCommands:
             return c.importCommands.stringIsValidMoreFile(s)
         else:
             return False
-    #@-node:ekr.20031218072017.2974:canPasteOutline
-    #@+node:ekr.20031218072017.2975:canPromote
+    #@-node:AGP.20250415230112.658:canPasteOutline
+    #@+node:AGP.20250415230112.659:canPromote
     def canPromote (self):
     
         c = self ; v = c.currentVnode()
         return v and v.hasChildren()
-    #@-node:ekr.20031218072017.2975:canPromote
-    #@+node:ekr.20031218072017.2976:canRevert
+    #@-node:AGP.20250415230112.659:canPromote
+    #@+node:AGP.20250415230112.660:canRevert
     def canRevert (self):
     
         # c.mFileName will be "untitled" for unsaved files.
         c = self
         return (c.frame and c.mFileName and c.isChanged())
-    #@-node:ekr.20031218072017.2976:canRevert
-    #@+node:ekr.20031218072017.2977:canSelect....
+    #@-node:AGP.20250415230112.660:canRevert
+    #@+node:AGP.20250415230112.661:canSelect....
     # 7/29/02: The shortcuts for these commands are now unique.
     
     def canSelectThreadBack (self):
@@ -6026,16 +6023,16 @@ class baseCommands:
     def canSelectVisNext (self):
         c = self ; p = c.currentPosition()
         return p.hasVisNext()
-    #@-node:ekr.20031218072017.2977:canSelect....
-    #@+node:ekr.20031218072017.2978:canShiftBodyLeft/Right
+    #@-node:AGP.20250415230112.661:canSelect....
+    #@+node:AGP.20250415230112.662:canShiftBodyLeft/Right
     def canShiftBodyLeft (self):
     
         c = self ; body = c.frame.body
         return body and body.getAllText()
     
     canShiftBodyRight = canShiftBodyLeft
-    #@-node:ekr.20031218072017.2978:canShiftBodyLeft/Right
-    #@+node:ekr.20031218072017.2979:canSortChildren, canSortSiblings
+    #@-node:AGP.20250415230112.662:canShiftBodyLeft/Right
+    #@+node:AGP.20250415230112.663:canSortChildren, canSortSiblings
     def canSortChildren (self):
         
         c = self ; p = c.currentPosition()
@@ -6045,8 +6042,8 @@ class baseCommands:
     
         c = self ; p = c.currentPosition()
         return p and (p.hasNext() or p.hasBack())
-    #@-node:ekr.20031218072017.2979:canSortChildren, canSortSiblings
-    #@+node:ekr.20031218072017.2980:canUndo & canRedo
+    #@-node:AGP.20250415230112.663:canSortChildren, canSortSiblings
+    #@+node:AGP.20250415230112.664:canUndo & canRedo
     def canUndo (self):
     
         c = self
@@ -6056,8 +6053,8 @@ class baseCommands:
     
         c = self
         return c.undoer.canRedo()
-    #@-node:ekr.20031218072017.2980:canUndo & canRedo
-    #@+node:ekr.20031218072017.2981:canUnmarkAll
+    #@-node:AGP.20250415230112.664:canUndo & canRedo
+    #@+node:AGP.20250415230112.665:canUnmarkAll
     def canUnmarkAll (self):
         
         c = self
@@ -6067,11 +6064,11 @@ class baseCommands:
                 return True
     
         return False
-    #@-node:ekr.20031218072017.2981:canUnmarkAll
-    #@-node:ekr.20031218072017.2955:Enabling Menu Items
-    #@+node:ekr.20031218072017.2982:Getters & Setters
-    #@+node:ekr.20060906211747:Getters
-    #@+node:ekr.20040803140033:c.currentPosition
+    #@-node:AGP.20250415230112.665:canUnmarkAll
+    #@-node:AGP.20250415230112.635:Enabling Menu Items
+    #@+node:AGP.20250415230112.666:Getters & Setters
+    #@+node:AGP.20250415230112.667:Getters
+    #@+node:AGP.20250415230112.668:c.currentPosition
     def currentPosition (self,copy=True):
         
         """Return the presently selected position."""
@@ -6086,16 +6083,16 @@ class baseCommands:
         
     # For compatibiility with old scripts.
     currentVnode = currentPosition
-    #@-node:ekr.20040803140033:c.currentPosition
-    #@+node:ekr.20040306220230.1:c.edit_widget
+    #@-node:AGP.20250415230112.668:c.currentPosition
+    #@+node:AGP.20250415230112.669:c.edit_widget
     def edit_widget (self,p):
         
         c = self
         
         return p and c.frame.tree.edit_widget(p)
     #@nonl
-    #@-node:ekr.20040306220230.1:c.edit_widget
-    #@+node:ekr.20031218072017.2986:c.fileName & shortFileName
+    #@-node:AGP.20250415230112.669:c.edit_widget
+    #@+node:AGP.20250415230112.670:c.fileName & shortFileName
     # Compatibility with scripts
     
     def fileName (self):
@@ -6107,8 +6104,8 @@ class baseCommands:
         return g.shortFileName(self.mFileName)
     
     shortFilename = shortFileName
-    #@-node:ekr.20031218072017.2986:c.fileName & shortFileName
-    #@+node:ekr.20060906134053:c.findRootPosition New in 4.4.2
+    #@-node:AGP.20250415230112.670:c.fileName & shortFileName
+    #@+node:AGP.20250415230112.671:c.findRootPosition New in 4.4.2
     #@+at 
     #@nonl
     # Aha! The Commands class can easily recompute the root position::
@@ -6138,9 +6135,9 @@ class baseCommands:
     
         return p
     #@nonl
-    #@-node:ekr.20060906134053:c.findRootPosition New in 4.4.2
-    #@+node:ekr.20040803112200:c.is...Position
-    #@+node:ekr.20040803155551:c.currentPositionIsRootPosition
+    #@-node:AGP.20250415230112.671:c.findRootPosition New in 4.4.2
+    #@+node:AGP.20250415230112.672:c.is...Position
+    #@+node:AGP.20250415230112.673:c.currentPositionIsRootPosition
     def currentPositionIsRootPosition (self):
         
         """Return True if the current position is the root position.
@@ -6154,8 +6151,8 @@ class baseCommands:
         return (
             c._currentPosition and c._rootPosition and
             c._currentPosition == c._rootPosition)
-    #@-node:ekr.20040803155551:c.currentPositionIsRootPosition
-    #@+node:ekr.20040803160656:c.currentPositionHasNext
+    #@-node:AGP.20250415230112.673:c.currentPositionIsRootPosition
+    #@+node:AGP.20250415230112.674:c.currentPositionHasNext
     def currentPositionHasNext (self):
         
         """Return True if the current position is the root position.
@@ -6167,8 +6164,8 @@ class baseCommands:
         c = self ; current = c._currentPosition 
         
         return current and current.hasNext()
-    #@-node:ekr.20040803160656:c.currentPositionHasNext
-    #@+node:ekr.20040803112450:c.isCurrentPosition
+    #@-node:AGP.20250415230112.674:c.currentPositionHasNext
+    #@+node:AGP.20250415230112.675:c.isCurrentPosition
     def isCurrentPosition (self,p):
         
         c = self
@@ -6177,8 +6174,8 @@ class baseCommands:
             return False
         else:
             return p.isEqual(c._currentPosition)
-    #@-node:ekr.20040803112450:c.isCurrentPosition
-    #@+node:ekr.20040803112450.1:c.isRootPosition
+    #@-node:AGP.20250415230112.675:c.isCurrentPosition
+    #@+node:AGP.20250415230112.676:c.isRootPosition
     def isRootPosition (self,p):
         
         c = self
@@ -6187,14 +6184,14 @@ class baseCommands:
             return False
         else:
             return p.isEqual(c._rootPosition)
-    #@-node:ekr.20040803112450.1:c.isRootPosition
-    #@-node:ekr.20040803112200:c.is...Position
-    #@+node:ekr.20031218072017.2987:c.isChanged
+    #@-node:AGP.20250415230112.676:c.isRootPosition
+    #@-node:AGP.20250415230112.672:c.is...Position
+    #@+node:AGP.20250415230112.677:c.isChanged
     def isChanged (self):
     
         return self.changed
-    #@-node:ekr.20031218072017.2987:c.isChanged
-    #@+node:ekr.20031218072017.4146:c.lastVisible
+    #@-node:AGP.20250415230112.677:c.isChanged
+    #@+node:AGP.20250415230112.678:c.lastVisible
     def lastVisible(self):
         
         """Move to the last visible node of the entire tree."""
@@ -6211,14 +6208,14 @@ class baseCommands:
             p.moveToLastChild()
         
         return p
-    #@-node:ekr.20031218072017.4146:c.lastVisible
-    #@+node:ekr.20040311094927:c.nullPosition
+    #@-node:AGP.20250415230112.678:c.lastVisible
+    #@+node:AGP.20250415230112.679:c.nullPosition
     def nullPosition (self):
         
         c = self ; v = None
         return leoNodes.position(v,[])
-    #@-node:ekr.20040311094927:c.nullPosition
-    #@+node:ekr.20040307104131.3:c.positionExists
+    #@-node:AGP.20250415230112.679:c.nullPosition
+    #@+node:AGP.20250415230112.680:c.positionExists
     def positionExists(self,p):
         
         """Return True if a position exists in c's tree"""
@@ -6239,8 +6236,8 @@ class baseCommands:
             
         # g.trace('does not exist in root:',root.headString())
         return False
-    #@-node:ekr.20040307104131.3:c.positionExists
-    #@+node:ekr.20040803140033.2:c.rootPosition
+    #@-node:AGP.20250415230112.680:c.positionExists
+    #@+node:AGP.20250415230112.681:c.rootPosition
     def rootPosition(self):
         
         """Return the root position."""
@@ -6255,10 +6252,10 @@ class baseCommands:
     # For compatibiility with old scripts.
     rootVnode = rootPosition
     #@nonl
-    #@-node:ekr.20040803140033.2:c.rootPosition
-    #@-node:ekr.20060906211747:Getters
-    #@+node:ekr.20060906211747.1:Setters
-    #@+node:ekr.20040315032503:c.appendStringToBody
+    #@-node:AGP.20250415230112.681:c.rootPosition
+    #@-node:AGP.20250415230112.667:Getters
+    #@+node:AGP.20250415230112.682:Setters
+    #@+node:AGP.20250415230112.683:c.appendStringToBody
     def appendStringToBody (self,p,s,encoding="utf-8"):
         
         c = self
@@ -6269,16 +6266,16 @@ class baseCommands:
         s = g.toUnicode(s,encoding)
     
         c.setBodyString(p,body + s,encoding)
-    #@-node:ekr.20040315032503:c.appendStringToBody
-    #@+node:ekr.20031218072017.2984:c.clearAllMarked
+    #@-node:AGP.20250415230112.683:c.appendStringToBody
+    #@+node:AGP.20250415230112.684:c.clearAllMarked
     def clearAllMarked (self):
         
         c = self
     
         for p in c.allNodes_iter():
             p.v.clearMarked()
-    #@-node:ekr.20031218072017.2984:c.clearAllMarked
-    #@+node:ekr.20031218072017.2985:c.clearAllVisited
+    #@-node:AGP.20250415230112.684:c.clearAllMarked
+    #@+node:AGP.20250415230112.685:c.clearAllVisited
     def clearAllVisited (self):
     
         c = self
@@ -6287,16 +6284,16 @@ class baseCommands:
             p.v.clearVisited()
             p.v.t.clearVisited()
             p.v.t.clearWriteBit()
-    #@-node:ekr.20031218072017.2985:c.clearAllVisited
-    #@+node:ekr.20060906211138:c.clearMarked
+    #@-node:AGP.20250415230112.685:c.clearAllVisited
+    #@+node:AGP.20250415230112.686:c.clearMarked
     def clearMarked  (self,p):
         
         c = self
         p.v.clearMarked()
         g.doHook("clear-mark",c=c,p=p,v=p)
     #@nonl
-    #@-node:ekr.20060906211138:c.clearMarked
-    #@+node:ekr.20040305223522:c.setBodyString
+    #@-node:AGP.20250415230112.686:c.clearMarked
+    #@+node:AGP.20250415230112.687:c.setBodyString
     def setBodyString (self,p,s,encoding="utf-8"):
     
         c = self ; v = p.v
@@ -6322,8 +6319,8 @@ class baseCommands:
             p.setDirty()
             if not c.isChanged():
                 c.setChanged(True)
-    #@-node:ekr.20040305223522:c.setBodyString
-    #@+node:ekr.20031218072017.2989:c.setChanged
+    #@-node:AGP.20250415230112.687:c.setBodyString
+    #@+node:AGP.20250415230112.688:c.setChanged
     def setChanged (self,changedFlag):
     
         c = self
@@ -6345,8 +6342,8 @@ class baseCommands:
                 if s [0] != '*': c.frame.setTitle("* " + s)
             else:
                 if s[0:2]=="* ": c.frame.setTitle(s[2:])
-    #@-node:ekr.20031218072017.2989:c.setChanged
-    #@+node:ekr.20040803140033.1:c.setCurrentPosition
+    #@-node:AGP.20250415230112.688:c.setChanged
+    #@+node:AGP.20250415230112.689:c.setCurrentPosition
     def setCurrentPosition (self,p):
         
         """Set the presently selected position. For internal use only.
@@ -6373,8 +6370,8 @@ class baseCommands:
     # For compatibiility with old scripts.
     setCurrentVnode = setCurrentPosition
     #@nonl
-    #@-node:ekr.20040803140033.1:c.setCurrentPosition
-    #@+node:ekr.20040305223225:c.setHeadString
+    #@-node:AGP.20250415230112.689:c.setCurrentPosition
+    #@+node:AGP.20250415230112.690:c.setHeadString
     def setHeadString (self,p,s,encoding="utf-8"):
     
         c = self ; t = c.edit_widget(p)
@@ -6391,8 +6388,8 @@ class baseCommands:
     
         p.setDirty()
     #@nonl
-    #@-node:ekr.20040305223225:c.setHeadString
-    #@+node:ekr.20060109164136:c.setLog
+    #@-node:AGP.20250415230112.690:c.setHeadString
+    #@+node:AGP.20250415230112.691:c.setLog
     def setLog (self):
         
         c = self
@@ -6403,16 +6400,16 @@ class baseCommands:
                 g.app.setLog(c.frame.log)
             except AttributeError:
                 pass
-    #@-node:ekr.20060109164136:c.setLog
-    #@+node:ekr.20060906211138.1:c.setMarked
+    #@-node:AGP.20250415230112.691:c.setLog
+    #@+node:AGP.20250415230112.692:c.setMarked
     def setMarked (self,p):
         
         c = self
         p.v.setMarked()
         g.doHook("set-mark",c=c,p=p,v=p)
     #@nonl
-    #@-node:ekr.20060906211138.1:c.setMarked
-    #@+node:ekr.20040803140033.3:c.setRootPosition
+    #@-node:AGP.20250415230112.692:c.setMarked
+    #@+node:AGP.20250415230112.693:c.setRootPosition
     def setRootPosition(self,p):
         
         """Set the root positioin."""
@@ -6431,16 +6428,16 @@ class baseCommands:
         else:
             c._rootPosition = None
     #@nonl
-    #@-node:ekr.20040803140033.3:c.setRootPosition
-    #@+node:ekr.20060906131836:c.setRootVnode New in 4.4.2
+    #@-node:AGP.20250415230112.693:c.setRootPosition
+    #@+node:AGP.20250415230112.694:c.setRootVnode New in 4.4.2
     def setRootVnode (self, v):
         
         c = self
         newRoot = leoNodes.position(v,[])
         c.setRootPosition(newRoot)
     #@nonl
-    #@-node:ekr.20060906131836:c.setRootVnode New in 4.4.2
-    #@+node:ekr.20040311173238:c.topPosition & c.setTopPosition
+    #@-node:AGP.20250415230112.694:c.setRootVnode New in 4.4.2
+    #@+node:AGP.20250415230112.695:c.topPosition & c.setTopPosition
     def topPosition(self):
         
         """Return the root position."""
@@ -6466,8 +6463,8 @@ class baseCommands:
     # Define these for compatibiility with old scripts.
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@-node:ekr.20040311173238:c.topPosition & c.setTopPosition
-    #@+node:ekr.20031218072017.3404:c.trimTrailingLines
+    #@-node:AGP.20250415230112.695:c.topPosition & c.setTopPosition
+    #@+node:AGP.20250415230112.696:c.trimTrailingLines
     def trimTrailingLines (self,p):
     
         """Trims trailing blank lines from a node.
@@ -6491,11 +6488,11 @@ class baseCommands:
             c.setBodyString(p,body)
             # Don't set the dirty bit: it would just be annoying.
     #@nonl
-    #@-node:ekr.20031218072017.3404:c.trimTrailingLines
-    #@-node:ekr.20060906211747.1:Setters
-    #@-node:ekr.20031218072017.2982:Getters & Setters
-    #@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
-    #@+node:ekr.20031218072017.2991:c.editPosition
+    #@-node:AGP.20250415230112.696:c.trimTrailingLines
+    #@-node:AGP.20250415230112.682:Setters
+    #@-node:AGP.20250415230112.666:Getters & Setters
+    #@+node:AGP.20250415230112.697:Selecting & Updating (commands)
+    #@+node:AGP.20250415230112.698:c.editPosition
     # Selects v: sets the focus to p and edits p.
     
     def editPosition(self,p,selectAll=False):
@@ -6509,16 +6506,16 @@ class baseCommands:
             if k:
                 k.setDefaultUnboundKeyAction()
                 k.showStateAndMode()
-    #@-node:ekr.20031218072017.2991:c.editPosition
-    #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+    #@-node:AGP.20250415230112.698:c.editPosition
+    #@+node:AGP.20250415230112.699:c.endEditing (calls tree.endEditLabel)
     # Ends the editing in the outline.
     
     def endEditing(self):
         
         c = self
         c.frame.tree.endEditLabel()
-    #@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
-    #@+node:ekr.20031218072017.2997:c.selectPosition
+    #@-node:AGP.20250415230112.699:c.endEditing (calls tree.endEditLabel)
+    #@+node:AGP.20250415230112.700:c.selectPosition
     def selectPosition(self,p,updateBeadList=True):
         
         """Select a new position."""
@@ -6535,8 +6532,8 @@ class baseCommands:
             # We may be in the midst of an undo.
     
     selectVnode = selectPosition
-    #@-node:ekr.20031218072017.2997:c.selectPosition
-    #@+node:ekr.20031218072017.2998:c.selectVnodeWithEditing
+    #@-node:AGP.20250415230112.700:c.selectPosition
+    #@+node:AGP.20250415230112.701:c.selectVnodeWithEditing
     # Selects the given node and enables editing of the headline if editFlag is True.
     
     def selectVnodeWithEditing(self,v,editFlag):
@@ -6548,8 +6545,8 @@ class baseCommands:
             c.selectVnode(v)
     
     selectPositionWithEditing = selectVnodeWithEditing
-    #@-node:ekr.20031218072017.2998:c.selectVnodeWithEditing
-    #@+node:ekr.20060923202156:c.onCanvasKey
+    #@-node:AGP.20250415230112.701:c.selectVnodeWithEditing
+    #@+node:AGP.20250415230112.702:c.onCanvasKey
     def onCanvasKey (self,event):
         
         '''Navigate to the next headline starting with ch = event.char.
@@ -6590,7 +6587,7 @@ class baseCommands:
             c.navPrefix = ''
         c.treeWantsFocusNow()
     #@nonl
-    #@+node:ekr.20061002095711.1:c.navQuickKey
+    #@+node:AGP.20250415230112.703:c.navQuickKey
     def navQuickKey (self):
         
         '''return true if there are two quick outline navigation keys
@@ -6608,8 +6605,8 @@ class baseCommands:
             nearTime = c.navTime and time.clock() - c.navTime < deltaTime
             return nearTime
     #@nonl
-    #@-node:ekr.20061002095711.1:c.navQuickKey
-    #@+node:ekr.20061002095711:c.navHelper
+    #@-node:AGP.20250415230112.703:c.navQuickKey
+    #@+node:AGP.20250415230112.704:c.navHelper
     def navHelper (self,p,ch,extend):
         
         c = self ; h = p.headString().lower()
@@ -6636,21 +6633,21 @@ class baseCommands:
                         return prefix + ch
         return ''
     #@nonl
-    #@-node:ekr.20061002095711:c.navHelper
-    #@-node:ekr.20060923202156:c.onCanvasKey
-    #@-node:ekr.20031218072017.2990:Selecting & Updating (commands)
-    #@+node:ekr.20031218072017.2999:Syntax coloring interface
+    #@-node:AGP.20250415230112.704:c.navHelper
+    #@-node:AGP.20250415230112.702:c.onCanvasKey
+    #@-node:AGP.20250415230112.697:Selecting & Updating (commands)
+    #@+node:AGP.20250415230112.705:Syntax coloring interface
     #@+at 
     #@nonl
     # These routines provide a convenient interface to the syntax colorer.
     #@-at
-    #@+node:ekr.20031218072017.3000:updateSyntaxColorer
+    #@+node:AGP.20250415230112.706:updateSyntaxColorer
     def updateSyntaxColorer(self,v):
     
         self.frame.body.updateSyntaxColorer(v)
-    #@-node:ekr.20031218072017.3000:updateSyntaxColorer
-    #@-node:ekr.20031218072017.2999:Syntax coloring interface
-    #@+node:AGP.20231026214426:qlink()
+    #@-node:AGP.20250415230112.706:updateSyntaxColorer
+    #@-node:AGP.20250415230112.705:Syntax coloring interface
+    #@+node:AGP.20250415230112.707:qlink()
     def qlink(self,event=None,p=None,force=False):    #agp qlink
         
         
@@ -6743,10 +6740,11 @@ class baseCommands:
                     del g.qlinks[k]
             
     #@nonl
-    #@-node:AGP.20231026214426:qlink()
-    #@+node:AGP.20231026221751:qlink_scan()
+    #@-node:AGP.20250415230112.707:qlink()
+    #@+node:AGP.20250415230112.708:qlink_scan()
     def qlink_scan(self,node=None):    #agp qlink
         
+        return # agp fixme
         
         #if node == None:
         #    print "qlink scan"
@@ -6764,8 +6762,8 @@ class baseCommands:
             
         
     #@nonl
-    #@-node:AGP.20231026221751:qlink_scan()
-    #@+node:AGP.20231124105345:qlink_clear()
+    #@-node:AGP.20250415230112.708:qlink_scan()
+    #@+node:AGP.20250415230112.709:qlink_clear()
     def qlink_clear(self):    #agp qlink
         
         if g.qlinks != None:
@@ -6776,20 +6774,20 @@ class baseCommands:
         g.qlinks = {}
         
     #@nonl
-    #@-node:AGP.20231124105345:qlink_clear()
+    #@-node:AGP.20250415230112.709:qlink_clear()
     #@-others
 
 class Commands (baseCommands):
     """A class that implements most of Leo's commands."""
     pass
-#@-node:ekr.20041118104831:class commands
-#@+node:ekr.20041118104831.1:class configSettings
+#@-node:AGP.20250415230112.331:class commands
+#@+node:AGP.20250415230112.710:class configSettings
 class configSettings:
     
     """A class to hold config settings for commanders."""
     
     #@    @+others
-    #@+node:ekr.20041118104831.2:configSettings.__init__
+    #@+node:AGP.20250415230112.711:configSettings.__init__
     def __init__ (self,c):
         
         self.c = c
@@ -6806,7 +6804,7 @@ class configSettings:
         for key in g.app.config.ivarsDict.keys():
             if key != '_hash':
                 self.initIvar(key)
-    #@+node:ekr.20041118104240:initIvar
+    #@+node:AGP.20250415230112.712:initIvar
     def initIvar(self,key):
         
         c = self.c
@@ -6819,8 +6817,8 @@ class configSettings:
         if val or not hasattr(self,ivarName):
             # g.trace('c.configSettings',c.shortFileName(),ivarName,val)
             setattr(self,ivarName,val)
-    #@-node:ekr.20041118104240:initIvar
-    #@+node:ekr.20041118104414:initEncoding
+    #@-node:AGP.20250415230112.712:initIvar
+    #@+node:AGP.20250415230112.713:initEncoding
     def initEncoding (self,key):
         
         c = self.c
@@ -6841,9 +6839,9 @@ class configSettings:
     
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad %s: %s" % (encodingName,encoding))
-    #@-node:ekr.20041118104414:initEncoding
-    #@-node:ekr.20041118104831.2:configSettings.__init__
-    #@+node:ekr.20041118053731:Getters
+    #@-node:AGP.20250415230112.713:initEncoding
+    #@-node:AGP.20250415230112.711:configSettings.__init__
+    #@+node:AGP.20250415230112.714:Getters
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         return g.app.config.getFontFromParams(self.c,
             family,size,slant,weight,defaultSize=defaultSize)
@@ -6865,28 +6863,26 @@ class configSettings:
     def getRatio     (self,setting): return g.app.config.getRatio    (self.c,setting)
     def getShortcut  (self,setting,):return g.app.config.getShortcut (self.c,setting)
     def getString    (self,setting): return g.app.config.getString   (self.c,setting)
-    #@-node:ekr.20041118053731:Getters
-    #@+node:ekr.20041118195812:Setters... (c.configSettings)
-    #@+node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
+    #@-node:AGP.20250415230112.714:Getters
+    #@+node:AGP.20250415230112.715:Setters... (c.configSettings)
+    #@+node:AGP.20250415230112.716:setRecentFiles (c.configSettings)
     def setRecentFiles (self,files):
         
         '''Update the recent files list.'''
     
         # Append the files to the global list.
         g.app.config.appendToRecentFiles(files)
-    #@-node:ekr.20041118195812.3:setRecentFiles (c.configSettings)
-    #@+node:ekr.20041118195812.2:set & setString
+    #@-node:AGP.20250415230112.716:setRecentFiles (c.configSettings)
+    #@+node:AGP.20250415230112.717:set & setString
     def set (self,p,setting,val):
-        
-        __pychecker__ = '--no-argsused' # p not used.
         
         return g.app.config.setString(self.c,setting,val)
         
     setString = set
-    #@-node:ekr.20041118195812.2:set & setString
-    #@-node:ekr.20041118195812:Setters... (c.configSettings)
+    #@-node:AGP.20250415230112.717:set & setString
+    #@-node:AGP.20250415230112.715:Setters... (c.configSettings)
     #@-others
-#@-node:ekr.20041118104831.1:class configSettings
+#@-node:AGP.20250415230112.710:class configSettings
 #@-others
-#@-node:ekr.20031218072017.2810:@thin leoCommands.py
+#@-node:AGP.20250415230112.329:@thin leoCommands.py
 #@-leo

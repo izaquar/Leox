@@ -1,9 +1,9 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20230208000543:@thin body_rclick.py
+#@+leo-ver=4
+#@+node:@file body_rclick.py
 """Create a context menu when right-clicking in the body pane."""
 
 #@<< version history >>
-#@+node:AGP.20230208000543.1:<< version history >>
+#@+node:<< version history >>
 #@+at
 # 0.1, 0.2: Created by 'e'.
 # 0.3 EKR:
@@ -40,10 +40,10 @@
 #     -changed stuff and renamed
 #@-at
 #@nonl
-#@-node:AGP.20230208000543.1:<< version history >>
+#@-node:<< version history >>
 #@nl
 #@<< imports >>
-#@+node:AGP.20230208000543.2:<< imports >>
+#@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
 
@@ -53,18 +53,18 @@ import re
 import sys
 
 
-#@-node:AGP.20230208000543.2:<< imports >>
+#@-node:<< imports >>
 #@nl
 __version__ = "0.10"
 
 #@+others
-#@+node:AGP.20230216112815:notes
+#@+node:notes
 #@+at
 # c.frame.body.colorizer.c_keywords = []
 #@-at
 #@nonl
-#@-node:AGP.20230216112815:notes
-#@+node:AGP.20230208000543.4:init
+#@-node:notes
+#@+node:init
 def init ():
     
     if Tk: # OK for unit tests.
@@ -79,8 +79,8 @@ def init ():
             
     return Tk is not None
 #@nonl
-#@-node:AGP.20230208000543.4:init
-#@+node:AGP.20230208000543.5:rClickbinder
+#@-node:init
+#@+node:rClickbinder
 def rClickbinder(tag,keywords):
 
     c = keywords.get('c')
@@ -89,8 +89,8 @@ def rClickbinder(tag,keywords):
         c.frame.log.logCtrl.bind  ('<Button-3>',c.frame.OnBodyRClick)
         # c.frame.body.bodyCtrl.bind('<Button-3>',c.frame.OnBodyRClick)
 #@nonl
-#@-node:AGP.20230208000543.5:rClickbinder
-#@+node:AGP.20230208000543.6:on_right_click()
+#@-node:rClickbinder
+#@+node:on_right_click()
 # EKR: it is not necessary to catch exceptions or to return "break".
 
 def on_right_click(tag,keywords):
@@ -106,7 +106,7 @@ def on_right_click(tag,keywords):
     
     if e.widget._name.startswith('body'):
         #@        << define commandList for body >>
-        #@+node:AGP.20230208000543.8:<< define commandList for body >>
+        #@+node:<< define commandList for body >>
         commandList = [
             #('-||-|-||-',None),   #
             #('U',c.undoer.undo),  #no c.undoer
@@ -135,13 +135,13 @@ def on_right_click(tag,keywords):
             # ('-||-|-||-',None),   # 1st & last needed because of freaky sticky finger
             ]
         #@nonl
-        #@-node:AGP.20230208000543.8:<< define commandList for body >>
+        #@-node:<< define commandList for body >>
         #@nl
         if g.scanDirectives(c)["language"] == "python":
             commandList.append(('-',None))
             commandList.append(('Execute Script',c.executeScript))
         #@        << add entries for context sensitive commands in body >>
-        #@+node:AGP.20230208000543.9:<< add entries for context sensitive commands in body >>
+        #@+node:<< add entries for context sensitive commands in body >>
         #@+at 
         #@nonl
         # Context-sensitive rclick commands.
@@ -159,7 +159,7 @@ def on_right_click(tag,keywords):
         #@@c
         
         #@<< get text and word from the body text >>
-        #@+node:AGP.20230208000543.10:<< get text and word from the body text >>
+        #@+node:<< get text and word from the body text >>
         text = c.frame.body.getSelectedText()
         if text:
             word = text.strip()
@@ -172,7 +172,7 @@ def on_right_click(tag,keywords):
             text=c.frame.body.getTextRange(n0+".0",n1+".end")
             word=getword(text,int(p0))
         #@nonl
-        #@-node:AGP.20230208000543.10:<< get text and word from the body text >>
+        #@-node:<< get text and word from the body text >>
         #@nl
         
         if 0:
@@ -182,7 +182,7 @@ def on_right_click(tag,keywords):
         contextCommands=[]
         
         #@<< add entry for jump to section >>
-        #@+node:AGP.20230208000543.12:<< add entry for jump to section >>
+        #@+node:<< add entry for jump to section >>
         scan_jump_re="<"+"<[^<>]+>"+">"
         
         p=c.currentPosition()
@@ -202,7 +202,7 @@ def on_right_click(tag,keywords):
                 # could add "create section" here?
                 pass
         #@nonl
-        #@-node:AGP.20230208000543.12:<< add entry for jump to section >>
+        #@-node:<< add entry for jump to section >>
         #@nl
         
         
@@ -210,11 +210,11 @@ def on_right_click(tag,keywords):
             commandList.append(("-",None))
             commandList.extend(contextCommands)
         #@nonl
-        #@-node:AGP.20230208000543.9:<< add entries for context sensitive commands in body >>
+        #@-node:<< add entries for context sensitive commands in body >>
         #@nl
     else:
         #@        << define commandList for log pane >>
-        #@+node:AGP.20230208000543.14:<< define commandList for log pane >>
+        #@+node:<< define commandList for log pane >>
         commandList=[
             #('Cut', c.frame.OnCutFromMenu), 
             ('Copy',c.frame.OnCopyFromMenu),
@@ -222,7 +222,7 @@ def on_right_click(tag,keywords):
             #('Select All', rc_selectAllCallback)
             ]
         #@nonl
-        #@-node:AGP.20230208000543.14:<< define commandList for log pane >>
+        #@-node:<< define commandList for log pane >>
         #@nl
                 
     rmenu = Tk.Menu(None,tearoff=0,takefocus=0)
@@ -238,17 +238,17 @@ def on_right_click(tag,keywords):
     
     return False
 #@nonl
-#@-node:AGP.20230208000543.6:on_right_click()
-#@+node:AGP.20230208000543.16:brc_delete()
+#@-node:on_right_click()
+#@+node:brc_delete()
 def brc_delete(c):
 
     if c.frame.body.hasTextSelection():
         c.frame.body.deleteTextSelection()
         c.frame.body.onBodyChanged("Delete")
 #@nonl
-#@-node:AGP.20230208000543.16:brc_delete()
-#@+node:AGP.20230208000543.19:Utils for context sensitive commands
-#@+node:AGP.20230208000543.20:crop
+#@-node:brc_delete()
+#@+node:Utils for context sensitive commands
+#@+node:crop
 def crop(s,n=20,end="..."):
 
     """return a part of string s, no more than n characters; optionally add ... at the end"""
@@ -258,8 +258,8 @@ def crop(s,n=20,end="..."):
     else:
         return s[:n]+end # EKR
 #@nonl
-#@-node:AGP.20230208000543.20:crop
-#@+node:AGP.20230208000543.21:getword
+#@-node:crop
+#@+node:getword
 def getword(s,pos):
 
     """returns a word in string s around position pos"""
@@ -268,8 +268,8 @@ def getword(s,pos):
         if m.start()<=pos and m.end()>=pos:
             return m.group()
     return None			
-#@-node:AGP.20230208000543.21:getword
-#@+node:AGP.20230208000543.22:getdoc
+#@-node:getword
+#@+node:getdoc
 def getdoc(thing, title='Help on %s', forceload=0):
     
     #g.trace(thing)
@@ -299,9 +299,9 @@ def getdoc(thing, title='Help on %s', forceload=0):
         doc = title % desc + '\n\n' + text.document(object, name)
         return plain(doc)
 #@nonl
-#@-node:AGP.20230208000543.22:getdoc
-#@-node:AGP.20230208000543.19:Utils for context sensitive commands
+#@-node:getdoc
+#@-node:Utils for context sensitive commands
 #@-others
 #@nonl
-#@-node:AGP.20230208000543:@thin body_rclick.py
+#@-node:@file body_rclick.py
 #@-leo

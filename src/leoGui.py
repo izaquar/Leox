@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3719:@thin leoGui.py
+#@+node:AGP.20250415230112.2925:@thin leoGui.py
 #@@first
 
 """A module containing the base leoGui class.
@@ -18,17 +18,15 @@ import leoGlobals as g
 import leoFrame # for null gui.
 
 #@+others
-#@+node:ekr.20031218072017.3720:class leoGui
+#@+node:AGP.20250415230112.2926:class leoGui
 class leoGui:
     
     """The base class of all gui classes.
     
     Subclasses are expected to override all do-nothing methods of this class."""
     
-    __pychecker__ = '--no-argsused' # base classes have many unused args.
-    
     #@    << define leoGui file types >>
-    #@+node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
+    #@+node:AGP.20250415230112.2927:<< define leoGui file types >> (not used yet)
     allFullFiletypes = [
         ("All files",   "*"),
         ("C/C++ files", "*.c"),
@@ -79,12 +77,12 @@ class leoGui:
     textAllFiletypes = [
         ("Text files","*.txt"),
         ("All files", "*")]
-    #@-node:ekr.20040131103531:<< define leoGui file types >> (not used yet)
+    #@-node:AGP.20250415230112.2927:<< define leoGui file types >> (not used yet)
     #@nl
     
     #@    @+others
-    #@+node:ekr.20031218072017.3721:app.gui Birth & death
-    #@+node:ekr.20031218072017.3722: leoGui.__init__
+    #@+node:AGP.20250415230112.2928:app.gui Birth & death
+    #@+node:AGP.20250415230112.2929: leoGui.__init__
     def __init__ (self,guiName):
         
         # g.trace("leoGui",guiName,g.callers())
@@ -97,9 +95,9 @@ class leoGui:
         self.script = None
         self.utils = None
         self.isNullGui = False
-    #@-node:ekr.20031218072017.3722: leoGui.__init__
-    #@+node:ekr.20031218072017.3723:stubs
-    #@+node:ekr.20031218072017.3724:createRootWindow
+    #@-node:AGP.20250415230112.2929: leoGui.__init__
+    #@+node:AGP.20250415230112.2930:stubs
+    #@+node:AGP.20250415230112.2931:createRootWindow
     def createRootWindow(self):
     
         """Create the hidden root window for the gui.
@@ -107,20 +105,20 @@ class leoGui:
         Nothing needs to be done if the root window need not exist."""
     
         self.oops()
-    #@-node:ekr.20031218072017.3724:createRootWindow
-    #@+node:ekr.20031218072017.3725:destroySelf
+    #@-node:AGP.20250415230112.2931:createRootWindow
+    #@+node:AGP.20250415230112.2932:destroySelf
     def destroySelf (self):
     
         self.oops()
-    #@-node:ekr.20031218072017.3725:destroySelf
-    #@+node:ekr.20031218072017.3726:finishCreate
+    #@-node:AGP.20250415230112.2932:destroySelf
+    #@+node:AGP.20250415230112.2933:finishCreate
     def finishCreate (self):
     
         """Do any remaining chores after the root window has been created."""
     
         self.oops()
-    #@-node:ekr.20031218072017.3726:finishCreate
-    #@+node:ekr.20031218072017.3727:killGui
+    #@-node:AGP.20250415230112.2933:finishCreate
+    #@+node:AGP.20250415230112.2934:killGui
     def killGui(self,exitFlag=True):
     
         """Destroy the gui.
@@ -128,25 +126,25 @@ class leoGui:
         The entire Leo application should terminate if exitFlag is True."""
     
         self.oops()
-    #@-node:ekr.20031218072017.3727:killGui
-    #@+node:ekr.20031218072017.3728:recreateRootWindow
+    #@-node:AGP.20250415230112.2934:killGui
+    #@+node:AGP.20250415230112.2935:recreateRootWindow
     def recreateRootWindow(self):
     
         """Create the hidden root window of the gui
         after a previous gui has terminated with killGui(False)."""
     
         self.oops()
-    #@-node:ekr.20031218072017.3728:recreateRootWindow
-    #@+node:ekr.20031218072017.3729:runMainLoop
+    #@-node:AGP.20250415230112.2935:recreateRootWindow
+    #@+node:AGP.20250415230112.2936:runMainLoop
     def runMainLoop(self):
     
         """Run the gui's main loop."""
     
         self.oops()
-    #@-node:ekr.20031218072017.3729:runMainLoop
-    #@-node:ekr.20031218072017.3723:stubs
-    #@-node:ekr.20031218072017.3721:app.gui Birth & death
-    #@+node:ekr.20031218072017.3730:app.gui dialogs
+    #@-node:AGP.20250415230112.2936:runMainLoop
+    #@-node:AGP.20250415230112.2930:stubs
+    #@-node:AGP.20250415230112.2928:app.gui Birth & death
+    #@+node:AGP.20250415230112.2937:app.gui dialogs
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         """Create and run Leo's About Leo dialog."""
         self.oops()
@@ -171,8 +169,8 @@ class leoGui:
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
-    #@-node:ekr.20031218072017.3730:app.gui dialogs
-    #@+node:ekr.20031218072017.3731:app.gui file dialogs
+    #@-node:AGP.20250415230112.2937:app.gui dialogs
+    #@+node:AGP.20250415230112.2938:app.gui file dialogs
     def runOpenFileDialog(self,title,filetypes,defaultextension,multiple=False):
     
         """Create and run an open file dialog ."""
@@ -184,8 +182,8 @@ class leoGui:
         """Create and run a save file dialog ."""
         
         self.oops()
-    #@-node:ekr.20031218072017.3731:app.gui file dialogs
-    #@+node:ekr.20031218072017.3732:app.gui panels
+    #@-node:AGP.20250415230112.2938:app.gui file dialogs
+    #@+node:AGP.20250415230112.2939:app.gui panels
     # New in 4.3: it is not an error to call these...
         
     def createComparePanel(self,c):
@@ -196,8 +194,8 @@ class leoGui:
         
     def createLeoFrame(self,title):
         """Create a new Leo frame."""
-    #@-node:ekr.20031218072017.3732:app.gui panels
-    #@+node:ekr.20031218072017.3733:app.gui utils
+    #@-node:AGP.20250415230112.2939:app.gui panels
+    #@+node:AGP.20250415230112.2940:app.gui utils
     #@+at 
     #@nonl
     # Subclasses are expected to subclass all of the following methods.
@@ -209,7 +207,7 @@ class leoGui:
     # dialog being created.  The commander may be a Commands instance or one 
     # of its subcommanders.
     #@-at
-    #@+node:ekr.20031218072017.3734:Clipboard
+    #@+node:AGP.20250415230112.2941:Clipboard
     def replaceClipboardWith (self,s):
         
         self.oops()
@@ -217,8 +215,8 @@ class leoGui:
     def getTextFromClipboard (self):
         
         self.oops()
-    #@-node:ekr.20031218072017.3734:Clipboard
-    #@+node:ekr.20031218072017.3735:Dialog utils
+    #@-node:AGP.20250415230112.2941:Clipboard
+    #@+node:AGP.20250415230112.2942:Dialog utils
     def attachLeoIcon (self,window):
         """Attach the Leo icon to a window."""
         self.oops()
@@ -234,8 +232,8 @@ class leoGui:
     def get_window_info (self,window):
         """Return the window information."""
         self.oops()
-    #@-node:ekr.20031218072017.3735:Dialog utils
-    #@+node:ekr.20031218072017.3737:Focus
+    #@-node:AGP.20250415230112.2942:Dialog utils
+    #@+node:AGP.20250415230112.2943:Focus
     def get_focus(self,frame):
     
         """Return the widget that has focus, or the body widget if None."""
@@ -246,25 +244,21 @@ class leoGui:
     
         """Set the focus of the widget in the given commander if it needs to be changed."""
         
-        __pychecker__ = '--no-argsused' # widget
-    
         self.oops()
         
     def widget_wants_focus(self,commander,widget):
     
         """Indicate that a widget want to get focus."""
         
-        __pychecker__ = '--no-argsused' # widget
-    
         self.oops()
-    #@-node:ekr.20031218072017.3737:Focus
-    #@+node:ekr.20031218072017.3736:Font
+    #@-node:AGP.20250415230112.2943:Focus
+    #@+node:AGP.20250415230112.2944:Font
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
         
         pass
         # self.oops()
-    #@-node:ekr.20031218072017.3736:Font
-    #@+node:ekr.20031218072017.3739:Idle time
+    #@-node:AGP.20250415230112.2944:Font
+    #@+node:AGP.20250415230112.2945:Idle time
     def setIdleTimeHook (self,idleTimeHookHandler):
         
         # print 'leoGui:setIdleTimeHook'
@@ -274,8 +268,8 @@ class leoGui:
         
         # print 'leoGui:setIdleTimeHookAfterDelay'
         pass # Not an error.
-    #@-node:ekr.20031218072017.3739:Idle time
-    #@+node:ekr.20031218072017.3738:Index
+    #@-node:AGP.20250415230112.2945:Idle time
+    #@+node:AGP.20250415230112.2946:Index
     def compareIndices (self,t,n1,rel,n2):
         self.oops()
     
@@ -304,15 +298,15 @@ class leoGui:
     def toPythonIndex (self,s,w,index):
        self.oops()
     #@nonl
-    #@-node:ekr.20031218072017.3738:Index
-    #@+node:ekr.20051220144306:isTextWidget
+    #@-node:AGP.20250415230112.2946:Index
+    #@+node:AGP.20250415230112.2947:isTextWidget
     def isTextWidget (self,w):
         
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         
         self.oops()
-    #@-node:ekr.20051220144306:isTextWidget
-    #@+node:ekr.20061024133425:Selection
+    #@-node:AGP.20250415230112.2947:isTextWidget
+    #@+node:AGP.20250415230112.2948:Selection
     def getSelectionRange (self,t):
         return 0,0
         
@@ -335,47 +329,45 @@ class leoGui:
         pass
         
     setSelectionRange = setTextSelection
-    #@-node:ekr.20061024133425:Selection
-    #@-node:ekr.20031218072017.3733:app.gui utils
-    #@+node:ekr.20031218072017.3740:guiName
+    #@-node:AGP.20250415230112.2948:Selection
+    #@-node:AGP.20250415230112.2940:app.gui utils
+    #@+node:AGP.20250415230112.2949:guiName
     def guiName(self):
         
         try:
             return self.mGuiName
         except:
             return "invalid gui name"
-    #@-node:ekr.20031218072017.3740:guiName
-    #@+node:ekr.20031218072017.2231:setScript
+    #@-node:AGP.20250415230112.2949:guiName
+    #@+node:AGP.20250415230112.2950:setScript
     def setScript (self,script=None,scriptFileName=None):
     
         self.script = script
         self.scriptFileName = scriptFileName
-    #@-node:ekr.20031218072017.2231:setScript
-    #@+node:ekr.20051206103652:widget_name
+    #@-node:AGP.20250415230112.2950:setScript
+    #@+node:AGP.20250415230112.2951:widget_name
     def widget_name (self,w):
         
         return w and hasattr(w,'_name') and w._name or repr(w)
-    #@-node:ekr.20051206103652:widget_name
-    #@+node:ekr.20031218072017.3741:oops
+    #@-node:AGP.20250415230112.2951:widget_name
+    #@+node:AGP.20250415230112.2952:oops
     def oops (self):
         
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 0:
             print "leoGui oops", g.callers(), "should be overridden in subclass"
-    #@-node:ekr.20031218072017.3741:oops
+    #@-node:AGP.20250415230112.2952:oops
     #@-others
-#@-node:ekr.20031218072017.3720:class leoGui
-#@+node:ekr.20031218072017.2223:class nullGui (leoGui)
+#@-node:AGP.20250415230112.2926:class leoGui
+#@+node:AGP.20250415230112.2953:class nullGui (leoGui)
 class nullGui(leoGui):
     
     """Null gui class."""
     
-    __pychecker__ = '--no-argsused' # This class has many unused args.
-    
     #@    @+others
-    #@+node:ekr.20031218072017.2224:Birth & death
-    #@+node:ekr.20031218072017.2225: nullGui.__init__
+    #@+node:AGP.20250415230112.2954:Birth & death
+    #@+node:AGP.20250415230112.2955: nullGui.__init__
     def __init__ (self,guiName):
         
         # g.trace("nullGui")
@@ -385,16 +377,16 @@ class nullGui(leoGui):
         self.script = None
         self.lastFrame = None
         self.isNullGui = True
-    #@-node:ekr.20031218072017.2225: nullGui.__init__
-    #@+node:ekr.20031219075221: nullGui.__getattr__
+    #@-node:AGP.20250415230112.2955: nullGui.__init__
+    #@+node:AGP.20250415230112.2956: nullGui.__getattr__
     if 0: # This causes no end of problems.
     
         def __getattr__(self,attr):
     
             g.trace("nullGui",attr)
             return nullObject()
-    #@-node:ekr.20031219075221: nullGui.__getattr__
-    #@+node:ekr.20031218072017.2226:nullGui.createLeoFrame
+    #@-node:AGP.20250415230112.2956: nullGui.__getattr__
+    #@+node:AGP.20250415230112.2957:nullGui.createLeoFrame
     def createLeoFrame(self,title):
         
         """Create a null Leo Frame."""
@@ -404,21 +396,21 @@ class nullGui(leoGui):
         gui = self
         self.lastFrame = leoFrame.nullFrame(title,gui)
         return self.lastFrame
-    #@-node:ekr.20031218072017.2226:nullGui.createLeoFrame
-    #@+node:ekr.20050328144031:attachLeoIcon
+    #@-node:AGP.20250415230112.2957:nullGui.createLeoFrame
+    #@+node:AGP.20250415230112.2958:attachLeoIcon
     def attachLeoIcon (self,w):
         
         pass
-    #@-node:ekr.20050328144031:attachLeoIcon
-    #@+node:ekr.20031218072017.2227:createRootWindow
+    #@-node:AGP.20250415230112.2958:attachLeoIcon
+    #@+node:AGP.20250415230112.2959:createRootWindow
     def createRootWindow(self):
         pass
-    #@-node:ekr.20031218072017.2227:createRootWindow
-    #@+node:ekr.20031218072017.2228:finishCreate
+    #@-node:AGP.20250415230112.2959:createRootWindow
+    #@+node:AGP.20250415230112.2960:finishCreate
     def finishCreate (self):
         pass
-    #@-node:ekr.20031218072017.2228:finishCreate
-    #@+node:ekr.20031218072017.2229:runMainLoop
+    #@-node:AGP.20250415230112.2960:finishCreate
+    #@+node:AGP.20250415230112.2961:runMainLoop
     def runMainLoop(self):
     
         """Run the gui's main loop."""
@@ -431,9 +423,9 @@ class nullGui(leoGui):
             # g.es("\nEnd of batch script")
         
         # Getting here will terminate Leo.
-    #@-node:ekr.20031218072017.2229:runMainLoop
-    #@-node:ekr.20031218072017.2224:Birth & death
-    #@+node:ekr.20031218072017.2230:oops
+    #@-node:AGP.20250415230112.2961:runMainLoop
+    #@-node:AGP.20250415230112.2954:Birth & death
+    #@+node:AGP.20250415230112.2962:oops
     def oops(self):
             
         """Default do-nothing method for nullGui class.
@@ -444,18 +436,16 @@ class nullGui(leoGui):
         # However, this message is useful when writing gui plugins.
         if 0:
             g.trace("nullGui",g.callers())
-    #@-node:ekr.20031218072017.2230:oops
+    #@-node:AGP.20250415230112.2962:oops
     #@-others
-#@-node:ekr.20031218072017.2223:class nullGui (leoGui)
-#@+node:ekr.20031218072017.3742:class unitTestGui (leoGui)
+#@-node:AGP.20250415230112.2953:class nullGui (leoGui)
+#@+node:AGP.20250415230112.2963:class unitTestGui (leoGui)
 class unitTestGui(leoGui):
     
     """gui class for use by unit tests."""
     
-    __pychecker__ = '--no-argsused' # This class has many unused args.
-    
     #@    @+others
-    #@+node:ekr.20031218072017.3743: test.gui.__init__& destroySelf
+    #@+node:AGP.20250415230112.2964: test.gui.__init__& destroySelf
     def __init__ (self,dict,trace=False):
         
         self.dict = dict
@@ -470,8 +460,8 @@ class unitTestGui(leoGui):
     def destroySelf (self):
         
         g.app.gui = self.oldGui
-    #@-node:ekr.20031218072017.3743: test.gui.__init__& destroySelf
-    #@+node:ekr.20031218072017.3744:dialogs (unitTestGui)
+    #@-node:AGP.20250415230112.2964: test.gui.__init__& destroySelf
+    #@+node:AGP.20250415230112.2965:dialogs (unitTestGui)
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         return self.simulateDialog("aboutLeoDialog")
         
@@ -496,8 +486,8 @@ class unitTestGui(leoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@-node:ekr.20031218072017.3744:dialogs (unitTestGui)
-    #@+node:ekr.20031218072017.3745:dummy routines
+    #@-node:AGP.20250415230112.2965:dialogs (unitTestGui)
+    #@+node:AGP.20250415230112.2966:dummy routines
     def getindex (self,body,index):
         return 0, 0
     
@@ -527,16 +517,16 @@ class unitTestGui(leoGui):
     
     def toPythonIndex (self,s,w,index):
         return 0
-    #@-node:ekr.20031218072017.3745:dummy routines
-    #@+node:ekr.20031218072017.3746:oops
+    #@-node:AGP.20250415230112.2966:dummy routines
+    #@+node:AGP.20250415230112.2967:oops
     def oops(self):
         
         g.trace("unitTestGui",g.callers())
         
         if 0: # Fail the unit test.
             assert 0,"call to undefined method in unitTestMethod class"
-    #@-node:ekr.20031218072017.3746:oops
-    #@+node:ekr.20031218072017.3747:simulateDialog
+    #@-node:AGP.20250415230112.2967:oops
+    #@+node:AGP.20250415230112.2968:simulateDialog
     def simulateDialog (self,key,defaultVal=None):
         
         val = self.dict.get(key,defaultVal)
@@ -545,9 +535,9 @@ class unitTestGui(leoGui):
             print key, val
     
         return val
-    #@-node:ekr.20031218072017.3747:simulateDialog
+    #@-node:AGP.20250415230112.2968:simulateDialog
     #@-others
-#@-node:ekr.20031218072017.3742:class unitTestGui (leoGui)
+#@-node:AGP.20250415230112.2963:class unitTestGui (leoGui)
 #@-others
-#@-node:ekr.20031218072017.3719:@thin leoGui.py
+#@-node:AGP.20250415230112.2925:@thin leoGui.py
 #@-leo

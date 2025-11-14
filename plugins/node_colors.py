@@ -1,17 +1,17 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20230207163742:@thin node_colors.py
+#@+leo-ver=4
+#@+node:@file node_colors.py
 #@<< docstring >>
-#@+node:AGP.20230207163742.1:<< docstring >>
+#@+node:<< docstring >>
 '''Allows you to colour nodes.  Add colors menu to nodes icons righ-click menu'''
 #@nonl
-#@-node:AGP.20230207163742.1:<< docstring >>
+#@-node:<< docstring >>
 #@nl
 
 #@@language python
 #@@tabwidth -4
 
 #@<< imports >>
-#@+node:AGP.20230207163742.2:<< imports >>
+#@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
 import leoTkinterTree
@@ -25,11 +25,11 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 import sys
 #@nonl
-#@-node:AGP.20230207163742.2:<< imports >>
+#@-node:<< imports >>
 #@nl
 __version__ = "0.19"
 #@<< version history >>
-#@+node:AGP.20230207163742.3:<< version history >>
+#@+node:<< version history >>
 #@@killcolor
 
 #@+at 
@@ -94,13 +94,13 @@ __version__ = "0.19"
 # - added Show time to show times on nodes
 # - added Find next todo
 #@-at
-#@-node:AGP.20230207163742.3:<< version history >>
+#@-node:<< version history >>
 #@nl
 
 ok = Tk is not None
     
 #@+others
-#@+node:AGP.20230207163742.11:class TkPickleVar(Tk.Variable)
+#@+node:class TkPickleVar(Tk.Variable)
 if ok: # Don't define this if import Tkinter failed.
 
     class TkPickleVar (Tk.Variable):
@@ -115,8 +115,8 @@ if ok: # Don't define this if import Tkinter failed.
             # Beware of returning False!
             return p
 #@nonl
-#@-node:AGP.20230207163742.11:class TkPickleVar(Tk.Variable)
-#@+node:AGP.20230207163742.12:init
+#@-node:class TkPickleVar(Tk.Variable)
+#@+node:init
 def init():
 
     if ok:
@@ -125,21 +125,21 @@ def init():
 
     return ok
 #@nonl
-#@-node:AGP.20230207163742.12:init
-#@+node:AGP.20230207163742.13:onCreate
+#@-node:init
+#@+node:onCreate
 def onCreate (tag,key):
 
     c = key.get('c')
 
     rcController(c)
-#@-node:AGP.20230207163742.13:onCreate
-#@+node:AGP.20230207163742.14:class rcController
+#@-node:onCreate
+#@+node:class rcController
 class rcController:
     
     '''A per-commander class that recolors outlines.'''
 
     #@    @+others
-    #@+node:AGP.20230207163742.15:__init__()
+    #@+node:__init__()
     def __init__ (self,c):
         
         self.c = c
@@ -197,8 +197,8 @@ class rcController:
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
     #@nonl
-    #@-node:AGP.20230207163742.15:__init__()
-    #@+node:AGP.20230207163742.19:close
+    #@-node:__init__()
+    #@+node:close
     def close(self, tag, key):
         "unregister handlers on closing commander"
         
@@ -206,8 +206,8 @@ class rcController:
     
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
-    #@-node:AGP.20230207163742.19:close
-    #@+node:AGP.20230207163742.20:attributes...
+    #@-node:close
+    #@+node:attributes...
     #@+at
     # These methods should really be part of vnode in accordance with the 
     # principles
@@ -218,7 +218,7 @@ class rcController:
     # for several keyword args is 'annotate'.
     #@-at
     #@nonl
-    #@+node:AGP.20230207163742.24:getat
+    #@+node:getat
     def getat(self, node, attrib):
         "new attrbiute getter"
         
@@ -239,8 +239,8 @@ class rcController:
         else:
             return x
     #@nonl
-    #@-node:AGP.20230207163742.24:getat
-    #@+node:AGP.20230207163742.26:setat
+    #@-node:getat
+    #@+node:setat
     def setat(self, node, attrib, val):
         "new attrbiute setter"
         
@@ -272,8 +272,8 @@ class rcController:
         
         if isDefault:  # check if all default, if so drop dict.
             self.dropEmpty(node, dictOk = True)
-    #@-node:AGP.20230207163742.26:setat
-    #@+node:AGP.20230207163742.25:testDefault
+    #@-node:setat
+    #@+node:testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
         
@@ -282,8 +282,8 @@ class rcController:
         
         return attrib == "priority" and val == 9999 or val == ""
     #@nonl
-    #@-node:AGP.20230207163742.25:testDefault
-    #@+node:AGP.20230207163742.27:dropEmptyAll
+    #@-node:testDefault
+    #@+node:dropEmptyAll
     def dropEmptyAll(self,tag,key):
         "search whole tree for empty nodes"
         
@@ -293,9 +293,10 @@ class rcController:
         for p in c.allNodes_iter(): 
             if self.dropEmpty(p.v): cnt += 1
         
-        g.es("cleo: dropped %d empty dictionaries" % cnt)
-    #@-node:AGP.20230207163742.27:dropEmptyAll
-    #@+node:AGP.20230207163742.28:dropEmpty
+        if cnt > 0:
+            g.es("node_colors: dropped %d empty dictionaries" % cnt)
+    #@-node:dropEmptyAll
+    #@+node:dropEmpty
     def dropEmpty(self, node, dictOk = False):
     
         if (dictOk or
@@ -319,15 +320,15 @@ class rcController:
         return False
         
     #@nonl
-    #@-node:AGP.20230207163742.28:dropEmpty
-    #@-node:AGP.20230207163742.20:attributes...
-    #@+node:AGP.20230207163742.29:safe_del
+    #@-node:dropEmpty
+    #@-node:attributes...
+    #@+node:safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
         if d.has_key(k): del d[k]
     #@nonl
-    #@-node:AGP.20230207163742.29:safe_del
-    #@+node:AGP.20230207163742.31:remove_colours
+    #@-node:safe_del
+    #@+node:remove_colours
     def remove_colours(self,v):
     
         self.setat(v, 'fg', '')
@@ -336,8 +337,8 @@ class rcController:
         self.safe_del(self.pickles, 'bg')
         self.c.redraw()
     #@nonl
-    #@-node:AGP.20230207163742.31:remove_colours
-    #@+node:AGP.20230207163742.32:addvar_colour
+    #@-node:remove_colours
+    #@+node:addvar_colour
     def addvar_colour(self,var):
         
         import tkColorChooser
@@ -359,8 +360,8 @@ class rcController:
         
         var.set(myColor)
         self.redraw()
-    #@-node:AGP.20230207163742.32:addvar_colour
-    #@+node:AGP.20230207163742.33:custom_colours
+    #@-node:addvar_colour
+    #@+node:custom_colours
     # use return values to set the colours so no need to muck around when loading up files.
     
     def custom_colours(self,v):
@@ -387,8 +388,8 @@ class rcController:
         #print "> (%s,%s) %s" % (fg,bg,v.headString())
         return fg,bg
     #@nonl
-    #@-node:AGP.20230207163742.33:custom_colours
-    #@+node:AGP.20230207163742.53:setUnselectedHeadlineColors
+    #@-node:custom_colours
+    #@+node:setUnselectedHeadlineColors
     def setUnselectedHeadlineColors (self,p):
         
         # unlike handlers, override commands don't need to check self.c against other c
@@ -410,8 +411,8 @@ class rcController:
             w.configure(state="disabled",highlightthickness=0,fg=fg,bg=bg)
         except:
             g.es_exception()
-    #@-node:AGP.20230207163742.53:setUnselectedHeadlineColors
-    #@+node:AGP.20230207163742.54:setDisabledHeadlineColors
+    #@-node:setUnselectedHeadlineColors
+    #@+node:setDisabledHeadlineColors
     def setDisabledHeadlineColors (self,p):
     
         c = self.c
@@ -442,8 +443,8 @@ class rcController:
             g.es_exception()
             
             
-    #@-node:AGP.20230207163742.54:setDisabledHeadlineColors
-    #@+node:AGP.20230207163742.58:colours_menu()
+    #@-node:setDisabledHeadlineColors
+    #@+node:colours_menu()
     def colours_menu(self,parent, p):
         
         self.prep_pickle(p.v, 'fg')
@@ -469,8 +470,8 @@ class rcController:
     
     
         parent.add_command(label='Reset', underline=0,command=lambda v=p.v:self.remove_colours(v))
-    #@-node:AGP.20230207163742.58:colours_menu()
-    #@+node:AGP.20230207163742.64:show_menu()
+    #@-node:colours_menu()
+    #@+node:show_menu()
     def show_menu (self,tag,k):
     
         if k['c'] != self.c: return  # not our problem
@@ -502,18 +503,18 @@ class rcController:
         
         return False # continue menu creation in leo
     #@nonl
-    #@-node:AGP.20230207163742.64:show_menu()
-    #@+node:AGP.20230207174829:prep_pickle
+    #@-node:show_menu()
+    #@+node:prep_pickle
     def prep_pickle(self, v, pkl, default = None):
         "prepare a TkPickleVar in self.pickles for a menu write back"
     
         self.pickles[pkl] = TkPickleVar()
         self.pickles[pkl].set(self.getat(v, pkl))
-    #@-node:AGP.20230207174829:prep_pickle
-    #@+node:AGP.20230207174930:redraw
+    #@-node:prep_pickle
+    #@+node:redraw
     def redraw(self):
         "redraw after menu used"
-        
+        print "node coclor redraw"
         # IMPORTANT ASSUMPTION: called only after menu used
     
         # read updates from menu choice
@@ -530,11 +531,11 @@ class rcController:
         c.setChanged(True)
         c.redraw_now()
     #@nonl
-    #@-node:AGP.20230207174930:redraw
+    #@-node:redraw
     #@-others
 #@nonl
-#@-node:AGP.20230207163742.14:class rcController
+#@-node:class rcController
 #@-others
 #@nonl
-#@-node:AGP.20230207163742:@thin node_colors.py
+#@-node:@file node_colors.py
 #@-leo

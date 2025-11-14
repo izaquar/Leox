@@ -1,7 +1,7 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20230214092456:@thin node_scripting.py
+#@+leo-ver=4
+#@+node:@file node_scripting.py
 #@<< docstring >>
-#@+node:AGP.20230214092456.1:<< docstring >>
+#@+node:<< docstring >>
 """A plugin to create script buttons and @button, @command, @plugin and @script
 nodes.
 
@@ -99,10 +99,10 @@ nodes, the name of the command is the cleaned name of the headline.
 This plugin is based on ideas from e's dynabutton plugin, quite possibly the
 most brilliant idea in Leo's history. """
 #@nonl
-#@-node:AGP.20230214092456.1:<< docstring >>
+#@-node:<< docstring >>
 #@nl
 #@<< imports >>
-#@+node:AGP.20230214092456.2:<< imports >>
+#@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
 
@@ -113,12 +113,12 @@ import os
 import string
 import sys
 #@nonl
-#@-node:AGP.20230214092456.2:<< imports >>
+#@-node:<< imports >>
 #@nl
 
 __version__ = '1.9'
 #@<< version history >>
-#@+node:AGP.20230214092456.3:<< version history >>
+#@+node:<< version history >>
 #@+at
 # 
 # 0.3 EKR: Don't mess with button sizes or fonts on MacOs/darwin
@@ -188,11 +188,11 @@ __version__ = '1.9'
 # 1.9 EKR: Warn about nodes with no cleaned text.
 #@-at
 #@nonl
-#@-node:AGP.20230214092456.3:<< version history >>
+#@-node:<< version history >>
 #@nl
 
 #@+others
-#@+node:AGP.20230214092456.4:init
+#@+node:init
 def init ():
     
     ok = Tk is not None # OK for unit tests.
@@ -211,8 +211,8 @@ def init ():
         
     return ok
 #@nonl
-#@-node:AGP.20230214092456.4:init
-#@+node:AGP.20230214092456.5:onCreate
+#@-node:init
+#@+node:onCreate
 def onCreate (tag, keys):
 
     """Handle the onCreate event in the mod_scripting plugin."""
@@ -223,12 +223,12 @@ def onCreate (tag, keys):
         sc = scriptingController(c)
         sc.createAllButtons()
 #@nonl
-#@-node:AGP.20230214092456.5:onCreate
-#@+node:AGP.20230214092456.6:class scriptingController
+#@-node:onCreate
+#@+node:class scriptingController
 class scriptingController:
     
     #@    @+others
-    #@+node:AGP.20230214092456.7: ctor
+    #@+node: ctor
     def __init__ (self,c,iconBar=None):
         
         self.c = c
@@ -265,8 +265,8 @@ class scriptingController:
         self.c.frame.tree.PopupMenuTable.append( ('Execute Script',c.executeScript) )
         
     #@nonl
-    #@-node:AGP.20230214092456.7: ctor
-    #@+node:AGP.20230214092456.8:createAllButtons & helpers
+    #@-node: ctor
+    #@+node:createAllButtons & helpers
     def createAllButtons (self):
         
         '''Scans the outline looking for @button, @command, @plugin and @script nodes.'''
@@ -293,7 +293,7 @@ class scriptingController:
                 if self.atScriptNodes and p.headString().startswith("@script"):
                     self.handleAtScriptNode(p)
     #@nonl
-    #@+node:AGP.20230214092456.9:createRunScriptIconButton 'run-script' & callback
+    #@+node:createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
         
         '''Create the 'run-script' button and the run-script command.'''
@@ -304,7 +304,7 @@ class scriptingController:
             shortcut=None,
             statusLine='Run script in selected node',
             bg='MistyRose1')
-    #@+node:AGP.20230214092456.10:runScriptCommand
+    #@+node:runScriptCommand
     def runScriptCommand (self,event=None):
         
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
@@ -316,9 +316,9 @@ class scriptingController:
             # Do not assume the script will want to remain in this commander.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230214092456.10:runScriptCommand
-    #@-node:AGP.20230214092456.9:createRunScriptIconButton 'run-script' & callback
-    #@+node:AGP.20230214092456.11:createDebugIconButton 'debug-script' & callback
+    #@-node:runScriptCommand
+    #@-node:createRunScriptIconButton 'run-script' & callback
+    #@+node:createDebugIconButton 'debug-script' & callback
     def createDebugIconButton (self):
         
         '''Create the 'debug-script' button and the debug-script command.'''
@@ -329,7 +329,7 @@ class scriptingController:
             shortcut=None,
             statusLine='Debug script in selected node',
             bg='MistyRose1')
-    #@+node:AGP.20230214092456.12:runDebugScriptCommand
+    #@+node:runDebugScriptCommand
     def runDebugScriptCommand (self,event=None):
         
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
@@ -339,7 +339,7 @@ class scriptingController:
         script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
         if script:
             #@        << set debugging if debugger is active >>
-            #@+node:AGP.20230214092456.13:<< set debugging if debugger is active >>
+            #@+node:<< set debugging if debugger is active >>
             g.trace(self.debuggerKind)
             
             if self.debuggerKind == 'winpdb':
@@ -355,11 +355,11 @@ class scriptingController:
             else:
                 debugging = False
             #@nonl
-            #@-node:AGP.20230214092456.13:<< set debugging if debugger is active >>
+            #@-node:<< set debugging if debugger is active >>
             #@nl
             if debugging:
                 #@            << create leoScriptModule >>
-                #@+node:AGP.20230214092456.14:<< create leoScriptModule >>
+                #@+node:<< create leoScriptModule >>
                 target = g.os_path_join(g.app.loadDir,'leoScriptModule.py')
                 f = None
                 try:
@@ -383,7 +383,7 @@ class scriptingController:
                 finally:
                     if f: f.close()
                 #@nonl
-                #@-node:AGP.20230214092456.14:<< create leoScriptModule >>
+                #@-node:<< create leoScriptModule >>
                 #@nl
                 g.app.scriptDict ['c'] = c
                 if 'leoScriptModule' in sys.modules.keys():
@@ -394,9 +394,9 @@ class scriptingController:
         
         c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230214092456.12:runDebugScriptCommand
-    #@-node:AGP.20230214092456.11:createDebugIconButton 'debug-script' & callback
-    #@+node:AGP.20230214092456.15:createScriptButtonIconButton 'script-button' & callback
+    #@-node:runDebugScriptCommand
+    #@-node:createDebugIconButton 'debug-script' & callback
+    #@+node:createScriptButtonIconButton 'script-button' & callback
     def createScriptButtonIconButton (self):
         
         '''Create the 'script-button' button and the script-button command.'''
@@ -407,7 +407,7 @@ class scriptingController:
             shortcut=None,
             statusLine='Make script button from selected node',
             bg="#ffffcc")
-    #@+node:AGP.20230214092456.16:addScriptButtonCommand
+    #@+node:addScriptButtonCommand
     def addScriptButtonCommand (self,event=None):
         
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
@@ -421,9 +421,9 @@ class scriptingController:
         b = self.createAtButtonHelper(p,h,statusLine,shortcut,'MistyRose1')
         c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230214092456.16:addScriptButtonCommand
-    #@-node:AGP.20230214092456.15:createScriptButtonIconButton 'script-button' & callback
-    #@+node:AGP.20230224111145:scriptButtonMenuCommand
+    #@-node:addScriptButtonCommand
+    #@-node:createScriptButtonIconButton 'script-button' & callback
+    #@+node:scriptButtonMenuCommand
     def scriptButtonMenuCommand(self,event=None):
         
         '''Called when the user presses the 'script-button' button in the tree popup menu'''
@@ -440,8 +440,8 @@ class scriptingController:
         
         c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230224111145:scriptButtonMenuCommand
-    #@+node:AGP.20230214092456.17:handleAtButtonNode @button
+    #@-node:scriptButtonMenuCommand
+    #@+node:handleAtButtonNode @button
     def handleAtButtonNode (self,p):
         
         '''Create a button in the icon area for an @button node.
@@ -456,8 +456,8 @@ class scriptingController:
     
         # This helper is also called by the script-button callback.
         b = self.createAtButtonHelper(p,h,statusLine,shortcut)
-    #@-node:AGP.20230214092456.17:handleAtButtonNode @button
-    #@+node:AGP.20230214092456.18:handleAtCommandNode @command
+    #@-node:handleAtButtonNode @button
+    #@+node:handleAtCommandNode @command
     def handleAtCommandNode (self,p):
         
         '''Handle @command name [@key[=]shortcut].'''
@@ -466,7 +466,7 @@ class scriptingController:
         if not h.strip(): return
         
         #@    << get the commandName and optional shortcut >>
-        #@+node:AGP.20230214092456.19:<< get the commandName and optional shortcut >>
+        #@+node:<< get the commandName and optional shortcut >>
         tag = '@command' ; shortcut = None
         
         i = h.find('@key')
@@ -479,7 +479,7 @@ class scriptingController:
         else:
             commandName = h[len(tag):].strip()
         #@nonl
-        #@-node:AGP.20230214092456.19:<< get the commandName and optional shortcut >>
+        #@-node:<< get the commandName and optional shortcut >>
         #@nl
     
         def atCommandCallback (event=None,c=c,p=p.copy()):
@@ -488,8 +488,8 @@ class scriptingController:
     
         k.registerCommand(commandName,shortcut,atCommandCallback,verbose=True)
     #@nonl
-    #@-node:AGP.20230214092456.18:handleAtCommandNode @command
-    #@+node:AGP.20230214092456.20:handleAtPluginNode @plugin
+    #@-node:handleAtCommandNode @command
+    #@+node:handleAtPluginNode @plugin
     def handleAtPluginNode (self,p):
         
         '''Handle @plugin nodes.'''
@@ -519,8 +519,8 @@ class scriptingController:
             else:
                 g.es("can not load plugin: %s" % (theFile),color="blue")
     #@nonl
-    #@-node:AGP.20230214092456.20:handleAtPluginNode @plugin
-    #@+node:AGP.20230214092456.21:handleAtScriptNode @script
+    #@-node:handleAtPluginNode @plugin
+    #@+node:handleAtScriptNode @script
     def handleAtScriptNode (self,p):
         
         '''Handle @script nodes.'''
@@ -541,10 +541,10 @@ class scriptingController:
             # Do not assume the script will want to remain in this commander.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230214092456.21:handleAtScriptNode @script
-    #@-node:AGP.20230214092456.8:createAllButtons & helpers
-    #@+node:AGP.20230214092456.22:Utils
-    #@+node:AGP.20230214092456.23:cleanButtonText
+    #@-node:handleAtScriptNode @script
+    #@-node:createAllButtons & helpers
+    #@+node:Utils
+    #@+node:cleanButtonText
     def cleanButtonText (self,s):
         
         '''Clean the text following @button or @command so that it is a valid name of a minibuffer command.'''
@@ -565,8 +565,8 @@ class scriptingController:
             s = s[:-1]
         return s
     #@nonl
-    #@-node:AGP.20230214092456.23:cleanButtonText
-    #@+node:AGP.20230214092456.24:createAtButtonHelper & callback
+    #@-node:cleanButtonText
+    #@+node:createAtButtonHelper & callback
     def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1'):
         
         '''Create a button from an @button node.
@@ -594,7 +594,7 @@ class scriptingController:
        
         return b
     #@nonl
-    #@+node:AGP.20230214092456.25:executeScriptFromButton
+    #@+node:executeScriptFromButton
     def executeScriptFromButton (self,p,b,buttonText):
         
         '''Called from callbacks to execute the script in node p.'''
@@ -614,9 +614,9 @@ class scriptingController:
         if 0: # Do *not* set focus here: the script may have changed the focus.
             c.frame.bodyWantsFocus()
     #@nonl
-    #@-node:AGP.20230214092456.25:executeScriptFromButton
-    #@-node:AGP.20230214092456.24:createAtButtonHelper & callback
-    #@+node:AGP.20230214092456.26:createBalloon
+    #@-node:executeScriptFromButton
+    #@-node:createAtButtonHelper & callback
+    #@+node:createBalloon
     def createBalloon (self,w,label):
     
         'Create a balloon for a widget.'
@@ -627,8 +627,8 @@ class scriptingController:
             # Inject an ivar into the w.
             # w.leo_balloon = balloon
     #@nonl
-    #@-node:AGP.20230214092456.26:createBalloon
-    #@+node:AGP.20230214092456.27:createIconButton
+    #@-node:createBalloon
+    #@+node:createIconButton
     def createIconButton (self,text,command,shortcut,statusLine,bg):
         
         '''Create an icon button.  All icon buttons get created using this utility.
@@ -681,8 +681,8 @@ class scriptingController:
     
         return b
     #@nonl
-    #@-node:AGP.20230214092456.27:createIconButton
-    #@+node:AGP.20230214092456.28:definePressButtonCommand (no longer used)
+    #@-node:createIconButton
+    #@+node:definePressButtonCommand (no longer used)
     def definePressButtonCommand (self,buttonText,atButtonCallback,shortcut=None):
         
         '''Define the press-x-button command, were x is the cleaned button text.
@@ -698,8 +698,8 @@ class scriptingController:
         # if shortcut: shortcut = k.canonicalizeShortcut(shortcut)
     
         k.registerCommand(buttonText,shortcut=shortcut,func=atButtonCallback,pane='button',verbose=shortcut)
-    #@-node:AGP.20230214092456.28:definePressButtonCommand (no longer used)
-    #@+node:AGP.20230214092456.29:deleteButton
+    #@-node:definePressButtonCommand (no longer used)
+    #@+node:deleteButton
     def deleteButton(self,button):
         
         """Delete the given button.
@@ -718,8 +718,8 @@ class scriptingController:
             # w.destroy() # So that Pmw doesn't crash later.
             self.c.bodyWantsFocusNow()
     #@nonl
-    #@-node:AGP.20230214092456.29:deleteButton
-    #@+node:AGP.20230214092456.30:getButtonText
+    #@-node:deleteButton
+    #@+node:getButtonText
     def getButtonText(self,h):
         
         '''Returns the button text found in the given headline string'''
@@ -739,8 +739,8 @@ class scriptingController:
         fullButtonText = buttonText
         return buttonText
     #@nonl
-    #@-node:AGP.20230214092456.30:getButtonText
-    #@+node:AGP.20230214092456.31:getShortcut
+    #@-node:getButtonText
+    #@+node:getShortcut
     def getShortcut(self,h):
         
         '''Returns the keyboard shortcut from the given headline string'''
@@ -755,8 +755,8 @@ class scriptingController:
     
         return shortcut
     #@nonl
-    #@-node:AGP.20230214092456.31:getShortcut
-    #@+node:AGP.20230214092456.32:truncateButtonText
+    #@-node:getShortcut
+    #@+node:truncateButtonText
     def truncateButtonText (self,s):
         
         if self.maxButtonSize > 10:
@@ -765,12 +765,12 @@ class scriptingController:
                 s = s[:-1]
         return s.strip()
     #@nonl
-    #@-node:AGP.20230214092456.32:truncateButtonText
-    #@-node:AGP.20230214092456.22:Utils
+    #@-node:truncateButtonText
+    #@-node:Utils
     #@-others
 #@nonl
-#@-node:AGP.20230214092456.6:class scriptingController
+#@-node:class scriptingController
 #@-others
 #@nonl
-#@-node:AGP.20230214092456:@thin node_scripting.py
+#@-node:@file node_scripting.py
 #@-leo

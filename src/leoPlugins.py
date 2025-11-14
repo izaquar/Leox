@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ekr.20031218072017.3439:@thin leoPlugins.py
+#@+node:AGP.20250415230112.2321:@thin leoPlugins.py
 """Install and run Leo plugins.
 
 On startup:
@@ -26,7 +26,7 @@ loadedModules = {} # Keys are module names, values are modules.
 loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
 
 #@+others
-#@+node:ekr.20050102094729:callTagHandler
+#@+node:AGP.20250415230112.2322:callTagHandler
 def callTagHandler (bunch,tag,keywords):
 
     handler = bunch.fn ; moduleName = bunch.moduleName
@@ -49,8 +49,8 @@ def callTagHandler (bunch,tag,keywords):
     result = handler(tag,keywords)
     loadingModuleNameStack.pop()
     return result
-#@-node:ekr.20050102094729:callTagHandler
-#@+node:ekr.20031218072017.3442:doHandlersForTag
+#@-node:AGP.20250415230112.2322:callTagHandler
+#@+node:AGP.20250415230112.2323:doHandlersForTag
 def doHandlersForTag (tag,keywords):
     
     """Execute all handlers for a given tag, in alphabetical order.
@@ -77,8 +77,8 @@ def doHandlersForTag (tag,keywords):
             callTagHandler(bunch,tag,keywords)
 
     return None
-#@-node:ekr.20031218072017.3442:doHandlersForTag
-#@+node:ekr.20041001161108:doPlugins
+#@-node:AGP.20250415230112.2323:doHandlersForTag
+#@+node:AGP.20250415230112.2324:doPlugins
 def doPlugins(tag,keywords):
     
     if g.app.killed:
@@ -90,8 +90,8 @@ def doPlugins(tag,keywords):
         loadHandlers()
 
     return doHandlersForTag(tag,keywords)
-#@-node:ekr.20041001161108:doPlugins
-#@+node:ekr.20041111124831:getHandlersForTag
+#@-node:AGP.20250415230112.2324:doPlugins
+#@+node:AGP.20250415230112.2325:getHandlersForTag
 def getHandlersForTag(tags):
     
     import types
@@ -111,22 +111,22 @@ def getHandlersForOneTag (tag):
 
     bunch = handlers.get(tag)
     return bunch.fn
-#@-node:ekr.20041111124831:getHandlersForTag
-#@+node:ekr.20041114113029:getPluginModule
+#@-node:AGP.20250415230112.2325:getHandlersForTag
+#@+node:AGP.20250415230112.2326:getPluginModule
 def getPluginModule (moduleName):
     
     global loadedModules
     
     return loadedModules.get(moduleName)
-#@-node:ekr.20041114113029:getPluginModule
-#@+node:ekr.20041001160216:isLoaded
+#@-node:AGP.20250415230112.2326:getPluginModule
+#@+node:AGP.20250415230112.2327:isLoaded
 def isLoaded (name):
     
     if name.endswith('.py'): name = name[:-3]
     
     return name in g.app.loadedPlugins
-#@-node:ekr.20041001160216:isLoaded
-#@+node:ekr.20031218072017.3440:loadHandlers
+#@-node:AGP.20250415230112.2327:isLoaded
+#@+node:AGP.20250415230112.2328:loadHandlers
 def loadHandlers():
 
     """Load all enabled plugins from the plugins directory"""
@@ -138,7 +138,7 @@ def loadHandlers():
     files = [g.os_path_abspath(theFile) for theFile in files]
     
     #@    << set enabled_files from pluginsManager.txt >>
-    #@+node:ekr.20031218072017.3441:<< set enabled_files from pluginsManager.txt >>
+    #@+node:AGP.20250415230112.2329:<< set enabled_files from pluginsManager.txt >>
     if not g.os_path_exists(manager_path):
         enabled_files = files   #agp return
         disabled_files = []
@@ -175,7 +175,7 @@ def loadHandlers():
             import leoTest ; leoTest.fail()
             return
         
-    #@-node:ekr.20031218072017.3441:<< set enabled_files from pluginsManager.txt >>
+    #@-node:AGP.20250415230112.2329:<< set enabled_files from pluginsManager.txt >>
     #@nl
     
     # Load plugins in the order they appear in the enabled_files list.
@@ -191,8 +191,8 @@ def loadHandlers():
     # Note: g.plugin_signon adds module names to g.app.loadedPlugins 
     if g.app.loadedPlugins:
         g.es("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
-#@-node:ekr.20031218072017.3440:loadHandlers
-#@+node:ekr.20041113113140:loadOnePlugin
+#@-node:AGP.20250415230112.2328:loadHandlers
+#@+node:AGP.20250415230112.2330:loadOnePlugin
 def loadOnePlugin (moduleOrFileName, verbose=False):
     
     global loadedModules,loadingModuleNameStack
@@ -247,8 +247,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     
     return result
 #@nonl
-#@-node:ekr.20041113113140:loadOnePlugin
-#@+node:ekr.20050110191444:printHandlers
+#@-node:AGP.20250415230112.2330:loadOnePlugin
+#@+node:AGP.20250415230112.2331:printHandlers
 def printHandlers (moduleName=None):
     
     if moduleName:
@@ -271,8 +271,8 @@ def printHandlers (moduleName=None):
         if moduleName in (None,key):
             for tag in tags:
                 print '%25s %s' % (tag,key)
-#@-node:ekr.20050110191444:printHandlers
-#@+node:ekr.20031218072017.3444:registerExclusiveHandler
+#@-node:AGP.20250415230112.2331:printHandlers
+#@+node:AGP.20250415230112.2332:registerExclusiveHandler
 def registerExclusiveHandler(tags, fn):
     
     """ Register one or more exclusive handlers"""
@@ -306,8 +306,8 @@ def registerOneExclusiveHandler(tag, fn):
     else:
         bunch = g.Bunch(fn=fn,moduleName=moduleName,tag='handler')
         handlers = [bunch]
-#@-node:ekr.20031218072017.3444:registerExclusiveHandler
-#@+node:ekr.20031218072017.3443:registerHandler
+#@-node:AGP.20250415230112.2332:registerExclusiveHandler
+#@+node:AGP.20250415230112.2333:registerHandler
 def registerHandler(tags,fn):
     
     """ Register one or more handlers"""
@@ -342,8 +342,8 @@ def registerOneHandler(tag,fn):
         
     # g.trace(tag) ; g.printList(items)
     handlers[tag] = items
-#@-node:ekr.20031218072017.3443:registerHandler
-#@+node:ekr.20050110182317:unloadOnePlugin
+#@-node:AGP.20250415230112.2333:registerHandler
+#@+node:AGP.20250415230112.2334:unloadOnePlugin
 def unloadOnePlugin (moduleOrFileName,verbose=False):
     
     if moduleOrFileName [-3:] == ".py":
@@ -361,8 +361,8 @@ def unloadOnePlugin (moduleOrFileName,verbose=False):
         bunches = handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
         handlers[tag] = bunches
-#@-node:ekr.20050110182317:unloadOnePlugin
-#@+node:ekr.20041111123313:unregisterHandler
+#@-node:AGP.20250415230112.2334:unloadOnePlugin
+#@+node:AGP.20250415230112.2335:unregisterHandler
 def unregisterHandler(tags,fn):
     
     import types
@@ -388,11 +388,11 @@ def unregisterOneHandler (tag,fn):
                 fn_list.remove(fn)
             handlers[tag] = fn_list
             # g.trace(handlers.get(tag))
-#@-node:ekr.20041111123313:unregisterHandler
-#@+node:ktenney.20060628092017.1:baseLeoPlugin
+#@-node:AGP.20250415230112.2335:unregisterHandler
+#@+node:AGP.20250415230112.2336:baseLeoPlugin
 class baseLeoPlugin(object):
     #@    <<docstring>>
-    #@+node:ktenney.20060628092017.2:<<docstring>>
+    #@+node:AGP.20250415230112.2337:<<docstring>>
     """A Convenience class to simplify plugin authoring
     
     .. contents::
@@ -499,15 +499,15 @@ class baseLeoPlugin(object):
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
         
     """
-    #@-node:ktenney.20060628092017.2:<<docstring>>
+    #@-node:AGP.20250415230112.2337:<<docstring>>
     #@nl
     #@    <<baseLeoPlugin declarations>>
-    #@+node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
+    #@+node:AGP.20250415230112.2338:<<baseLeoPlugin declarations>>
     import leoGlobals as g
-    #@-node:ktenney.20060628092017.3:<<baseLeoPlugin declarations>>
+    #@-node:AGP.20250415230112.2338:<<baseLeoPlugin declarations>>
     #@nl
     #@    @+others
-    #@+node:ktenney.20060628092017.4:__init__
+    #@+node:AGP.20250415230112.2339:__init__
     def __init__(self, tag, keywords):
         
         """Set self.c to be the ``commander`` of the active node
@@ -515,8 +515,8 @@ class baseLeoPlugin(object):
                     
         self.c = keywords['c']
         self.commandNames = []
-    #@-node:ktenney.20060628092017.4:__init__
-    #@+node:ktenney.20060628092017.5:setCommand
+    #@-node:AGP.20250415230112.2339:__init__
+    #@+node:AGP.20250415230112.2340:setCommand
     def setCommand(self, commandName, handler, 
                     shortcut = None, pane = 'all', verbose = True):
         
@@ -531,8 +531,8 @@ class baseLeoPlugin(object):
         self.handler = handler
         self.c.k.registerCommand (commandName, shortcut, handler, 
                                 pane, verbose)
-    #@-node:ktenney.20060628092017.5:setCommand
-    #@+node:ktenney.20060628092017.6:setMenuItem
+    #@-node:AGP.20250415230112.2340:setCommand
+    #@+node:AGP.20250415230112.2341:setMenuItem
     def setMenuItem(self, menu, commandName = None, handler = None):
         
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
@@ -552,8 +552,8 @@ class baseLeoPlugin(object):
             
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
-    #@-node:ktenney.20060628092017.6:setMenuItem
-    #@+node:ktenney.20060628092017.7:setButton
+    #@-node:AGP.20250415230112.2341:setMenuItem
+    #@+node:AGP.20250415230112.2342:setButton
     def setButton(self, buttonText = None, commandName = None, color = None):
         
         """Associate an existing command with a 'button'
@@ -573,9 +573,9 @@ class baseLeoPlugin(object):
         script = "c.k.simulateCommand('%s')" % self.commandName
         self.g.makeScriptButton(self.c, script=script, 
                                 buttonText = buttonText, bg = color)
-    #@-node:ktenney.20060628092017.7:setButton
+    #@-node:AGP.20250415230112.2342:setButton
     #@-others
-#@-node:ktenney.20060628092017.1:baseLeoPlugin
+#@-node:AGP.20250415230112.2336:baseLeoPlugin
 #@-others
-#@-node:ekr.20031218072017.3439:@thin leoPlugins.py
+#@-node:AGP.20250415230112.2321:@thin leoPlugins.py
 #@-leo

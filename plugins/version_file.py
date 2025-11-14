@@ -1,10 +1,10 @@
-#@+leo-ver=4-thin
-#@+node:AGP.20240902191147:@thin version_file.py
+#@+leo-ver=4
+#@+node:@file version_file.py
 #@<< docstring >>
-#@+node:AGP.20240902191147.1:<< docstring >>
+#@+node:<< docstring >>
 '''A plugin to update a VERSION file'''
 #@nonl
-#@-node:AGP.20240902191147.1:<< docstring >>
+#@-node:<< docstring >>
 #@nl
 
 #@@language python
@@ -13,26 +13,26 @@
 # Contributed by agp
 
 #@<< imports >>
-#@+node:AGP.20240902191147.2:<< imports >>
+#@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
 import time,os
-#@-node:AGP.20240902191147.2:<< imports >>
+#@-node:<< imports >>
 #@nl
 __version__ = '1.0'
 
 current_knode = None
     
 #@+others
-#@+node:AGP.20240902191147.3:init
+#@+node:init
 def init ():
     leoPlugins.registerHandler("save2", on_save)
     g.plugin_signon(__name__)
             
     return True
 #@nonl
-#@-node:AGP.20240902191147.3:init
-#@+node:AGP.20240902191147.4:on_save
+#@-node:init
+#@+node:on_save
 def on_save(tag,keywords):
     c = keywords.get("c")
     if not c: return
@@ -47,8 +47,8 @@ def on_save(tag,keywords):
     
     
 #@nonl
-#@-node:AGP.20240902191147.4:on_save
-#@+node:AGP.20240902191425:XupdateVersionFile()
+#@-node:on_save
+#@+node:XupdateVersionFile()
 def XupdateVersionFile(filename):
     #print "update version",filename
     path = os.path
@@ -80,8 +80,8 @@ def XupdateVersionFile(filename):
                 pass
         
 #@nonl
-#@-node:AGP.20240902191425:XupdateVersionFile()
-#@+node:AGP.20240903161242:updateVersionFile()
+#@-node:XupdateVersionFile()
+#@+node:updateVersionFile()
 def updateVersionFile(filename,opendir):
     #print "update version",filename
     #path = os.path
@@ -122,8 +122,8 @@ def updateVersionFile(filename,opendir):
         
     os.chdir(oldcwd)
 #@nonl
-#@-node:AGP.20240903161242:updateVersionFile()
+#@-node:updateVersionFile()
 #@-others
 #@nonl
-#@-node:AGP.20240902191147:@thin version_file.py
+#@-node:@file version_file.py
 #@-leo

@@ -1,5 +1,5 @@
-#@+leo-ver=4-thin
-#@+node:edream.110203113231.753:@thin image.py
+#@+leo-ver=4
+#@+node:@file image.py
 '''Handle @image nodes.'''
 
 #@+at
@@ -13,7 +13,7 @@
 #@@tabwidth -4
 
 #@<< imports >>
-#@+node:ekr.20050101090207.1:<< imports >>
+#@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
 
@@ -26,10 +26,10 @@ except ImportError:
     #g.es_exception()
     ImageTk = None
 #@nonl
-#@-node:ekr.20050101090207.1:<< imports >>
+#@-node:<< imports >>
 #@nl
 #@<< version history >>
-#@+node:ekr.20060619092335:<< version history >>
+#@+node:<< version history >>
 #@@nocolor
 
 #@+at
@@ -40,13 +40,13 @@ except ImportError:
 # 1.3exe AGP: Using ImageTk... require PIL/Pillow
 #@-at
 #@nonl
-#@-node:ekr.20060619092335:<< version history >>
+#@-node:<< version history >>
 #@nl
 
 __version__ = "1.3" # Set version for the plugin handler.
 
 #@+others
-#@+node:edream.110203113231.754:onSelect
+#@+node:onSelect
 def onSelect (tag,keywords):
 
     new_v = keywords.get("new_v")
@@ -54,7 +54,7 @@ def onSelect (tag,keywords):
     if h[:7] == "@image ":
         filename = h[7:]
         #@        << Select Image >>
-        #@+node:edream.110203113231.755:<< Select Image >>
+        #@+node:<< Select Image >>
         # Display the image file in the text pane, if you can find the file
         a = g.app
         c = keywords.get("c")
@@ -111,11 +111,11 @@ def onSelect (tag,keywords):
         else:
             g.es("warning: missing image file")
         #@nonl
-        #@-node:edream.110203113231.755:<< Select Image >>
+        #@-node:<< Select Image >>
         #@nl
 #@nonl
-#@-node:edream.110203113231.754:onSelect
-#@+node:edream.110203113231.756:onUnselect
+#@-node:onSelect
+#@+node:onUnselect
 def onUnselect (tag,keywords):
 
     a = g.app
@@ -124,7 +124,7 @@ def onUnselect (tag,keywords):
         h = old_v.headString()
         if h[:7] == "@image ":
             #@            << Unselect Image >>
-            #@+node:edream.110203113231.757:<< Unselect Image >>
+            #@+node:<< Unselect Image >>
             # Erase image if it was previously displayed
             a = g.app ; c = keywords.get("c")
             
@@ -137,13 +137,13 @@ def onUnselect (tag,keywords):
             # And forget about it
             a.gsimage = None
             a.gsphoto = None
-            #@-node:edream.110203113231.757:<< Unselect Image >>
+            #@-node:<< Unselect Image >>
             #@nl
     else: # Leo is initializing.
         a.gsphoto = None # Holds our photo file
         a.gsimage = None # Holds our image instance within the text pane
 #@nonl
-#@-node:edream.110203113231.756:onUnselect
+#@-node:onUnselect
 #@-others
 
 import os
@@ -159,5 +159,5 @@ if Tk: # Ok for unit testing.
         leoPlugins.registerHandler("unselect1", onUnselect)
         g.plugin_signon(__name__)
 #@nonl
-#@-node:edream.110203113231.753:@thin image.py
+#@-node:@file image.py
 #@-leo
