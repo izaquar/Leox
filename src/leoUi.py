@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:AGP.20250415230112.2925:@thin leoGui.py
+#@+node:AGP.20250415230112.2925:@thin leoUi.py
 #@@first
 
 """A module containing the base leoGui class.
@@ -19,13 +19,13 @@ import leoFind
 import leoTkinterDialog
 
 import leoColor
-#import leoMenu
+
 import leoUndo
-import leoGui
+
 import leoNodes
 from leoNodes import position
 import leoFind
-#import leoTkinterMenu
+
 import leo
 
 import tkFont
@@ -41,45 +41,92 @@ import traceback
 import _ctypes
 import re
 
-#@<< About handling events >>
-#@+node:AGP.20250415230112.2798:<< About handling events >>
-#@+at
-# Leo must handle events or commands that change the text in the outline or 
-# body
-# panes. We must ensure that headline and body text corresponds to the vnode 
-# and
-# tnode corresponding to presently selected outline, and vice versa. For 
-# example,
-# when the user selects a new headline in the outline pane, we must ensure 
-# that:
-# 
-# 1) All vnodes and tnodes have up-to-date information and
-# 
-# 2) the body pane is loaded with the correct data.
-# 
-# Early versions of Leo attempted to satisfy these conditions when the user
-# switched outline nodes. Such attempts never worked well; there were too many
-# special cases. Later versions of Leo use a much more direct approach: every
-# keystroke in the body pane updates the presently selected tnode immediately.
-# 
-# The leoTree class contains all the event handlers for the tree pane, and the
-# leoBody class contains the event handlers for the body pane. The following
-# convenience methods exists:
-# 
-# - body.updateBody & tree.updateBody:
-#     Called by k.masterCommand after any keystroke not handled by 
-# k.masterCommand.
-#     These are suprising complex.
-# 
-# - body.bodyChanged & tree.headChanged:
-#     Called by commands throughout Leo's core that change the body or 
-# headline.
-#     These are thin wrappers for updateBody and updateTree.
-#@-at
-#@-node:AGP.20250415230112.2798:<< About handling events >>
-#@nl
 
 #@+others
+#@+node:AGP.20260224172326:Globals
+#@+node:AGP.20260224172735:create_window()
+def create_window():
+    
+    g.doHook("start1")  # Load plugins. 
+    
+    if app.killed: exit() # Support for g.app.forceShutdown.
+    
+    if app.gui == None: app.createTkGui() # Create the default gui if needed.Plugins may have create app.gui.
+    
+    #app.initing = False # New in 4.3: clear g.app.initing _before_ creating the frame.
+                            # "idle" hooks may now call g.app.forceShutdown.
+    
+    # Create the main frame.   it and all queued messages.
+    if fileName:
+        if g.os_path_exists(fileName):
+            ok, frame = g.openWithFileName(fileName,None)
+            c = frame.c
+            #if ok:
+            #    return frame.c,frame
+    else:
+        print "new commander"
+        # Create a _new_ frame & indicate it is the startup window.
+        c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+    
+        frame.setInitialWindowGeometry()
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    
+        frame.startupWindow = True
+        
+        g.doHook("new",old_c=None,c=c,new_c=c)  # 3/2/05: Call the 'new' hook for compatibility with plugins.
+
+    # Report the failure to open the file.
+    #if fileName:
+    #    g.es("File not found: " + fileName)
+
+    frame.show()
+    
+    if not frame: exit()
+    
+    if app.disableSave:
+        g.es("disabling save commands",color=g.theme['error'])
+    
+    app.writeWaitingLog()
+    
+    p = c.currentPosition()
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    
+    if not fileName:
+        c.redraw_now()
+    
+    #c.bodyWantsFocus()
+    frame.tree.focus_set()
+#@nonl
+#@-node:AGP.20260224172735:create_window()
+#@+node:AGP.20260224172029:createRootWindow()
+def createRootWindow():
+
+    """Create a hidden Tk root window."""
+
+    self.root = root = Tk.Tk()
+    
+    root.withdraw()
+    
+    from binascii import unhexlify
+    
+    wid = g.app.gui.root.winfo_id()
+    
+    root.title("Leo Main Window")
+    
+    
+    self.setDefaultIcon()
+    if g.app.config:
+        self.getDefaultConfigFont(g.app.config)
+        
+    root.withdraw()
+    
+    
+
+    return root
+#@-node:AGP.20260224172029:createRootWindow()
 #@+node:AGP.20251128113631.2:class HISTORY
 class HISTORY(Tk.Entry):
     #@    @+others
@@ -688,10 +735,7 @@ class keyHandlerClass:
 
     #@    @+others
     #@+node:AGP.20260224075828.1:__init__()
-    def __init__ (self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
-        
-        self.c = c
-        
+    def __init__ (self):    
         self.special_keys = ('Caps_Lock', 'Num_Lock', 'Control_L', 'Alt_L','Shift_L',
                                  'Control_R', 'Alt_R','Shift_R','Win_L','Win_R')
                                  
@@ -704,27 +748,13 @@ class keyHandlerClass:
                             'slash':'/'
                             }
         
-        self.getShortcuts()
+        #self.getShortcuts()
+        self.shortcuts = {}
         
         if leo.app.gui.root is not None:
             #print "bindall"
             leo.app.gui.root.bind_all('<Key>', self)
-        
-        body = c.frame.body
-        
-        if body and hasattr(body,"on_key"):
-            
-            #body.bind('<Key>', self)
-            body.bind('<Key>', body.on_key,add="+")
-            
-            btags =  body.bindtags()
-            print "keyHandlerClass",btags
-            print body.bind('<Key>')
-            
-        tree = c.frame.tree
-        if tree and hasattr(tree,"bind"):
-            tree.bind('<Key>', self)
-        
+    
         
         
         
@@ -737,7 +767,7 @@ class keyHandlerClass:
     #@-node:AGP.20260224075828.1:__init__()
     #@+node:AGP.20260224075828.2:__call__()
     def __call__(self,event):
-        print "keyHandler()"+":"+event.char+":"+event.keysym
+        #print "keyHandler()"+":"+event.keysym+":"+event.char
         
         char = event.char
         keysym = event.keysym
@@ -760,16 +790,16 @@ class keyHandlerClass:
         if trans:#len(keysym) > 1:
             statelist.append(trans)
         else:
-            statelist.append(keysym.upper())
+            statelist.append(keysym.title())
         
         keystroke =  "-".join(statelist)#.lower()
         
         print keystroke,char,keysym
         if keystroke in self.shortcuts:
-            print keystroke,"in shortcuts"
+            #print keystroke,"in shortcuts"
             cmd = self.shortcuts[keystroke]
             if cmd:                                 #call command
-                print keystroke,cmd
+                print "keyHandler()->",keystroke,cmd
                 cmd(event)
                 return "break"
         
@@ -779,20 +809,26 @@ class keyHandlerClass:
     #@-node:AGP.20260224075828.2:__call__()
     #@+node:AGP.20260224075828.3:getShortcuts()
     def getShortcuts(self):
-        
+        c = leo.c
         # get cmd name to func
-        PublicCommands = self.c.leoCommands.getPublicCommands()
+        PublicCommands = c.leoCommands.getPublicCommands()
+        PublicCommands.update(c.editCommands.getPublicCommands())
+        PublicCommands.update(c.searchCommands.getPublicCommands())
+        
         cmdkeys  =  PublicCommands.keys()
         cmdkeys.sort()    
         commands = {}
         
         settings = leo.config.settings
         #shortcut = key,cmdname
+        
+        #inverted_dict = {value: key for key, value in my_dict.items()}
         shortcuts = self.shortcuts = {}
         
         for cmd in cmdkeys:
             if cmd in settings:
-                shortcuts[settings[cmd]] = PublicCommands[cmd]
+                shortcuts[settings[cmd].title()] = PublicCommands[cmd]
+                print settings[cmd].title(),cmd
             #cmdname = cmd.replace("-","").lower()
             #commands[cmdname] = PublicCommands[cmd]
         
@@ -841,8 +877,8 @@ class keyHandlerClass:
     #@-node:AGP.20260224075828.6:finishCreate()
     #@-others
 #@-node:AGP.20260224075828:class keyHandlerClass - moded #agpkey
-#@+node:AGP.20251128111642:class leoUi
-class leoUi():
+#@+node:AGP.20251128111642:class leoGui
+class leoGui():
     
     """A class encapulating all calls to tkinter."""
     
@@ -867,6 +903,8 @@ class leoUi():
         self.win32clipboard = None
         self.defaultFont = None
         self.defaultFontFamily = None
+        
+        self.keyHandler = None
     #@-node:AGP.20251128111642.13:__init__()
     #@+node:AGP.20250415230112.2949:guiName
     def guiName(self):
@@ -1631,7 +1669,7 @@ class leoUi():
     #@-node:AGP.20251128111642.76:isTextWidget
     #@-node:AGP.20251128111642.28:app.gui.Tkinter.utils
     #@-others
-#@-node:AGP.20251128111642:class leoUi
+#@-node:AGP.20251128111642:class leoGui
 #@+node:AGP.20251128113631.32:class leoFrame
 class leoFrame():
     
@@ -1864,6 +1902,8 @@ class leoFrame():
         f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
         #f.splitVerticalFlag = True  # agp
         
+        leo.gui.keyHandler = c.keyHandler = c.k = self.keyHandler = keyHandlerClass()
+        
         #@    @+others
         #@+node:AGP.20251128113631.37:Toplevel
         #f.createOuterFrames()
@@ -2008,14 +2048,14 @@ class leoFrame():
         #@-node:AGP.20251128113631.40:Create first tree node
         #@-others
         
-        
+        self.keyHandler.getShortcuts()
         
         f.menu = leoMenu(f)
             # c.finishCreate calls f.createMenuBar later.
         
         
         
-        c.keyHandler = c.k = k = keyHandlerClass(c,useGlobalKillbuffer=True,useGlobalRegisters=True)
+        
     
         
         
@@ -3415,7 +3455,7 @@ class leoFrame():
     #@-node:AGP.20251128113631.136:cutText
     #@+node:AGP.20251128113631.137:pasteText
     def pasteText (self,event=None,middleButton=False):
-        print "pastext"
+        #print "pastext"
         '''Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
     
@@ -3852,6 +3892,7 @@ class leoTree(Tk.Text):
         self.nline = 0
         self.nlist = []
         self.currentv = None
+        self.current_line = 0 #1 based index
         self.lclick_done = False
         
         self.dragging = None
@@ -3860,6 +3901,7 @@ class leoTree(Tk.Text):
         self.colorizer = leoColor.colorizer(c,None)
         self.colorizer.sync_tags(self)
         
+        self.bind('<Key>', leo.gui.keyHandler)
         self.bind('<Double-Button-1>',self.on_box_click)
         self.bind('<Motion>',self.void_event)
         #self.bind('<MouseWheel>',self.on_mw)
@@ -3903,10 +3945,11 @@ class leoTree(Tk.Text):
         
         #@    @+others
         #@+node:AGP.20251128113631.157:node entry
-        self.entry = Tk.Entry(self,name='head',font=self['font'])
+        self.entry = Tk.Text(self,name='headentry',font=self['font'],height=1,padx=0,pady=0)
         self.entry.config(highlightthickness=1)
         #self.entry.bind('<Unmap>',self.on_entry_unmap)
         self.entry.bind('<Key>',self.on_entry_key)
+        self.entry.bind('<FocusOut>',self.on_entry_focusout)
             
         self.entry_index = None
         #@nonl
@@ -3956,6 +3999,8 @@ class leoTree(Tk.Text):
         self.stayInTree = True
         self.redrawCount = 0
         self.canvas = self
+        self._editPosition = None
+        self.true_enter = False
         
         
     #@-node:AGP.20251128113631.156:__init__()
@@ -4161,7 +4206,7 @@ class leoTree(Tk.Text):
         branch = 0
         icons = self.icons
         
-        text.insert("end"," ")
+        text.insert("end"," ",())
         nim += 1
         
         linend = "%i.end" % nline
@@ -4211,13 +4256,13 @@ class leoTree(Tk.Text):
         text.insert("end",v.headString())
         text.tag_add('head',"%i.%i" % (nline,nim), linend)
         
-        """if text == self and v == self.current_v:
-            self.tag_add('cnode',"%i.%i" % (nline,nim), linend)
+        if v == self.current_v and text == self:
+            self.tag_add('cnode',"%i.%i" % (nline,nim), linend+"+1c")
             if self.scroll:
                 self.scroll_line = nline
                 #print "drawscroll"
                 self.yview_scroll(nline, 'units')
-                #self.see("insert")"""
+                #self.see("insert")
         
         text.mark_set("%i" % id(v),"%i.0" % nline)
         text.insert("%i.end" % nline,"\n")
@@ -4266,8 +4311,12 @@ class leoTree(Tk.Text):
     #@+node:AGP.20251207163021:node_from_index()
     def node_from_index(self,index = 'current'):    
         line = int(self.index(index ).split(".")[0])-1
-        return self.nlist[line]
         
+        nlist = self.nlist
+        if line < len(self.nlist):
+            return self.nlist[line]
+        
+        return None
         
         #nid = self.mark_previous(index)
         #while nid in ('insert','tk::anchor1'):
@@ -4311,10 +4360,6 @@ class leoTree(Tk.Text):
     #@+node:AGP.20251128113631.169:render() - redraw_now
     def render(self,scroll=False):
         
-        #traceback.print_stack()
-        if g.app.quitting or self.frame not in g.app.windowList:
-            return
-        
         if self.time:
             self.time = time.clock()
         
@@ -4350,6 +4395,7 @@ class leoTree(Tk.Text):
             else:
                 v_node = c.rootPosition().v
             
+            
             while v_node:
                 nline = self.node_render(v_node,nline,self.nlist)
                 
@@ -4359,10 +4405,10 @@ class leoTree(Tk.Text):
                 
         #g.doHook("after-redraw-outline",c=c)
         
-        nline = self.node_to_line(self.current_v)
-        if nline != 0:
-            hs = self.tag_nextrange("head", "%i.0" % nline)[0]
-            self.tag_add('cnode',hs, "%i.end+1c" % nline)
+        #nline = self.node_to_line(self.current_v)
+        #if nline != 0:
+        #    hs = self.tag_nextrange("head", "%i.0" % nline)[0]
+        #    self.tag_add('cnode',hs, "%i.end+1c" % nline)
                     
         """if text == self and v == self.current_v:
             self.tag_add('cnode',"%i.%i" % (nline,nim), linend)
@@ -4386,9 +4432,13 @@ class leoTree(Tk.Text):
     def select(self,p,updateBeadList=True,v=None):
         #import traceback ; traceback.print_stack()
         
+        
+        c = self.c
         self.end_edit()
         
         if not v:
+            if not p:
+                return
             v = p.v
         else:
             p = position(v)
@@ -4416,7 +4466,7 @@ class leoTree(Tk.Text):
                     old_v.t.scrollBarSpot = body.yview()
                     old_v.t.insertSpot = frame.body.getInsertionPoint()
     
-    
+            
             g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             
             
@@ -4445,7 +4495,8 @@ class leoTree(Tk.Text):
                     body.mark_set("insert","1.0")
             
             
-            c.setCurrentPosition(p)
+            
+            c.setCurrentPosition(p)###
             
             if hasattr(p.t,"mod"):
                 mod = p.t.mod.split(".")
@@ -4457,15 +4508,26 @@ class leoTree(Tk.Text):
                     c.frame.StatusLabel.config(text="")
             else:
                 c.frame.StatusLabel.config(text="")
-        
+            
             g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             
             if self.node_expand_to(v): #need_redraw
                 self.redraw()
             
-            else:       #simply set the tag
-                nline = self.node_to_line(v)
+            else:       #simply set the selection tag, for clones too
+                #nline = self.node_to_line(v)
+                nline = 0
+                while 1:
+                    try:
+                        nline = self.nlist.index(v,nline) + 1 # raise ValueError when not found
+                        hs = self.tag_nextrange("head", "%i.0" % nline)[0]
+                        self.tag_add('cnode',hs, "%i.end+1c" % nline)
+                        
+                    except:
+                        break
+                
+                """
                 if nline != 0:
                     hs = self.tag_nextrange("head", "%i.0" % nline)[0]
                     self.tag_add('cnode',hs, "%i.end+1c" % nline)
@@ -4474,10 +4536,17 @@ class leoTree(Tk.Text):
                 else:
                     self.redraw(scroll=False)
                     
+                """
+    #@nonl
     #@-node:AGP.20251128113631.170:select()
     #@+node:AGP.20251128113631.172:begin_edit()
-    def begin_edit(self,v):
-        nline = self.node_to_line(v)
+    def begin_edit(self,v,nline=None):
+        print "begin_edit()"
+        self.end_edit()
+        
+        if not nline:
+            nline = self.node_to_line(v)
+            
         if nline != 0:
                 
             self.config(state="normal") #--------------------------
@@ -4488,7 +4557,9 @@ class leoTree(Tk.Text):
                 
             self.delete(*range)
             entry = self.entry
-            entry.insert(0,oh)
+            entry.delete("1.0",'end')
+            #entry.insert("1.0",oh)
+            entry.insert("1.0",oh)
             entry.config(width=len(oh)+1)
             self.window_create(range[0],window = entry)
             entry.focus_set()
@@ -4498,6 +4569,7 @@ class leoTree(Tk.Text):
             self.edit_vnode = v
             self.entry_index = range[0]
             self.entry_line = nline
+            print "begin_edit(2)",range[0],oh
                 
             
     #@nonl
@@ -4506,12 +4578,21 @@ class leoTree(Tk.Text):
     def end_edit(self):
         
         if self.entry_index:    #already editing
+            print "end_edit()"
             self.config(state="normal") #--------------------------
-            new_headline = self.entry.get()
-            self.entry.delete(0,'end')
+            #print self.window_names()
+            
+            #new_headline = self.entry.get("1.0","end")
+            new_headline = self.entry.get("1.0","1.end")
+            #self.entry.delete(0,'end')
+            self.entry.delete("1.0",'end')
+            
+            self.tag_remove('cnode','1.0','end')
             self.window_configure(self.entry_index,window='')
             self.insert(self.entry_index,new_headline)
+            
             self.tag_add('head',self.entry_index,"%i.end" % self.entry_line)
+            self.tag_add('cnode',self.entry_index, "%i.end+1c" % self.entry_line)
             
             self.colorizer.colorize_headline(position(self.edit_vnode),self,self.entry_line)
             self.config(state="disabled") #-------------------------
@@ -4521,6 +4602,7 @@ class leoTree(Tk.Text):
             
             #old OnHeadChanged
             if new_headline != self.old_headline:
+                print "onheadchanged"
                 c = self.c ; u = c.undoer
                 undoType='Typing'
                 ch = "\r"
@@ -4544,6 +4626,7 @@ class leoTree(Tk.Text):
                 g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
             
                 #agp qlink
+                """
                 if g.qlinks != None:
                     for k in g.qlinks.keys():
                         if k == p:
@@ -4552,7 +4635,7 @@ class leoTree(Tk.Text):
                             headw = qlink.font.measure(head)
                             qlink.itemconfigure(qlink.qtextid,text=head)
                             qlink.coords(qlink.qtextid,headw/2,qlink.midh)
-        
+                """
             
         
                 #agp
@@ -4567,6 +4650,29 @@ class leoTree(Tk.Text):
             self.true_enter = False
     #@nonl
     #@-node:AGP.20251128113631.173:end_edit()
+    #@+node:AGP.20260501152354:Getters/Setters (tree)
+    def getEditTextDict(self,v):
+        # New in 4.2: the default is an empty list.
+        return self.edit_text_dict.get(v,[])
+    
+    def editPosition(self):
+        return self._editPosition
+    
+    def setEditPosition(self,p):
+        self._editPosition = p
+    #@-node:AGP.20260501152354:Getters/Setters (tree)
+    #@+node:AGP.20260414195137:editPosition()
+    def editPosition(self):
+        return position(self.currentv)
+    #@nonl
+    #@-node:AGP.20260414195137:editPosition()
+    #@+node:AGP.20260414200317:edit_widget(p)
+    def edit_widget(self,p):
+        """Returns the Tk.Edit widget for position p."""
+        #self.begin_edit(p.v)
+        return self
+    #@nonl
+    #@-node:AGP.20260414200317:edit_widget(p)
     #@+node:AGP.20251128113631.174:save_scroll()
     def save_scroll(self):
         self.scroll_fraction =  (int(self.index('end').split('.')[0])-1) * self.yview()[0]
@@ -4579,8 +4685,10 @@ class leoTree(Tk.Text):
     #@-node:AGP.20251128113631.175:load_scroll()
     #@+node:AGP.20251128113631.176:Events
     #@+node:AGP.20251128113631.188:on_box_click()
-    def on_box_click(self,event,p=None):
-        #print "boxclick"
+    def on_box_click(self,event,p=None): #also bound to double left click
+        print "boxclick"
+        
+        self.end_edit()
         c = self.c ; p1 = c.currentPosition()
         
         if not p:
@@ -4589,6 +4697,8 @@ class leoTree(Tk.Text):
             #    nid = self.mark_previous(nid)
             #v = _ctypes.PyObj_FromPtr(int(nid))
             v = self.node_from_index()
+            if not v:
+                return "break"
             p = position(v)
         else:
             v = p.v
@@ -4597,31 +4707,37 @@ class leoTree(Tk.Text):
         
         self.save_scroll()
         
+        #print v_node,c.hoistStack,c.rootPosition().v
+        #print c.rootPosition().v
         c.beginUpdate()
         try:
             if not g.doHook("boxclick1",c=c,p=p,v=p,event=event):
         
                 if v != c.currentPosition().v:
                     #self.end_edit()
+                    
+                    
                     self.select(None,v=v)
-            
+                    
                 if p.isExpanded():
                     p.contract()
                 else:
                     p.expand()
+                    
         
                 if self.stayInTree:
                     c.treeWantsFocus()
                 else:
                     c.bodyWantsFocus()
             
-            g.doHook("boxclick2",c=c,p=p,v=p,event=event)
-        finally:
-            c.endUpdate(scroll=False)
-            self.load_scroll()
+            #g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+            
+        except Exception,e:
+            print e
+        c.endUpdate(scroll=False)
+        self.load_scroll()
         
         self.lclick_done = True
-        
         return "break"
             
     
@@ -4640,6 +4756,13 @@ class leoTree(Tk.Text):
         
     #@nonl
     #@-node:AGP.20251128113631.186:on_entry_key()
+    #@+node:AGP.20260413085305:on_entry_focusout()
+    def on_entry_focusout(self,event):
+        self.end_edit()
+    
+        
+    #@nonl
+    #@-node:AGP.20260413085305:on_entry_focusout()
     #@+node:AGP.20251128113631.185:on_entry_unmap()
     def on_entry_unmap(self,event):
         head_txt = self.entry.get()
@@ -4686,8 +4809,8 @@ class leoTree(Tk.Text):
             self.select(None,v=v)
         
         else: # edit label
-            
-            self.begin_edit(v)
+            nline = int(self.index('current' ).split(".")[0])
+            self.begin_edit(v,nline)
                 
         self.lclick_done = True
         return 'break'
@@ -4914,7 +5037,9 @@ class leoTree(Tk.Text):
         #c = self.c ; p1 = c.currentPosition()
         #print "on_left_click"
         if not self.lclick_done:
-            self.select(None,v=self.node_from_index())
+            v = self.node_from_index()
+            if v :
+                self.select(None,v=v)
         
         self.lclick_done = False
     #@nonl
@@ -5279,6 +5404,8 @@ class leoQlink(Tk.Text):
         
         return False
     #@-node:AGP.20251205184430:on_right_click()
+    #@+node:AGP.20260225200026:on delete node
+    #@-node:AGP.20260225200026:on delete node
     #@-others
 #@nonl
 #@-node:AGP.20251128113631.204:class leoQlink
@@ -5301,17 +5428,25 @@ class leoBody(Tk.Text):
         Tk.Text.__init__(self,parentFrame, name='bodytext', bd=0, relief="flat", 
                             setgrid=0, wrap='non',padx=10,pady=10)
         
+        import leoEditCommands
         
-        #self.createBindings()
+        #Key events sequence: keyhandler -> before_key -> Text -> after_key
+        # keyhandler -> app level events (open,save etc...)
+        # before_key -> special key event (insert tab, newline etc...)
+        # Text -> default widget behaviour
+        # after_key -> update changed data, flash matching bracket etc...
+        self.bind('<Double-Button-1>',self.on_double_left_click)
+        self.bind('<Key>', leo.gui.keyHandler)#,add="+") #after the default handler
+        self.bind('<Key>', self.on_before_key,add="+")
         
+    
+        btags = list(self.bindtags())
+        btags.insert(2,"pcb") #post class bindings
+        self.bindtags( tuple(btags) )#tuple(btags[:2] + ["pcb"] + btags[2:]) )
         
-        #self.bind('<Key>', c.keyHandler.keyHandler)
-        #print "bind",self.bind('<Key>')
-        #if c.k:
-        #    print "bindk"
-        #    self.bind('<Key>', c.k)
-        #self.bind('<Key>', self.on_key,add="+")
-        #print "bindk",c.k
+        self.bind_class('pcb','<Key>', self.on_after_key)
+        #print body.bind('<Key>')
+        #print body.bindtags()
         
         
         
@@ -5378,90 +5513,6 @@ class leoBody(Tk.Text):
             w.bind(kind,bodyClickCallback)
     #@nonl
     #@-node:AGP.20251128113631.209:createBindings()
-    #@+node:AGP.20251128113631.210:XcreateControl()
-    def XcreateControl (self,frame,parentFrame,p):
-        
-        c = self.c
-        
-        
-        self.numberOfEditors = 1
-        name = '1'
-        self.totalNumberOfEditors = 1
-        
-        orient = c.config.getString('editor_orientation') or 'horizontal'
-        if orient not in ('horizontal','vertical'): orient = 'horizontal'
-       
-        w = self.createTextWidget(frame,parentFrame,p,name)
-        self.editorWidgets[name] = w
-    
-        return w
-    #@-node:AGP.20251128113631.210:XcreateControl()
-    #@+node:AGP.20251128113631.211:XcreateTextWidget()
-    def XcreateTextWidget (self,frame,parentFrame,p,name):   #agp
-        
-        c = self.c
-        
-        #parentFrame.configure(bg='LightSteelBlue1')
-    
-        wrap = c.config.getBool('body_pane_wraps')
-        wrap = g.choose(wrap,"word","none")
-        
-        # Setgrid=1 cause severe problems with the font panel.
-        body = w = Tk.Text(parentFrame, name='bodytext', bd=0, relief="flat", setgrid=0, wrap=wrap,padx=10,pady=10)
-        
-        body.nScroll = 3
-        #body.zoomable = True
-        body.on_zoom = self.on_zoom
-        
-        body.bind("<MouseWheel>",frame.TopMouseWheel)
-        #print str(body),body['font']
-        
-        frame.bodyBar = self.bodyBar = bodyBar = SCROLLBAR(parentFrame,1)
-        
-        
-        def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-            # g.trace(x,y)
-            if hasattr(w,'leo_scrollBarSpot'):
-                w.leo_scrollBarSpot = (x,y)
-            return bodyBar.set(x,y)
-       
-        body['yscrollcommand'] = yscrollCallback # bodyBar.set
-        bodyBar.command =  body.yview   #['command']
-        bodyBar.pack(side="right", fill="y")
-        
-        
-        
-        # Always create the horizontal bar.
-        frame.bodyXBar = self.bodyXBar = bodyXBar = SCROLLBAR(parentFrame,0)
-        body['xscrollcommand'] = bodyXBar.set
-        bodyXBar.command = body.xview
-        bodyXBar.pack(side="bottom", fill="x")
-            
-        body.pack(expand=1,fill="both")
-    
-        self.wrapState = wrap
-    
-        if 0: # Causes the cursor not to blink.
-            body.configure(insertofftime=0)
-            
-        # Inject ivars
-        if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-        else:
-            w.leo_p = p.copy()
-            w.leo_v = body.leo_p.v
-        w.leo_active = True
-        w.leo_frame = parentFrame
-        w.leo_name = name
-        w.leo_label = None
-        w.leo_label_s = None
-        w.leo_scrollBarSpot = None
-        w.leo_insertSpot = None
-        w.leo_selection = None
-    
-        return w
-    #@nonl
-    #@-node:AGP.20251128113631.211:XcreateTextWidget()
     #@+node:AGP.20251128113631.212:setColorFromConfig
     def setColorFromConfig (self,w=None):   #agp
         
@@ -5567,21 +5618,312 @@ class leoBody(Tk.Text):
                 self.recolorWidget(w)
         c.frame.bodyWantsFocus()
     #@-node:AGP.20251129213151.3:updateEditors
-    #@+node:AGP.20251202213207:on_key()
-    def on_key(self,event):
-        print "body.on_key()",event.keysym
-        special_keys = ('Caps_Lock', 'Num_Lock', 'Control_L', 'Alt_L','Shift_L', 'Control_R', 'Alt_R','Shift_R','Win_L','Win_R')
+    #@+node:AGP.20260307212508:Key event funcs
+    #@+node:AGP.20260414132651:on_double_left_click()
+    def on_double_left_click(self,event):
+        c.editCommands.extendToWord(event)
+        return "break"
+    #@nonl
+    #@-node:AGP.20260414132651:on_double_left_click()
+    #@+node:AGP.20251202213207:on_before_key()
+    def on_before_key(self,event):
         
-        keysym = event.keysym        
-            
-        if keysym in special_keys:
+        #Key events sequence: keyhandler -> before_key -> Text -> after_key
+        # keyhandler -> app level events (open,save etc...)
+        # before_key -> special key event (insert tab, newline etc...)
+        # Text -> default widget behaviour
+        # after_key -> update changed data, flash matching bracket etc...
+        
+        
+        # here are intercepted:
+            # the tab(\t) key for custom tab indent
+            # the newline(\n \r) key for auto indent
+            # the  backspace(\b backspace) key for back delete indent
+        
+        #print "body.on_before_key()",event.keysym,event.char#,self.get_text()
+        # 	Alt : 0x20000 | shift : 0x0001 | 	Control : 0x0004
+        
+        if event.state & 0x20005: # we dont interfer if state keys are pressed
             return
         
-        self.onBodyChanged('typing')
+        
+        #special_keys = ('Caps_Lock', 'Num_Lock', 'Control_L', 'Alt_L','Shift_L', 'Control_R', 'Alt_R','Shift_R','Win_L','Win_R')
+        
+        keysym = event.keysym        
+        ch = event.char
+        
+        
+        
+        if keysym == "Return":
+            self.insert_newline()
+            self.onBodyChanged('typing')
+            return "break"
+            
+        if keysym == "BackSpace":
+            self.backspace()
+            self.onBodyChanged('typing')
+            return "break"
+            
+        if keysym == "Tab":
+            self.insert_tab()
+            self.onBodyChanged('typing')
+            return "break"
+            
+        
+        
+        #self.onBodyChanged('typing')
         
     #@nonl
-    #@-node:AGP.20251202213207:on_key()
-    #@+node:AGP.20251129213151:onBodyChanged (tkBody)
+    #@-node:AGP.20251202213207:on_before_key()
+    #@+node:AGP.20260308153458:on_after_key()
+    def on_after_key(self,event):
+        
+        """key strokes are intercepted and default tk text handler is overriden beacause:
+             -this allow to update colorizing and node body text at each key.
+            -the undo mechanism of the text widget is also overriden .
+            -backspace (ie space vs tab deletion.
+        """
+        
+        #print "body.on_after_key()",event.char,event.keysym,self.get_text()
+        
+        
+        ch = event.char
+        
+        if ch != "" and ch in "([{}])":
+            i = self.index("insert")
+            self.flash_matching_bracket(i+"-1c",ch)
+        
+        
+        
+        
+        
+        self.onBodyChanged('typing')
+    #@nonl
+    #@-node:AGP.20260308153458:on_after_key()
+    #@+node:AGP.20260307214251:get_selected_range()
+    def get_selected_range(self,sort=True):
+        
+        """Return a tuple representing the selected range of t, a Tk.Text widget.
+        
+        Return a tuple giving the insertion point if no range of text is selected."""
+    
+        # To get the current selection.
+        try:
+            sel = self.tag_ranges("sel")
+        except Exception:
+            return 0,0
+    
+        if len(sel) == 2:
+            i,j = sel
+            if sort:
+                if t.compare(i, ">", j):
+                    i,j = j,i
+            return i,j
+        else:
+            # Return the insertion point if there is no selected text.
+            insert = self.index("insert")
+        
+        return insert,insert
+    #@-node:AGP.20260307214251:get_selected_range()
+    #@+node:AGP.20260307214559:get_text()
+    def get_text(self,range=None):
+        
+        """Return all the text of Tk.Text widget t converted to unicode."""
+        if range:
+            start, end = range
+            if start and end and start != end:
+                s = t.get(start,end)
+        else:
+            start, end = "1.0","end-1c"
+        
+        
+        s = self.get(start, end) # New in 4.4.1: use end-1c.
+    
+        if s is None:
+            return u""
+        else:
+            return g.toUnicode(s,g.app.tkEncoding)
+    #@-node:AGP.20260307214559:get_text()
+    #@+node:AGP.20260307212508.5:flash_matching_bracket()
+    def flash_matching_bracket (self,index,ch):
+    
+        s = self.get_text()
+        i = g.app.gui.toPythonIndex(s,self,index)
+        
+        d = {}
+        if ch in '([{':
+            #for z in xrange(len(self.openBracketsList)):
+            #    d [self.openBracketsList[z]] = self.closeBracketsList[z]
+            d = {'(':')','[':']','{':'}'}
+            reverse = False # Search forward
+        else:
+            #for z in xrange(len(self.openBracketsList)):
+            #    d [self.closeBracketsList[z]] = self.openBracketsList[z]
+            d = {')':'(',']':'[','}':'{'}
+            reverse = True # Search backward
+    
+        delim2 = d.get(ch)
+        #print "flash_matching_bracket()",i,ch,delim2,":",s
+        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+        
+        if j != -1:
+            j = g.app.gui.toGuiIndex(s,self,j)
+            self.flashCharacter(j)
+    #@-node:AGP.20260307212508.5:flash_matching_bracket()
+    #@+node:AGP.20260307212508.6:flashCharacter()
+    def flashCharacter(self,i):
+        
+        bg      =  'DodgerBlue1'
+        fg      =  'white'
+        flashes =  2
+        delay   =  75
+    
+        def addFlashCallback(w,count,index):
+            self.tag_add('flash',index,'%s+1c' % (index))
+            self.after(delay,removeFlashCallback,self,count-1,index)
+        
+        def removeFlashCallback(w,count,index):
+            self.tag_remove('flash','1.0','end')
+            if count > 0:
+                self.after(delay,addFlashCallback,self,count,index)
+    
+        try:
+            self.tag_configure('flash',foreground=fg,background=bg)
+            addFlashCallback(self,flashes,i)
+        except Exception,e:
+            #print e
+            pass
+    #@-node:AGP.20260307212508.6:flashCharacter()
+    #@+node:AGP.20260307212508.9:insert_tab()
+    def insert_tab(self,directives=None):
+        
+        if not directives:
+            directives = g.scanDirectives(self.c)
+        
+        tab_width = directives.get("tabwidth",c.tab_width)
+        w = self
+        
+        i,j = self.get_selected_range()
+        if i != j:
+            w.delete(i,j)
+        
+        if tab_width > 0:
+            w.insert("insert",'\t')
+        
+        else:
+            # Get the preceeding characters.
+            s = w.get("insert linestart","insert")
+        
+            # Compute n, the number of spaces to insert.
+            width = g.computeWidth(s,tab_width)
+            n = abs(tab_width) - (width % abs(tab_width))
+            w.insert("insert",' ' * n)
+        
+        return True #changed
+    #@nonl
+    #@-node:AGP.20260307212508.9:insert_tab()
+    #@+node:AGP.20260308132701:insert_newline()
+    def insert_newline(self):
+        w = self
+        i,j = self.get_selected_range()
+    
+        if i != j:
+            # No auto-indent if there is selected text.
+            w.delete(i,j)
+            w.insert(i,"\n")
+            return True
+        else:
+            w.insert(i,"\n")
+            allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
+            if allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p) :
+                # No auto-indent if in @nocolor mode or after a Change command.
+                self.updateAutoIndent(p,w)
+                return True
+                
+        return False
+    #@nonl
+    #@-node:AGP.20260308132701:insert_newline()
+    #@+node:AGP.20260307212508.8:udpateAutoIndent
+    # By David McNab:
+    def updateAutoIndent (self,p,w):
+    
+        c = self.c ; d = g.scanDirectives(c)
+        tab_width = d.get("tabwidth",c.tab_width) # Get the previous line.
+        s = w.get("insert linestart - 1 lines","insert linestart -1c")
+        
+        # Add the leading whitespace to the present line.
+        junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+        
+        if s and len(s) > 0 and s [ -1] == ':':
+            # For Python: increase auto-indent after colons.
+            if c.frame.body.colorizer.scanColorDirectives(p) == "python":
+                width += abs(tab_width)
+        if True:#self.smartAutoIndent:
+            # Determine if prev line has unclosed parens/brackets/braces
+            bracketWidths = [width] ; tabex = 0
+            for i in range(0,len(s)):
+                if s [i] == '\t':
+                    tabex += tab_width-1
+                if s [i] in '([{':
+                    bracketWidths.append(i+tabex+1)
+                elif s [i] in '}])' and len(bracketWidths) > 1:
+                    bracketWidths.pop()
+            width = bracketWidths.pop()
+        
+        ws = g.computeLeadingWhitespace(width,tab_width)
+        if ws:
+            w.insert("insert",ws)
+    #@-node:AGP.20260307212508.8:udpateAutoIndent
+    #@+node:AGP.20260307224015:backspace()
+    def backspace(self,event=None):
+        
+        '''Delete the character to the left of the cursor.'''
+        
+        #c = self.c ; p = c.currentPosition()
+        w = self#.editWidget(event)
+        if not w: return
+        
+        i,j = self.get_selected_range()
+        # g.trace(wname,i,j)
+    
+        #self.beginCommand()
+        d = g.scanDirectives(self.c)
+        
+        tab_width = d.get("tabwidth",c.tab_width)
+        
+        changed = True
+        
+        if i != j:
+            w.delete(i,j)
+        elif i == '1.0':
+            changed = False # Bug fix: 1/6/06 (after a5 released).
+        elif tab_width > 0:
+            w.delete('insert-1c')
+        else:
+            s = prev = w.get("insert linestart","insert")
+            n = len(prev)
+            abs_width = abs(tab_width)
+    
+            # Delete up to this many spaces.
+            n2 = (n % abs_width) or abs_width
+            n2 = min(n,n2) ; count = 0
+    
+            while n2 > 0:
+                n2 -= 1
+                ch = prev[n-count-1]
+                if ch != ' ': break
+                else: count += 1
+    
+            # Make sure we actually delete something.
+            w.delete("insert -%dc" % (max(1,count)),"insert")
+        
+        return changed
+        #self.endCommand(changed=True,setLabel=False) # Necessary to make text changes stick.
+        
+    #@nonl
+    #@-node:AGP.20260307224015:backspace()
+    #@-node:AGP.20260307212508:Key event funcs
+    #@+node:AGP.20251129213151:onBodyChanged()
     # This is the only key handler for the body pane.
     def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
         
@@ -5605,8 +5947,8 @@ class leoBody(Tk.Text):
         #print "body changed",changed
         
         if changed:
-            c.undoer.setUndoTypingParams(p,undoType,
-                oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+            c.undoer.setUndoTypingParams(p,undoType,oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+            
             p.v.setTnodeText(newText)
             p.v.t.insertSpot = body.getInsertionPoint()
             
@@ -5634,7 +5976,7 @@ class leoBody(Tk.Text):
             
             g.doHook("bodychanged",c=c,p=p,oldText=oldText,newText = newText)
             
-    #@-node:AGP.20251129213151:onBodyChanged (tkBody)
+    #@-node:AGP.20251129213151:onBodyChanged()
     #@+node:AGP.20251128113631.232:Focus (tkBody)
     def hasFocus (self):
         
@@ -7541,16 +7883,16 @@ class leoMenu:
                 continue # Ignore bad data
     
             
-            print label,command
+            #print label,command
             
             
             accel = leo.config.settings.get(command) or ""
             if accel == "None": accel = ""
             
             
-            print label,command,accel
+            #print label,command,accel
             accelerator = stroke = k.shortcutFromSetting(accel) or ''
-            print label,command,accelerator
+            #print label,command,accelerator
             
             label = label.replace("&","")
             
@@ -7559,7 +7901,7 @@ class leoMenu:
             if not cmd:
                 cmd = c.commandsDict.get(command,None)
             
-            print "createMenuEntries()" , label,accelerator,command,cmd
+            #print "createMenuEntries()" , label,accelerator,command,cmd
             
             self.add_command(menu, label=label, accelerator=accelerator, command=cmd)
     #@-node:AGP.20250415230112.3052:createMenuEntries
@@ -8096,6 +8438,1369 @@ class leoMenu:
     #@-node:AGP.20250415230112.3566:Tkinter menu bindings
     #@-others
 #@-node:AGP.20250415230112.3560:class leoMenu
+#@+node:AGP.20260330091637:class leoNewMenu
+"""Tkinter menu handling for Leo."""
+
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 80
+
+
+class leoNewMenu:
+    #@    @+others
+    #@+node:AGP.20260330091637.1:__init__()
+    def __init__ (self,frame):
+        
+        # Init the base class.
+        self.c = c = frame.c
+        self.frame = frame
+        self.menus = {} # Menu dictionary.
+        self.menuShortcuts = {}
+        
+        # To aid transition to emacs-style key handling.
+        self.useCmdMenu = c.config.getBool('useCmdMenu')
+        
+        self.newBinding = True
+            # True if using new binding scheme.
+            # You can set this to False in an emergency to revert to the old way.
+    
+        if 0: # Must be done much later.
+            self.defineMenuTables()
+        
+        self.top = frame.top
+        
+        self.font = None#cc.config.getFontFromParams(
+        #    'menu_text_font_family', 'menu_text_font_size',
+        #    'menu_text_font_slant',  'menu_text_font_weight',
+        #    c.config.defaultMenuFontSize)
+    
+        #@    @+others
+        #@+node:AGP.20260330093020:File
+        file_menu_entries = [
+                "New",c.new,None
+                
+            ]
+        
+        
+        
+        
+        
+        
+        
+        
+        self.file_menu = self.newTopMenu("File")
+        #@nonl
+        #@-node:AGP.20260330093020:File
+        #@-others
+    #@nonl
+    #@-node:AGP.20260330091637.1:__init__()
+    #@+node:AGP.20260330093020.1:newTopMenu()
+    def newTopMenu(self,text,postc=None):
+        
+        mb = Tk.Menubutton(self.frame.menuFrame,text)#, relief='flat',bg=bg)
+        menu = mb.m = Tk.Menu(mb,tearoff=0,postcommand=postc)
+        mb['menu'] = mb.m
+        menu.button = mb
+        
+        mb.pack(side='left')
+        
+        return menu
+    #@nonl
+    #@-node:AGP.20260330093020.1:newTopMenu()
+    #@+node:AGP.20260330091637.2:Gui-independent menu enablers
+    #@+node:AGP.20260330091637.3:updateAllMenus
+    def updateAllMenus (self):
+        
+        """The Tk "postcommand" callback called when a click happens in any menu.
+        
+        Updates (enables or disables) all menu items."""
+    
+        # Allow the user first crack at updating menus.
+        c = self.c
+        #print "update all menu"
+        if c and c.exists:
+            c.setLog()
+            p = c.currentPosition()
+        
+            if not g.doHook("menu2",c=c,p=p,v=p):
+                self.updateFileMenu()
+                self.updateEditMenu()
+                self.updateOutlineMenu()
+    #@nonl
+    #@-node:AGP.20260330091637.3:updateAllMenus
+    #@+node:AGP.20260330091637.4:updateFileMenu
+    def updateFileMenu (self):
+        
+        c = self.c ; frame = c.frame
+        if not c: return
+    
+        try:
+            enable = frame.menu.enableMenu
+            menu = frame.menu.getMenu("File")
+            enable(menu,"Revert To Saved", c.canRevert())
+            #enable(menu,"Open With...", g.app.hasOpenWithMenu)
+        except:
+            g.es("exception updating File menu")
+            g.es_exception()
+    #@-node:AGP.20260330091637.4:updateFileMenu
+    #@+node:AGP.20260330091637.5:updateEditMenu
+    def updateEditMenu (self):
+    
+        c = self.c ; frame = c.frame ; gui = g.app.gui
+        if not c: return
+        try:
+            # Top level Edit menu...
+            enable = frame.menu.enableMenu
+            menu = frame.menu.getMenu("Edit")
+            c.undoer.enableMenuItems()
+            #@        << enable cut/paste >>
+            #@+node:AGP.20260330091637.6:<< enable cut/paste >>
+            if frame.body.hasFocus():
+                data = frame.body.getSelectedText()
+                canCut = data and len(data) > 0
+            else:
+                # This isn't strictly correct, but we can't get the Tk headline selection.
+                canCut = True
+            
+            enable(menu,"Cut",canCut)
+            enable(menu,"Copy",canCut)
+            
+            data = gui.getTextFromClipboard()
+            canPaste = data and len(data) > 0
+            enable(menu,"Paste",canPaste)
+            #@-node:AGP.20260330091637.6:<< enable cut/paste >>
+            #@nl
+            if 0: # Always on for now.
+                menu = frame.menu.getMenu("Find...")
+                enable(menu,"Find Next",c.canFind())
+                flag = c.canReplace()
+                enable(menu,"Replace",flag)
+                enable(menu,"Replace, Then Find",flag)
+            # Edit Body submenu...
+            menu = frame.menu.getMenu("Edit Body...")
+            enable(menu,"Extract Section",c.canExtractSection())
+            enable(menu,"Extract Names",c.canExtractSectionNames())
+            enable(menu,"Extract",c.canExtract())
+            enable(menu,"Match Brackets",c.canFindMatchingBracket())
+        except:
+            g.es("exception updating Edit menu")
+            g.es_exception()
+    #@-node:AGP.20260330091637.5:updateEditMenu
+    #@+node:AGP.20260330091637.7:updateOutlineMenu
+    def updateOutlineMenu (self):
+    
+        c = self.c ; frame = c.frame
+        if not c: return
+    
+        p = c.currentPosition()
+        hasParent = p.hasParent()
+        hasBack = p.hasBack()
+        hasNext = p.hasNext()
+        hasChildren = p.hasChildren()
+        isExpanded = p.isExpanded()
+        isCloned = p.isCloned()
+        isMarked = p.isMarked()
+    
+        try:
+            enable = frame.menu.enableMenu
+            #@        << enable top level outline menu >>
+            #@+node:AGP.20260330091637.8:<< enable top level outline menu >>
+            menu = frame.menu.getMenu("Outline")
+            enable(menu,"Cut Node",c.canCutOutline())
+            enable(menu,"Delete Node",c.canDeleteHeadline())
+            enable(menu,"Paste Node",c.canPasteOutline())
+            enable(menu,"Paste Node As Clone",c.canPasteOutline())
+            enable(menu,"Clone Node",c.canClone()) # 1/31/04
+            enable(menu,"Sort Siblings",c.canSortSiblings())
+            enable(menu,"Hoist",c.canHoist())
+            enable(menu,"De-Hoist",c.canDehoist())
+            #@-node:AGP.20260330091637.8:<< enable top level outline menu >>
+            #@nl
+            #@        << enable expand/contract submenu >>
+            #@+node:AGP.20260330091637.9:<< enable expand/Contract submenu >>
+            menu = frame.menu.getMenu("Expand/Contract...")
+            enable(menu,"Contract Parent",c.canContractParent())
+            enable(menu,"Contract Node",hasChildren and isExpanded)
+            enable(menu,"Contract Or Go Left",(hasChildren and isExpanded) or hasParent)
+            enable(menu,"Expand Node",hasChildren and not isExpanded)
+            enable(menu,"Expand Prev Level",hasChildren and isExpanded)
+            enable(menu,"Expand Next Level",hasChildren)
+            enable(menu,"Expand To Level 1",hasChildren and isExpanded)
+            enable(menu,"Expand Or Go Right",hasChildren)
+            for i in xrange(2,9):
+                frame.menu.enableMenu(menu,"Expand To Level " + str(i), hasChildren)
+            #@-node:AGP.20260330091637.9:<< enable expand/Contract submenu >>
+            #@nl
+            #@        << enable move submenu >>
+            #@+node:AGP.20260330091637.10:<< enable move submenu >>
+            menu = frame.menu.getMenu("Move...")
+            enable(menu,"Move Down",c.canMoveOutlineDown())
+            enable(menu,"Move Left",c.canMoveOutlineLeft())
+            enable(menu,"Move Right",c.canMoveOutlineRight())
+            enable(menu,"Move Up",c.canMoveOutlineUp())
+            enable(menu,"Promote",c.canPromote())
+            enable(menu,"Demote",c.canDemote())
+            #@-node:AGP.20260330091637.10:<< enable move submenu >>
+            #@nl
+            #@        << enable go to submenu >>
+            #@+node:AGP.20260330091637.11:<< enable go to submenu >>
+            menu = frame.menu.getMenu("Go To...")
+            enable(menu,"Go Prev Visited",c.beadPointer > 1)
+            enable(menu,"Go Next Visited",c.beadPointer + 1 < len(c.beadList))
+            enable(menu,"Go To Prev Visible",c.canSelectVisBack())
+            enable(menu,"Go To Next Visible",c.canSelectVisNext())
+            if 0: # These are too slow.
+                enable(menu,"Go To Next Marked",c.canGoToNextMarkedHeadline())
+                enable(menu,"Go To Next Changed",c.canGoToNextDirtyHeadline())
+            enable(menu,"Go To Next Clone",isCloned)
+            enable(menu,"Go To Prev Node",c.canSelectThreadBack())
+            enable(menu,"Go To Next Node",c.canSelectThreadNext())
+            enable(menu,"Go To Parent",hasParent)
+            enable(menu,"Go To Prev Sibling",hasBack)
+            enable(menu,"Go To Next Sibling",hasNext)
+            #@-node:AGP.20260330091637.11:<< enable go to submenu >>
+            #@nl
+            #@        << enable mark submenu >>
+            #@+node:AGP.20260330091637.12:<< enable mark submenu >>
+            menu = frame.menu.getMenu("Mark/Unmark...")
+            label = g.choose(isMarked,"Unmark","Mark")
+            frame.menu.setMenuLabel(menu,0,label)
+            enable(menu,"Mark Subheads",hasChildren)
+            if 0: # These are too slow.
+                enable(menu,"Mark Changed Items",c.canMarkChangedHeadlines())
+                enable(menu,"Mark Changed Roots",c.canMarkChangedRoots())
+            enable(menu,"Mark Clones",isCloned)
+            #@-node:AGP.20260330091637.12:<< enable mark submenu >>
+            #@nl
+        except:
+            g.es("exception updating Outline menu")
+            g.es_exception()
+    #@-node:AGP.20260330091637.7:updateOutlineMenu
+    #@+node:AGP.20260330091637.13:hasSelection
+    # Returns True if text in the outline or body text is selected.
+    
+    def hasSelection (self):
+        
+        body = self.frame.body
+    
+        if body:
+            first, last = body.getTextSelection()
+            return first != last
+        else:
+            return False
+    #@-node:AGP.20260330091637.13:hasSelection
+    #@-node:AGP.20260330091637.2:Gui-independent menu enablers
+    #@+node:AGP.20260330091637.14:Gui-independent menu routines
+    #@+node:AGP.20260330091637.15:capitalizeMinibufferMenuName
+    def capitalizeMinibufferMenuName (self,s,removeHyphens):
+        
+        result = []
+        for i in xrange(len(s)):
+            ch = s[i]
+            prev = i > 0 and s[i-1] or ''
+            prevprev = i > 1 and s[i-2] or ''
+            if (
+                i == 0 or
+                i == 1 and prev == '&' or
+                prev == '-' or
+                prev == '&' and prevprev == '-'
+            ):
+                result.append(ch.capitalize())
+            elif removeHyphens and ch == '-':
+                result.append(' ')
+            else:
+                result.append(ch)
+        return ''.join(result)
+    #@nonl
+    #@-node:AGP.20260330091637.15:capitalizeMinibufferMenuName
+    #@+node:AGP.20260330091637.16:createMenusFromTables()
+    def createMenusFromTables(self):
+        
+        c = self.c
+        
+        #@    @+others
+        #@+node:AGP.20260330091637.17:File
+        fileMenu = self.createNewMenu("&File")
+            
+        fileMenuTopTable = [
+                '*&new',
+                ('&Open...','open-outline'),
+                '-',
+                ('&Close','close-window'),
+                ('&Save','save-file'),
+                ('Save &As','save-file-as'),
+                ('Save &To','save-file-to'),
+                ('Re&vert To Saved','revert'),
+            ]
+        
+        self.createMenuEntries(fileMenu,fileMenuTopTable)
+        
+        #self.createNewMenu("Open &With...","File")
+        #create the recent files submenu
+        
+            
+        self.add_separator(fileMenu)
+        
+        
+        #@+others
+        #@+node:AGP.20260330091637.18:recent files submenu
+        self.createNewMenu("Open Recent &File...","File")
+        c.recentFiles = c.config.getRecentFiles()
+        
+        if 0: # Not needed, and causes problems in wxWindows...
+            self.createRecentFilesMenuItems()
+        #@-node:AGP.20260330091637.18:recent files submenu
+        #@+node:AGP.20260330091637.19:read/write submenu
+        fileMenuReadWriteMenuTable = [
+                '*&read-outline-only',
+                ('Read @file &Nodes','read-at-file-nodes'),
+                ('Write &Dirty @file Nodes','write-dirty-at-file-nodes'),
+                ('Write &Missing @file Nodes','write-missing-at-file-nodes'),
+                '*write-&outline-only',
+                ('&Write @file Nodes','write-at-file-nodes'),
+            ]
+        readWriteMenu = self.createNewMenu("&Read/Write...","File")
+        self.createMenuEntries(readWriteMenu,fileMenuReadWriteMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.19:read/write submenu
+        #@+node:AGP.20260330091637.20:tangle submenu
+        fileMenuTangleMenuTable = [
+                '*tangle-&all',
+                '*tangle-&marked',
+                '*&tangle',
+            ]
+        tangleMenu = self.createNewMenu("Tan&gle...","File")
+        self.createMenuEntries(tangleMenu,fileMenuTangleMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.20:tangle submenu
+        #@+node:AGP.20260330091637.21:untangle submenu
+        fileMenuUntangleMenuTable = [
+                '*untangle-&all',
+                '*untangle-&marked',
+                '*&untangle',
+            ]
+        untangleMenu = self.createNewMenu("&Untangle...","File")
+        self.createMenuEntries(untangleMenu,fileMenuUntangleMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.21:untangle submenu
+        #@+node:AGP.20260330091637.22:import submenu
+        self.fileMenuImportMenuTable = [
+                #&: c,d,f,n,o,r,
+                '*import-&derived-file',
+                ('Import To @&file','import-at-file'),
+                ('Import To @&root','import-at-root'),
+                '*import-&cweb-files',
+                '*import-&noweb-files',
+                '*import-flattened-&outline',
+            ]
+        importMenu = self.createNewMenu("&Import...","File")
+        self.createMenuEntries(importMenu,self.fileMenuImportMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.22:import submenu
+        #@+node:AGP.20260330091637.23:export submenu
+        self.fileMenuExportMenuTable = [
+                '*export-&headlines',
+                '*outline-to-&cweb',
+                '*outline-to-&noweb',
+                '*&flatten-outline',
+                '*&remove-sentinels',
+                '*&weave',
+            ]
+        exportMenu = self.createNewMenu("&Export...","File")
+        self.createMenuEntries(exportMenu,self.fileMenuExportMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.23:export submenu
+        #@-others
+        
+        
+        self.add_separator(fileMenu)
+        
+        self.fileMenuTop3MenuTable = [
+                ('Set Leo ID','set-leo-id'),
+                ('E&xit','exit-leo')
+            ]
+        self.createMenuEntries(fileMenu,self.fileMenuTop3MenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.17:File
+        #@+node:AGP.20260330091637.24:Edit
+        self.editMenuTopTable = [
+                # &: u,r reserved for undo/redo: a,d,p,t,y.
+                # & (later): e,g,n,v.
+                ("Can't Undo",'undo'),
+                ("Can't Redo",'redo'), 
+                '-',
+                ('Cu&t','cut-text'),
+                ('Cop&y','copy-text'),
+                ('&Paste','paste-text'),
+                ('&Delete','backward-delete-char'),
+                ('Select &All','select-all'),
+                '-',
+            ]
+        
+        
+        editMenu = self.createNewMenu("&Edit")
+        self.createMenuEntries(editMenu,self.editMenuTopTable)
+        
+        
+        #@+others
+        #@+node:AGP.20260330091637.25:edit body submenu
+        self.editMenuEditBodyTable = [
+                # Shortcuts a,b,d,e,i,l,m,n,r,s,t,u
+                '*extract-&section',
+                '*extract-&names',
+                '*&extract',
+                '-',
+                '*convert-all-b&lanks',
+                '*convert-all-t&abs',
+                '*convert-&blanks',
+                '*convert-&tabs',
+                '*insert-body-&time',
+                '*&reformat-paragraph',
+                '-',
+                '*&indent-region',
+                '*&unindent-region',
+                '*&match-brackets',
+                '*add-comments',
+                '*delete-comments',
+            ]
+        
+        editBodyMenu = self.createNewMenu("Edit &Body...","Edit")
+        
+        self.createMenuEntries(editBodyMenu,self.editMenuEditBodyTable)
+        #@-node:AGP.20260330091637.25:edit body submenu
+        #@+node:AGP.20260330091637.26:edit headline submenu
+        self.editMenuEditHeadlineTable = [
+                '*edit-&headline',
+                '*&end-edit-headline',
+                '*&abort-edit-headline',
+                '*insert-headline-&time',
+                '*toggle-&angle-brackets',
+            ]
+        
+        editHeadlineMenu = self.createNewMenu("Edit &Headline...","Edit")
+        
+        self.createMenuEntries(editHeadlineMenu,self.editMenuEditHeadlineTable)
+        #@-node:AGP.20260330091637.26:edit headline submenu
+        #@+node:AGP.20260330091637.27:find submenu
+        self.editMenuFindMenuTable = [
+                # &: a,b,c,d,e,f,h,i,l,n,o,p,q,r,s,u,w,x
+                #'*&open-find-tab',
+                #'*&hide-find-tab',
+                #'*search-&with-present-options',
+                #'-',
+                '*find-&next',
+                '*find-&prev',
+                '-',
+                '*find-&all',
+                '*clone-fi&nd-all',
+                '-',
+                '*&change-next',
+                '*change-a&ll',
+                #'-',
+                #'*&find-character',
+                #'*find-character-extend-&selection',
+                #'*&backward-find-character',
+                #'*backward-find-character-&extend-selection',
+                #'-',
+                #'*&isearch-forward',
+                #'*isea&rch-backward',
+                #'*isearch-forward-rege&xp',
+                #'*isearch-backward-regex&p',
+                #'-',
+                #'*&query-replace',
+                #'*q&uery-replace-regex',
+            ]
+        
+        
+        
+        
+        findMenu = self.createNewMenu("&Find...","Edit")
+        
+        #self.createMenuEntries(findMenu,self.editMenuFindMenuTable)
+        
+        findMenu.add_command(label="Find/Change Next",accelerator="F3",command=self.c.searchCommands.findTabFindNext)
+        findMenu.add_command(label="Find/Change Prev",accelerator="F2",command=self.c.searchCommands.findTabFindPrev)
+        findMenu.add_separator()
+        findMenu.add_command(label="Find/Change All",command=self.c.searchCommands.findTabFindAll)
+        findMenu.add_command(label="Clone Find All",command=self.c.searchCommands.findTabFindAll)
+        
+        
+        #@-node:AGP.20260330091637.27:find submenu
+        #@-others
+        
+        try:        show = c.frame.body.getColorizer().showInvisibles
+        except:     show = False
+        label = g.choose(show,"Hide In&visibles","Show In&visibles")
+        self.editMenuTop2Table = [
+                '*&goto-line-number',
+                '*&execute-script',
+                (label,'toggle-invisibles'),
+                #("Setti&ngs",'open-leoSettings-leo'),
+            ]
+            
+        self.createMenuEntries(editMenu,self.editMenuTop2Table)
+        #@-node:AGP.20260330091637.24:Edit
+        #@+node:AGP.20260330091637.28:Outline
+        self.outlineMenuTopMenuTable = [
+                '*c&ut-node',
+                '*c&opy-node',
+                '*&paste-node',
+                ('Pas&te Node As Clone','paste-retaining-clones'),
+                '*&delete-node',
+                '-',
+                '*&insert-node',
+                '*&clone-node',
+                '*sort-childre&n',
+                '*&sort-siblings',
+                '-',
+                '*&hoist',
+                ('D&e-Hoist','de-hoist'), # To preserve the '-' in De-Hoist.
+                '-',
+            ]
+        
+        outlineMenu = self.createNewMenu("&Outline")
+        self.createMenuEntries(outlineMenu,self.outlineMenuTopMenuTable)
+        
+        #@+others
+        #@+node:AGP.20260330091637.29:check submenu
+        self.outlineMenuCheckOutlineMenuTable = [
+                # &: a,c,d,o
+                '*check-&outline',
+                '*&dump-outline',
+                '-',
+                '*check-&all-python-code',
+                '*&check-python-code',
+            ]
+        
+        checkOutlineMenu = self.createNewMenu("Chec&k...","Outline")
+        self.createMenuEntries(checkOutlineMenu,self.outlineMenuCheckOutlineMenuTable)
+        #@-node:AGP.20260330091637.29:check submenu
+        #@+node:AGP.20260330091637.30:expand/contract submenu
+        self.outlineMenuExpandContractMenuTable = [
+                '*&contract-all',
+                '*contract-&node',
+                '*contract-&parent',
+                '*contract-or-go-&left',
+                '-',
+                '*expand-p&rev-level',
+                '*expand-n&ext-level',
+                '*expand-and-go-right',
+                '*expand-or-go-right',
+                '-',
+                '*expand-to-level-&1',
+                '*expand-to-level-&2',
+                '*expand-to-level-&3',
+                '*expand-to-level-&4',
+                '*expand-to-level-&5',
+                '*expand-to-level-&6',
+                '*expand-to-level-&7',
+                '*expand-to-level-&8',
+                '-',
+                '*expand-&all',
+                '*expand-n&ode',
+            ]
+        
+        
+        expandMenu = self.createNewMenu("E&xpand/Contract...","Outline")
+        self.createMenuEntries(expandMenu,self.outlineMenuExpandContractMenuTable)
+        #@-node:AGP.20260330091637.30:expand/contract submenu
+        #@+node:AGP.20260330091637.31:move submenu
+        self.outlineMenuMoveMenuTable = [
+                ('Move &Down','move-outline-down'),
+                ('Move &Left','move-outline-left'),
+                ('Move &Right','move-outline-right'),
+                ('Move &Up','move-outline-up'),
+                '-',
+                '*&promote',
+                '*&demote',
+            ]
+        
+        moveSelectMenu = self.createNewMenu("&Move...","Outline")
+        self.createMenuEntries(moveSelectMenu,self.outlineMenuMoveMenuTable)
+        #@-node:AGP.20260330091637.31:move submenu
+        #@+node:AGP.20260330091637.32:mark submenu
+        self.outlineMenuMarkMenuTable = [
+                '*&mark',
+                '*mark-&subheads',
+                '*mark-changed-&items',
+                '*mark-changed-&roots',
+                '*mark-&clones',
+                '*&unmark-all',
+            ]
+        
+        markMenu = self.createNewMenu("M&ark/Unmark...","Outline")
+        self.createMenuEntries(markMenu,self.outlineMenuMarkMenuTable)
+        #@-node:AGP.20260330091637.32:mark submenu
+        #@+node:AGP.20260330091637.33:create goto submenu
+        self.outlineMenuGoToMenuTable = [
+                # &: a,c,d,e,g,i,l,m,n,o,p,r,s,t,v,x
+                ('Go Prev Visite&d','go-back'),
+                ('Go Next Visited','go-forward'),
+                ('Go To P&rev Node','goto-prev-node'),
+                ('Go To N&ext Node','goto-next-node'),
+                '-',
+                ('Go To Next &Marked','goto-next-marked'),
+                ('Go To Next &Changed','goto-next-changed'),
+                ('Go To Next &Clone','goto-next-clone'),
+                '-',
+                ('&Go To First Node','goto-first-node'),
+                ('G&o To Prev Visible','goto-prev-visible'),
+                ('Go To Ne&xt Visible','goto-next-visible'),
+                ('Go To L&ast Node','goto-last-node'),
+                ('Go To Last &Visible','goto-last-visible'),
+                '-',
+                ('Go To &Parent','goto-parent'),
+                ('Go To First &Sibling','goto-first-sibling'),
+                ('Go To Last S&ibling','goto-last-sibling'),
+                ('Go To Prev Sibli&ng','goto-prev-sibling'),
+                ('Go To Next Siblin&g','goto-next-sibling'),
+            ]
+        
+        gotoMenu = self.createNewMenu("&Go To...","Outline")
+        self.createMenuEntries(gotoMenu,self.outlineMenuGoToMenuTable)
+        #@-node:AGP.20260330091637.33:create goto submenu
+        #@-others
+        #@-node:AGP.20260330091637.28:Outline
+        #@+node:AGP.20260330091637.34:Help
+        self.helpMenuTable = [
+                # &: a,b,c,d,f,h,l,m,n,o,p,r,s,t,u
+                ('&About Leox...',   'about-leo'),
+                #('Online &Home Page',       'open-online-home'),
+                #'*open-online-&tutorial',
+                #'*open-&users-guide',
+                '-',
+                ('Documentation',   'open-leoDocs-leo'),
+                ('Plugins',         'open-leoPlugins-leo'),
+                ('Settings',        'open-leoSettings-leo'),
+                #('Open &myLeoSettings.leo', 'open-myLeoSettings-leo'),
+                #('Open scr&ipts.leo',       'open-scripts-leo'),
+                #'-',
+                #'*help-for-&command',
+                #'-',
+                #'*&apropos-autocompletion',
+                #'*apropos-&bindings',
+                #'*apropos-&find-commands',
+                '-',
+                '*pri&nt-bindings',
+                #'*print-c&ommands',
+            ]
+        
+        helpMenu = self.createNewMenu("&Help")
+        self.createMenuEntries(helpMenu,self.helpMenuTable)
+        #@nonl
+        #@-node:AGP.20260330091637.34:Help
+        #@-others
+        
+        g.doHook("create-optional-menus",c=c)
+        
+        #if self.useCmdMenu:
+        #    self.createCmndsMenuFromTable()
+            
+        
+        
+        
+    #@-node:AGP.20260330091637.16:createMenusFromTables()
+    #@+node:AGP.20260330091637.35:Helpers
+    #@+node:AGP.20260330091637.36:canonicalizeMenuName & cononicalizeTranslatedMenuName
+    def canonicalizeMenuName (self,name):
+        
+        return ''.join([ch for ch in name.lower() if ch.isalnum()])
+        
+    def canonicalizeTranslatedMenuName (self,name):
+        
+        return ''.join([ch for ch in name.lower() if ch not in u'& \t\n\r'])
+    
+    #@-node:AGP.20260330091637.36:canonicalizeMenuName & cononicalizeTranslatedMenuName
+    #@+node:AGP.20260330091637.37:computeOldStyleShortcutKey
+    def computeOldStyleShortcutKey (self,s):
+        
+        '''Compute the old-style shortcut key for @shortcuts entries.'''
+        
+        return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
+    #@-node:AGP.20260330091637.37:computeOldStyleShortcutKey
+    #@+node:AGP.20260330091637.38:createMenuEntries
+    def createMenuEntries (self,menu,table,dynamicMenu=False):
+            
+        '''Create a menu entry from the table.
+        New in 4.4: this method shows the shortcut in the menu,
+        but this method **never** binds any shortcuts.'''
+        
+        c = self.c ; f = c.frame ; k = c.k
+        if g.app.unitTesting: return
+        for data in table:
+            
+            if type(data) == type(''):
+        # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+                if data == '-':
+                    self.add_separator(menu)
+                    continue
+    
+                command = data.replace('*','').replace('&','').lower()
+                label = command.replace('-',' ').title()
+    
+        
+            elif type(data) in (type(()), type([])) and len(data) in (2,3):
+                if len(data) == 2:
+                    # New in 4.4b2: command can be a minibuffer-command name (a string)
+                    label,command = data
+                else:
+                    # New in 4.4: we ignore shortcuts bound in menu tables.
+                    label,junk,command = data
+                
+                if label in (None,'-'):
+                    self.add_separator(menu)
+                    continue # That's all.
+            else:
+                g.trace('bad data in menu table: %s' % repr(data))
+                continue # Ignore bad data
+    
+            
+            #print label,command
+            
+            
+            accel = leo.config.settings.get(command) or ""
+            if accel == "None": accel = ""
+            
+            
+            #print label,command,accel
+            accelerator = stroke = k.shortcutFromSetting(accel) or ''
+            #print label,command,accelerator
+            
+            label = label.replace("&","")
+            
+            # get cmd name to func
+            cmd = c.leoCommands.getPublicCommands().get(command,None)
+            if not cmd:
+                cmd = c.commandsDict.get(command,None)
+            
+            #print "createMenuEntries()" , label,accelerator,command,cmd
+            
+            self.add_command(menu, label=label, accelerator=accelerator, command=cmd)
+    #@-node:AGP.20260330091637.38:createMenuEntries
+    #@+node:AGP.20260330091637.39:createMenuItemsFromTable
+    def createMenuItemsFromTable (self,menuName,table,dynamicMenu=False):
+        
+        try:
+            menu = self.getMenu(menuName)
+            if menu == None:
+                print "menu does not exist: ",menuName
+                g.es("menu does not exist: ",menuName)
+                return
+            self.createMenuEntries(menu,table,dynamicMenu=dynamicMenu)
+        except:
+            s = "exception creating items for %s menu" % menuName
+            g.es_print(s)
+            g.es_exception()
+            
+        g.app.menuWarningsGiven = True
+    #@-node:AGP.20260330091637.39:createMenuItemsFromTable
+    #@+node:AGP.20260330091637.40:createNewMenu agp
+    def createNewMenu (self,menuName,parentName=None,before=None,postc=None):
+        
+        if not postc:
+            postc=self.updateAllMenus
+        
+        try:
+            parent = None
+            
+            menu = self.getMenu(menuName)
+            if menu:
+                g.es("menu already exists: " + menuName,color="red")
+            else:
+                if parentName and parentName!='top':
+                    parent = self.getMenu(parentName)
+            
+                menu = self.new_menu(parent,tearoff=0,postc=postc)
+                
+                label = self.getRealMenuName(menuName)
+                amp_index = label.find("&")
+                label = label.replace("&","")
+                
+                self.setMenu(menuName,menu)
+                
+                
+                if parent:
+                    #print parent,parentName,menuName
+                    if before: # Insert the menu before the "before" menu.
+                        index_label = self.getRealMenuName(before)
+                        amp_index = index_label.find("&")
+                        index_label = index_label.replace("&","")
+                        index = parent.index(index_label)
+                        self.insert_cascade(parent,index=index,label=label,menu=menu,underline=amp_index)
+                    else:
+                        self.add_cascade(parent,label=label,menu=menu,underline=amp_index)
+                else:
+                    menu.mb.config(text=label)
+                    
+                return menu
+        except:
+            g.es("exception creating " + menuName + " menu")
+            g.es_exception()
+            return None
+    #@-node:AGP.20260330091637.40:createNewMenu agp
+    #@+node:AGP.20260330091637.41:createOpenWithMenuFromTable & helper
+    def createOpenWithMenuFromTable (self,table):
+        
+        '''Entries in the table passed to createOpenWithMenuFromTable are
+    tuples of the form (commandName,shortcut,data).
+    
+    - command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+    - shortcut is a string describing a shortcut, just as for createMenuItemsFromTable.
+    - data is a tuple of the form (command,arg,ext).
+    
+    Leo executes command(arg+path) where path is the full path to the temp file.
+    If ext is not None, the temp file has the given extension.
+    Otherwise, Leo computes an extension based on the @language directive in effect.'''
+    
+        c = self.c
+        g.app.openWithTable = table # Override any previous table.
+        # Delete the previous entry.
+        parent = self.getMenu("File")
+        label = self.getRealMenuName("Open &With...")
+        amp_index = label.find("&")
+        label = label.replace("&","")
+        try:
+            index = parent.index(label)
+            parent.delete(index)
+        except:
+            try:
+                index = parent.index("Open With...")
+                parent.delete(index)
+            except: return
+        # Create the Open With menu.
+        openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+        self.setMenu("Open With...",openWithMenu)
+        # Create the menu items in of the Open With menu.
+        for entry in table:
+            if len(entry) != 3: # 6/22/03
+                g.es("createOpenWithMenuFromTable: invalid data",color="red")
+                return
+        self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+        for entry in table:
+            name,shortcut,data = entry
+            c.k.bindOpenWith (shortcut,name,data)
+    #@+node:AGP.20260330091637.42:createOpenWithMenuItemsFromTable
+    def createOpenWithMenuItemsFromTable (self,menu,table):
+        
+        '''Create an entry in the Open with Menu from the table.
+        
+        Each entry should be a sequence with 2 or 3 elements.'''
+        
+        c = self.c ; k = c.k
+    
+        if g.app.unitTesting: return
+    
+        for data in table:
+            #@        << get label, accelerator & command or continue >>
+            #@+node:AGP.20260330091637.43:<< get label, accelerator & command or continue >>
+            ok = (
+                type(data) in (type(()), type([])) and
+                len(data) in (2,3)
+            )
+                
+            if ok:
+                if len(data) == 2:
+                    label,openWithData = data ; accelerator = None
+                else:
+                    label,accelerator,openWithData = data
+                    accelerator = k.shortcutFromSetting(accelerator)
+                    accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+            else:
+                g.trace('bad data in Open With table: %s' % repr(data))
+                continue # Ignore bad data
+            #@-node:AGP.20260330091637.43:<< get label, accelerator & command or continue >>
+            #@nl
+            realLabel = self.getRealMenuName(label)
+            underline=realLabel.find("&")
+            realLabel = realLabel.replace("&","")
+            callback = self.defineOpenWithMenuCallback(openWithData)
+        
+            self.add_command(menu,label=realLabel,
+                accelerator=accelerator or '',
+                command=callback,underline=underline)
+    #@-node:AGP.20260330091637.42:createOpenWithMenuItemsFromTable
+    #@-node:AGP.20260330091637.41:createOpenWithMenuFromTable & helper
+    #@+node:AGP.20260330091637.44:createRecentFilesMenuItems (leoMenu)
+    def createRecentFilesMenuItems (self):
+        
+        c = self.c
+        recentFilesMenu = self.getMenu("Open Recent File...")
+        
+        # Delete all previous entries.
+        self.delete_range(recentFilesMenu,0,len(c.recentFiles)+2)
+        
+        # Create the first two entries.
+        table = (
+            ("Clear Recent Files",None,c.clearRecentFiles),
+            ("-",None,None))
+        self.createMenuEntries(recentFilesMenu,table)
+        
+        # Create all the other entries.
+        i = 3
+        for name in c.recentFiles:
+            def recentFilesCallback (event=None,c=c,name=name):
+                c.openRecentFile(name)
+            accel_ch = (string.digits + string.letters.upper()) # Not a unicode problem.
+            label = "%s %s" % (accel_ch[i-2],g.computeWindowTitle(name))
+            self.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
+            i += 1
+    #@-node:AGP.20260330091637.44:createRecentFilesMenuItems (leoMenu)
+    #@+node:AGP.20260330091637.45:defineMenuCallback
+    def defineMenuCallback(self,command,name,minibufferCommand):
+        
+        def legacyMenuCallback(event=None,self=self,command=command,label=name):
+                
+            c = self.c
+            return c.doCommand(command,label)
+        
+        return legacyMenuCallback
+    #@-node:AGP.20260330091637.45:defineMenuCallback
+    #@+node:AGP.20260330091637.46:defineOpenWithMenuCallback
+    def defineOpenWithMenuCallback(self,data):
+        
+        # The first parameter must be event, and it must default to None.
+        def openWithMenuCallback(event=None,self=self,data=data):
+            return self.c.openWith(data=data)
+    
+        return openWithMenuCallback
+    #@-node:AGP.20260330091637.46:defineOpenWithMenuCallback
+    #@+node:AGP.20260330091637.47:deleteMenu
+    def deleteMenu (self,menuName):
+    
+        try:
+            menu = self.getMenu(menuName)
+            if menu:
+                self.destroy(menu)
+                self.destroyMenu(menuName)
+            else:
+                g.es("can't delete menu: " + menuName)
+        except:
+            g.es("exception deleting " + menuName + " menu")
+            g.es_exception()
+    #@-node:AGP.20260330091637.47:deleteMenu
+    #@+node:AGP.20260330091637.48:deleteMenuItem
+    def deleteMenuItem (self,itemName,menuName="top"):
+        
+        """Delete itemName from the menu whose name is menuName."""
+    
+        try:
+            menu = self.getMenu(menuName)
+            if menu:
+                realItemName = self.getRealMenuName(itemName)
+                self.delete(menu,realItemName)
+            else:
+                g.es("menu not found: " + menuName)
+        except:
+            g.es("exception deleting " + itemName + " from " + menuName + " menu")
+            g.es_exception()
+    #@-node:AGP.20260330091637.48:deleteMenuItem
+    #@+node:AGP.20260330091637.49:get/setRealMenuName & setRealMenuNamesFromTable
+    # Returns the translation of a menu name or an item name.
+    
+    def getRealMenuName (self,menuName):
+    
+        cmn = self.canonicalizeTranslatedMenuName(menuName)
+        return g.app.realMenuNameDict.get(cmn,menuName)
+        
+    def setRealMenuName (self,untrans,trans):
+    
+        cmn = self.canonicalizeTranslatedMenuName(untrans)
+        g.app.realMenuNameDict[cmn] = trans
+    
+    def setRealMenuNamesFromTable (self,table):
+    
+        try:
+            for untrans,trans in table:
+                self.setRealMenuName(untrans,trans)
+        except:
+            g.es("exception in setRealMenuNamesFromTable")
+            g.es_exception()
+    #@-node:AGP.20260330091637.49:get/setRealMenuName & setRealMenuNamesFromTable
+    #@+node:AGP.20260330091637.50:getMenu, setMenu, destroyMenu
+    def getMenu (self,menuName):
+    
+        cmn = self.canonicalizeMenuName(menuName)
+        return self.menus.get(cmn)
+        
+    def setMenu (self,menuName,menu):
+        
+        cmn = self.canonicalizeMenuName(menuName)
+        self.menus [cmn] = menu
+        
+    def destroyMenu (self,menuName):
+        
+        cmn = self.canonicalizeMenuName(menuName)
+        del self.menus[cmn]
+    #@-node:AGP.20260330091637.50:getMenu, setMenu, destroyMenu
+    #@-node:AGP.20260330091637.35:Helpers
+    #@-node:AGP.20260330091637.14:Gui-independent menu routines
+    #@+node:AGP.20260330091637.51:Activate menu commands
+    #@+node:AGP.20260330091637.52:tkMenu.activateMenu
+    def activateMenu (self,menuName):
+        
+        c = self.c ;  top = c.frame.top
+        topx,topy = top.winfo_rootx(),top.winfo_rooty()
+        menu = c.frame.menu.getMenu(menuName)
+    
+        if menu:
+            d = self.computeMenuPositions()
+            x = d.get(menuName)
+            if x is None:
+                 x = 0 ; g.trace('oops, no menu offset: %s' % menuName)
+            
+            menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
+        else:
+            g.trace('oops, no menu: %s' % menuName)
+    #@-node:AGP.20260330091637.52:tkMenu.activateMenu
+    #@+node:AGP.20260330091637.53:tkMenu.computeMenuPositions
+    def computeMenuPositions (self):
+        
+        # A hack.  It would be better to set this when creating the menus.
+        menus = ('File','Edit','Outline','Plugins','Cmds','Window','Help')
+        
+        # Compute the *approximate* x offsets of each menu.
+        d = {}
+        n = 0
+        for z in menus:
+            menu = self.getMenu(z)
+            fontName = menu.cget('font')
+            font = tkFont.Font(font=fontName)
+            # print '%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x()
+            d [z] = n
+            # A total hack: sorta works on windows.
+            n += font.measure(z+' '*4)+1
+            
+        return d
+    #@-node:AGP.20260330091637.53:tkMenu.computeMenuPositions
+    #@-node:AGP.20260330091637.51:Activate menu commands
+    #@+node:AGP.20260330091637.54:getMacHelpMenu
+    def getMacHelpMenu (self):
+        
+        try:
+            topMenu = self.getMenu('top')
+            # Use the name argument to create the special Macintosh Help menu.
+            helpMenu = Tk.Menu(topMenu,name='help',tearoff=0)
+            self.add_cascade(topMenu,label='Help',menu=helpMenu,underline=0)
+            self.createMenuEntries(helpMenu,self.helpMenuTable)
+            return helpMenu
+    
+        except Exception:
+            g.trace('Can not get MacOS Help menu')
+            g.es_exception()
+            return None
+    #@nonl
+    #@-node:AGP.20260330091637.54:getMacHelpMenu
+    #@+node:AGP.20260330091637.55:Tkinter menu bindings
+    # See the Tk docs for what these routines are to do
+    #@+node:AGP.20260330091637.56:Methods with Tk spellings
+    #@+node:AGP.20260330091637.57:add_cascade
+    def add_cascade (self,parent,label,menu,underline):
+        
+        """Wrapper for the Tkinter add_cascade menu method."""
+        
+        return parent.add_cascade(label=label,menu=menu,underline=underline)
+    #@-node:AGP.20260330091637.57:add_cascade
+    #@+node:AGP.20260330091637.58:add_command
+    def add_command (self,menu,**keys):
+        
+        """Wrapper for the Tkinter add_command menu method."""
+    
+        return menu.add_command(**keys)
+    #@-node:AGP.20260330091637.58:add_command
+    #@+node:AGP.20260330091637.59:add_separator
+    def add_separator(self,menu):
+        
+        """Wrapper for the Tkinter add_separator menu method."""
+    
+        menu.add_separator()
+    #@-node:AGP.20260330091637.59:add_separator
+    #@+node:AGP.20260330091637.60:bind
+    def bind (self,bind_shortcut,callback):
+        
+        """Wrapper for the Tkinter bind menu method."""
+        
+        # g.trace(bind_shortcut)
+    
+        return self.top.bind(bind_shortcut,callback)
+    #@-node:AGP.20260330091637.60:bind
+    #@+node:AGP.20260330091637.61:delete
+    def delete (self,menu,realItemName):
+        
+        """Wrapper for the Tkinter delete menu method."""
+    
+        return menu.delete(realItemName)
+    #@-node:AGP.20260330091637.61:delete
+    #@+node:AGP.20260330091637.62:delete_range
+    def delete_range (self,menu,n1,n2):
+        
+        """Wrapper for the Tkinter delete menu method."""
+    
+        return menu.delete(n1,n2)
+    #@-node:AGP.20260330091637.62:delete_range
+    #@+node:AGP.20260330091637.63:destroy
+    def destroy (self,menu):
+        
+        """Wrapper for the Tkinter destroy menu method."""
+    
+        return menu.destroy()
+    #@-node:AGP.20260330091637.63:destroy
+    #@+node:AGP.20260330091637.64:insert_cascade
+    def insert_cascade (self,parent,index,label,menu,underline):
+        
+        """Wrapper for the Tkinter insert_cascade menu method."""
+        
+        return parent.insert_cascade(
+            index=index,label=label,
+            menu=menu,underline=underline)
+    #@-node:AGP.20260330091637.64:insert_cascade
+    #@+node:AGP.20260330091637.65:new_menu agp
+    def new_menu(self,parent,tearoff=False,postc=None):
+        
+        """Wrapper for the Tkinter new_menu menu method."""
+        rw = g.app.root
+        bg = self.frame.menuFrame.cget('bg')
+        
+        #bg = g.colorf_mul(0.9,*colors_tof(*rw.winfo_rgb(bg)))
+        
+        
+        if parent:    
+            if self.font:
+                try:
+                    menu = Tk.Menu(parent,tearoff=tearoff,font=self.font,postcommand=postc)#,bd=0,bg=bg)
+                except Exception:
+                    g.es_exception()
+                    return Tk.Menu(parent,tearoff=tearoff,postcommand=postc)
+            else:
+                
+                menu = Tk.Menu(parent,tearoff=tearoff,bg=bg,postcommand=postc)
+                #print "menu bg",bg
+            
+        else:
+        
+            mb = Tk.Menubutton(self.frame.menuFrame)#, relief='flat',bg=bg)
+            menu = mb.m = Tk.Menu(mb,tearoff=tearoff,postcommand=postc)
+            mb['menu'] = mb.m
+            mb.m.mb = mb
+        
+            mb.pack(side='left')
+            #print menu
+            #print self.frame.iconFrame.winfo_children()
+            
+        return menu
+    #@nonl
+    #@-node:AGP.20260330091637.65:new_menu agp
+    #@+node:AGP.20260330091637.66:xnew_menu
+    def xnew_menu(self,parent,tearoff=False):
+        
+        """Wrapper for the Tkinter new_menu menu method."""
+        
+        bg= self.c.config.getColor("def_background_color")
+        
+        if self.font:
+            try:
+                return Tk.Menu(parent,tearoff=tearoff,bg=bg,font=self.font)
+            except Exception:
+                g.es_exception()
+                return Tk.Menu(parent,tearoff=tearoff,bg=bg)
+        else:
+            return Tk.Menu(parent,tearoff=tearoff,bg=bg)
+    #@-node:AGP.20260330091637.66:xnew_menu
+    #@-node:AGP.20260330091637.56:Methods with Tk spellings
+    #@+node:AGP.20260330091637.67:Methods with other spellings (Tkmenu)
+    #@+node:AGP.20260330091637.68:clearAccel
+    def clearAccel(self,menu,name):
+        
+        realName = self.getRealMenuName(name)
+        realName = realName.replace("&","")
+    
+        menu.entryconfig(realName,accelerator='')
+    #@-node:AGP.20260330091637.68:clearAccel
+    #@+node:AGP.20260330091637.69:createMenuBar
+    def createMenuBar(self,frame):
+    
+        top = frame.top
+        
+        # Note: font setting has no effect here.
+        #topMenu = Tk.Menubutton(frame.iconFrame)#,postcommand=self.updateAllMenus)#top
+        
+        # Do gui-independent stuff.
+        #self.setMenu("top",topMenu)
+        self.createMenusFromTables()
+        
+        #topMenu.pack(side='top',fill='x')
+        
+        #top.config(menu=topMenu) # Display the menu. #agp menu
+    #@-node:AGP.20260330091637.69:createMenuBar
+    #@+node:AGP.20260330091637.70:createOpenWithMenu
+    def createOpenWithMenu(self,parent,label,index,amp_index):
+        
+        '''Create a submenu.'''
+        
+        menu = Tk.Menu(parent,tearoff=0)
+        parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
+        return menu
+    #@-node:AGP.20260330091637.70:createOpenWithMenu
+    #@+node:AGP.20260330091637.71:disableMenu
+    def disableMenu (self,menu,name):
+        
+        try:
+            menu.entryconfig(name,state="disabled")
+        except: 
+            try:
+                realName = self.getRealMenuName(name)
+                realName = realName.replace("&","")
+                menu.entryconfig(realName,state="disabled")
+            except:
+                print "disableMenu menu,name:",menu,name
+                g.es_exception()
+                pass
+    #@-node:AGP.20260330091637.71:disableMenu
+    #@+node:AGP.20260330091637.72:enableMenu
+    # Fail gracefully if the item name does not exist.
+    
+    def enableMenu (self,menu,name,val):
+        
+        state = g.choose(val,"normal","disabled")
+        try:
+            menu.entryconfig(name,state=state)
+        except:
+            try:
+                realName = self.getRealMenuName(name)
+                realName = realName.replace("&","")
+                menu.entryconfig(realName,state=state)
+            except:
+                print "enableMenu menu,name,val:",menu,name,val
+                g.es_exception()
+                pass
+    #@-node:AGP.20260330091637.72:enableMenu
+    #@+node:AGP.20260330091637.73:getMenuLabel
+    def getMenuLabel (self,menu,name):
+        
+        '''Return the index of the menu item whose name (or offset) is given.
+        Return None if there is no such menu item.'''
+    
+        try:
+            index = menu.index(name)
+        except:
+            index = None
+            
+        return index
+    #@-node:AGP.20260330091637.73:getMenuLabel
+    #@+node:AGP.20260330091637.74:setMenuLabel
+    def setMenuLabel (self,menu,name,label,underline=-1):
+    
+        try:
+            if type(name) == type(0):
+                # "name" is actually an index into the menu.
+                menu.entryconfig(name,label=label,underline=underline)
+            else:
+                # Bug fix: 2/16/03: use translated name.
+                realName = self.getRealMenuName(name)
+                realName = realName.replace("&","")
+                # Bug fix: 3/25/03" use tranlasted label.
+                label = self.getRealMenuName(label)
+                label = label.replace("&","")
+                menu.entryconfig(realName,label=label,underline=underline)
+        except:
+            if not g.app.unitTesting:
+                print "setMenuLabel menu,name,label:",menu,name,label
+                g.es_exception()
+    #@-node:AGP.20260330091637.74:setMenuLabel
+    #@-node:AGP.20260330091637.67:Methods with other spellings (Tkmenu)
+    #@-node:AGP.20260330091637.55:Tkinter menu bindings
+    #@-others
+#@-node:AGP.20260330091637:class leoNewMenu
+#@-node:AGP.20260224172326:Globals
+#@+node:AGP.20260224172413:Initialisation
+#import leoGui # Do this import after app module is fully imported.
+#
+
+g.doHook("start1")  # Load plugins.
+
+app = leo.app
+
+gui = leo.gui = g.app.gui = leoGui()
+    
+g.app.root = root = g.app.gui.createRootWindow()
+    
+try:
+    g.gen_theme()
+except:
+    import traceback
+    traceback.print_exc()
+
+import leoCommands
+
+fileName = leo.fileName
+if not fileName: fileName = ""
+#@<< compute the window title >>
+#@+node:AGP.20260224174145:<< compute the window title >>
+# Set the window title and fileName
+if fileName:
+    title = g.computeWindowTitle(fileName)
+else:
+    s = "untitled"
+    n = g.app.numberOfWindows
+    if n > 0:
+        s += str(n)
+    title = g.computeWindowTitle(s)
+    g.app.numberOfWindows = n+1
+#@-node:AGP.20260224174145:<< compute the window title >>
+#@nl
+
+# Create an unfinished frame to pass to the commanders.
+frame = gui.createLeoFrame(title)
+
+# Create the commander and its subcommanders.
+leo.c = c = leoCommands.Commands(frame,fileName)
+    
+#if not app.initing:
+g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+        
+frame.finishCreate(c)
+c.finishCreate(frame)
+    
+# Create the menu last so that we can use the key handler for shortcuts.
+p = c.currentPosition()
+if not g.doHook("menu1",c=c,p=p,v=p):
+    frame.menu.createMenuBar(c.frame)   #Menus <- require (shortcut,command)
+    
+
+# Finish initing the subcommanders.
+c.undoer.clearUndoState() # Menus must exist at this point.
+    
+c.updateRecentFiles(fileName)
+    
+    
+#if not g.app.initing:
+g.doHook("after-create-leo-frame",c=c)
+
+frame.show()
+    
+#if not frame: exit()
+    
+if app.disableSave:
+    g.es("disabling save commands",color=g.theme['error'])
+    
+app.writeWaitingLog()
+    
+p = c.currentPosition()
+g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    
+if c.config.getBool('allow_idle_time_hook'):
+    g.enableIdleTimeHook()
+    
+if not fileName:
+    c.redraw_now()
+    
+#c.bodyWantsFocus()
+frame.body.focus_set()
+
+#OPEN THE FILE
+#@nonl
+#@-node:AGP.20260224172413:Initialisation
 #@-others
-#@-node:AGP.20250415230112.2925:@thin leoGui.py
+
+
+#@-node:AGP.20250415230112.2925:@thin leoUi.py
 #@-leo

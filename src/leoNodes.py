@@ -218,40 +218,23 @@
 #@-node:AGP.20250415230112.2098:<< About clones >>
 #@nl
 
-from __future__ import generators # To make the code work in Python 2.2.
+#from __future__ import generators # To make the code work in Python 2.2.
 
-use_zodb = False
 
 #@<< imports >>
 #@+node:AGP.20250415230112.2099:<< imports >>
-if use_zodb:
-    # It may be important to import ZODB first.
-    try:
-        import ZODB
-        import ZODB.FileStorage
-    except ImportError:
-        ZODB = None
-else:
-    ZODB = None
-
 import leoGlobals as g
 
 import string
 import time
+import leo
 #@nonl
 #@-node:AGP.20250415230112.2099:<< imports >>
 #@nl
 
 #@+others
 #@+node:AGP.20250415230112.2100:class tnode
-if use_zodb and ZODB:
-    class baseTnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class baseTnode (object):
-        pass
-    
-class tnode (baseTnode):
+class tnode:
     """A class that implements tnodes."""
     #@    << tnode constants >>
     #@+node:AGP.20250415230112.2101:<< tnode constants >>
@@ -262,14 +245,11 @@ class tnode (baseTnode):
     #@-node:AGP.20250415230112.2101:<< tnode constants >>
     #@nl
     #@    @+others
-    #@+node:AGP.20250415230112.2102:t.__init__
+    #@+node:AGP.20250415230112.2102:__init__()
     # All params have defaults, so t = tnode() is valid.
     
     def __init__ (self,bodyString=None,headString=None):
-    
-        # To support ZODB the code must set t._p_changed = 1 whenever
-        # t.vnodeList, t.unknownAttributes or any mutable tnode object changes.
-    
+        
         self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
         self.fileIndex = None # The immutable file index for this tnode.
         self.insertSpot = None # Location of previous insert point.
@@ -285,34 +265,21 @@ class tnode (baseTnode):
         self.vnodeList = [] # List of all vnodes pointing to this tnode.
         self._firstChild = None
     #@nonl
-    #@-node:AGP.20250415230112.2102:t.__init__
-    #@+node:AGP.20250415230112.2103:t.__repr__ & t.__str__
+    #@-node:AGP.20250415230112.2102:__init__()
+    #@+node:AGP.20250415230112.2103:__repr__() __str__()
     def __repr__ (self):
         
         return "<tnode %d>" % (id(self))
             
     __str__ = __repr__
-    #@-node:AGP.20250415230112.2103:t.__repr__ & t.__str__
-    #@+node:AGP.20250415230112.2104:t.__hash__ (only for zodb)
-    if use_zodb and ZODB:
-        
-        # The only required property is that objects
-        # which compare equal have the same hash value.
-        
-        def __hash__(self):
-    
-            return hash(g.app.nodeIndices.toString(self.fileIndex))
-            
-            # return sum([ord(ch) for ch in g.app.nodeIndices.toString(self.fileIndex)])
-    #@nonl
-    #@-node:AGP.20250415230112.2104:t.__hash__ (only for zodb)
+    #@-node:AGP.20250415230112.2103:__repr__() __str__()
     #@+node:AGP.20250415230112.2105:Getters
     #@+node:AGP.20250415230112.2106:getBody
     def getBody (self):
     
         return self.bodyString
     #@-node:AGP.20250415230112.2106:getBody
-    #@+node:AGP.20250415230112.2107:t.hasBody
+    #@+node:AGP.20250415230112.2107:hasBody
     def hasBody (self):
         
         '''Return True if this tnode contains body text.'''
@@ -320,7 +287,7 @@ class tnode (baseTnode):
         s = self.bodyString
     
         return s and len(s) > 0
-    #@-node:AGP.20250415230112.2107:t.hasBody
+    #@-node:AGP.20250415230112.2107:hasBody
     #@+node:AGP.20250415230112.2108:Status bits
     #@+node:AGP.20250415230112.2109:isDirty
     def isDirty (self):
@@ -354,22 +321,12 @@ class tnode (baseTnode):
         """Set the body text of a tnode to the given string."""
         
         s = g.toUnicode(s,encoding,reportErrors=True)
-        
-        if 0: # DANGEROUS:  This automatically converts everything when reading files.
-        
-            # New in Leo 4.4.2: self.c does not exist!
-            # This must be done in the Commands class.
-            option = self.c.config.trailing_body_newlines
-            
-            if option == "one":
-                s = s.rstrip() + '\n'
-            elif option == "zero":
-                s = s.rstrip()
     
         self.bodyString = s
         
-        if loading == False:
+        if leo.loading == False:#if loading == False:
             self.mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+            #print "setTnodeText():",self.mod
         
     #@nonl
     #@-node:AGP.20250415230112.2115:setTnodeText
@@ -439,20 +396,17 @@ class tnode (baseTnode):
     
         s = g.toUnicode(s,encoding,reportErrors=True)
         t.headString = s
+        
+        if leo.loading == False:#if loading == False:
+            self.mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+    #@nonl
     #@-node:AGP.20250415230112.2128:t.setHeadString (new in 4.3)
     #@-node:AGP.20250415230112.2113:Setters
     #@-others
 #@nonl
 #@-node:AGP.20250415230112.2100:class tnode
 #@+node:AGP.20250415230112.2129:class vnode
-if use_zodb and ZODB:
-    class baseVnode (ZODB.Persistence.Persistent):
-        pass
-else:
-    class baseVnode (object):
-       pass
-    
-class vnode (baseVnode):
+class vnode:
     #@    << vnode constants >>
     #@+node:AGP.20250415230112.2130:<< vnode constants >>
     # Define the meaning of status bits in new vnodes.
@@ -471,24 +425,15 @@ class vnode (baseVnode):
     dirtyBit    = 0x060
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
+    childdirtyBit  = 0x200
     #@-node:AGP.20250415230112.2130:<< vnode constants >>
     #@nl
     #@    @+others
     #@+node:AGP.20250415230112.2131:Birth & death
-    #@+node:AGP.20250415230112.2132:v.__cmp__ (not used)
-    if 0: # not used
-        def __cmp__(self,other):
-            
-            g.trace(self,other)
-            return not (self is other) # Must return 0, 1 or -1
-    #@-node:AGP.20250415230112.2132:v.__cmp__ (not used)
-    #@+node:AGP.20250415230112.2133:v.__init__
+    #@+node:AGP.20250415230112.2133:__init__()
     def __init__ (self,t):
     
         assert(t)
-        
-        # To support ZODB the code must set v._p_changed = 1 whenever
-        # v.unknownAttributes or any mutable vnode object changes.
     
         self.t = t # The tnode.
         self.statusBits = 0 # status bits
@@ -496,8 +441,8 @@ class vnode (baseVnode):
         # Structure links.
         self._parent = self._next = self._back = None
     #@nonl
-    #@-node:AGP.20250415230112.2133:v.__init__
-    #@+node:AGP.20250415230112.2134:v.__repr__ & v.__str__
+    #@-node:AGP.20250415230112.2133:__init__()
+    #@+node:AGP.20250415230112.2134:__repr__() __str__()
     def __repr__ (self):
         
         if self.t:
@@ -506,8 +451,8 @@ class vnode (baseVnode):
             return "<vnode %d:NULL tnode>" % (id(self))
             
     __str__ = __repr__
-    #@-node:AGP.20250415230112.2134:v.__repr__ & v.__str__
-    #@+node:AGP.20250415230112.2135:v.dump
+    #@-node:AGP.20250415230112.2134:__repr__() __str__()
+    #@+node:AGP.20250415230112.2135:dump()
     def dumpLink (self,link):
         return g.choose(link,link,"<none>")
     
@@ -531,13 +476,7 @@ class vnode (baseVnode):
             print "vnodeList"
             for v in v.t.vnodeList:
                 print v
-    #@-node:AGP.20250415230112.2135:v.dump
-    #@+node:AGP.20250415230112.2136:v.__hash__ (only for zodb)
-    if use_zodb and ZODB:
-        def __hash__(self):
-            return self.t.__hash__()
-    #@nonl
-    #@-node:AGP.20250415230112.2136:v.__hash__ (only for zodb)
+    #@-node:AGP.20250415230112.2135:dump()
     #@-node:AGP.20250415230112.2131:Birth & death
     #@+node:AGP.20250415230112.2137:v.Comparisons
     #@+node:AGP.20250415230112.2138:v.findAtFileName (new in 4.2 b3)
@@ -765,6 +704,11 @@ class vnode (baseVnode):
     
         return self.t.isDirty()
     #@-node:AGP.20250415230112.2160:isDirty
+    #@+node:AGP.20251114140314:ischildDirty
+    def ischildDirty (self):
+    
+        return ( self.statusBits & self.childdirtyBit ) != 0
+    #@-node:AGP.20251114140314:ischildDirty
     #@+node:AGP.20250415230112.2161:isExpanded
     def isExpanded (self):
     
@@ -1001,8 +945,17 @@ class vnode (baseVnode):
     
         v = self
         v.t.clearDirty()
+        
     #@nonl
     #@-node:AGP.20250415230112.2183:v.clearDirty (no change needed)
+    #@+node:AGP.20251114134705:setchildDirty
+    def setchildDirty(self):
+        self.statusBits |= self.childdirtyBit
+    #@-node:AGP.20251114134705:setchildDirty
+    #@+node:AGP.20251114134705.1:clearchildDirty
+    def clearchildDirty(self):
+        self.statusBits &= ~ self.childdirtyBit
+    #@-node:AGP.20251114134705.1:clearchildDirty
     #@+node:AGP.20250415230112.2184:v.clearMarked
     def clearMarked (self):
     
@@ -1082,7 +1035,7 @@ class vnode (baseVnode):
     #@-node:AGP.20250415230112.2193:t.setVisited
     #@-node:AGP.20250415230112.2181: v.Status bits
     #@+node:AGP.20250415230112.2194:v.computeIcon & setIcon
-    def computeIcon (self):
+    def XcomputeIcon (self):
     
         val = 0 ; v = self
         if v.t.hasBody(): val += 1
@@ -1091,19 +1044,26 @@ class vnode (baseVnode):
         if v.isDirty(): val += 8
         return val
         
+    def computeIcon (self):
+    
+        val = 0 ; v = self
+        t = v.t
+        bs = t.bodyString
+        
+        if bs and len(bs) > 0: val += 1
+        if ( v.statusBits & 0x08 ) != 0: val += 2 #vnode.markedBit
+        if len(t.vnodeList) > 1: val += 4
+        if (t.statusBits & 0x01) != 0: val += 8#t.dirtyBit
+        return val
+        
     def setIcon (self):
     
         pass # Compatibility routine for old scripts
     #@-node:AGP.20250415230112.2194:v.computeIcon & setIcon
     #@+node:AGP.20250415230112.2195:v.initHeadString
     def initHeadString (self,s,encoding="utf-8"):
-        
         v = self
-        s = g.toUnicode(s,encoding,reportErrors=True)
-        v.t.headString = s
-        #if g.c.loading == False:
-        #    g.SetUAModStamp(self)
-        # g.trace(g.callers(5))
+        v.t.setHeadString(s,encoding)
     #@-node:AGP.20250415230112.2195:v.initHeadString
     #@+node:AGP.20250415230112.2196:v.setSelection
     def setSelection (self, start, length):
@@ -1419,15 +1379,9 @@ class basePosition (object):
         
         
         """Create a new position."""
-        
-        # To support ZODB the code must set vort._p_changed = 1 whenever
-        # t.vnodeList (or any mutable tnode or vnode object) changes.
     
         self.v = v
         # assert(v is None or v.t)
-        
-        
-                
         
         if stack:
             self.stack = stack[:] # Creating a copy here is safest and best.
@@ -1435,15 +1389,6 @@ class basePosition (object):
             self.stack = []
         
         g.app.positions += 1
-        
-        
-        
-        # if g.app.tracePositions and trace: g.trace(g.callers())
-        
-        # Note: __getattr__ implements p.t.
-        
-        
-    #@nonl
     #@-node:AGP.20250415230112.2216:p.__init__
     #@+node:AGP.20250415230112.2217:p.__nonzero__
     #@+at
@@ -1595,6 +1540,7 @@ class basePosition (object):
     #@-node:AGP.20250415230112.2227:p.Headline & body strings
     #@+node:AGP.20250415230112.2228:p.Status bits
     def isDirty     (self): return self.v.isDirty()
+    def ischildDirty     (self): return self.v.ischildDirty()
     def isExpanded  (self): return self.v.isExpanded()
     def isMarked    (self): return self.v.isMarked()
     def isOrphan    (self): return self.v.isOrphan()
@@ -1861,7 +1807,8 @@ class basePosition (object):
         
         Should be called only from scripts: does NOT update body text."""
     
-        self.v.t.bodyString = g.toUnicode(s,encoding)
+        #self.v.t.bodyString = g.toUnicode(s,encoding)
+        self.v.t.setTnodeText(s,encoding)
     #@-node:AGP.20250415230112.2251:p.scriptSetBodyString
     #@-node:AGP.20250415230112.2249:Head & body text (position)
     #@+node:AGP.20250415230112.2252:Visited bits
@@ -1883,12 +1830,38 @@ class basePosition (object):
     #@-node:AGP.20250415230112.2254:p.clearAllVisitedInTree (4.2)
     #@-node:AGP.20250415230112.2252:Visited bits
     #@+node:AGP.20250415230112.2255:p.Dirty bits
+    #@+node:AGP.20251114180630:setparent_childdirty()
+    def setparent_childdirty(self,set_self=False):
+        
+        if g.c.loading == True:
+            return
+        
+        v = self.v
+        
+        mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+        
+        if set_self and v:
+            v.setchildDirty()
+            v.mod = mod
+        
+        for p in self.parents_iter():
+            v = p.v
+            v.setchildDirty()
+            v.mod = mod
+    #@-node:AGP.20251114180630:setparent_childdirty()
     #@+node:AGP.20250415230112.2256:p.clearDirty
     def clearDirty (self):
     
         p = self
         p.v.clearDirty()
+        #p.v.clearchildDirty()
     #@-node:AGP.20250415230112.2256:p.clearDirty
+    #@+node:AGP.20251114142550:p.clearchildDirty
+    def clearchildDirty (self):
+    
+        p = self
+        p.v.clearchildDirty()
+    #@-node:AGP.20251114142550:p.clearchildDirty
     #@+node:AGP.20250415230112.2257:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
         
@@ -1971,7 +1944,10 @@ class basePosition (object):
         # Typing can change the @ignore state!
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
         dirtyVnodeList.extend(dirtyVnodeList2)
-       
+        
+        
+        p.setparent_childdirty()
+        
         return dirtyVnodeList
     #@-node:AGP.20250415230112.2260:p.setDirty
     #@-node:AGP.20250415230112.2255:p.Dirty bits
@@ -2283,6 +2259,47 @@ class basePosition (object):
         
         return self.siblings_iter_class(self,copy,following=True)
     #@-node:AGP.20250415230112.2277:p.siblings_iter
+    #@+node:AGP.20251210221516:all_iter
+    # New in Leo 4.4.2 (It used to be defined in terms of p.allNodes_iter.)
+    
+    class all_iter_class:
+    
+        """Returns a list of positions in the entire outline."""
+    
+        #@    @+others
+        #@+node:AGP.20251210221516.1:__init__ & __iter__ (p.all_Iter)
+        def __init__(self,p,copy):
+            
+            # g.trace('c.allNodes_iter.__init','p',p,'c',c)
+            self.first = p.copy()
+            self.p = None
+            self.copy = copy
+            
+        def __iter__(self):
+        
+            return self
+        #@-node:AGP.20251210221516.1:__init__ & __iter__ (p.all_Iter)
+        #@+node:AGP.20251210221516.2:next
+        def next(self):
+            
+            if self.first:
+                self.p = self.first
+                self.first = None
+        
+            elif self.p:
+                self.p.moveToThreadNext()
+        
+            if self.p:
+                if self.copy: return self.p.copy()
+                else:         return self.p
+            else: raise StopIteration
+        #@-node:AGP.20251210221516.2:next
+        #@-others
+    
+    def all_iter (self,copy=False):
+        return self.all_iter_class(self,copy)
+    
+    #@-node:AGP.20251210221516:all_iter
     #@-others
     #@-node:AGP.20250415230112.2265:p.Iterators
     #@+node:AGP.20250415230112.2280:p.Moving, Inserting, Deleting, Cloning, Sorting (position)
@@ -2309,15 +2326,22 @@ class basePosition (object):
         p = self
         p2 = p.insertAfter()
         p.copyTreeFromSelfTo(p2)
+        
+        #p2.setparent_childdirty(True)
+        
         return p2
         
     def copyTreeFromSelfTo(self,p2):
         p = self
         p2.v.t.headString = p.headString()
         p2.v.t.bodyString = p.bodyString()
+        
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
+        
+        #p2.setparent_childdirty(True)
+    #@nonl
     #@-node:AGP.20250415230112.2282:p.copyTreeAfter, copyTreeTo
     #@+node:AGP.20250415230112.2283:p.doDelete
     #@+at 
@@ -2333,17 +2357,6 @@ class basePosition (object):
         """Deletes position p from the outline."""
     
         p = self
-        
-        # agp qlink
-        if p in g.qlinks.keys():
-            for k in g.qlinks.keys():
-                if k == p:
-                    #print 'qlink del',k
-                    g.qlinks[k].destroy()
-                    del g.qlinks[k]
-            
-        
-            
         
         p.setDirty() # Mark @file nodes dirty!
         p.unlink()
@@ -2365,6 +2378,8 @@ class basePosition (object):
         p2.v = vnode(t)
         p2.v.iconVal = 0
         p2.linkAfter(p)
+        
+        
     
         return p2
     #@-node:AGP.20250415230112.2284:p.insertAfter
@@ -2532,6 +2547,8 @@ class basePosition (object):
     
         p.v = p.v and p.v._back
         
+        #p.setparent_childdirty()
+        
         return p
     #@-node:AGP.20250415230112.2297:p.moveToBack
     #@+node:AGP.20250415230112.2298:p.moveToFirstChild (pushes stack for cloned nodes)
@@ -2550,6 +2567,7 @@ class basePosition (object):
                 p.v = child
             else:
                 p.v = None
+                
             
         return p
     
@@ -2571,6 +2589,8 @@ class basePosition (object):
             else:
                 p.v = None
                 
+        #p.setparent_childdirty()
+                
         return p
     #@-node:AGP.20250415230112.2299:p.moveToLastChild (pushes stack for cloned nodes)
     #@+node:AGP.20250415230112.2300:p.moveToLastNode (Big improvement for 4.2)
@@ -2585,6 +2605,8 @@ class basePosition (object):
         # Huge improvement for 4.2.
         while p.hasChildren():
             p.moveToLastChild()
+            
+        #p.setparent_childdirty()
     
         return p
     #@-node:AGP.20250415230112.2300:p.moveToLastNode (Big improvement for 4.2)
@@ -2596,6 +2618,8 @@ class basePosition (object):
         p = self
         
         p.v = p.v and p.v._next
+        
+        #p.setparent_childdirty()
         
         return p
     #@-node:AGP.20250415230112.2301:p.moveToNext
@@ -2629,6 +2653,8 @@ class basePosition (object):
             else:
                 p.v = None
                 
+        #p.setparent_childdirty()
+                
         return p
     #@-node:AGP.20250415230112.2303:p.moveToNthChild (pushes stack for cloned nodes)
     #@+node:AGP.20250415230112.2304:p.moveToParent (pops stack when multiple parents)
@@ -2639,13 +2665,20 @@ class basePosition (object):
         p = self
         
         if not p: return p
+        
+        v = p.v
     
-        if p.v._parent and len(p.v._parent.t.vnodeList) == 1:
-            p.v = p.v._parent
+        if v._parent and len(v._parent.t.vnodeList) == 1:
+            p.v = v._parent
         elif p.stack:
             p.v = p.stack.pop()
+        elif v._parent:
+            p.v = v._parent #agp
         else:
             p.v = None
+            
+        #p.setparent_childdirty()
+            
         return p
     #@-node:AGP.20250415230112.2304:p.moveToParent (pops stack when multiple parents)
     #@+node:AGP.20250415230112.2305:p.moveToThreadBack
@@ -2860,6 +2893,8 @@ class basePosition (object):
             p.dump(label="p")
             after.dump(label="back")
             if p.hasNext(): p.next().dump(label="next")
+            
+        p.setparent_childdirty()
     #@-node:AGP.20250415230112.2317:p.linkAfter
     #@+node:AGP.20250415230112.2318:p.linkAsNthChild
     def linkAsNthChild (self,parent,n):
@@ -2903,6 +2938,8 @@ class basePosition (object):
             g.trace('-'*20)
             p.dump(label="p")
             parent.dump(label="parent")
+            
+        parent.setparent_childdirty()
     #@-node:AGP.20250415230112.2318:p.linkAsNthChild
     #@+node:AGP.20250415230112.2319:p.linkAsRoot
     def linkAsRoot (self,oldRoot):
@@ -2944,6 +2981,8 @@ class basePosition (object):
     
         p = self ; v = p.v
         
+        p.setparent_childdirty()
+        
         # g.trace('p.v._parent',p.v._parent," child:",v.t._firstChild," back:",v._back, " next:",v._next)
         
         # Remove v from it's tnode's vnodeList.
@@ -2982,6 +3021,8 @@ class basePosition (object):
             g.trace('-'*20)
             p.dump(label="p")
             if parent: parent.dump(label="parent")
+            
+        
     #@nonl
     #@-node:AGP.20250415230112.2320:p.unlink
     #@-node:AGP.20250415230112.2316:p.Link/Unlink methods
@@ -2991,6 +3032,10 @@ class position (basePosition):
     pass
 #@nonl
 #@-node:AGP.20250415230112.2210:class position
+#@+node:AGP.20251210181944:nullPosition
+def nullPosition():
+    return position(None,[])
+#@-node:AGP.20251210181944:nullPosition
 #@-others
 #@nonl
 #@-node:AGP.20250415230112.2096:@thin leoNodes.py

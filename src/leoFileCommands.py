@@ -7,7 +7,7 @@
 #@<< imports >>
 #@+node:AGP.20250415230112.1211:<< imports >>
 import leoGlobals as g
-    
+import leo
 import leoNodes
 
 import binascii
@@ -693,16 +693,6 @@ class baseFileCommands:
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         c = self.c
         
-        
-        
-        if not silent:
-            c.qlink_clear()
-            g.qlinks = {}
-        else:
-            g.qlinks = None
-        
-        
-        
         c.setChanged(False) # May be set when reading @file nodes.
         #@    << warn on read-only files >>
         #@+node:AGP.20250415230112.1257:<< warn on read-only files >>
@@ -722,7 +712,8 @@ class baseFileCommands:
         self.checking = False
         self.mFileName = c.mFileName
         self.initReadIvars()
-        c.loading = True # disable c.changed
+        leo.loading = c.loading = True # disable c.changed
+        
         
         try:
             ok = True
@@ -747,6 +738,7 @@ class baseFileCommands:
         # New in Leo 4.2.2: before reading derived files.
         if self.use_sax:
             self.resolveTnodeLists()
+        
         if ok and readAtFileNodesFlag:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
@@ -766,7 +758,8 @@ class baseFileCommands:
                 c.setCurrentPosition(c.rootPosition())
     
         c.selectVnode(c.currentPosition()) # load body pane
-        c.loading = False # reenable c.changed
+        leo.loading = c.loading = False # reenable c.changed
+        
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
         return ok, self.ratio
@@ -808,12 +801,13 @@ class baseFileCommands:
         c.setBodyString(p,p.bodyString())
         c.frame.body.onBodyChanged(undoType=None)
     #@-node:AGP.20250415230112.1259:readAtFileNodes (leoAtFile)
-    #@+node:AGP.20250415230112.1260:open (leoFileCommands)
+    #@+node:AGP.20250415230112.1260:open()
     def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
     
         c = self.c ; frame = c.frame
         if not self.use_sax: # Read the entire file into the buffer
-            self.fileBuffer = theFile.read() ; theFile.close()
+            self.fileBuffer = theFile.read() 
+            theFile.close()
             self.fileIndex = 0
         #@    << Set the default directory >>
         #@+node:AGP.20250415230112.1261:<< Set the default directory >>
@@ -846,7 +840,7 @@ class baseFileCommands:
             self.fileBuffer = ""
         return ok
     #@nonl
-    #@-node:AGP.20250415230112.1260:open (leoFileCommands)
+    #@-node:AGP.20250415230112.1260:open()
     #@+node:AGP.20250415230112.1262:readOutlineOnly
     def readOutlineOnly (self,theFile,fileName):
     
@@ -1517,7 +1511,7 @@ class baseFileCommands:
         #@nl
         if t:
             s = self.getEscapedString()
-            t.setTnodeText(s,encoding=self.leo_file_encoding,loading=True)
+            t.setTnodeText(s,encoding=self.leo_file_encoding)#,loading=True)
             if mod != "": t.mod = mod
         else:
             g.es("no tnode with index: %s.  The text will be discarded" % str(index))
@@ -1603,7 +1597,7 @@ class baseFileCommands:
         v = None
         setCurrent = setExpanded = setMarked = setOrphan = setTop = False
         tref = -1 ; headline = '' ; tnodeList = None ; attrDict = {}
-    
+        mod=""
         # we have already matched <v.
         
         # New in Leo 4.4: support collapsed tnodes.
@@ -1630,6 +1624,8 @@ class baseFileCommands:
                 self.getDquote()
                 #@-node:AGP.20250415230112.1304:<< Handle vnode attribute bits  >>
                 #@nl
+            elif self.matchTag("mod="):
+                 mod = self.getDqString() #agp
             elif self.matchTag("t="):
                 # New for 4.1.  Read either "Tnnn" or "gnx".
                 tref = index = self.getDqString()
@@ -1711,7 +1707,10 @@ class baseFileCommands:
                 v.setOrphan()
             #@-node:AGP.20250415230112.1306:<< Set the remembered status bits >>
             #@nl
-    
+        
+        if mod != "":
+            v.mod = mod
+        
         # Recursively create all nested nodes.
         parent = v ; back = None
         while self.matchTag("<v"):
@@ -1780,18 +1779,8 @@ class baseFileCommands:
             v.unknownAttributes = attrDict
             v._p_changed = 1
         
-            if 0: # For debugging.
-                s = "unknown attributes for " + v.headString()
-                g.es_print(s,color="blue")
-                for key in keys:
-                    s = "%s = %s" % (key,attrDict.get(key))
-                    g.es_print(s)
-        
-        #print v.unknownAttributes
-        #g.GetUAModStamp(v) #set the stamp only if inexistant  #agp
-        
             
-        
+        #@nonl
         #@-node:AGP.20250415230112.1309:<< handle unknown vnode attributes >>
         #@nl
         # g.trace(skip,tref,v,v.t,len(v.t.vnodeList))
@@ -2697,7 +2686,13 @@ class baseFileCommands:
         #@-node:AGP.20250415230112.1358:<< Append tnodeList and unKnownAttributes to attrs>>
         #@nl
         attrs = ''.join(attrs)
-        v_head = '<v t="%s"%s><vh>%s</vh>' % (gnx,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
+        
+        if hasattr(v,"mod"):
+            mod = " mod=\""+v.mod+"\""
+        else:
+            mod = ""
+        
+        v_head = '<v t="%s"%s%s><vh>%s</vh>' % (gnx,mod,attrs,xml.sax.saxutils.escape(p.v.headString()or''))
         # The string catentation is faster than repeated calls to fc.put.
         if not self.usingClipboard:
             #@        << issue informational messages >>

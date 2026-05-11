@@ -6,7 +6,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-import leoGlobals as g
+import leo
 
 languages = {}
 
@@ -16,7 +16,7 @@ def import_languages():
     from imp import find_module,load_module
     from os import path,listdir
     import traceback
-    langdir = g.app.leoDir+"/config/languages"
+    langdir = leo.leoDir+"/config/languages"
     
     global languages
     
@@ -45,7 +45,7 @@ def import_languages():
 #@-node:AGP.20250415230112.300:import_languages()
 #@-others
 
-#import_languages()
+import_languages()
 
 #@-node:AGP.20250415230112.299:@thin leoLang.py
 #@-leo

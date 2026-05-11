@@ -10,15 +10,15 @@ from __future__ import generators # To make the code work in Python 2.2.
 #@<< imports >>
 #@+node:AGP.20250415230112.330:<< imports  >> (leoCommands)
 import leoGlobals as g
-
+import leo
 import leoAtFile
-import leoConfig
+
 import leoEditCommands
 import leoFileCommands
-import leoKeys
+#import leoKeys
 import leoImport
 import leoNodes
-import leoTangle
+#import leoTangle
 import leoUndo
 
 import compiler # for Check Python command
@@ -47,9 +47,8 @@ import token    # for Check Python command
 class baseCommands:
     """The base class for Leo's main commander."""
     #@    @+others
-    #@+node:AGP.20250415230112.332: c.Birth & death
-    #@+node:AGP.20250415230112.333:c.__init__
-    def __init__(self,frame,fileName):
+    #@+node:AGP.20250415230112.333:__init__()
+    def __init__(self,frame,fileName):#
     
         g.c = c = self
         
@@ -65,8 +64,6 @@ class baseCommands:
         # g.trace(c) # Do this after setting c.mFileName.
         c.initIvars()
     
-        self.useTextMinibuffer = c.config.getBool('useTextMinibuffer')
-        self.showMinibuffer = c.config.getBool('useMinibuffer')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
     
         # initialize the sub-commanders.
@@ -74,15 +71,18 @@ class baseCommands:
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
-        self.tangleCommands = leoTangle.tangleCommands(c)
-        leoEditCommands.createEditCommanders(c)
+        #self.tangleCommands = leoTangle.tangleCommands(c)
+        leoEditCommands.createEditCommanders(c) #agp cmd
     
-        if 0 and g.debugGC:
-            print ; print "*** using Null undoer ***" ; print
-            self.undoer = leoUndo.nullUndoer(self)
-        else:
-            self.undoer = leoUndo.undoer(self)
-    #@-node:AGP.20250415230112.333:c.__init__
+        self.undoer = leoUndo.undoer(self)
+        
+        
+        #self.finishCreate(frame)
+            
+            
+        
+    #@-node:AGP.20250415230112.333:__init__()
+    #@+node:AGP.20250415230112.332: c.Birth & death
     #@+node:AGP.20250415230112.334:c.initIvars
     def initIvars(self):
     
@@ -108,7 +108,7 @@ class baseCommands:
         # For emacs/vim key handling.
         self.commandsDict = None
         self.keyHandler = self.k = None
-        self.miniBufferWidget = None
+        
         
         # per-document info...
         self.disableCommandsMessage = ''
@@ -156,7 +156,7 @@ class baseCommands:
         self.navTime = None
         #@-node:AGP.20250415230112.335:<< initialize ivars >> (commands)
         #@nl
-        self.config = configSettings(c)
+        self.config = g.app.config#configSettings(c)
         g.app.config.setIvarsFromSettings(c)
     #@-node:AGP.20250415230112.334:c.initIvars
     #@+node:AGP.20250415230112.336:c.__repr__ & __str__
@@ -175,37 +175,38 @@ class baseCommands:
         else:
             return 0
     #@-node:AGP.20250415230112.337:c.hash
-    #@+node:AGP.20250415230112.338:c.finishCreate & helper
-    def finishCreate (self):  # New in 4.4.
-        
+    #@+node:AGP.20250415230112.338:finishCreate()
+    def finishCreate (self,frame):  # New in 4.4.
         '''Finish creating the commander after frame.finishCreate.
         
         Important: this is the last step in the startup process.'''
         
         c = self ; p = c.currentPosition()
-        c.miniBufferWidget = c.frame.miniBufferWidget
-        # g.trace('Commands',c.fileName()) # g.callers())
         
-        # Create a keyHandler even if there is no miniBuffer.
-        c.keyHandler = c.k = k = leoKeys.keyHandlerClass(c,
-            useGlobalKillbuffer=True,
-            useGlobalRegisters=True)
-    
         if g.app.config and g.app.config.inited:
             # A 'real' .leo file.
-            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
-            k.finishCreate()
+            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c) #agp cmd
+            
+            #c.keyHandler = c.k = k = leoKeys.keyHandlerClass(c,useGlobalKillbuffer=True,useGlobalRegisters=True)
+            #k.finishCreate()
         else:
             # A leoSettings.leo file.
             c.commandsDict = {}
     
+        
+        
+        
+        #c.keyHandler = c.k = k = leoKeys.keyHandlerClass(c,useGlobalKillbuffer=True,useGlobalRegisters=True)
+    
+    
         # Create the menu last so that we can use the key handler for shortcuts.
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            c.frame.menu.createMenuBar(c.frame)
+        #if not g.doHook("menu1",c=c,p=p,v=p):
+        #    c.frame.menu.createMenuBar(c.frame)
             
-        c.bodyWantsFocusNow()
-    #@+node:AGP.20250415230112.339:printCommandsDict
-    def printCommandsDict (self):
+        #c.bodyWantsFocusNow()
+    #@-node:AGP.20250415230112.338:finishCreate()
+    #@+node:AGP.20250415230112.339:printCommandsDict()
+    def printCommandsDict(self):
         
         c = self
         
@@ -216,8 +217,7 @@ class baseCommands:
             command = c.commandsDict.get(key)
             print '%30s = %s' % (key,g.choose(command,command.__name__,'<None>'))
         print
-    #@-node:AGP.20250415230112.339:printCommandsDict
-    #@-node:AGP.20250415230112.338:c.finishCreate & helper
+    #@-node:AGP.20250415230112.339:printCommandsDict()
     #@-node:AGP.20250415230112.332: c.Birth & death
     #@+node:AGP.20250415230112.340: doCommand
     command_count = 0
@@ -403,30 +403,15 @@ class baseCommands:
                 yield p.v
     #@-node:AGP.20250415230112.353:c.all_unique_vnodes_iter
     #@-node:AGP.20250415230112.346:c.iterators
-    #@+node:AGP.20250415230112.354:c.executeMinibufferCommand
-    def executeMinibufferCommand (self,commandName):
-        
-        c = self ; k = c.k
-        
-        func = c.commandsDict.get(commandName)
-        
-        if func:
-            event = g.Bunch(char='',keysym=None,widget=c.frame.body.bodyCtrl)
-            stroke = None
-            k.masterCommand(event,func,stroke)
-            return k.funcReturn
-        else:
-            g.trace('no such command: %s' % (commandName),color='red')
-            return None
-    #@-node:AGP.20250415230112.354:c.executeMinibufferCommand
     #@+node:AGP.20250415230112.355:Command handlers...
     #@+node:AGP.20250415230112.356:File Menu
     #@+node:AGP.20250415230112.357:top level (file menu)
-    #@+node:AGP.20250415230112.358:new
-    def new (self,event=None):
+    #@+node:AGP.20250415230112.358:Xnew
+    def Xnew (self,event=None):
         
         '''Create a new Leo window.'''
-    
+        
+        
         c,frame = g.app.newLeoCommanderAndFrame(fileName=None)
         
         # Needed for plugins.
@@ -460,7 +445,77 @@ class baseCommands:
         frame.show()
         
         return c # For unit test.
-    #@-node:AGP.20250415230112.358:new
+        
+    #@-node:AGP.20250415230112.358:Xnew
+    #@+node:AGP.20260403091948:new
+    def new (self,event=None):
+        
+        '''Create a new Leo window.'''
+        
+        """from subprocess import Popen
+        
+        
+        
+        arg = "%s\\Python27win64\\python.exe %s\\Leo.py" % (leo.leoDir,leo.loadDir)
+        print arg
+        
+        Popen(arg)"""
+        
+        c = self
+        frame = c.frame
+        if c.changed:
+            c.promptingForClose = True
+            veto = frame.promptForSave()
+            c.promptingForClose = False
+            if veto: return False
+            
+        leo.fileName = leo.fileDir = None
+        
+        
+        
+        
+        #c,frame = g.app.newLeoCommanderAndFrame(fileName=None)
+        
+        # Needed for plugins.
+        g.doHook("new",old_c=self,c=c,new_c=c)
+        # Use the config params to set the size and location of the window.
+        c.beginUpdate()
+        try:
+            #frame.setInitialWindowGeometry()
+            #frame.deiconify()
+            #frame.lift()
+            
+            #print "new"
+            #frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+            
+            
+            t = leoNodes.tnode()
+            v = leoNodes.vnode(t)
+            p = leoNodes.position(v,[])
+            v.initHeadString("NewHeadline")
+            v.moveToRoot(oldRoot=None)
+            c.setRootVnode(v) # New in Leo 4.4.2.
+            c.editPosition(p)
+            
+            #leo.ui.reset reset title
+            
+            c.frame.top.title(g.computeWindowTitle(None))
+            c.setChanged(True)
+            
+            #
+            
+        finally:
+            c.endUpdate()
+            if c.config.getBool('outline_pane_has_initial_focus'):
+                c.treeWantsFocusNow()
+            else:
+                c.bodyWantsFocusNow()
+                
+        frame.show()
+        
+        return c # For unit test.
+        
+    #@-node:AGP.20260403091948:new
     #@+node:AGP.20250415230112.359:open
     def open (self,event=None):
         
@@ -798,21 +853,7 @@ class baseCommands:
             # Calls c.setChanged(False) if no error.
             c.fileCommands.save(c.mFileName)
         else:
-            fileName = g.app.gui.runSaveFileDialog(
-                initialfile = c.mFileName,
-                title="Save",
-                filetypes=[("Leox files","*.leox"),("Leo files", "*.leo")],
-                defaultextension=".leox")
-            c.bringToFront()
-    
-            if fileName:
-                # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
-                c.frame.title = c.mFileName
-                c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-                c.fileCommands.save(c.mFileName)
-                c.updateRecentFiles(c.mFileName)
+            self.saveAs()
     #@-node:AGP.20250415230112.372:save
     #@+node:AGP.20250415230112.373:saveAs
     def saveAs (self,event=None):
@@ -838,7 +879,7 @@ class baseCommands:
     
         if fileName:
             # 7/2/02: don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
+            leo.fileName = c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))
             c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
@@ -4911,7 +4952,7 @@ class baseCommands:
             u.afterChangeGroup(current,command,dirtyVnodeList=dirtyVnodeList)
         finally:
             c.selectPosition(current)  # Also sets rootPosition.
-            c.endUpdate()
+            c.endUpdate(scroll=False)
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(current) # Moving can change syntax coloring.
     #@-node:AGP.20250415230112.596:demote
@@ -4985,7 +5026,7 @@ class baseCommands:
                 u.afterMoveNode(p,'Move Down',undoData,dirtyVnodeList)
         finally:
             c.selectPosition(p) # Also sets rootPosition.
-            c.endUpdate()
+            c.endUpdate(scroll=False)
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:AGP.20250415230112.597:moveOutlineDown
@@ -5025,7 +5066,7 @@ class baseCommands:
                 parent.contract()
         finally:
             c.selectPosition(p) # Also sets rootPosition.
-            c.endUpdate()
+            c.endUpdate(scroll=False)
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@nonl
@@ -5065,7 +5106,7 @@ class baseCommands:
         finally:
             c.selectPosition(p) # Also sets root position.
             c.endUpdate()
-            c.treeWantsFocusNow()
+            c.treeWantsFocusNow(scroll=False)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:AGP.20250415230112.600:moveOutlineRight
     #@+node:AGP.20250415230112.601:moveOutlineUp
@@ -5138,7 +5179,7 @@ class baseCommands:
                 
         finally:
             c.selectPosition(p) # Also sets root position.
-            c.endUpdate()
+            c.endUpdate(scroll=False)
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:AGP.20250415230112.601:moveOutlineUp
@@ -5175,7 +5216,7 @@ class baseCommands:
             u.afterChangeGroup(p,command,dirtyVnodeList=dirtyVnodeList)
             c.selectPosition(p)
         finally:
-            c.endUpdate()
+            c.endUpdate(scroll=False)
             c.treeWantsFocusNow()
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@-node:AGP.20250415230112.603:promote
@@ -5495,7 +5536,7 @@ class baseCommands:
         c = self
         c.frame.tree.beginUpdate()
         
-    def endUpdate(self,flag=True,scroll=True):
+    def endUpdate(self,flag=True,scroll=False):
         
         '''Redraw the screen if flag is True.'''
     
@@ -5532,10 +5573,6 @@ class baseCommands:
     def logWantsFocusNow(self):
         c = self ; log = c.frame.log
         c.set_focus(log and log.logCtrl,force=True)
-    
-    def minibufferWantsFocusNow(self):
-        c = self ; k = c.k
-        k and k.minibufferWantsFocusNow()
         
     def treeWantsFocusNow(self):
         c = self ; tree = c.frame.tree
@@ -5555,10 +5592,6 @@ class baseCommands:
     def logWantsFocus(self):
         c = self ; log = c.frame.log
         c.request_focus(log and log.logCtrl)
-        
-    def minibufferWantsFocus(self):
-        c = self ; k = c.k
-        k and k.minibufferWantsFocus()
         
     def treeWantsFocus(self):
         c = self ; tree = c.frame.tree
@@ -6125,14 +6158,15 @@ class baseCommands:
         
         c = self ; p = p.copy()
         
+        
         while p and p.hasParent():
             p.moveToParent()
             
+        
         while p and p.hasBack():
             p.moveToBack()
             
-        # g.trace(p and p.headString())
-    
+        
         return p
     #@nonl
     #@-node:AGP.20250415230112.671:c.findRootPosition New in 4.4.2
@@ -6211,7 +6245,6 @@ class baseCommands:
     #@-node:AGP.20250415230112.678:c.lastVisible
     #@+node:AGP.20250415230112.679:c.nullPosition
     def nullPosition (self):
-        
         c = self ; v = None
         return leoNodes.position(v,[])
     #@-node:AGP.20250415230112.679:c.nullPosition
@@ -6333,6 +6366,7 @@ class baseCommands:
             for p in c.allNodes_iter():
                 if p.isDirty() and not (p.isAtFileNode() or p.isAtNorefFileNode()):
                     p.clearDirty()
+                p.clearchildDirty()
     
         # Update all derived changed markers.
         c.changed = changedFlag
@@ -6425,9 +6459,9 @@ class baseCommands:
             else:
                 # We must make a copy _now_.
                 c._rootPosition = p.copy()
+                
         else:
             c._rootPosition = None
-    #@nonl
     #@-node:AGP.20250415230112.693:c.setRootPosition
     #@+node:AGP.20250415230112.694:c.setRootVnode New in 4.4.2
     def setRootVnode (self, v):
@@ -6647,242 +6681,12 @@ class baseCommands:
         self.frame.body.updateSyntaxColorer(v)
     #@-node:AGP.20250415230112.706:updateSyntaxColorer
     #@-node:AGP.20250415230112.705:Syntax coloring interface
-    #@+node:AGP.20250415230112.707:qlink()
-    def qlink(self,event=None,p=None,force=False):    #agp qlink
-        
-        
-        if not p:
-            p = self.currentPosition()
-        
-        v = p.v
-        
-        if g.qlinks == None:
-            g.qlinks = {}
-        
-        if p not in g.qlinks.keys() or force:
-            if not hasattr(v,"unknownAttributes"):
-                v.unknownAttributes = ua = {}
-            else:
-                ua	=	v.unknownAttributes
-            
-            ua["qlink"] = 1
-            
-            #add link in tree pane
-            outerframe,editframe,bodyframe,treeframe,subtreeframe,logframe,qlinkframe,font = self.frame.guiframes
-            
-            def qlink_onclick(event):
-                node = event.widget.p
-                #print "qlink goto",node
-                self.beginUpdate()
-                if not node.isVisible():
-                    for p in node.parents_iter():
-                        p.expand()
-                self.selectPosition(node)
-                self.endUpdate()
-            
-            
-            
-            bg,fg = g.theme['bg'],g.theme['fg']
-            #qlink = Tk.Label(   qlinkframe,text=v.headString(),anchor='w',relief='groove',bd=1,padx=0,pady=0,font=font,#bg='gray20',
-            #                    activebackground='white',activeforeground='black'
-            #)
-            import tkFont
-            font_height = tkFont.Font(font=font).metrics('linespace')
-            height=font_height+2
-            midh = height/2+1
-            
-            
-            head = v.headString()
-            headw = font.measure(head)
-            
-            qlink = Tk.Canvas(qlinkframe,relief='groove',bd=0,height=height,
-                                highlightthickness=0,highlightbackground=bg,highlightcolor=fg,
-                                bg=qlinkframe.cget('bg')#g.color_mul(0.7,qlinkframe.cget('bg'))
-            
-                            )
-            qlink.font=font
-            
-            
-            #qlink.create_rectangle(0,0,2000,height,fill=bg,activefill="gray60",activestipple="gray25")
-            qlink.create_line(0,midh,10,midh,fill=fg)
-            image=self.frame.tree.getIconImage("box%02d.png" % v.computeIcon())
-            qlink.create_image(8,midh,anchor='w',image=image)
-            
-            
-            #qtext = Tk.Text(qlink,fg=fg,bg=bg,state = 'normal',height=1,highlightthickness=0,bd=0)
-            #qtext = Tk.Label(   qlink,text=head,image=image, anchor='w',relief='groove',bd=1,padx=0,pady=0,font=font,#bg='gray20',
-            #                    activebackground='white',activeforeground='black'
-            #)
-            #qlink.create_window(35,midh,anchor="w",window=qtext)
-            #qtext.delete("1.0","end")
-            #qtext.insert("end",head)
-            #qtext.configure(state='disabled')
-            
-            head = 4*' '+head+30*' '
-            headw = font.measure(head)
-            qlink.qtextid = qlink.create_text(headw/2,midh,text=head,font=font,fill=g.theme['fg'],activefill="white")
-            
-            qlink.pack(side='top',fill='x',padx=0,pady=1)
-            qlink.bind('<Button-1>',qlink_onclick)
-            qlink.p = p.copy()
-            qlink.midh=midh
-            
-            g.qlinks[qlink.p] = qlink
-            
-            #print 'add qlink',v,ua["qlink"]
-        
-        else: # remove qlink
-            del v.unknownAttributes['qlink']
-            for k in g.qlinks.keys():
-                if k == p:
-                    #print 'qlink del',k
-                    g.qlinks[k].destroy()
-                    del g.qlinks[k]
-            
-    #@nonl
-    #@-node:AGP.20250415230112.707:qlink()
-    #@+node:AGP.20250415230112.708:qlink_scan()
-    def qlink_scan(self,node=None):    #agp qlink
-        
-        return # agp fixme
-        
-        #if node == None:
-        #    print "qlink scan"
-        #    node = self.rootPosition()
-        #root = c.rootPosition()
-        
-        for p in self.all_positions_iter():#node.children_iter():
-            v = p.v
-            if hasattr(v,"unknownAttributes"):
-                if "qlink" in v.unknownAttributes:
-                    #print 'qlink add attr'
-                    self.qlink(p=p,force=True)
-                    
-            #self.qlink_scan(p)
-            
-        
-    #@nonl
-    #@-node:AGP.20250415230112.708:qlink_scan()
-    #@+node:AGP.20250415230112.709:qlink_clear()
-    def qlink_clear(self):    #agp qlink
-        
-        if g.qlinks != None:
-            qlinks = g.qlinks
-            for k in qlinks.keys():
-                qlinks[k].destroy()
-                
-        g.qlinks = {}
-        
-    #@nonl
-    #@-node:AGP.20250415230112.709:qlink_clear()
     #@-others
 
 class Commands (baseCommands):
     """A class that implements most of Leo's commands."""
     pass
 #@-node:AGP.20250415230112.331:class commands
-#@+node:AGP.20250415230112.710:class configSettings
-class configSettings:
-    
-    """A class to hold config settings for commanders."""
-    
-    #@    @+others
-    #@+node:AGP.20250415230112.711:configSettings.__init__
-    def __init__ (self,c):
-        
-        self.c = c
-        
-        self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
-        self.defaultLogFontSize  = g.app.config.defaultLogFontSize
-        self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
-        self.defaultTreeFontSize = g.app.config.defaultTreeFontSize
-        
-        for key in g.app.config.encodingIvarsDict.keys():
-            if key != '_hash':
-                self.initEncoding(key)
-            
-        for key in g.app.config.ivarsDict.keys():
-            if key != '_hash':
-                self.initIvar(key)
-    #@+node:AGP.20250415230112.712:initIvar
-    def initIvar(self,key):
-        
-        c = self.c
-        
-        # N.B. The key is munged.
-        bunch = g.app.config.ivarsDict.get(key)
-        ivarName = bunch.ivar
-        val = g.app.config.get(c,ivarName,kind=None) # kind is ignored anyway.
-    
-        if val or not hasattr(self,ivarName):
-            # g.trace('c.configSettings',c.shortFileName(),ivarName,val)
-            setattr(self,ivarName,val)
-    #@-node:AGP.20250415230112.712:initIvar
-    #@+node:AGP.20250415230112.713:initEncoding
-    def initEncoding (self,key):
-        
-        c = self.c
-        
-        # N.B. The key is munged.
-        bunch = g.app.config.encodingIvarsDict.get(key)
-        encodingName = bunch.ivar
-        encoding = g.app.config.get(c,encodingName,kind='string')
-        
-        # New in 4.4b3: use the global setting as a last resort.
-        if encoding:
-            # g.trace('c.configSettings',c.shortFileName(),encodingName,encoding)
-            setattr(self,encodingName,encoding)
-        else:
-            encoding = getattr(g.app.config,encodingName)
-            # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
-            setattr(self,encodingName,encoding)
-    
-        if encoding and not g.isValidEncoding(encoding):
-            g.es("bad %s: %s" % (encodingName,encoding))
-    #@-node:AGP.20250415230112.713:initEncoding
-    #@-node:AGP.20250415230112.711:configSettings.__init__
-    #@+node:AGP.20250415230112.714:Getters
-    def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-        return g.app.config.getFontFromParams(self.c,
-            family,size,slant,weight,defaultSize=defaultSize)
-    
-    def getRecentFiles (self):
-        return g.app.config.getRecentFiles()
-    
-    def get(self,setting,theType):
-        return g.app.config.get(self.c,setting,theType)
-    
-    def getAbbrevDict(self):         return g.app.config.getAbbrevDict(self.c)
-    def getBool      (self,setting): return g.app.config.getBool     (self.c,setting)
-    def getColor     (self,setting): return g.app.config.getColor    (self.c,setting)
-    def getDirectory (self,setting): return g.app.config.getDirectory(self.c,setting)
-    def getInt       (self,setting): return g.app.config.getInt      (self.c,setting)
-    def getFloat     (self,setting): return g.app.config.getFloat    (self.c,setting)
-    def getFontDict  (self,setting): return g.app.config.getFontDict (self.c,setting)
-    def getLanguage  (self,setting): return g.app.config.getLanguage (self.c,setting)
-    def getRatio     (self,setting): return g.app.config.getRatio    (self.c,setting)
-    def getShortcut  (self,setting,):return g.app.config.getShortcut (self.c,setting)
-    def getString    (self,setting): return g.app.config.getString   (self.c,setting)
-    #@-node:AGP.20250415230112.714:Getters
-    #@+node:AGP.20250415230112.715:Setters... (c.configSettings)
-    #@+node:AGP.20250415230112.716:setRecentFiles (c.configSettings)
-    def setRecentFiles (self,files):
-        
-        '''Update the recent files list.'''
-    
-        # Append the files to the global list.
-        g.app.config.appendToRecentFiles(files)
-    #@-node:AGP.20250415230112.716:setRecentFiles (c.configSettings)
-    #@+node:AGP.20250415230112.717:set & setString
-    def set (self,p,setting,val):
-        
-        return g.app.config.setString(self.c,setting,val)
-        
-    setString = set
-    #@-node:AGP.20250415230112.717:set & setString
-    #@-node:AGP.20250415230112.715:Setters... (c.configSettings)
-    #@-others
-#@-node:AGP.20250415230112.710:class configSettings
 #@-others
 #@-node:AGP.20250415230112.329:@thin leoCommands.py
 #@-leo

@@ -13,10 +13,10 @@ import leoGlobals as g
 
 import leoColor
 import leoCommands
-import leoFrame
+
 import leoGui
 import leoNodes
-import leoTkinterGui
+#import leoTkinterGui
 
 import compiler
 import doctest

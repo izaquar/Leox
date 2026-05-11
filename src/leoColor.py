@@ -32,6 +32,10 @@ leoKeywords = [
     "@unit","@verbose","@wrap",
     "@keywords","@nosent","@xcc"]
 #@-node:AGP.20250415230112.302:leoKeywords
+#@+node:AGP.20260304175605:headKeywords
+
+headKeywords = ["@keywords","@nosent","@write","@url","@file","@xcc"]
+#@-node:AGP.20260304175605:headKeywords
 #@+node:AGP.20250415230112.303:class colorizer
 class colorizer:
     """Leo's syntax colorer class"""
@@ -42,6 +46,8 @@ class colorizer:
         self.c = c
         self.frame = c.frame
         self.body = c.frame.body
+        
+        self.hoff = 0
         
         if str(self.__class__) == "leoColor.nullColorizer":
             return self
@@ -57,10 +63,10 @@ class colorizer:
             "docPart"           :{'foreground':"red"},
             "keyword"           :{'foreground':theme['keyword']},
             "leoKeyword"        :{'foreground':theme['accent']},
-            "link"              :{'foreground':theme['accent']},
+            "name"              :{'foreground':theme['accent']},
             "nameBrackets"      :{'foreground':theme['string']},
             "string"            :{'foreground':theme['string']},
-            "name"              :{'foreground':"red",'underline':1},
+            "link"              :{'foreground':"red",'underline':1},
             "comment"           :{'foreground':theme['comment']},
         }
         
@@ -289,7 +295,7 @@ class colorizer:
             start = self.pDirective_start
         
         
-        
+        hoff = self.hoff
         lang = self.langmod
         len_line = len(line)
     
@@ -299,20 +305,10 @@ class colorizer:
         words = substring.split()
         #print words,substring
         directive = words[0]
-            
-        #if directive in ["#define","#undef","#if","#ifdef","#ifndef","#endif","#else","#elif"]:
-            
-        """s = e = index+len(directive)+1#8
-            while e < len_line-1 and not line[e].isspace():
-                e += 1
-            
-            if e == len_line-1:
-                e+=1
-            """
         
         s = e = index+len(directive)+1
         if tw:
-            tw.tag_add( "directive", "%i.%i" % start, "%i.%i" % (line_index,s) )
+            tw.tag_add( "directive", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,s+hoff) )
             #print "tag add1"
         
         if directive in ["#define","#ifdef","#ifndef","#undef"]:#next word is a definition
@@ -324,48 +320,16 @@ class colorizer:
                 if name not in self.names:
                     self.names.append(name)
                     #print name
-                if tw: tw.tag_add( "leoKeyword", "%i.%i" % (line_index,s), "%i.%i" % (line_index,index) )
+                if tw:
+                    
+                    tw.tag_add( "leoKeyword", "%i.%i" % (line_index,s+hoff), "%i.%i" % (line_index,index+hoff) )
         else:
             index = s#+len(words[1])
-        #elif directive in ["#if","#elif","#pragma","#error"]:#what follow is an expression
-            
-        #    index = len_line
-            
-        #elif directive in ["#endif"]:#what must be a comment
         
-        
+    
         self.parsers.remove(self.pDirective)
         
         line_escape = lang.LINE_ESCAPE
-        
-        """
-        fd = {substring.find(lang.COMMENT_START): 1}
-        if lang.BLOCK_COMMENT_START:
-            fd[substring.find(lang.BLOCK_COMMENT_START)] = 2
-        fd.pop(-1,None)
-        
-        
-        if len(fd) > 0:
-            pi = min(fd)     #minimum index found
-            p = fd[pi]   #associated parser
-        
-            if p == 1:
-                self.text_widget.tag_add("comment", "%i.%i" % (line_index,pi), "%i.%i" % (line_index,len_line) )
-                index = len_line
-                line_escape = False #void line escaping
-        
-            elif p == 2:
-                index = self.pBlockComment(line,pi,line_index,True)
-        """
-        #else:
-        #    index = len_line
-            
-        #if index == len_line:
-        #    if line[index-1] != line_escape or self.len_lines==0:  #do not continue on next line
-        #        self.parsers.remove(self.pDirective)
-        #        self.text_widget.tag_add( "directive", "%i.%i" % start, "%i.%i" % (line_index,index) )
-        #    #index += 1
-                
         
         return index
     #@nonl
@@ -374,10 +338,11 @@ class colorizer:
     def pComment(self,line,index,line_index,start=False):
         
         tw=self.text_widget
+        hoff = self.hoff
         
         start =  (line_index,index)
         index = len(line)
-        if tw: tw.tag_add("comment", "%i.%i" % start, "%i.%i" % (line_index,index) )
+        if tw: tw.tag_add("comment", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
         
         return index
     
@@ -385,6 +350,7 @@ class colorizer:
     #@+node:AGP.20250415230112.313:pBlockComment()
     def pBlockComment(self,line,index,line_index,start=False):
         tw=self.text_widget
+        hoff = self.hoff
         
         if start:
             start = self.pBlockComment_start = (line_index,index)
@@ -411,7 +377,7 @@ class colorizer:
     
         if stop or self.len_lines==0:#EOF
             self.parsers.remove(self.pBlockComment)
-            if tw: tw.tag_add("comment", "%i.%i" % start, "%i.%i" % (line_index,index) )
+            if tw: tw.tag_add("comment", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
             
             if len(self.parsers)>0:
                 index -= 1  #so that the parent parser can close
@@ -422,7 +388,8 @@ class colorizer:
     #@+node:AGP.20250415230112.314:pString()
     def pString(self,line,index,line_index,start=False):
         tw=self.text_widget
-            
+        hoff = self.hoff
+        
         if start:
             start = self.pString_start = (line_index,index)
             self.pString_delim = line[index]
@@ -441,14 +408,14 @@ class colorizer:
         if ss > -1:
             index += ss+1
             self.parsers.remove(self.pString)        
-            if tw: tw.tag_add( "string", "%i.%i" % start, "%i.%i" % (line_index,index) )
+            if tw: tw.tag_add( "string", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
         else:
             index = len_line
             line_escape = self.langmod.LINE_ESCAPE
             
             if  (line_escape and not substring.endswith(line_escape)) or self.len_lines==0 :#EOF
                 self.parsers.remove(self.pString)
-                if tw: tw.tag_add( "string", "%i.%i" % start, "%i.%i" % (line_index,index) )
+                if tw: tw.tag_add( "string", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
         
         
         return index
@@ -457,7 +424,8 @@ class colorizer:
     #@+node:AGP.20250415230112.315:pBlockString()
     def pBlockString(self,line,index,line_index,start=False):
         tw=self.text_widget
-            
+        hoff = self.hoff
+        
         if start:
             start = self.pBlockString_start = (line_index,index)
             self.pBlockString_delim = line[index]*3
@@ -473,13 +441,13 @@ class colorizer:
         if bss > -1:
             index = index + bss + len(self.pBlockString_delim)
             self.parsers.remove(self.pBlockString)
-            if tw: tw.tag_add( "string", "%i.%i" % start, "%i.%i" % (line_index,index+1) )
+            if tw: tw.tag_add( "string", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+1+hoff) )
         
         else:
             index = len_line -1
             if self.len_lines==0:
                 self.parsers.remove(self.pBlockString)
-                if tw: tw.tag_add( "string", "%i.%i" % start, "%i.%i" % (line_index,index+1) )
+                if tw: tw.tag_add( "string", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+1+hoff) )
         
         
         
@@ -490,6 +458,7 @@ class colorizer:
     def pKeyword(self,line,index,line_index,start=False):
         
         tw=self.text_widget
+        hoff = self.hoff
         
         if start:
             start = self.pKeyword_start = (line_index,index)
@@ -526,16 +495,19 @@ class colorizer:
         self.parsers.remove(self.pKeyword)
         
         if name.startswith("@"):
+            
             if start[1] != 0 and name not in ("@others","@all"):
                 return index
                 
             if name in leoKeywords:
-                if tw: tw.tag_add( "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index) )
+                
+                if tw: tw.tag_add( "leoKeyword", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
                     
         elif name in lang.keywords:
-            if tw: tw.tag_add( "keyword", "%i.%i" % start, "%i.%i" % (line_index,index) )
+            
+            if tw: tw.tag_add( "keyword", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
         elif name in self.names:
-            if tw: tw.tag_add( "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index) )
+            if tw: tw.tag_add( "leoKeyword", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
         
         return index
         
@@ -545,6 +517,7 @@ class colorizer:
     def pleoKeyword(self,line,index,line_index,start=False):
         
         tw=self.text_widget
+        hoff = self.hoff
         
         start = (line_index,index)
         if line[index] == "@":
@@ -573,7 +546,8 @@ class colorizer:
                 return index
                 
             if name in leoKeywords:
-                if tw: tw.tag_add( "leoKeyword", "%i.%i" % start, "%i.%i" % (line_index,index) )
+                #print "leokeywords",name,start[0],start[1]+hoff,line_index,index+hoff
+                if tw: tw.tag_add( "leoKeyword", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )
                 
                 #if name == "@language" and self.langswitch:
                 #    print self,self.langswitch
@@ -589,7 +563,8 @@ class colorizer:
     def pSection(self,line,index,line_index,start=False):
         
         tw=self.text_widget
-            
+        hoff = self.hoff
+        
         start = (line_index,index)
         
         len_line = len(line)
@@ -602,18 +577,22 @@ class colorizer:
         
         if ss > -1 and tw:
             #index += ss+1     
-            if tw: tw.tag_add( "nameBrackets", "%i.%i" % start, "%i.%i" % (line_index,index+2) )
+            if tw: tw.tag_add( "nameBrackets", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+2+hoff) )
             
             #print line[index:index+ss+3]
-            searchName = self.text_widget.get("%i.%i" % start,"%i.%i" % (line_index,index+ss+3)) # includes brackets
-            ref = g.findReference(self.c,searchName,self.p)
-            if ref:
-                tn = "link"
-            else:
-                tn = "name"
-                
-            if tw: tw.tag_add( tn, "%i.%i" % (line_index,index+2), "%i.%i" % (line_index,index+ss) )
-            if tw: tw.tag_add( "nameBrackets", "%i.%i" % (line_index,index+ss), "%i.%i" % (line_index,index+ss+3) )
+            searchName = self.text_widget.get("%i.%i" % (start[0],start[1]+hoff),"%i.%i" % (line_index,index+ss+3+hoff)) # includes brackets
+            
+            p = self.p
+            tn = "name"
+            if p:
+                ref = g.findReference(self.c,searchName,p)
+                if not ref:
+                    tn = "link"
+            
+            
+            
+            if tw: tw.tag_add( tn, "%i.%i" % (line_index,index+2+hoff), "%i.%i" % (line_index,index+ss+hoff) )
+            if tw: tw.tag_add( "nameBrackets", "%i.%i" % (line_index,index+ss+hoff), "%i.%i" % (line_index,index+ss+3+hoff) )
         
         
             index = len_line
@@ -624,6 +603,42 @@ class colorizer:
         return index
     #@nonl
     #@-node:AGP.20250415230112.318:pSection()
+    #@+node:AGP.20260304182105:pheadKeyword()
+    def pheadKeyword(self,line,index,line_index,start=False):
+        
+        tw=self.text_widget
+        hoff = self.hoff
+        
+        start = (line_index,index)
+        if line[index] == "@":
+            index += 1
+        
+        
+        len_line = len(line)
+    
+        valid = not line[index].isspace()
+        
+        while valid and index < len_line-1:
+            index += 1
+            valid = not line[index].isspace()
+        
+        
+        EOL = index == (len(line)-1)
+        
+        if EOL and valid:
+            index +=1
+            
+        name = line[start[1]:index]
+        
+        
+        if name in headKeywords:
+            #print "leokeywords",name,start[0],start[1]+hoff,line_index,index+hoff
+            if tw: tw.tag_add( "leoKeyword", "%i.%i" % (start[0],start[1]+hoff), "%i.%i" % (line_index,index+hoff) )      
+                
+        return index
+        
+    #@nonl
+    #@-node:AGP.20260304182105:pheadKeyword()
     #@-node:AGP.20250415230112.308:AGP self COLORIZER
     #@+node:AGP.20250415230112.319:disable() & enable()
     def disable (self):
@@ -663,6 +678,8 @@ class colorizer:
         
         c = self.c
         self.p=p
+        
+        self.hoff = 0
         
         # Add any newly-added user keywords.
         for d in g.globalDirectiveList:
@@ -712,31 +729,69 @@ class colorizer:
                 import traceback ; traceback.print_exc()
             return "error" # for unit testing.
     #@-node:AGP.20250415230112.320:colorize()
-    #@+node:AGP.20250416182201:colorize_headline()
-    def colorize_headline(self,t):
-        #print 'clorize'
-        self.text_widget = t
+    #@+node:AGP.20260304174633:colorize_headline_none()
+    def colorize_headline_none(self,txt,line):
         
-        self.langswitch = True
+        #do some localisation
+        pheadKeyword = self.pheadKeyword
+        pSection = self.pSection
         
         
-        s = t.get(1.0,'end')
+        #self.widget
         
-        #self.delete_tags();
+        lines = txt.splitlines()
+        line_index = line
+        line = lines.pop(0)
+        index = 0
         
-        if s == "":
-            return
-            
-        self.colorize_none(s)
-        td = self.tag_dict
-        t.tag_config("leoKeyword",**td["leoKeyword"])
-            
-    #@-node:AGP.20250416182201:colorize_headline()
-    #@+node:AGP.20250417084753:colorize_headlineN()
-    def colorize_headlineN(self,p,t):
+        len_line = len(line)
+        self.len_lines = len_lines = len(lines)
+        
+        parsers = self.parsers = []
+        
+        
+        
+        while 1:
+            while index < len_line:            
+                
+                EOL = index == (len_line-1)
+                self.EOF = EOL and (len_lines == 0)
+                
+                if len(parsers) > 0:
+                    for p in reversed(parsers):
+                        index = p( line,index,line_index )
+                    
+                else:
+                    
+                    ch = line[index]
+                    substring = line[index:]
+                    
+                    if ch == "@":
+                        index = pheadKeyword( line,index,line_index,True )
+                        
+                    elif substring.startswith("<<"):
+                        index = pSection( line,index,line_index,True )
+                        
+                    else:
+                        index += 1
+                    
+    
+            if len_lines > 0:
+                line_index += 1
+                line = lines.pop(0)
+                index = 0
+                
+                len_line = len(line)
+                self.len_lines = len_lines = len(lines)
+            else:
+                break
+        
+    #@-node:AGP.20260304174633:colorize_headline_none()
+    #@+node:AGP.20250417084753:colorize_headline()
+    def colorize_headline(self,p,t,line=None,scan_parents=False):
         
         #check the langauge
-        bs = p.v.bodyString()
+        """bs = p.v.bodyString()
         body_directives = self.scan_directives(bs,dir_list=["@language"])
         if body_directives:
             #print body_directives
@@ -745,81 +800,73 @@ class colorizer:
                 self.language = new_lang
                 self.langmod = languages[new_lang]
                 self.colorize_head = getattr(self.langmod,"colorize_head",None)
+            else:
+                g.es("Unknown language: "+new_lang,color="red")
+        """     
+        
+        new_lang = self.scan_language(p,scan_parents)
+        
+        if new_lang:
+            new_lang = new_lang[1]
+            #print "found",new_lang
+            if new_lang in languages:
+                self.language = new_lang
+                self.langmod = languages[new_lang]
+                self.colorize_head = getattr(self.langmod,"colorize_head",None)
+            else:
+                g.es("Unknown language: "+new_lang,color="red")
+        
+        
         
         lang,colorize_head = self.langmod , self.colorize_head
         
         
         
-        self.langswitch = True
-        
+        #self.langswitch = True
         tw = self.text_widget = t
-        t.tag_delete(t.tag_names())
+        if not line:
+            t.tag_delete(t.tag_names())
+            self.sync_tags(tw)
+            txt = tw.get("1.0",'end')
+            self.hoff = hoff = 0
+            line = 1
         
-        txt = tw.get(1.0,'end')
-        
-        if lang:
-            colorize_head = self.colorize_head#getattr(lang,"colorize_head",None) #custom language colorizer
-        
-            if colorize_head:
-                res = colorize_head(txt)
-                if res:
-                    #print res
-                    spec,ret,name,params,pure,dest,ctors = res
-                    
-                    off = 0# len(txt)
+        else:#this mean newleotree
+            linestr = str(line)+"."
+            linestart = linestr+"1"
             
-                    v,s,e = spec
-                    if v != "":
-                        tw.tag_add("keyword","1."+str(s+off),"1."+str(e+off))
+            hoff = tw.tag_nextrange('head', linestart)[0].split(".")[1]
+            headstart = linestr+hoff
+            self.hoff = hoff = int(hoff)
             
-                    v,s,e = ret
-                    if s != -1 and e != -1:
-                        tw.tag_add("keyword","1."+str(s+off),"1."+str(e+off))		
+            lineend = linestr+"end"
+            txt = tw.get(linestart,lineend)
             
-                    params,s,e = params
-                    if params != "()":
-                        s += 1
-                        params = params.strip("()").split(",")
-                        
-                        for p in params:
-                            """words = p.split()
-                            
-                            ptype = "".join(words[:-1])
-                            #print "tags",s,len(ptype)
-                            tw.tag_add("keyword","1."+str(s),"1."+str(s+len(ptype)) )
-                            s += len(ptype)+1
-                            
-                            if len(words) > 1:
-                                pname = words[-1]
-                                tw.tag_add("string","1."+str(s+off),"1."+str(s+off+len(pname)))
-                                s += len(pname)+1
-                                
-                            """
-                            pmo = re.search("(?P<TYPE>.+[ |*])(?P<NAME>.*)",p)
-                            if pmo != None:
-                                #print pmo.groupdict(),p
-                                s2,e2 = pmo.span("TYPE")
-                                tw.tag_add("keyword","1."+str(s+off+s2),"1."+str(s+off+(e2-s2)))
-                                s2,e2 = pmo.span("NAME")
-                                tw.tag_add("string","1."+str(s+off+s2),"1."+str(s+off+e2))
-                                
-                                off += len(p)+1
-                                
-                    
-                    
-                    self.sync_tags(tw)
+            for tag in ["directive","keyword","leoKeyword","nameBrackets" ,"string","comment"]:
+                tw.tag_remove(tag, headstart, lineend)
     
-                    return
+            
+        #print "\""+txt+"\""
+        
+        
+        if lang: #colorize using lang supplied head colorizer
+            #print "colorize lang",p
+            if colorize_head and colorize_head(txt,tw,line,hoff):
+                return
             #print "colorizing using colorizer"
-        else:
-            self.colorize_none(txt)
+        else: #colorize using none head colorizer
+            #print "colorize none",p
+            self.colorize_headline_none(txt,line)
             td = self.tag_dict
             t.tag_config("leoKeyword",**td["leoKeyword"])
             return
         
-        #print "colorizing using colorizer"
+        
+        #print "colorize",p
+        #colorize using lang params and default colorizer
         #do some localisation
         pKeyword = self.pKeyword
+        pheadKeyword = self.pheadKeyword
         pDirective = self.pDirective
         pBlockString = self.pBlockString
         pString = self.pString
@@ -842,7 +889,7 @@ class colorizer:
         #self.widget
         
         lines = txt.splitlines()
-        line_index = 1
+        line_index = line
         line = lines.pop(0)
         index = 0
         
@@ -900,7 +947,7 @@ class colorizer:
                         index = pBlockComment( line,index,line_index,True )
         
                     elif ch == "@":
-                        index = pKeyword( line,index,line_index,True )
+                        index = pheadKeyword( line,index,line_index,True )
                         
                     elif substring.startswith("<<"):
                         index = pSection( line,index,line_index,True )
@@ -936,9 +983,12 @@ class colorizer:
         
         
     #@nonl
-    #@-node:AGP.20250417084753:colorize_headlineN()
+    #@-node:AGP.20250417084753:colorize_headline()
     #@+node:AGP.20250417133159:scan_directives()
     def scan_directives(self,s,dir_list=None):
+        if not s.startswith("@"):
+            return None   
+        
         lines = s.splitlines()
         res = []
         
@@ -959,6 +1009,33 @@ class colorizer:
             
         return res
     #@-node:AGP.20250417133159:scan_directives()
+    #@+node:AGP.20251127222925:scan_language()
+    def scan_language(self,p,parents=False):
+        
+        if parents:
+            plist = p.self_and_parents_iter()
+        else:
+            plist = [p]
+        
+        for p in plist:
+            s = p.v.t.bodyString
+            
+            if not s.startswith("@"):
+                continue
+        
+            lines = s.splitlines()
+        
+            for l in lines:
+                if l.startswith("@language"):
+                    words = l.split()
+                    if len(words) > 1:
+                        return words[:2]
+                    else:
+                        return (words[0],None)
+            
+        return None
+    #@nonl
+    #@-node:AGP.20251127222925:scan_language()
     #@+node:AGP.20250421213738:scan_tree()
     def scan_tree(self,p=None):
         #print "scan_tree"
@@ -989,7 +1066,7 @@ class colorizer:
         
         if not lang: return
         
-        self.langswitch = True
+        #self.langswitch = True
         
         self.text_widget = None
         
@@ -1223,7 +1300,7 @@ class nullColorizer (colorizer):
     
     #@    @+others
     #@+node:AGP.20250415230112.327:__init__
-    def __init__ (self,c):
+    def __init__ (self,c,frame):
         
         colorizer.__init__(self,c,None) # init the base class.
     

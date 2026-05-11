@@ -2,8 +2,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.317824377457">
-	<global_window_position top="10" left="10" height="776" width="1526"/>
+<globals body_outline_ratio="0.382">
+	<global_window_position top="10" left="10" height="835" width="1636"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -35,8 +35,8 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="AGP.20240920200821" a="TV" tnodeList="AGP.20240920200821"><vh>@file leo.ui</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="AGP.20240920200821" tnodeList="AGP.20240920200821"><vh>@file leo.ui</vh></v>
+<v t="ekr.20041119034357.1" a="ETV"><vh>@settings</vh>
 <v t="ekr.20041119034357.70"><vh>Syntax colors &amp; options</vh>
 <v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
 <v t="ekr.20060828145228" a="E"><vh>Options for old colorizer</vh>
@@ -242,7 +242,7 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" a="E"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
@@ -368,7 +368,7 @@
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
-<v t="ekr.20060110141538.2"><vh>@keys Legacy Leo bindings</vh>
+<v t="ekr.20060110141538.2" a="E"><vh>@keys Legacy Leo bindings</vh>
 <v t="ekr.20051218203646"><vh>@shortcuts Legacy: A-E</vh></v>
 <v t="ekr.20060112090844.4"><vh>@shortcuts Legacy: F-M</vh></v>
 <v t="ekr.20060112090844.5"><vh>@shortcuts Legacy: N-Z</vh></v>
@@ -511,7 +511,7 @@
 </v>
 </v>
 </v>
-<v t="AGP.20240925191023" a="E"><vh>backup</vh>
+<v t="AGP.20240925191023"><vh>backup</vh>
 <v t="AGP.20240927082403"><vh>file languages/c.py</vh>
 <v t="AGP.20240927082403.1"><vh>colorize()</vh></v>
 <v t="AGP.20240927082403.2"><vh>c_parser()</vh></v>
@@ -559,7 +559,7 @@
 <v t="AGP.20240929101124.7"><vh>pKeyword()</vh></v>
 </v>
 </v>
-<v t="AGP.20240923174705" a="E"><vh>languages</vh>
+<v t="AGP.20240923174705"><vh>languages</vh>
 <v t="AGP.20240926213925" a="E" tnodeList="AGP.20240926213925,AGP.20250422135319"><vh>@file languages/c.py</vh>
 <v t="AGP.20250422135319"><vh>colorize_head()</vh></v>
 </v>
@@ -666,6 +666,8 @@ dirty = '#808080'
 *nodetext.Foreground = shade(0.9)
 *tree.font = ('consolas', 13,'normal','roman')
 *tree.highlightThickness = 1
+*treetext.font = ('consolas', 13,'normal','roman')
+*treetext.highlightThickness = 1
 *bodytext.font = ('consolas', 12,'normal','roman')
 *bodytext.Foreground = shade(0.9)
 #*bodytext.highlightThickness = 1
@@ -746,7 +748,7 @@ keywords = [
 <t tx="AGP.20240925191023">@language c
 
  "dsd#fdsd</t>
-<t tx="AGP.20240926213925">import string
+<t tx="AGP.20240926213925">import string,re
 
 alias = ("cpp","c++")
 
@@ -1992,13 +1994,18 @@ results = []</t>
 <t tx="AGP.20241001210922">@language c
 
 </t>
-<t tx="AGP.20250422135319">
-def colorize_head(head):
+<t tx="AGP.20250422135319">def colorize_head(head,tw,line=1,hoff=0):
     params_e = head.rfind(")")
+    
+    linestr = str(line)+"."
+    lineend = str(line)+".end"
+    headstart = str(line)+"."+str(hoff)
     
     
     if head[0] not in VALID_NAME_START_CHARS:
         return None
+    
+    
     
     if params_e &gt; -1:
         params_s = head.find("(",0,params_e)
@@ -2048,7 +2055,21 @@ def colorize_head(head):
                 dest = (head[params_e+1:],params_e+1,len(head))                    
             
             # params ------------------------			
-            params = (head[params_s:params_e+1],params_s,params_e+1)			
+            #params = (head[params_s:params_e+1],params_s,params_e+1)
+            params = head[params_s:params_e+1]
+            if params != "()":
+                params = params.strip("()").split(",")
+                off = 1
+                for p in params:
+                    pmo = re.search("(?P&lt;TYPE&gt;.+[ |*])(?P&lt;NAME&gt;.*)",p)
+                    if pmo != None:
+                        #print pmo.groupdict(),p
+                        s2,e2 = pmo.span("TYPE")
+                        tw.tag_add("keyword",linestr+str(params_s+s2+off+hoff),linestr+str(params_s+e2+off+hoff))
+                        s2,e2 = pmo.span("NAME")
+                        tw.tag_add("string",linestr+str(params_s+s2+off+hoff),linestr+str(params_s+e2+off+hoff))
+                        
+                        off += len(p)+1
             
             # name ---------------------------
             name_s = head.find("operator")
@@ -2061,27 +2082,32 @@ def colorize_head(head):
                 name = (head[name_s:params_s],name_s,params_s)
                 
                 if name[0].startswith("~"): #ctors have no return value, all preceding name is specifier
-                    ret = ("",-1,-1)
-                    spec = (head[:name_s],0,name_s)
+                    #ret = ("",-1,-1)
+                    #spec = (head[:name_s],0,name_s)
+                    tw.tag_add("keyword",headstart,linestr+str(name_s+hoff))
                 else:
                     ret_s = head.rfind(" ",0,name_s-1)
                 
                     if ret_s &gt; -1:
-                        ret = (head[ret_s+1:name_s-1],ret_s+1,name_s-1)
-                        spec = (head[:ret_s],0,ret_s)
+                        #ret = (head[ret_s+1:name_s-1],ret_s+1,name_s-1)
+                        tw.tag_add("keyword",linestr+str(ret_s+1+hoff),"1."+str(name_s-1+hoff))
+                        #spec = (head[:ret_s],0,ret_s)
+                        tw.tag_add("keyword",headstart,linestr+str(ret_s+hoff))
                     else:
-                        ret = (head[:name_s],0,name_s)
-                        spec = ("",-1,-1)
+                        #ret = (head[:name_s],0,name_s)
+                        tw.tag_add("keyword",headstart,linestr+str(name_s+hoff))
+                        #spec = ("",-1,-1)
                     
             else:
-                name = (head[:params_s],0,params_s)
-                ret = ("",-1,-1)
-                spec = ("",-1,-1)
+                pass#name = (head[:params_s],0,params_s)
+                #ret = ("",-1,-1)
+                #spec = ("",-1,-1)
             
-            r = (spec,ret,name,params,pure,dest,ctors)
-            return r
-    return None</t>
-<t tx="ekr.20041119034357.1">#@nocolor</t>
+            #r = (spec,ret,name,params,pure,dest,ctors)
+            return True
+    return False
+</t>
+<t tx="ekr.20041119034357.1" mod="55134c4147502e323032363034313331333331313371002e"></t>
 <t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.8">Example:
@@ -3251,7 +3277,7 @@ delete-char                         = Delete
 delete-comments                     = Ctrl-)
 delete-file                         = None
 delete-indentation                  = None
-delete-node                         = Shift-Ctrl-BkSp
+delete-node                         = Shift-Ctrl-Backspace
 delete-rectangle                    = None
 delete-spaces                       = None
 demote                              = Ctrl-}

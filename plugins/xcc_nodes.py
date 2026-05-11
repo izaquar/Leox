@@ -284,6 +284,7 @@
 # from leoGlobals import *
 import leoPlugins
 import leoGlobals as g
+import leoGui
 
 # from Tkinter import *
 import Tkinter as Tk
@@ -819,6 +820,59 @@ def GetXccNode(node):
 	
 	return None
 #@-node:GetXccNode
+#@+node:GetUAKey
+def GetUAKey(node,key,default=None):
+    
+    v = node.v
+
+    if hasattr(v,"unknownAttributes"):
+        return v.unknownAttributes.get(key,default)
+    
+    return default
+#@nonl
+#@-node:GetUAKey
+#@+node:SetUAKey
+def SetUAKey(node,key,value):
+    
+    v = node.v
+
+    if hasattr(v,"unknownAttributes"):
+        ua = v.unknownAttributes
+    else:
+        ua = v.unknownAttributes = {}
+    
+    ua[key] = value
+#@nonl
+#@-node:SetUAKey
+#@+node:GetXccKey
+def GetXccKey(node,key,default=None):
+    
+    v = node.v
+    
+    ua = getattr(v,"unknownAttributes",None)
+    if ua:
+        xd = ua.get("xcc_cfg",None)
+        if xd:
+            return xd.get(key,default)
+            
+    return default
+#@-node:GetXccKey
+#@+node:SetXccKey
+def SetXccKey(node,key,value):
+    #print "setxcckey",node
+    v = node.v
+    ua = getattr(v,"unknownAttributes",None)
+    #print ua
+    if not ua:
+        ua = v.unknownAttributes = {}
+    
+    xd = ua.get("xcc_cfg",None)
+    #print xd
+    if not xd:
+        xd = ua["xcc_cfg"] = {}
+    
+    xd[key] = value
+#@-node:SetXccKey
 #@+node:ImportFiles
 def ImportFiles():
 
@@ -843,10 +897,10 @@ def HasXccDict(v):
 #@nonl
 #@-node:HasXccDict
 #@+node:Message
-def Message(module,warning):
+def Message(module,warning,newline=True):
 
 	g.es(module,newline = False,color = "blue")
-	g.es(warning)
+	g.es(warning,newline = newline)
 #@-node:Message
 #@+node:TraceBack
 def TraceBack():
@@ -1062,6 +1116,13 @@ class controllerClass:
         self.RULES = ParserClass.CPPRULES(self)
         
         self.Parser = None
+        
+        self.RUNNING = False
+        self.ALL_XCC_NODES = {}
+        self.XCCNODES = []
+        self.uptick = 0
+        
+        self.dep_depth = 0
         #@nonl
         #@-node:Xcc Core
         #@+node:Browse Info
@@ -1171,10 +1232,13 @@ class controllerClass:
     #@-node:__init__
     #@+node:Event handlers
     #@+node:onSelect
-    def onSelect(self):    
+    def onSelect(self):
         cc = self
-        p = cc.c.currentPosition()
         
+        if cc.RUNNING: # we dont interfer with running xcc
+            return
+            
+        p = cc.c.currentPosition()
         
         if IsXcc(p):
             cc.cSelect()
@@ -1196,7 +1260,7 @@ class controllerClass:
     def onIdle(self):
     
         cc = self
-        cc.UpdateProcess()
+        cc.UpdateXCC()
         cc.BreakBar.IdleUpdate()
     #@nonl
     #@-node:onIdle
@@ -1331,26 +1395,92 @@ class controllerClass:
         
         self.goingto = False
     #@-node:GoToNode
-    #@+node:UpdateProcess
-    def UpdateProcess(self):
+    #@+node:XGetDep
+    def XGetDep(self,node,reset = False):
+        
+        cc = self
+        AXN = cc.ALL_XCC_NODES
+        
+        if reset:
+            cc.dep_depth = 0
+        
+        cc.dep_depth +=1
+        
+        if cc.dep_depth == 20:
+            return None
+        
+        
+        deps = []
+        
+        p = node.GetFirstChild()
+        if p and p.v.t.headString.startswith("@dep"):
+            bs = p.v.t.bodyString.splitlines()
+            for dep in bs:
+                if dep in AXN:
+                    subdeps = cc.GetDep(AXN[dep])
+                            
+                    if subdeps: #these need run before current
+                        deps.extend(subdeps)
+                    else:
+                        return None #max depth reached... maybe circular
+                    
+                    deps.append(AXN[dep])
+                    
+                else:
+                    Warning("xcc:","unresolved dependency"+dep)
+        
+        cc.dep_depth -=1
+        
+        return deps
+    #@nonl
+    #@-node:XGetDep
+    #@+node:UpdateXCC
+    def UpdateXCC(self):
         
         #g.trace(ProcessClass.List)
         
         cc = self
+        xccnode = None
         if len(ProcessClass.List) > 0:
             process = ProcessClass.List[0]
             if process.Update():
-                #g.es("update")
+                cc.uptick +=1
+                if cc.uptick == 10:
+                    cc.uptick = 0
+                    g.es(".",newline=False)
                 return
             if process.Close():
                 ProcessClass.List = [] #reset
             else:
+                
                 ProcessClass.List.pop(0)
-                if ProcessClass.List:
+                if len(ProcessClass.List) > 0:
                     if not ProcessClass.List[0].Open():
                         ProcessClass.List = [] #reset
+                else:
+                    g.es("ok",color = "blue")
+                    bstamp = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+                    SetXccKey(cc.SELECTED_NODE,"bstamp",bstamp)
+                    if len(cc.XCCNODES) > 0:
+                        #run the the first xcc node
+                        xccnode = cc.XCCNODES.pop(0)
+                    else:
+                        cc.RUNNING = False  #job is finished
+                        cc.onSelect()       #in case user selected different node while building
+                
+        elif len(cc.XCCNODES) > 0:
+            #run the the first xcc node
+            xccnode = cc.XCCNODES.pop(0)
+            
+        if xccnode:
+            cc.sSelect(xccnode)
+        
+            if not cc.sRun():
+                #abort
+                ProcessClass.List = []
+                cc.XCCNODES = []
     #@nonl
-    #@-node:UpdateProcess
+    #@-node:UpdateXCC
     #@+node:ReplaceVars
     def ReplaceVars(self,exp):
     	exp = exp.replace("_NAME_",self.NAME)
@@ -1747,15 +1877,17 @@ class controllerClass:
                     SeekErrorClass(cc,cc.RULES,int(line),ext.replace(".",""),color=ErrorColor)
     #@nonl
     #@-node:sGoToError
-    #@+node:sGo
-    def sGo(self):	#this is where the selected node also become the active node
+    #@+node:sRun
+    def sRun(self):	#this is where the selected node also become the active node
     
         cc = self
-        
+        #print "selected node"+str(cc.SELECTED_NODE)
         cc.sGetBrowseInfo()
         
         if not cc.NAME:
             return Error("xcc: ","Node has no name!")
+            
+        Message("xcc : run ",cc.NAME+"...",newline=False)
     
         if cc.LANG["Language"] == "":
             cc.LANG["Language"] == "c++"
@@ -1769,6 +1901,9 @@ class controllerClass:
             if cc.OPTS.get("Source files") == "True" or cc.OPTS.get("Doc files"):
                 if not cc.CreateFiles():
                     return False
+        
+        
+        
         
         cc.sGetExecInfo()
         if cc.OPTS.get("Build") == "True":        
@@ -1801,11 +1936,68 @@ class controllerClass:
                     return False
             else:
                 if not cc.Execute():
-                    return False        
-        
+                    return False
+    
+        #set last successfull build time
+        #mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+        if len(ProcessClass.List) == 0:
+            g.es("ok",color = "blue")
+            bstamp = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+            SetXccKey(cc.SELECTED_NODE,"bstamp",bstamp)
         return True
     
     
+    #@-node:sRun
+    #@+node:sGo
+    def sGo(self):
+        cc = self    
+        
+        XCCNODES = cc.XCCNODES
+        force_rebuild = False
+        
+        for p in cc.SELECTED_NODE.subtree_iter(): #dependencies
+            if p.v.t.headString.startswith("@xcc "):
+                
+                #check if need re-run
+                mstamp = getattr(p.v,"mod",None);
+                #print mstamp
+                if mstamp == None:
+                    mstamp = p.v.mod = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
+                
+                bstamp = GetXccKey(p,"bstamp")
+                #print bstamp
+                if bstamp != None:
+                    btime = time.strptime(bstamp.split(".")[1],"%Y%m%d%H%M%S")
+                    mtime = time.strptime(mstamp.split(".")[1],"%Y%m%d%H%M%S")
+                    
+                    
+                if not bstamp or btime < mtime or force_rebuild:
+                    #print "append",str(p)
+                    XCCNODES.append(p.copy())
+                    force_rebuild = True #all subsequent must be rebuilt
+                
+                
+                
+        XCCNODES.append(cc.SELECTED_NODE)
+                
+        #run the the first xcc node
+        xccnode = XCCNODES.pop(0)
+        cc.sSelect(xccnode)
+        try:
+            if not cc.sRun():
+                #abort
+                ProcessClass.List = []
+                cc.XCCNODES = []
+        except Exception:
+            #abort
+            ProcessClass.List = []
+            cc.XCCNODES = []
+            g.es_exception()
+            
+        cc.RUNNING = True
+                
+        
+    #@nonl
     #@-node:sGo
     #@+node:sSet
     def sSet (self,name,value):
@@ -1878,6 +2070,10 @@ class controllerClass:
         cc = self ; c = cc.c
     
         if node:
+            
+            if cc.SELECTED_NODE == node:
+                return
+            
             if cc.SELECTED_NODE:
                 cc.Config.Hide()
             
@@ -2190,12 +2386,12 @@ class controllerClass:
     #@-node:aAddText
     #@-node:Active Node Funcs
     #@+node:Action Funcs
-    #@+node:ParseTree
-    def ParseTree(self):
+    #@+node:XParseTree
+    def XParseTree(self):
         p = ParserClass(self)
         p.Parse()
     #@nonl
-    #@-node:ParseTree
+    #@-node:XParseTree
     #@+node:CreateFiles
     def CreateFiles(self):
     
@@ -2537,10 +2733,10 @@ class controllerClass:
             pn = "Build"
         
         
-        if exitcode == None:
-            text += "\" "+pn+" process successful!\n"
-            Message("xcc : ",pn+" process successful!\n")
-        else:
+        #if exitcode == None:
+        #    text += "\" "+pn+" process successful!\n"
+        #    Message("xcc : ",pn+" process successful!\n")
+        if exitcode != None:#else:
             text += "\" "+pn+" process aborted!\n"
             Error("xcc : ",pn+" process failed!")
         text += "\""+("-"*60)+"\n"
@@ -2790,6 +2986,8 @@ class controllerClass:
         text += "\""+("="*60)+"\n"
         cc.aAddText(text)
         
+        #Message("xcc : ",cc.ACTIVE_PROCESS.FileName+"... ",newline=False)
+        
         cc.ToolBar.ShowInput()
     #@nonl
     #@-node:ProgStart
@@ -2797,7 +2995,7 @@ class controllerClass:
     def ProgOut(self,text):
         
         #g.trace(repr(text))
-        g.es(text)
+        
         cc = self
         cc.OutBuff += text
         lines = cc.OutBuff.splitlines(True)
@@ -3458,7 +3656,7 @@ class ProcessClass:
         path,fname = os.path.split(self.FileName)
         
         if fname == "" or os.access(self.FileName,os.F_OK) != 1:		
-            Warning("xcc: ","PROCESS: "+self.FileName+" is not a valid file!")
+            pass#Warning("xcc: ","PROCESS: "+self.FileName+" is not a valid file!")
             #return #removed to allow std commands
     
         # Create the threads and open the pipe, saving and restoring the working directory.
@@ -3640,7 +3838,7 @@ class ConfigClass:
                 self.MasterFrame = mf = Tk.Frame(c,relief='groove',height=h,width=w,bg=bg)
                 self.ID = c.create_window(x,y,anchor=a,window=mf,height=h,width=w)	
                 
-                self.Entry = Tk.Entry(mf,width=1,bg=bg)#,bg=bg)
+                self.Entry = Tk.Entry(mf,width=1,bg=g.theme['shade'](0.05))#,bg=bg)
                 self.Entry.pack(side="right",fill="x",expand=e)
                 l = Tk.Label(mf,text=n+":",bg=bg).pack(side="right")#,fg=fg
             #@-node:__init__
@@ -4857,7 +5055,7 @@ class ToolbarClass(Tk.Frame):
             
             
             if not cc.ACTIVE_NODE:
-                if len(ProcessClass.List) > 0:
+                if len(ProcessClass.List) > 0 or len(cc.XCCNODES) > 0:
                     return Error("xcc: ","already running!")
                 cc.sGo()
             elif cc.ACTIVE_NODE == cc.SELECTED_NODE:
@@ -6245,14 +6443,14 @@ class DocEditClass(Tk.Text):
             wrap='none'
         )
         
-        self.YBar = g.app.gui.SCROLLBAR(self.MainFrame,1,corner=True)
+        self.YBar = leoGui.SCROLLBAR(self.MainFrame,1,corner=True)
         #Tk.Scrollbar(self.MainFrame,command=self.yview)
         self.YBar.pack(side="right",fill="y")
         
         self.bind("<KeyRelease>",self.OnKeyRelease)
         self.pack(side="top",fill="both",expand=1)    
         
-        self.XBar = g.app.gui.SCROLLBAR(self.MainFrame,0,corner=True)
+        self.XBar = leoGui.SCROLLBAR(self.MainFrame,0,corner=True)
         #Tk.Scrollbar(self.MainFrame,orient="horizontal",command=self.xview)
         self.XBar.pack(side="bottom",fill="x")
         
@@ -7040,7 +7238,10 @@ class ParserClass:
             p = cc.Parser
             
             #AT rule
-            if head.startswith("@"):
+            if head.startswith("@"):    #node is ignored by createfiles()
+                #if head.startswith("@xcc "):
+                #    cc.XCCNODES.append(p.CURRENT_NODE) #dependency
+                    
                 return True
             
             

@@ -1,6 +1,6 @@
 #@+leo-ver=4
 #@+node:@file languages/c.py
-import string
+import string,re
 
 alias = ("cpp","c++")
 
@@ -58,13 +58,18 @@ symbols = {
 
 #@+others
 #@+node:colorize_head()
-
-def colorize_head(head):
+def colorize_head(head,tw,line=1,hoff=0):
     params_e = head.rfind(")")
+    
+    linestr = str(line)+"."
+    lineend = str(line)+".end"
+    headstart = str(line)+"."+str(hoff)
     
     
     if head[0] not in VALID_NAME_START_CHARS:
         return None
+    
+    
     
     if params_e > -1:
         params_s = head.find("(",0,params_e)
@@ -114,7 +119,21 @@ def colorize_head(head):
                 dest = (head[params_e+1:],params_e+1,len(head))                    
             
             # params ------------------------			
-            params = (head[params_s:params_e+1],params_s,params_e+1)			
+            #params = (head[params_s:params_e+1],params_s,params_e+1)
+            params = head[params_s:params_e+1]
+            if params != "()":
+                params = params.strip("()").split(",")
+                off = 1
+                for p in params:
+                    pmo = re.search("(?P<TYPE>.+[ |*])(?P<NAME>.*)",p)
+                    if pmo != None:
+                        #print pmo.groupdict(),p
+                        s2,e2 = pmo.span("TYPE")
+                        tw.tag_add("keyword",linestr+str(params_s+s2+off+hoff),linestr+str(params_s+e2+off+hoff))
+                        s2,e2 = pmo.span("NAME")
+                        tw.tag_add("string",linestr+str(params_s+s2+off+hoff),linestr+str(params_s+e2+off+hoff))
+                        
+                        off += len(p)+1
             
             # name ---------------------------
             name_s = head.find("operator")
@@ -127,27 +146,30 @@ def colorize_head(head):
                 name = (head[name_s:params_s],name_s,params_s)
                 
                 if name[0].startswith("~"): #ctors have no return value, all preceding name is specifier
-                    ret = ("",-1,-1)
-                    spec = (head[:name_s],0,name_s)
+                    #ret = ("",-1,-1)
+                    #spec = (head[:name_s],0,name_s)
+                    tw.tag_add("keyword",headstart,linestr+str(name_s+hoff))
                 else:
                     ret_s = head.rfind(" ",0,name_s-1)
                 
                     if ret_s > -1:
-                        ret = (head[ret_s+1:name_s-1],ret_s+1,name_s-1)
-                        spec = (head[:ret_s],0,ret_s)
+                        #ret = (head[ret_s+1:name_s-1],ret_s+1,name_s-1)
+                        tw.tag_add("keyword",linestr+str(ret_s+1+hoff),"1."+str(name_s-1+hoff))
+                        #spec = (head[:ret_s],0,ret_s)
+                        tw.tag_add("keyword",headstart,linestr+str(ret_s+hoff))
                     else:
-                        ret = (head[:name_s],0,name_s)
-                        spec = ("",-1,-1)
+                        #ret = (head[:name_s],0,name_s)
+                        tw.tag_add("keyword",headstart,linestr+str(name_s+hoff))
+                        #spec = ("",-1,-1)
                     
             else:
-                name = (head[:params_s],0,params_s)
-                ret = ("",-1,-1)
-                spec = ("",-1,-1)
+                pass#name = (head[:params_s],0,params_s)
+                #ret = ("",-1,-1)
+                #spec = ("",-1,-1)
             
-            r = (spec,ret,name,params,pure,dest,ctors)
-            return r
-    return None
-#@nonl
+            #r = (spec,ret,name,params,pure,dest,ctors)
+            return True
+    return False
 #@-node:colorize_head()
 #@-others
 

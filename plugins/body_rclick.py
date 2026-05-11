@@ -73,7 +73,7 @@ def init ():
             g.app.createTkGui(__file__)
     
         if g.app.gui.guiName() == "tkinter":
-            leoPlugins.registerHandler("after-create-leo-frame",rClickbinder)
+            #leoPlugins.registerHandler("after-create-leo-frame",rClickbinder)
             leoPlugins.registerHandler("bodyrclick1",on_right_click)
             g.plugin_signon(__name__)
             

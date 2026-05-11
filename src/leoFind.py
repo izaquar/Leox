@@ -1070,7 +1070,7 @@ class leoFind:
     
         self.errors = 0
         if self.in_headline:
-            c.frame.tree.setEditPosition(p)
+            c.frame.tree.setEditPosition(p)             #agp 
             self.searched_widget = t = c.edit_widget(p)
             sel = None
         else:
@@ -1177,10 +1177,16 @@ class leoFind:
             c.selectPosition(p)
         finally:
             c.endUpdate(redraw)
+        
         if self.in_headline:
             c.editPosition(p)
+            t = c.frame.tree.entry
+        else:
+            c.frame.bodyCtrl
+        
         # Set the focus and selection after the redraw.
-        t = g.choose(self.in_headline,c.edit_widget(p),c.frame.bodyCtrl)
+        #t = g.choose(self.in_headline,c.edit_widget(p),c.frame.bodyCtrl)
+        
         # g.trace(g.app.gui.widget_name(t),id(t),p.headString())
         insert = g.choose(self.reverse,pos,newpos)
         # New in 4.4a3: a much better way to ensure progress in backward searches.
@@ -1189,6 +1195,7 @@ class leoFind:
         gui.setSelectionRange(t,pos,newpos,insert=insert)
         # c.widgetWantsFocusNow(t)
         gui.makeIndexVisible(t,insert)
+        
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
     #@nonl

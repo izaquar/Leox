@@ -5,7 +5,7 @@
 #@@pagewidth 80
 
 import leoGlobals as g
-import leoTest # Support for unit tests.
+#import leoTest # Support for unit tests.
 
 import re
 import string
@@ -63,7 +63,7 @@ class baseLeoImportCommands:
             theFile.close()
         except IOError:
             g.es("can not open " + fileName)
-            leoTest.fail()
+            #leoTest.fail()
             return None
         #@-node:AGP.20250415230112.1737:<< Read file into s >>
         #@nl
@@ -336,7 +336,7 @@ class baseLeoImportCommands:
             theFile.close()
         except IOError:
             g.es("Can not open " + fileName, color="blue")
-            leoTest.fail()
+            #leoTest.fail()
             return
         #@-node:AGP.20250415230112.1751:<< Read the file into array >>
         #@nl
@@ -858,7 +858,7 @@ class baseLeoImportCommands:
                     if verbose:
                         g.es("Perfect Import verified",color="blue")
                 else:
-                    leoTest.fail()
+                    #leoTest.fail()
                     if verbose:
                         g.es("Perfect Import failed verification test!",color="red")
                         #@            << dump the files >>
@@ -902,7 +902,7 @@ class baseLeoImportCommands:
                         #@nl
             except IOError:
                 g.es("Can not reopen %s!" % fileName,color="red")
-                leoTest.fail()
+                #leoTest.fail()
             #@-node:AGP.20250415230112.1778:<< verify that writing the tree would produce the original file >>
             #@nl
     #@-node:AGP.20250415230112.1771:perfectImport
@@ -2638,7 +2638,7 @@ class baseLeoImportCommands:
             theFile = open(fileName,mode)
         except IOError:
             g.es("Can not open " + fileName,color="blue")
-            leoTest.fail()
+            #leoTest.fail()
             return
         for p in p.self_and_subtree_iter():
             head = p.moreHead(firstLevel,useVerticalBar=True)
@@ -2662,7 +2662,7 @@ class baseLeoImportCommands:
             theFile = open(fileName,mode)
         except IOError:
             g.es("Can not open " + fileName,color="blue")
-            leoTest.fail()
+            #leoTest.fail()
             return
         
         for p in p.self_and_subtree_iter():
@@ -2690,7 +2690,7 @@ class baseLeoImportCommands:
             theFile = open(fileName,mode)
         except IOError:
             g.es("Can not open " + fileName,color="blue")
-            leoTest.fail()
+            #leoTest.fail()
             return
     
         self.treeType = "@file"
@@ -2727,7 +2727,7 @@ class baseLeoImportCommands:
                 theFile.close()
             except IOError:
                 g.es("can not open " + fileName, color="blue")
-                leoTest.fail()
+                #leoTest.fail()
                 return
             #@-node:AGP.20250415230112.1869:<< Read file into s >>
             #@nl

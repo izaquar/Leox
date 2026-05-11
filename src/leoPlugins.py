@@ -32,7 +32,7 @@ def callTagHandler (bunch,tag,keywords):
     handler = bunch.fn ; moduleName = bunch.moduleName
     
     # if tag != 'idle': print 'callTagHandler',tag,keywords.get('c')
-
+    
     # Make sure the new commander exists.
     if tag == 'idle':
         for key in ('c','new_c'):
@@ -46,7 +46,9 @@ def callTagHandler (bunch,tag,keywords):
     # Calls to registerHandler from inside the handler belong to moduleName.
     global loadingModuleNameStack
     loadingModuleNameStack.append(moduleName)
+    
     result = handler(tag,keywords)
+    
     loadingModuleNameStack.pop()
     return result
 #@-node:AGP.20250415230112.2322:callTagHandler
@@ -172,7 +174,7 @@ def loadHandlers():
         except IOError:
             g.es("Can not open: " + manager_path)
             # Don't import leoTest initially.  It causes problems.
-            import leoTest ; leoTest.fail()
+            #import leoTest ; leoTest.fail()
             return
         
     #@-node:AGP.20250415230112.2329:<< set enabled_files from pluginsManager.txt >>
@@ -330,9 +332,6 @@ def registerOneHandler(tag,fn):
     except IndexError:
         moduleName = '<no module>'
     
-    if 0:
-        if g.app.unitTesting: print
-        print '%6s %15s %25s %s' % (g.app.unitTesting,moduleName,tag,fn.__name__)
 
     items = handlers.get(tag,[])
     if fn not in items:

@@ -14,10 +14,9 @@ from __future__ import generators # To make the code work in Python 2.2.
 #@<< imports >>
 #@+node:AGP.20250415230112.1385:<< imports >>
 import leoGlobals as g # So code can use g below.
+import leo
 import leoLang
 
-if 0: # Don't import this here: it messes up Leo's startup code.
-    import leoTest
     
 try:
     import gc
@@ -60,58 +59,13 @@ globalDirectiveList = [
     "pagewidth", "path", "quiet", "root", "silent",
     "tabwidth", "terse", "unit", "verbose", "wrap"
     ,"keywords"]
-
-qlinks = {}
-#@nonl
 #@-node:AGP.20250415230112.1387:<< define global data structures >>
 #@nl
 
-app = None # The singleton app object.
+#app = None # The singleton app object.
+
 
 #@+others
-#@+node:AGP.20250415230112.1388:g.createStandAloneApp
-def createStandAloneApp(pluginName=''):
-    
-    '''Create a version of the g.app object for 'stand-alone' plugins.'''
-    
-    if not g.app:
-        import Tkinter as Tk
-        if Tk:
-            import leoApp, leoGui
-            g.app = leoApp.LeoApp()
-            g.app.root = Tk.Tk()
-            g.app.gui = leoGui.nullGui('<stand-alone app gui>')
-            g.computeStandardDirectories()
-    return g.app
-#@-node:AGP.20250415230112.1388:g.createStandAloneApp
-#@+node:AGP.20250415230112.1389:GetUAModStamp()
-def GetUAModStamp(obj,create = False):
-    
-    if hasattr(obj,"unknownAttributes") != True:
-        #print "ua missing"
-        obj.unknownAttributes = {}
-    
-    ua = obj.unknownAttributes
-    
-    if "str_mod" not in ua:
-        #print "mod missing"
-        ua["str_mod"] = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
-		
-    return ua["str_mod"]
-#@nonl
-#@-node:AGP.20250415230112.1389:GetUAModStamp()
-#@+node:AGP.20250415230112.1390:SetUAModStamp()
-def SetUAModStamp(obj):
-    print "setuamod"
-    if hasattr(obj,"unknownAttributes") != True:
-        obj.unknownAttributes = {}
-		
-    ua = obj.unknownAttributes
-    ua["str_mod"] = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
-		
-    return ua["str_mod"]
-#@nonl
-#@-node:AGP.20250415230112.1390:SetUAModStamp()
 #@+node:AGP.20250415230112.1391:theme
 #agp color
 getrgb = ImageColor.getrgb
@@ -350,25 +304,6 @@ def gen_theme():
 #@nonl
 #@-node:AGP.20250415230112.1404:gen_theme()
 #@-node:AGP.20250415230112.1391:theme
-#@+node:AGP.20250415230112.1405:Checking Leo Files...
-#@+node:AGP.20250415230112.1406:createTopologyList
-def createTopologyList (c,root=None,useHeadlines=False):
-    
-    """Creates a list describing a node and all its descendents"""
-
-    if not root: root = c.rootPosition()
-    v = root
-    if useHeadlines:
-        aList = [(v.numberOfChildren(),v.headString()),]
-    else:
-        aList = [v.numberOfChildren()]
-    child = v.firstChild()
-    while child:
-        aList.append(g.createTopologyList(c,child,useHeadlines))
-        child = child.next()
-    return aList
-#@-node:AGP.20250415230112.1406:createTopologyList
-#@-node:AGP.20250415230112.1405:Checking Leo Files...
 #@+node:AGP.20250415230112.1407:Commands & Directives
 #@+node:AGP.20250415230112.1408:Compute directories... (leoGlobals)
 #@+node:AGP.20250415230112.1409:computeGlobalConfigDir
@@ -1022,8 +957,7 @@ def scanDirectives(c,p=None):
 #@-node:AGP.20250415230112.1433:g.scanDirectives
 #@-node:AGP.20250415230112.1415:Directive utils...
 #@+node:AGP.20250415230112.1443:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,readAtFileNodesFlag=True):
+def openWithFileName(fileName,old_c,enableLog=True,readAtFileNodesFlag=True):
     
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
@@ -1049,11 +983,14 @@ def openWithFileName(fileName,old_c,
             # New in 4.4: We must read the file *twice*.
             # The first time sets settings for the later call to c.finishCreate.
             # g.trace('***** prereading',fileName)
-            c2 = g.app.config.openSettingsFile(fileName)
-            if c2: g.app.config.updateSettings(c2,localFlag=True)
+            
+            #c2 = g.app.config.openSettingsFile(fileName)
+            #if c2: g.app.config.updateSettings(c2,localFlag=True)
+            pass
         # Open the file in binary mode to allow 0x1a in bodies & headlines.
         theFile = open(fileName,'rb')
         c,frame = app.newLeoCommanderAndFrame(fileName)
+        
         frame.log.enable(enableLog)
         g.app.writeWaitingLog() # New in 4.3: write queued log first.
         c.beginUpdate()
@@ -1061,9 +998,8 @@ def openWithFileName(fileName,old_c,
             if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
                 c.setLog()
                 app.lockLog()
-                frame.c.fileCommands.open(
-                    theFile,fileName,
-                    readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+                frame.c.fileCommands.open(theFile,fileName,
+                                            readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
                 app.unlockLog()
                 for frame in g.app.windowList:
                     # The recent files list has been updated by menu.updateRecentFiles.
@@ -1078,14 +1014,14 @@ def openWithFileName(fileName,old_c,
         finally:
             c.endUpdate()
             k = c.k
-            k and k.setInputState(k.unboundKeyAction)
+            #agpkeyk and k.setInputState(k.unboundKeyAction)
             if c.config.getBool('outline_pane_has_initial_focus'):
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
         
         #g.color_gen_theme('#08090A','#e8e8FF',1.0) 
-        c.qlink_scan()
+        
         frame.show()
         return True, frame
     except IOError:
@@ -1412,7 +1348,7 @@ def getLastTracebackFileAndLineNumber():
 def print_bindings (name,window):
 
     bindings = window.bind()
-    print
+    
     print "Bindings for", name
     for b in bindings:
         print b
@@ -1796,15 +1732,6 @@ printStack = print_stack
 # 
 #   g.trace_tag("-nocolor", self.disable_color)
 #@-at
-#@+node:AGP.20250415230112.1488:init_sherlock
-# Called by startup code.
-# Args are all the arguments on the command line.
-
-def init_sherlock (args):
-    
-    g.init_trace(args,echo=0)
-    # g.trace("sys.argv:",sys.argv)
-#@-node:AGP.20250415230112.1488:init_sherlock
 #@+node:AGP.20250415230112.1489:get_Sherlock_args
 #@+at 
 #@nonl
@@ -2686,7 +2613,7 @@ def idleTimeHookHandler(*args,**keys):
 #@@c
 
 def doHook(tag,*args,**keywords):
-    
+    #print "doHook1"
     if g.app.killed or g.app.hookError or (g.app.gui and g.app.gui.isNullGui):
         return None
         
@@ -2701,6 +2628,12 @@ def doHook(tag,*args,**keywords):
         return None
          
     # Get the hook handler function.  Usually this is doPlugins.
+    #print "doHook2",tag
+    leo.do_hooks(tag,keywords)
+    
+    
+    
+    
     c = keywords.get("c")
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
@@ -2710,6 +2643,7 @@ def doHook(tag,*args,**keywords):
     try:
         # Pass the hook to the hook handler.
         # print 'doHook',f.__name__,keywords.get('c')
+        #print "g.doHook():",tag,f
         return f(tag,keywords)
     except Exception:
         g.es_exception()
@@ -4110,65 +4044,6 @@ if 0:
         assert g.safeStringCompare('á','á') is True
         assert g.safeStringCompare(u'á',u'á') is True
 #@-node:AGP.20250415230112.1629:g.safeStringCompare & test (Do not use)
-#@+node:AGP.20250415230112.1630:getpreferredencoding from 2.3a2
-try:
-    # Use Python's version of getpreferredencoding if it exists.
-    # It is new in Python 2.3.
-    import locale
-    getpreferredencoding = locale.getpreferredencoding
-except Exception:
-    # Use code copied from locale.py in Python 2.3alpha2.
-    if sys.platform in ('win32', 'darwin', 'mac'):
-        #@        << define getpreferredencoding using _locale >>
-        #@+node:AGP.20250415230112.1631:<< define getpreferredencoding using _locale >>
-        # On Win32, this will return the ANSI code page
-        # On the Mac, it should return the system encoding;
-        # it might return "ascii" instead.
-        
-        def getpreferredencoding(do_setlocale = True):
-            """Return the charset that the user is likely using."""
-            try:
-                import _locale
-                return _locale._getdefaultlocale()[1]
-            except:
-                return None
-        #@-node:AGP.20250415230112.1631:<< define getpreferredencoding using _locale >>
-        #@nl
-    else:
-        #@        << define getpreferredencoding for *nix >>
-        #@+node:AGP.20250415230112.1632:<< define getpreferredencoding for *nix >>
-        # On Unix, if CODESET is available, use that.
-        
-        try:
-            locale.CODESET # Bug fix, 2/12/05
-        except NameError:
-            # Fall back to parsing environment variables :-(
-            def getpreferredencoding(do_setlocale = True):
-                """Return the charset that the user is likely using,
-                by looking at environment variables."""
-                try:
-                    return locale.getdefaultlocale()[1]
-                except:
-                    return None
-        else:
-            def getpreferredencoding(do_setlocale = True):
-                """Return the charset that the user is likely using,
-                according to the system configuration."""
-                try:
-                    if do_setlocale:
-                        oldloc = locale.setlocale(LC_CTYPE)
-                        locale.setlocale(LC_CTYPE, "")
-                        result = locale.nl_langinfo(CODESET)
-                        locale.setlocale(LC_CTYPE, oldloc)
-                        return result
-                    else:
-                        return locale.nl_langinfo(CODESET)
-                except:
-                    return None
-        #@-node:AGP.20250415230112.1632:<< define getpreferredencoding for *nix >>
-        #@nl
-
-#@-node:AGP.20250415230112.1630:getpreferredencoding from 2.3a2
 #@+node:AGP.20250415230112.1633:isUnicode
 def isUnicode(s):
     
@@ -5935,5 +5810,10 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@-node:AGP.20250415230112.1732:g.init_zodb
 #@-node:AGP.20250415230112.1731:ZODB support
 #@-others
+
+
+#import leoApp
+#print "leoglobals import",app
+#@nonl
 #@-node:AGP.20250415230112.1384:@thin leoGlobals.py
 #@-leo

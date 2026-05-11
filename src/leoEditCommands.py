@@ -14,8 +14,8 @@ from __future__ import generators # To make Leo work with Python 2.2
 import leoGlobals as g
 
 import leoFind
-import leoKeys
-import leoTest
+#import leoKeys
+#import leoTest
 
 import cPickle
 import difflib
@@ -110,19 +110,10 @@ class baseEditCommandsClass:
         c = self.c ; b = self.undoData ; k = self.k
     
         if b and b.name.startswith('body') and changed:
-            c.frame.body.onBodyChanged(undoType=b.undoType,
-                oldSel=b.oldSel,oldText=b.oldText,oldYview=None)
+            c.frame.body.onBodyChanged(undoType=b.undoType,oldSel=b.oldSel,oldText=b.oldText,oldYview=None)
             
         self.undoData = None # Bug fix: 1/6/06 (after a5 released).
     
-        k.clearState()
-        
-        # Warning: basic editing commands **must not** set the label.
-        if setLabel:
-            if label:
-                k.setLabelGrey(label)
-            else:
-                k.resetLabel()
     #@-node:AGP.20250415230112.820:endCommand
     #@-node:AGP.20250415230112.817:begin/endCommand
     #@+node:AGP.20250415230112.821:editWidget
@@ -310,935 +301,6 @@ def initAllEditCommanders (c):
         theInstance.init()
 #@-node:AGP.20250415230112.836:initAllEditCommanders
 #@-node:AGP.20250415230112.833: Module level...
-#@+node:AGP.20250415230112.837:class Tracker (an iterator)
-class Tracker:
-
-    '''An iterator class to allow the user to cycle through and change a list.'''
-
-    #@    @+others
-    #@+node:AGP.20250415230112.838:init
-    def __init__ (self):
-        
-        self.tablist = []
-        self.prefix = None 
-        self.ng = self._next()
-    #@-node:AGP.20250415230112.838:init
-    #@+node:AGP.20250415230112.839:setTabList
-    def setTabList (self,prefix,tlist):
-        
-        self.prefix = prefix 
-        self.tablist = tlist
-    #@-node:AGP.20250415230112.839:setTabList
-    #@+node:AGP.20250415230112.840:_next
-    def _next (self):
-        
-        while 1:
-            tlist = self.tablist 
-            if not tlist:yield ''
-            for z in self.tablist:
-                if tlist!=self.tablist:
-                    break 
-                yield z
-    #@-node:AGP.20250415230112.840:_next
-    #@+node:AGP.20250415230112.841:next
-    def next (self):
-        
-        return self.ng.next()
-    #@-node:AGP.20250415230112.841:next
-    #@+node:AGP.20250415230112.842:clear
-    def clear (self):
-    
-        self.tablist = []
-        self.prefix = None
-    #@-node:AGP.20250415230112.842:clear
-    #@-others
-#@-node:AGP.20250415230112.837:class Tracker (an iterator)
-#@+node:AGP.20250415230112.843:abbrevCommandsClass (test)
-#@+at
-# 
-# type some text, set its abbreviation with Control-x a i g, type the text for 
-# abbreviation expansion
-# type Control-x a e ( or Alt-x expand-abbrev ) to expand abbreviation
-# type Alt-x abbrev-on to turn on automatic abbreviation expansion
-# Alt-x abbrev-on to turn it off
-# 
-# an example:
-# type:
-# frogs
-# after typing 's' type Control-x a i g.  This will turn the miniBuffer blue, 
-# type in your definition. For example: turtles.
-# 
-# Now in the buffer type:
-# frogs
-# after typing 's' type Control-x a e.  This will turn the 'frogs' into:
-# turtles
-#@-at
-#@@c
-
-class abbrevCommandsClass (baseEditCommandsClass):
-
-    #@    @+others
-    #@+node:AGP.20250415230112.844: ctor & finishCreate
-    def __init__ (self,c):
-        
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-        
-        # Set local ivars.
-        self.abbrevs ={}
-        
-    def finishCreate(self):
-        
-        baseEditCommandsClass.finishCreate(self)
-    #@-node:AGP.20250415230112.844: ctor & finishCreate
-    #@+node:AGP.20250415230112.845: getPublicCommands & getStateCommands
-    def getPublicCommands (self):
-        
-        return {
-            'abbrev-mode':                  self.toggleAbbrevMode,
-            'add-global-abbrev':            self.addAbbreviation,
-            # 'expand-abbrev':              self.expandAbbrev, # Not a command.
-            'expand-region-abbrevs':        self.regionalExpandAbbrev,
-            'inverse-add-global-abbrev':    self.addInverseAbbreviation,
-            'kill-all-abbrevs':             self.killAllAbbrevs,
-            'list-abbrevs':                 self.listAbbrevs,
-            'read-abbrev-file':             self.readAbbreviations,
-            'write-abbrev-file':            self.writeAbbreviations,
-        }
-    #@-node:AGP.20250415230112.845: getPublicCommands & getStateCommands
-    #@+node:AGP.20250415230112.846:addAbbreviation
-    def addAbbreviation (self,event):
-        
-        '''Add an abbreviation:
-        The selected text is the abbreviation;
-        the minibuffer prompts you for the name of the abbreviation.
-        Also sets abbreviations on.'''
-                
-        k = self.k ; state = k.getState('add-abbr')
-    
-        if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Add Abbreviation: ',protect=True)
-            k.getArg(event,'add-abbr',1,self.addAbbreviation)
-        else:
-            w = self.w
-            k.clearState()
-            k.resetLabel()
-            word = w.get('insert -1c wordstart','insert -1c wordend')
-            if k.arg.strip():
-                self.abbrevs [k.arg] = word
-                k.abbrevOn = True
-                k.setLabelGrey(
-                    "Abbreviations are on.\nAbbreviation: '%s' = '%s'" % (
-                    k.arg,word))
-    #@-node:AGP.20250415230112.846:addAbbreviation
-    #@+node:AGP.20250415230112.847:addInverseAbbreviation
-    def addInverseAbbreviation (self,event):
-        
-        '''Add an inverse abbreviation:
-        The selected text is the abbreviation name;
-        the minibuffer prompts you for the value of the abbreviation.'''
-        
-        k = self.k ; state = k.getState('add-inverse-abbr')
-    
-        if state == 0:
-            w = self.editWidget(event) # Sets self.w
-            if not w: return
-            k.setLabelBlue('Add Inverse Abbreviation: ',protect=True)
-            k.getArg(event,'add-inverse-abbr',1,self.addInverseAbbreviation)
-        else:
-            w = self.w
-            k.clearState()
-            k.resetLabel()
-            word = w.get('insert -1c wordstart','insert -1c wordend').strip()
-            if word:
-                self.abbrevs [word] = k.arg
-    #@-node:AGP.20250415230112.847:addInverseAbbreviation
-    #@+node:AGP.20250415230112.848:expandAbbrev
-    def expandAbbrev (self,event):
-        
-        '''Not a command.  Called from k.masterCommand to expand
-        abbreviations in event.widget.'''
-    
-        k = self.k ; ch = event.char.strip()
-        w = self.editWidget(event)
-        if not w: return
-    
-        word = w.get('insert -1c wordstart','insert -1c wordend')
-        g.trace('ch',repr(ch),'word',repr(word))
-        if ch:
-            # We must do this: expandAbbrev is called from Alt-x and Control-x,
-            # we get two differnt types of data and w states.
-            word = '%s%s'% (word,ch)
-            
-        val = self.abbrevs.get(word)
-        if val is not None:
-            w.delete('insert -1c wordstart','insert -1c wordend')
-            w.insert('insert',val)
-            
-        return val is not None
-    #@-node:AGP.20250415230112.848:expandAbbrev
-    #@+node:AGP.20250415230112.849:killAllAbbrevs
-    def killAllAbbrevs (self,event):
-        
-        '''Delete all abbreviations.'''
-    
-        self.abbrevs = {}
-    #@-node:AGP.20250415230112.849:killAllAbbrevs
-    #@+node:AGP.20250415230112.850:listAbbrevs
-    def listAbbrevs (self,event):
-        
-        '''List all abbreviations.'''
-    
-        k = self.k
-        
-        if self.abbrevs:
-            for z in self.abbrevs:
-                g.es('%s=%s' % (z,self.abbrevs[z]))
-    #@-node:AGP.20250415230112.850:listAbbrevs
-    #@+node:AGP.20250415230112.851:readAbbreviations
-    def readAbbreviations (self,event):
-        
-        '''Read abbreviations from a file.'''
-    
-        f = tkFileDialog and tkFileDialog.askopenfile()
-        if not f: return
-    
-        for x in f:
-            a, b = x.split('=')
-            b = b [:-1]
-            self.abbrevs [a] = b
-        f.close()
-    #@-node:AGP.20250415230112.851:readAbbreviations
-    #@+node:AGP.20250415230112.852:regionalExpandAbbrev
-    def regionalExpandAbbrev (self,event):
-        
-        '''Exapand abbreviations throughout a region.'''
-    
-        k = self.k
-        w = self.editWidget(event)
-        if not w or not self._chckSel(event): return
-    
-        i1 = w.index('sel.first')
-        i2 = w.index('sel.last')
-        ins = w.index('insert')
-        #@    << define a new generator searchXR >>
-        #@+node:AGP.20250415230112.853:<< define a new generator searchXR >>
-        #@+at 
-        #@nonl
-        # This is a generator (it contains a yield).
-        # To make this work we must define a new generator for each call to 
-        # regionalExpandAbbrev.
-        #@-at
-        #@@c
-        def searchXR (i1,i2,ins,event):
-            k = self.k
-            w = self.editWidget(event)
-            if not w: return
-        
-            w.tag_add('sXR',i1,i2)
-            while i1:
-                tr = w.tag_ranges('sXR')
-                if not tr: break
-                i1 = w.search(r'\w',i1,stopindex=tr[1],regexp=True)
-                if i1:
-                    word = w.get('%s wordstart' % i1,'%s wordend' % i1)
-                    w.tag_delete('found')
-                    w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
-                    w.tag_config('found',background='yellow')
-                    if self.abbrevs.has_key(word):
-                        k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
-                        yield None
-                        if k.regXKey == 'y':
-                            ind = w.index('%s wordstart' % i1)
-                            w.delete('%s wordstart' % i1,'%s wordend' % i1)
-                            w.insert(ind,self.abbrevs[word])
-                    i1 = '%s wordend' % i1
-            w.mark_set('insert',ins)
-            w.selection_clear()
-            w.tag_delete('sXR')
-            w.tag_delete('found')
-            k.setLabelGrey('')
-            self.k.regx = g.bunch(iter=None,key=None)
-        #@-node:AGP.20250415230112.853:<< define a new generator searchXR >>
-        #@nl
-    
-        # EKR: the 'result' of calling searchXR is a generator object.
-        k.regx.iter = searchXR(i1,i2,ins,event)
-        k.regx.iter.next() # Call it the first time.
-    #@-node:AGP.20250415230112.852:regionalExpandAbbrev
-    #@+node:AGP.20250415230112.854:toggleAbbrevMode
-    def toggleAbbrevMode (self,event):
-        
-        '''Toggle abbreviation mode.'''
-     
-        k = self.k
-        k.abbrevOn = not k.abbrevOn
-        k.keyboardQuit(event)
-        k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
-    #@-node:AGP.20250415230112.854:toggleAbbrevMode
-    #@+node:AGP.20250415230112.855:writeAbbreviations
-    def writeAbbreviations (self,event):
-        
-        '''Write abbreviations to a file.'''
-    
-        f = tkFileDialog and tkFileDialog.asksaveasfile()
-        if not f: return
-    
-        for x in self.abbrevs:
-            f.write('%s=%s\n' % (x,self.abbrevs[x]))
-        f.close()
-    #@-node:AGP.20250415230112.855:writeAbbreviations
-    #@-others
-#@-node:AGP.20250415230112.843:abbrevCommandsClass (test)
-#@+node:AGP.20250415230112.856:bufferCommandsClass
-#@+at 
-#@nonl
-# An Emacs instance does not have knowledge of what is considered a buffer in 
-# the environment.
-# 
-# The call to setBufferInteractionMethods calls the buffer configuration 
-# methods.
-#@-at
-#@@c
-
-class bufferCommandsClass (baseEditCommandsClass):
-
-    #@    @+others
-    #@+node:AGP.20250415230112.857: ctor (bufferCommandsClass)
-    def __init__ (self,c):
-        
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-        
-        self.fromName = '' # Saved name from getBufferName.
-        self.nameList = [] # [n: <headline>]
-        self.names = {}
-        self.tnodes = {} # Keys are n: <headline>, values are tnodes.
-        
-        try:
-            self.w = c.frame.body.bodyCtrl
-        except AttributeError:
-            self.w = None
-    #@-node:AGP.20250415230112.857: ctor (bufferCommandsClass)
-    #@+node:AGP.20250415230112.858: getPublicCommands
-    def getPublicCommands (self):
-    
-        return {
-        
-            # These do not seem useful.
-                # 'copy-to-buffer':               self.copyToBuffer,
-                # 'insert-to-buffer':             self.insertToBuffer,
-           
-            'append-to-buffer':             self.appendToBuffer,
-            'kill-buffer' :                 self.killBuffer,
-            'list-buffers' :                self.listBuffers,
-            'list-buffers-alphabetically':  self.listBuffersAlphabetically,
-            'prepend-to-buffer':            self.prependToBuffer,
-            'rename-buffer':                self.renameBuffer,
-            'switch-to-buffer':             self.switchToBuffer,
-        }
-    #@-node:AGP.20250415230112.858: getPublicCommands
-    #@+node:AGP.20250415230112.859:Entry points
-    #@+node:AGP.20250415230112.860:appendToBuffer
-    def appendToBuffer (self,event):
-        
-        '''Add the selected body text to the end of the body text of a named buffer (node).'''
-        
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-    
-        self.k.setLabelBlue('Append to buffer: ')
-        self.getBufferName(self.appendToBufferFinisher)
-    
-    def appendToBufferFinisher (self,name):
-    
-        c = self.c ; k = self.k ; w = self.w
-        s = g.app.gui.getSelectedText(w)
-        p = self.findBuffer(name)
-        if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('append-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.mark_set('insert','end')
-                w.see('end')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
-    #@-node:AGP.20250415230112.860:appendToBuffer
-    #@+node:AGP.20250415230112.861:copyToBuffer
-    def copyToBuffer (self,event):
-        
-        '''Add the selected body text to the end of the body text of a named buffer (node).'''
-        
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-    
-        self.k.setLabelBlue('Copy to buffer: ')
-        self.getBufferName(self.copyToBufferFinisher)
-    
-    def copyToBufferFinisher (self,event,name):
-    
-        c = self.c ; k = self.k ; w = self.w
-        s = g.app.gui.getSelectedText(w)
-        p = self.findBuffer(name)
-        if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('copy-to-buffer: %s' % p.headString())
-                w.insert('end',s)
-                w.mark_set('insert','end')
-                w.see('end')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
-    #@-node:AGP.20250415230112.861:copyToBuffer
-    #@+node:AGP.20250415230112.862:insertToBuffer
-    def insertToBuffer (self,event):
-        
-        '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
-        
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-    
-        self.k.setLabelBlue('Insert to buffer: ')
-        self.getBufferName(self.insertToBufferFinisher)
-    
-    def insertToBufferFinisher (self,event,name):
-        
-        c = self.c ; k = self.k ; w = self.w
-        s = g.app.gui.getSelectedText(w)
-        p = self.findBuffer(name)
-        if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('insert-to-buffer: %s' % p.headString())
-                w.insert('insert',s)
-                w.see('insert')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-    #@-node:AGP.20250415230112.862:insertToBuffer
-    #@+node:AGP.20250415230112.863:killBuffer
-    def killBuffer (self,event):
-        
-        '''Delete a buffer (node) and all its descendants.'''
-        
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-    
-        self.k.setLabelBlue('Kill buffer: ')
-        self.getBufferName(self.killBufferFinisher)
-    
-    def killBufferFinisher (self,name):
-    
-        c = self.c ; p = self.findBuffer(name)
-        if p:
-            h = p.headString()
-            current = c.currentPosition()
-            c.selectPosition(p)
-            c.deleteOutline (op_name='kill-buffer: %s' % h)
-            c.selectPosition(current)
-            self.k.setLabelBlue('Killed buffer: %s' % h)
-    #@-node:AGP.20250415230112.863:killBuffer
-    #@+node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
-    def listBuffers (self,event):
-        
-        '''List all buffers (node headlines), in outline order.
-        Nodes with the same headline are disambiguated by giving their parent or child index.
-        '''
-        
-        self.computeData()
-        g.es('Buffers...')
-        for name in self.nameList:
-            g.es(name)
-            
-    def listBuffersAlphabetically (self,event):
-        
-        '''List all buffers (node headlines), in alphabetical order.
-        Nodes with the same headline are disambiguated by giving their parent or child index.'''
-        
-        self.computeData()
-        names = self.nameList[:] ; names.sort()
-        
-        g.es('Buffers...')
-        for name in names:
-            g.es(name)
-    #@-node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
-    #@+node:AGP.20250415230112.865:prependToBuffer
-    def prependToBuffer (self,event):
-        
-        '''Add the selected body text to the start of the body text of a named buffer (node).'''
-        
-        w = self.editWidget(event) # Sets self.w
-        if not w: return
-    
-        self.k.setLabelBlue('Prepend to buffer: ')
-        self.getBufferName(self.prependToBufferFinisher)
-        
-    def prependToBufferFinisher (self,event,name):
-        
-        c = self.c ; k = self.k ; w = self.w
-        s = g.app.gui.getSelectedText(w)
-        p = self.findBuffer(name)
-        if s and p:
-            c.beginUpdate()
-            try:
-                w = self.w
-                c.selectPosition(p)
-                self.beginCommand('prepend-to-buffer: %s' % p.headString())
-                w.insert('1.0',s)
-                w.mark_set('insert','1.0')
-                w.see('1.0')
-                self.endCommand()
-            finally:
-                c.endUpdate()
-                c.recolor_now()
-    
-    #@-node:AGP.20250415230112.865:prependToBuffer
-    #@+node:AGP.20250415230112.866:renameBuffer
-    def renameBuffer (self,event):
-        
-        '''Rename a buffer, i.e., change a node's headline.'''
-        
-        self.k.setLabelBlue('Rename buffer from: ')
-        self.getBufferName(self.renameBufferFinisher1)
-        
-    def renameBufferFinisher1 (self,name):
-        
-        self.fromName = name
-        self.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
-        self.getBufferName(self.renameBufferFinisher2)
-        
-    def renameBufferFinisher2 (self,name):
-        
-        c = self.c ; p = self.findBuffer(self.fromName)
-        if p:
-            c.endEditing()
-            c.beginUpdate()
-            c.setHeadString(p,name)
-            c.endUpdate()
-    #@-node:AGP.20250415230112.866:renameBuffer
-    #@+node:AGP.20250415230112.867:switchToBuffer
-    def switchToBuffer (self,event):
-        
-        '''Select a buffer (node) by its name (headline).'''
-    
-        self.k.setLabelBlue('Switch to buffer: ')
-        self.getBufferName(self.switchToBufferFinisher)
-        
-    def switchToBufferFinisher (self,name):
-        
-        c = self.c ; p = self.findBuffer(name)
-        if p:
-            c.beginUpdate()
-            try:
-                c.selectPosition(p)
-            finally:
-                c.endUpdate()
-    #@-node:AGP.20250415230112.867:switchToBuffer
-    #@-node:AGP.20250415230112.859:Entry points
-    #@+node:AGP.20250415230112.868:Utils
-    #@+node:AGP.20250415230112.869:computeData
-    def computeData (self):
-        
-        counts = {} ; self.nameList = []
-        self.names = {} ; self.tnodes = {}
-       
-        for p in self.c.allNodes_iter():
-            h = p.headString().strip()
-            t = p.v.t
-            n = counts.get(t,0) + 1
-            counts[t] = n
-            if n == 1: # Only make one entry per set of clones.
-                nameList = self.names.get(h,[])
-                if nameList:
-                    if p.parent():
-                        key = '%s, parent: %s' % (h,p.parent().headString())
-                    else:
-                        key = '%s, child index: %d' % (h,p.childIndex())
-                else:
-                    key = h
-                self.nameList.append(key)
-                self.tnodes[key] = t
-                nameList.append(key)
-                self.names[h] = nameList
-    #@-node:AGP.20250415230112.869:computeData
-    #@+node:AGP.20250415230112.870:findBuffer
-    def findBuffer (self,name):
-        
-        t = self.tnodes.get(name)
-    
-        for p in self.c.allNodes_iter():
-            if p.v.t == t:
-                return p
-               
-        g.trace("Can't happen",name)
-        return None
-    #@-node:AGP.20250415230112.870:findBuffer
-    #@+node:AGP.20250415230112.871:getBufferName
-    def getBufferName (self,finisher):
-        
-        '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
-        
-        k = self.k ; c = k.c ; state = k.getState('getBufferName')
-        
-        if state == 0:
-            self.computeData()
-            self.getBufferNameFinisher = finisher
-            prefix = k.getLabel() ; event = None
-            k.getArg(event,'getBufferName',1,self.getBufferName,
-                prefix=prefix,tabList=self.nameList)
-        else:
-            k.resetLabel()
-            k.clearState()
-            finisher = self.getBufferNameFinisher
-            self.getBufferNameFinisher = None
-            finisher(k.arg)
-    #@-node:AGP.20250415230112.871:getBufferName
-    #@-node:AGP.20250415230112.868:Utils
-    #@-others
-#@-node:AGP.20250415230112.856:bufferCommandsClass
-#@+node:AGP.20250415230112.872:controlCommandsClass
-class controlCommandsClass (baseEditCommandsClass):
-    
-    #@    @+others
-    #@+node:AGP.20250415230112.873: ctor
-    def __init__ (self,c):
-    
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-        
-        self.payload = None
-    #@-node:AGP.20250415230112.873: ctor
-    #@+node:AGP.20250415230112.874: getPublicCommands
-    def getPublicCommands (self):
-        
-        k = self.c.k
-    
-        return {
-            'advertised-undo':              self.advertizedUndo,
-            'iconify-frame':                self.iconifyFrame, # Same as suspend.
-            'keyboard-quit':                k.keyboardQuit,
-            'save-buffers-kill-leo':        self.saveBuffersKillLeo,
-            'set-silent-mode':              self.setSilentMode,
-            'shell-command':                self.shellCommand,
-            'shell-command-on-region':      self.shellCommandOnRegion,
-            'suspend':                      self.suspend,
-        }
-    #@-node:AGP.20250415230112.874: getPublicCommands
-    #@+node:AGP.20250415230112.875:advertizedUndo
-    def advertizedUndo (self,event):
-        
-        '''Undo the previous command.'''
-    
-        self.c.undoer.undo()
-    #@-node:AGP.20250415230112.875:advertizedUndo
-    #@+node:AGP.20250415230112.876:executeSubprocess
-    def executeSubprocess (self,event,command,input):
-        
-        '''Execute a command in a separate process.'''
-        
-        k = self.k
-        w = self.editWidget(event)
-        if not w: return
-    
-        k.setLabelBlue('started  shell-command: %s' % command)
-        try:
-            ofile = os.tmpfile()
-            efile = os.tmpfile()
-            process = subprocess.Popen(command,bufsize=-1,
-                stdout = ofile.fileno(), stderr = ofile.fileno(),
-                stdin = subprocess.PIPE, shell = True)
-            if input: process.communicate(input)
-            process.wait()
-            efile.seek(0)
-            errinfo = efile.read()
-            if errinfo: w.insert('insert',errinfo)
-            ofile.seek(0)
-            okout = ofile.read()
-            if okout: w.insert('insert',okout)
-        except Exception, x:
-            w.insert('insert',x)
-            
-        k.setLabelGrey('finished shell-command: %s' % command)
-    #@-node:AGP.20250415230112.876:executeSubprocess
-    #@+node:AGP.20250415230112.877:setSilentMode
-    def setSilentMode (self,event=None):
-        
-        '''Set the mode to be run silently, without the minibuffer.
-        The only use for this command is to put the following in an @mode node::
-            
-            --> set-silent-mode'''
-        
-        self.c.k.silentMode = True
-    #@-node:AGP.20250415230112.877:setSilentMode
-    #@+node:AGP.20250415230112.878:shellCommand
-    def shellCommand (self,event):
-        
-        '''Execute a shell command.'''
-    
-        if subprocess:
-            k = self.k ; state = k.getState('shell-command')
-        
-            if state == 0:
-                k.setLabelBlue('shell-command: ',protect=True)
-                k.getArg(event,'shell-command',1,self.shellCommand)
-            else:
-                command = k.arg
-                k.commandName = 'shell-command: %s' % command
-                k.clearState()
-                self.executeSubprocess(event,command,input=None)
-        else:
-            k.setLabelGrey('can not execute shell-command: can not import subprocess')
-    #@-node:AGP.20250415230112.878:shellCommand
-    #@+node:AGP.20250415230112.879:shellCommandOnRegion
-    def shellCommandOnRegion (self,event):
-        
-        '''Execute a command taken from the selected text in a separate process.'''
-        
-        k = self.k
-        w = self.editWidget(event)
-        if not w: return
-    
-        if subprocess:
-            is1,is2 = None,None
-            try:
-                is1 = w.index('sel.first')
-                is2 = w.index('sel.last')
-            finally:
-                if is1:
-                    command = w.get(is1,is2)
-                    k.commandName = 'shell-command: %s' % command
-                    self.executeSubprocess(event,command,input=None)
-                else:
-                    k.clearState()
-                    k.resetLabel()
-        else:
-            k.setLabelGrey('can not execute shell-command: can not import subprocess')
-    #@-node:AGP.20250415230112.879:shellCommandOnRegion
-    #@+node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
-    def shutdown (self,event):
-        
-        '''Quit Leo, prompting to save any unsaved files first.'''
-        
-        g.app.onQuit()
-            
-    saveBuffersKillLeo = shutdown
-    #@-node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
-    #@+node:AGP.20250415230112.881:suspend & iconifyFrame
-    def suspend (self,event):
-        
-        '''Minimize the present Leo window.'''
-    
-        w = self.editWidget(event)
-        if not w: return
-        w.winfo_toplevel().iconify()
-        
-    # Must be a separate function so that k.inverseCommandsDict will be a true inverse.
-        
-    def iconifyFrame (self,event):
-        
-        '''Minimize the present Leo window.'''
-    
-        self.suspend(event)
-    #@-node:AGP.20250415230112.881:suspend & iconifyFrame
-    #@-others
-#@-node:AGP.20250415230112.872:controlCommandsClass
-#@+node:AGP.20250415230112.882:debugCommandsClass
-class debugCommandsClass (baseEditCommandsClass):
-    
-    #@    @+others
-    #@+node:AGP.20250415230112.883: ctor
-    def __init__ (self,c):
-    
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:AGP.20250415230112.883: ctor
-    #@+node:AGP.20250415230112.884: getPublicCommands
-    def getPublicCommands (self):
-        
-        k = self
-    
-        return {
-            'collect-garbage':      self.collectGarbage,
-            'debug':                self.debug,
-            'disable-gc-trace':     self.disableGcTrace,
-            'dump-all-objects':     self.dumpAllObjects,
-            'dump-new-objects':     self.dumpNewObjects,
-            'enable-gc-trace':      self.enableGcTrace,
-            'free-tree-widgets':    self.freeTreeWidgets,
-            'print-focus':          self.printFocus,
-            'print-stats':          self.printStats,
-            'print-gc-summary':     self.printGcSummary,
-            'run-unit-tests':       self.runUnitTests,
-            'verbose-dump-objects': self.verboseDumpObjects,
-        }
-    #@-node:AGP.20250415230112.884: getPublicCommands
-    #@+node:AGP.20250415230112.885:collectGarbage
-    def collectGarbage (self,event=None):
-        
-        """Run Python's Gargabe Collector."""
-        
-        g.collectGarbage()
-    #@-node:AGP.20250415230112.885:collectGarbage
-    #@+node:AGP.20250415230112.886:debug
-    def debug (self,event=None,target = None):
-        
-        '''Start an external debugger in another process.'''
-    
-        c = self.c ; p = c.currentPosition()
-        pythonDir = g.os_path_dirname(sys.executable)
-        
-        #@    << find a debugger or return >>
-        #@+node:AGP.20250415230112.887:<< find a debugger or return >>
-        debuggers = (
-            c.config.getString('debugger_path'),
-            g.os_path_join(pythonDir,'scripts','_winpdb.py'),
-        )
-        
-        for debugger in debuggers:
-            if debugger:
-                debugger = g.os_path_abspath(debugger)
-                if g.os_path_exists(debugger):
-                    break
-                else:
-                    g.es('Debugger does not exist: %s' % (debugger),color='blue')
-        else:
-            g.es('No debugger found.')
-            return
-        #@-node:AGP.20250415230112.887:<< find a debugger or return >>
-        #@nl
-        #@    << find the target file >>
-        #@+node:AGP.20250415230112.888:<< find the target file >>
-        targets = (
-            target,
-            c.config.getString('debugger_force_taget'),
-            p.copy().anyAtFileNodeName(),
-            c.config.getString('debugger_default_target'),
-        )
-        
-        for target in targets:
-            if target:
-                target = g.os_path_abspath(target)
-                if g.os_path_exists(target):
-                    break
-                else:
-                    g.es('Debug target does not exist: %s' % (target),color='blue')
-        #@-node:AGP.20250415230112.888:<< find the target file >>
-        #@nl
-        
-        if target:
-            args = [sys.executable, debugger, '-t', target]
-        else:
-            args = [sys.executable, debugger, '-t']
-        
-        if 1: # Use present environment.
-            os.spawnv(os.P_NOWAIT, sys.executable, args)
-        else: # Use a pristine environment.
-            os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
-    #@-node:AGP.20250415230112.886:debug
-    #@+node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
-    def dumpAllObjects (self,event=None):
-        
-        '''Print a summary of all existing Python objects.'''
-        
-        old = g.app.trace_gc
-        g.app.trace_gc = True
-        g.printGcAll()
-        g.app.trace_gc = old
-        
-    def dumpNewObjects (self,event=None):
-        
-        '''Print a summary of all Python objects created
-        since the last time Python's Garbage collector was run.'''
-    
-        old = g.app.trace_gc
-        g.app.trace_gc = True
-        g.printGcObjects()
-        g.app.trace_gc = old
-        
-    def verboseDumpObjects (self,event=None):
-        
-        '''Print a more verbose listing of all existing Python objects.'''
-        
-        old = g.app.trace_gc
-        g.app.trace_gc = True
-        g.printGcVerbose()
-        g.app.trace_gc = old
-    #@-node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
-    #@+node:AGP.20250415230112.890:enable/disableGcTrace
-    def disableGcTrace (self,event=None):
-        
-        '''Enable tracing of Python's Garbage Collector.'''
-        
-        g.app.trace_gc = False
-        
-    def enableGcTrace (self,event=None):
-        
-        '''Disable tracing of Python's Garbage Collector.'''
-        
-        g.app.trace_gc = True
-        g.app.trace_gc_inited = False
-        g.enable_gc_debug()
-    #@-node:AGP.20250415230112.890:enable/disableGcTrace
-    #@+node:AGP.20250415230112.891:freeTreeWidgets
-    def freeTreeWidgets (self,event=None):
-        
-        '''Free all widgets used in Leo's outline pane.'''
-        
-        c = self.c
-        
-        c.frame.tree.destroyWidgets()
-        c.redraw_now()
-    #@-node:AGP.20250415230112.891:freeTreeWidgets
-    #@+node:AGP.20250415230112.892:printFocus
-    # Doesn't work if the focus isn't in a pane with bindings!
-    
-    def printFocus (self,event=None):
-        
-        '''Print information about the requested focus (for debugging).'''
-        
-        c = self.c
-        
-        g.es_print('      hasFocusWidget: %s' % c.widget_name(c.hasFocusWidget))
-        g.es_print('requestedFocusWidget: %s' % c.widget_name(c.requestedFocusWidget))
-        g.es_print('           get_focus: %s' % c.widget_name(c.get_focus()))
-    #@-node:AGP.20250415230112.892:printFocus
-    #@+node:AGP.20250415230112.893:printGcSummary
-    def printGcSummary (self,event=None):
-        
-        
-        '''Print a brief summary of all Python objects.'''
-    
-        g.printGcSummary()
-    #@-node:AGP.20250415230112.893:printGcSummary
-    #@+node:AGP.20250415230112.894:printStats
-    def printStats (self,event=None):
-        
-        '''Print statistics about the objects that Leo is using.'''
-        
-        c = self.c
-        c.frame.tree.showStats()
-        self.dumpAllObjects()
-    #@-node:AGP.20250415230112.894:printStats
-    #@+node:AGP.20250415230112.895:runUnitTest
-    def runUnitTests (self,event=None):
-        
-        '''Run all unit tests contained in the presently selected outline.'''
-        
-        c = self.c
-    
-        leoTest.doTests(c,all=False)
-    #@-node:AGP.20250415230112.895:runUnitTest
-    #@-others
-#@-node:AGP.20250415230112.882:debugCommandsClass
 #@+node:AGP.20250415230112.896:editCommandsClass
 class editCommandsClass (baseEditCommandsClass):
     
@@ -1291,7 +353,7 @@ class editCommandsClass (baseEditCommandsClass):
             'activate-outline-menu':                self.activateOutlineMenu,
             'activate-plugins-menu':                self.activatePluginsMenu,
             'activate-window-menu':                 self.activateWindowMenu,
-            'add-editor':                           c.frame.body.addEditor,
+            #'add-editor':                           c.frame.body.addEditor,
             'add-space-to-lines':                   self.addSpaceToLines,
             'add-tab-to-lines':                     self.addTabToLines, 
             'back-to-indentation':                  self.backToIndentation,
@@ -1327,11 +389,11 @@ class editCommandsClass (baseEditCommandsClass):
             'count-region':                         self.countRegion,
             'cycle-focus':                          self.cycleFocus,
             'cycle-all-focus':                      self.cycleAllFocus,
-            'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+            #'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
             'dabbrev-completion':                   self.dynamicExpansion2,
             'dabbrev-expands':                      self.dynamicExpansion,
             'delete-char':                          self.deleteNextChar,
-            'delete-editor':                        c.frame.body.deleteEditor,
+            #'delete-editor':                        c.frame.body.deleteEditor,
             'delete-indentation':                   self.deleteIndentation,
             'delete-spaces':                        self.deleteSpaces,
             'do-nothing':                           self.doNothing,
@@ -1363,7 +425,6 @@ class editCommandsClass (baseEditCommandsClass):
             'flush-lines':                          self.flushLines,
             'focus-to-body':                        self.focusToBody,
             'focus-to-log':                         self.focusToLog,
-            'focus-to-minibuffer':                  self.focusToMinibuffer,
             'focus-to-tree':                        self.focusToTree,
             'forward-char':                         self.forwardCharacter,
             'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
@@ -1385,7 +446,7 @@ class editCommandsClass (baseEditCommandsClass):
             'hide-body-pane':                       c.frame.hideBodyPane,
             'hide-log-pane':                        c.frame.hideLogPane,
             'hide-pane':                            c.frame.hidePane,
-            'hide-outline-pane':                    c.frame.hideOutlinePane,
+            #agpkey'hide-outline-pane':                    c.k.inverseCommandsDictframe.hideOutlinePane,
             'how-many':                             self.howMany,
             # Use indentBody in leoCommands.py
             'indent-relative':                      self.indentRelative,
@@ -1445,6 +506,7 @@ class editCommandsClass (baseEditCommandsClass):
             'view-lossage':                         self.viewLossage,
             'what-line':                            self.whatLine,
         }
+    
     #@-node:AGP.20250415230112.899: getPublicCommands (editCommandsClass)
     #@+node:AGP.20250415230112.900:doNothing
     def doNothing (self,event):
@@ -1573,9 +635,7 @@ class editCommandsClass (baseEditCommandsClass):
         # Warning: traces mess up the focus
         # print g.app.gui.widget_name(w),g.app.gui.widget_name(pane)
         
-        # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
-        c.k.newMinibufferWidget = pane
     #@nonl
     #@-node:AGP.20250415230112.907:cycleFocus
     #@+node:AGP.20250415230112.908:cycleAllFocus
@@ -1610,7 +670,7 @@ class editCommandsClass (baseEditCommandsClass):
                     c.frame.log.selectTab('Log')
                     pane = c.frame.log.logCtrl
                 else:
-                    c.frame.body.cycleEditorFocus(event) ; pane = None
+                    pass #c.frame.body.cycleEditorFocus(event) ; pane = None
             else:
                 self.editWidgetCount = 0 ; self.logWidgetCount = 1
                 c.frame.log.selectTab('Log')
@@ -1638,7 +698,6 @@ class editCommandsClass (baseEditCommandsClass):
         if trace: print 'old: %10s new: %10s' % (w_name(w),w_name(pane))
     
         if pane:
-            k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
     #@nonl
     #@-node:AGP.20250415230112.908:cycleAllFocus
@@ -1650,10 +709,6 @@ class editCommandsClass (baseEditCommandsClass):
     def focusToLog (self,event):
         '''Put the keyboard focus in Leo's log pane.'''
         self.c.logWantsFocusNow()
-        
-    def focusToMinibuffer (self,event):
-        '''Put the keyboard focus in Leo's minibuffer.'''
-        self.c.minibufferWantsFocusNow()
     
     def focusToTree (self,event):
         '''Put the keyboard focus in Leo's outline pane.'''
@@ -3658,6 +2713,7 @@ class editCommandsClass (baseEditCommandsClass):
         
         c = self.c
         w = self.editWidget(event)
+        
         if not w: return
     
         def toGui (i): return g.app.gui.toGuiIndex(s,w,i)
@@ -3675,6 +2731,8 @@ class editCommandsClass (baseEditCommandsClass):
         while 0 <= i < n and g.isWordChar(s[i]):
             i += 1
         g.app.gui.setSelectionRange(w,toGui(i1),toGui(i))
+        
+        
     #@nonl
     #@-node:AGP.20250415230112.1012:extend-to-word
     #@+node:AGP.20250415230112.1013:lines
@@ -4650,6 +3708,1144 @@ class editCommandsClass (baseEditCommandsClass):
     #@-node:AGP.20250415230112.1050:tabify & untabify
     #@-others
 #@-node:AGP.20250415230112.896:editCommandsClass
+#@+node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
+class leoCommandsClass (baseEditCommandsClass):
+    
+    #@    @+others
+    #@+node:AGP.20250415230112.1095: ctor
+    def __init__ (self,c):
+    
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+    #@-node:AGP.20250415230112.1095: ctor
+    #@+node:AGP.20250415230112.1096:leoCommands.getPublicCommands
+    def getPublicCommands (self):
+        
+        '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
+        
+        k = self.k ; d2 = {}
+        
+        #@    << define dictionary d of names and Leo commands >>
+        #@+node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
+        c = self.c ; f = c.frame
+        
+        d = {
+            'abort-edit-headline':          f.abortEditLabelCommand,
+            'about-leo':                    c.about,
+            'add-comments':                 c.addComments,     
+            'beautify-all':                 c.beautifyAllPythonCode,
+            'beautify':                     c.beautifyPythonCode,
+            'cascade-windows':              f.cascade,
+            'clear-recent-files':           c.clearRecentFiles,
+            'close-window':                 c.close,
+            'contract-or-go-left':          c.contractNodeOrGoToParent,
+            'check-python-code':            c.checkPythonCode,
+            'check-all-python-code':        c.checkAllPythonCode,
+            'check-outline':                c.checkOutline,
+            'clear-recent-files':           c.clearRecentFiles,
+            'clone-node':                   c.clone,
+            'contract-node':                c.contractNode,
+            'contract-all':                 c.contractAllHeadlines,
+            'contract-parent':              c.contractParent,
+            'convert-all-blanks':           c.convertAllBlanks,
+            'convert-all-tabs':             c.convertAllTabs,
+            'convert-blanks':               c.convertBlanks,
+            'convert-tabs':                 c.convertTabs,
+            'copy-node':                    c.copyOutline,
+            'copy-text':                    f.copyText,
+            'cut-node':                     c.cutOutline,
+            'cut-text':                     f.cutText,
+            'de-hoist':                     c.dehoist,
+            'delete-comments':              c.deleteComments,
+            'delete-node':                  c.deleteOutline,
+            'demote':                       c.demote,
+            'dump-outline':                 c.dumpOutline,
+            'edit-headline':                c.editHeadline,
+            'end-edit-headline':            f.endEditLabelCommand,
+            'equal-sized-panes':            f.equalSizedPanes,
+            'execute-script':               c.executeScript,
+            'exit-leo':                     g.app.onQuit,
+            'expand-all':                   c.expandAllHeadlines,
+            'expand-next-level':            c.expandNextLevel,
+            'expand-node':                  c.expandNode,
+            'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+            'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+            'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+            'expand-prev-level':            c.expandPrevLevel,
+            'expand-to-level-1':            c.expandLevel1,
+            'expand-to-level-2':            c.expandLevel2,
+            'expand-to-level-3':            c.expandLevel3,
+            'expand-to-level-4':            c.expandLevel4,
+            'expand-to-level-5':            c.expandLevel5,
+            'expand-to-level-6':            c.expandLevel6,
+            'expand-to-level-7':            c.expandLevel7,
+            'expand-to-level-8':            c.expandLevel8,
+            'expand-to-level-9':            c.expandLevel9,
+            'export-headlines':             c.exportHeadlines,
+            'extract':                      c.extract,
+            'extract-names':                c.extractSectionNames,
+            'extract-section':              c.extractSection,
+            'flatten-outline':              c.flattenOutline,
+            'go-back':                      c.goPrevVisitedNode,
+            'go-forward':                   c.goNextVisitedNode,
+            'goto-first-node':              c.goToFirstNode,
+            'goto-first-sibling':           c.goToFirstSibling,
+            'goto-last-node':               c.goToLastNode,
+            'goto-last-sibling':            c.goToLastSibling,
+            'goto-last-visible':            c.goToLastVisibleNode,
+            'goto-line-number':             c.goToLineNumber,
+            'goto-next-changed':            c.goToNextDirtyHeadline,
+            'goto-next-clone':              c.goToNextClone,
+            'goto-next-marked':             c.goToNextMarkedHeadline,
+            'goto-next-node':               c.selectThreadNext,
+            'goto-next-sibling':            c.goToNextSibling,
+            'goto-next-visible':            c.selectVisNext,
+            'goto-parent':                  c.goToParent,
+            'goto-prev-node':               c.selectThreadBack,
+            'goto-prev-sibling':            c.goToPrevSibling,
+            'goto-prev-visible':            c.selectVisBack,
+            'hide-invisibles':              c.hideInvisibles,
+            'hoist':                        c.hoist,
+            'import-at-file':               c.importAtFile,
+            'import-at-root':               c.importAtRoot,
+            'import-cweb-files':            c.importCWEBFiles,
+            'import-derived-file':          c.importDerivedFile,
+            'import-flattened-outline':     c.importFlattenedOutline,
+            'import-noweb-files':           c.importNowebFiles,
+            'indent-region':                c.indentBody,
+            'insert-node':                  c.insertHeadline,
+            'insert-body-time':             c.insertBodyTime,
+            'insert-headline-time':         f.insertHeadlineTime,
+            'mark':                         c.markHeadline,
+            'mark-changed-items':           c.markChangedHeadlines,
+            'mark-changed-roots':           c.markChangedRoots,
+            'mark-clones':                  c.markClones,
+            'mark-subheads':                c.markSubheads,
+            'match-brackets':               c.findMatchingBracket,
+            'minimize-all':                 f.minimizeAll,
+            'move-outline-down':            c.moveOutlineDown,
+            'move-outline-left':            c.moveOutlineLeft,
+            'move-outline-right':           c.moveOutlineRight,
+            'move-outline-up':              c.moveOutlineUp,
+            'new':                          c.new,
+            #'open-compare-window':          c.openCompareWindow,
+            'open-find-dialog':             c.showFindPanel, # Deprecated.
+            'open-leoDocs-leo':             c.leoDocumentation,
+            'open-leoPlugins-leo':          c.openLeoPlugins,
+            'open-leoSettings-leo':         c.openLeoSettings,
+            'open-scripts-leo':             c.openLeoScripts,
+            'open-myLeoSettings-leo':       c.openMyLeoSettings,
+            'open-online-home':             c.leoHome,
+            'open-online-tutorial':         c.leoTutorial,
+            'open-offline-tutorial':        f.leoHelp,
+            'open-outline':                 c.open,
+            'open-python-window':           c.openPythonWindow,
+            'open-users-guide':             c.leoUsersGuide,
+            #'open-with':                    c.openWith,
+            'outline-to-cweb':              c.outlineToCWEB,
+            'outline-to-noweb':             c.outlineToNoweb,
+            'paste-node':                   c.pasteOutline,
+            'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+            'paste-text':                   f.pasteText,
+            'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+            'pretty-print-python-code':     c.prettyPrintPythonCode,
+            'promote':                      c.promote,
+            'read-at-file-nodes':           c.readAtFileNodes,
+            'read-outline-only':            c.readOutlineOnly,
+            'redo':                         c.undoer.redo,
+            'reformat-paragraph':           c.reformatParagraph,
+            'remove-sentinels':             c.removeSentinels,
+            'resize-to-screen':             f.resizeToScreen,
+            'revert':                       c.revert,
+            'save-file':                    c.save,
+            'save-file-as':                 c.saveAs,
+            'save-file-to':                 c.saveTo,
+            'select-all':                   f.body.selectAllText,
+            'settings':                     c.preferences,
+            'set-colors':                   c.colorPanel,
+            'set-font':                     c.fontPanel,
+            'set-leo-id':                   g.app.askLeoID,
+            'show-invisibles':              c.showInvisibles,
+            'sort-children':                c.sortChildren,
+            'sort-siblings':                c.sortSiblings,
+            'tangle':                       c.tangle,
+            'tangle-all':                   c.tangleAll,
+            'tangle-marked':                c.tangleMarked,
+            'toggle-active-pane':           f.toggleActivePane,
+            'toggle-angle-brackets':        c.toggleAngleBrackets,
+            'toggle-invisibles':            c.toggleShowInvisibles,
+            'toggle-split-direction':       f.toggleSplitDirection,
+            'undo':                         c.undoer.undo,
+            'unindent-region':              c.dedentBody,
+            'unmark-all':                   c.unmarkAll,
+            'untangle':                     c.untangle,
+            'untangle-all':                 c.untangleAll,
+            'untangle-marked':              c.untangleMarked,
+            'weave':                        c.weave,
+            'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+            'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+            'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+            'write-outline-only':           c.fileCommands.writeOutlineOnly,
+        }
+        #@-node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
+        #@nl
+        
+        # Create a callback for each item in d.
+        keys = d.keys() ; keys.sort()
+        for name in keys:
+            f = d.get(name)
+            d2 [name] = f
+            #agpkeyk.inverseCommandsDict [f.__name__] = name
+            # g.trace('leoCommands %24s = %s' % (f.__name__,name))
+            
+        return d2
+    #@-node:AGP.20250415230112.1096:leoCommands.getPublicCommands
+    #@-others
+#@-node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
+#@+node:AGP.20250415230112.1157:Search classes
+#@+node:AGP.20250415230112.1184:class searchCommandsClass
+class searchCommandsClass (baseEditCommandsClass):
+    
+    '''Implements many kinds of searches.'''
+
+    #@    @+others
+    #@+node:AGP.20250415230112.1185: ctor (searchCommandsClass)
+    def __init__ (self,c):
+        
+        # g.trace('searchCommandsClass')
+    
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+        
+        self.finder = None
+        
+        #self.findTabHandler = None
+        
+        
+        try:
+            self.w = c.frame.body.bodyCtrl
+        except AttributeError:
+            self.w = None
+            
+        # For isearch commands.
+        #self.ifinder = leoFind.leoFind(c,title='ifinder')
+        #self.isearch_v = None # vnode of last isearch.
+        #self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
+        
+        self.ignoreCase = None
+        self.forward = None
+        self.regexp = None
+    #@-node:AGP.20250415230112.1185: ctor (searchCommandsClass)
+    #@+node:AGP.20250415230112.1186:init()
+    def init (self):    #agp
+        
+        #if self.finder == None:
+            #self.finder = g.app.gui.frame.searchbox#SearchBox(self.c)
+        
+        
+        
+        pass
+    #@nonl
+    #@-node:AGP.20250415230112.1186:init()
+    #@+node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
+    def getPublicCommands (self):
+        
+        return {
+            'clone-find-all':                       self.findTabCloneFindAll,#agp
+            'find-all':                    self.findTabFindAll,#agp
+            
+            # Thin wrappers on Find tab
+            'find-next':                    self.findTabFindNext,
+            'find-prev':                    self.findTabFindPrev,
+            'change-all':                   self.findTabChangeAll,
+            'find-tab-change-then-find':            self.findTabChangeThenFind,
+                        
+            #'hide-find-tab':                        self.hideFindTab,
+                
+            #'isearch-forward':                      self.isearchForward,
+            #'isearch-backward':                     self.isearchBackward,
+            #'isearch-forward-regexp':               self.isearchForwardRegexp,
+            #'isearch-backward-regexp':              self.isearchBackwardRegexp,
+            #'isearch-with-present-options':         self.isearchWithPresentOptions,
+                        
+            'open-find-tab':                        self.openFindTab,
+        
+            #'replace-string':                       self.replaceString,
+                        
+            #'re-search-forward':                    self.reSearchForward,
+            #'re-search-backward':                   self.reSearchBackward,
+    
+            #'search-again':                         self.findAgain,
+            # Uses existing search pattern.
+            
+            'search-forward':                       self.searchForward,
+            'search-backward':                      self.searchBackward,
+            'search-with-present-options':          self.searchWithPresentOptions,
+            # Prompts for search pattern.
+    
+            'set-find-everywhere':                  self.setFindScopeEveryWhere,
+            'set-find-node-only':                   self.setFindScopeNodeOnly,
+            'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
+    
+            'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
+            'toggle-find-in-body-option':           self.toggleSearchBodyOption,
+            'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
+            'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
+            'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
+            'toggle-find-regex-option':             self.toggleRegexOption,
+            'toggle-find-reverse-option':           self.toggleReverseOption,
+            'toggle-find-word-option':              self.toggleWholeWordOption,
+            'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
+            
+            'word-search-forward':                  self.wordSearchForward,
+            'word-search-backward':                 self.wordSearchBackward,
+        }
+    #@-node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
+    #@+node:AGP.20250415230112.1188:Top-level methods
+    #@+node:AGP.20250415230112.1189:Find Tab commands
+    # Just open the Find tab if it has never been opened.
+    
+    def openFindTab(self,arg):
+        self.finder.SetFocus()
+    
+    def findTabFindNext(self,event=None): #agp
+        self.finder.findNextCommand()
+    
+    def findTabFindPrev(self,event=None): #agp
+        self.finder.findPrevCommand()
+    
+    def findTabFindAll(self,event=None):
+        '''Execute the 'Find All' command with the settings shown in the Find tab.'''
+        self.finder.findAllCommand()
+        
+    def findTabCloneFindAll (self,event=None):
+        '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
+        self.finder.CloneFindAllCommand()
+        
+    
+    def findTabChange(self,event=None):
+        '''Execute the 'Change' command with the settings shown in the Find tab.'''
+        self.finder.changeCommand()
+        
+    def findTabChangeAll(self,event=None):
+        '''Execute the 'Change All' command with the settings shown in the Find tab.'''
+        self.finder.changeAllCommand()
+        
+    
+    def findTabChangeThenFind(self,event=None):
+        '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
+        self.finder.changeThenFindCommand()
+            
+    #@-node:AGP.20250415230112.1189:Find Tab commands
+    #@+node:AGP.20250415230112.1191:Find options wrappers
+    def setFindScopeEveryWhere (self, event):
+        '''Set the 'Entire Outline' radio button in the Find tab.'''
+        return self.setFindScope('entire-outline')
+    
+    def setFindScopeNodeOnly  (self, event):
+        '''Set the 'Node Only' radio button in the Find tab.'''
+        return self.setFindScope('node-only')
+    
+    def setFindScopeSuboutlineOnly (self, event):
+        '''Set the 'Suboutline Only' radio button in the Find tab.'''
+        return self.setFindScope('suboutline-only')
+    
+    def toggleIgnoreCaseOption     (self, event):
+        '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
+        return self.toggleOption('ignore_case')
+    
+    def toggleMarkChangesOption (self, event):
+        '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
+        return self.toggleOption('mark_changes')
+    def toggleMarkFindsOption (self, event):
+        '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
+        return self.toggleOption('mark_finds')
+    def toggleRegexOption (self, event):
+        '''Toggle the 'Regexp' checkbox in the Find tab.'''
+        return self.toggleOption('pattern_match')
+    def toggleReverseOption        (self, event):
+        '''Toggle the 'Reverse' checkbox in the Find tab.'''
+        return self.toggleOption('reverse')
+    
+    def toggleSearchBodyOption (self, event):
+        '''Set the 'Search Body' checkbox in the Find tab.'''
+        return self.toggleOption('search_body')
+    
+    def toggleSearchHeadlineOption (self, event):
+        '''Toggle the 'Search Headline' checkbox in the Find tab.'''
+        return self.toggleOption('search_headline')
+    
+    def toggleWholeWordOption (self, event):
+        '''Toggle the 'Whole Word' checkbox in the Find tab.'''
+        return self.toggleOption('whole_word')
+    
+    def toggleWrapSearchOption (self, event):
+        '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
+        return self.toggleOption('wrap')
+        
+    def setFindScope (self, where):  self.getHandler().setFindScope(where)
+    def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
+    #@-node:AGP.20250415230112.1191:Find options wrappers
+    #@+node:AGP.20250415230112.1192:Find wrappers
+    def cloneFindAll (self,event):
+        '''Do search-with-present-options and print all matches in the log pane. It
+        also creates a node at the beginning of the outline containing clones of all
+        nodes containing the 'find' string. Only one clone is made of each node,
+        regardless of how many clones the node has, or of how many matches are found
+        in each node.'''
+        self.getHandler().cloneFindAll(event)
+    
+    def findAll            (self,event):
+        '''Do search-with-present-options and print all matches in the log pane.'''
+        self.getHandler().findAll(event)
+    
+    def replaceString      (self,event):
+        '''Prompts for a search string. Type <Return> to end the search string. The
+        command will then prompt for the replacement string. Typing a second
+        <Return> key will place both strings in the Find tab and executes a **find**
+        command, that is, the search-with-present-options command.'''
+        self.getHandler().replaceString(event)
+    
+    def reSearchBackward   (self,event):
+        '''Set the 'Regexp' checkbox to True and the 'Reverse' checkbox to True,
+        then do search-with-present-options.'''
+        self.getHandler().reSearchBackward(event)
+    
+    def reSearchForward    (self,event):
+        '''Set the 'Regexp' checkbox to True, then do search-with-present-options.'''
+        self.getHandler().reSearchForward(event)
+    
+    def searchBackward     (self,event):
+        '''Set the 'Word Search' checkbox to False and the 'Reverse' checkbox to True,
+        then do search-with-present-options.'''
+        self.getHandler().searchBackward(event)
+    
+    def searchForward      (self,event):
+        '''Set the 'Word Search' checkbox to False, then do search-with-present-options.'''
+        self.getHandler().searchForward(event)
+    
+    def wordSearchBackward (self,event):
+        '''Set the 'Word Search' checkbox to True, then do search-with-present-options.'''
+        self.getHandler().wordSearchBackward(event)
+    
+    def wordSearchForward  (self,event):
+        '''Set the Word Search' checkbox to True and the 'Reverse' checkbox to True,
+        then do search-with-present-options.'''
+        self.getHandler().wordSearchForward(event)
+    
+    def searchWithPresentOptions (self,event):
+        '''Prompts for a search string. Typing the <Return> key puts the search
+        string in the Find tab and executes a search based on all the settings in
+        the Find tab. Recommended as the default search command.'''
+        self.getHandler().searchWithPresentOptions(event)
+    #@-node:AGP.20250415230112.1192:Find wrappers
+    #@+node:AGP.20250415230112.1193:findAgain
+    def findAgain (self,event):
+    
+        '''The find-again command is the same as the find-tab-find-next command
+        if the search pattern in the Find tab is not '<find pattern here>'
+        Otherwise, the find-again is the same as the search-with-present-options command.'''
+        
+        h = self.getHandler()
+        
+        # h.findAgain returns False if there is no search pattern.
+        # In that case, we revert to search-with-present-options.
+        if not h.findAgain(event):
+            h.searchWithPresentOptions(event)
+    #@-node:AGP.20250415230112.1193:findAgain
+    #@-node:AGP.20250415230112.1188:Top-level methods
+    #@-others
+#@-node:AGP.20250415230112.1184:class searchCommandsClass
+#@-node:AGP.20250415230112.1157:Search classes
+#@+node:AGP.20250415230112.837:class Tracker (an iterator)
+class Tracker:
+
+    '''An iterator class to allow the user to cycle through and change a list.'''
+
+    #@    @+others
+    #@+node:AGP.20250415230112.838:init
+    def __init__ (self):
+        
+        self.tablist = []
+        self.prefix = None 
+        self.ng = self._next()
+    #@-node:AGP.20250415230112.838:init
+    #@+node:AGP.20250415230112.839:setTabList
+    def setTabList (self,prefix,tlist):
+        
+        self.prefix = prefix 
+        self.tablist = tlist
+    #@-node:AGP.20250415230112.839:setTabList
+    #@+node:AGP.20250415230112.840:_next
+    def _next (self):
+        
+        while 1:
+            tlist = self.tablist 
+            if not tlist:yield ''
+            for z in self.tablist:
+                if tlist!=self.tablist:
+                    break 
+                yield z
+    #@-node:AGP.20250415230112.840:_next
+    #@+node:AGP.20250415230112.841:next
+    def next (self):
+        
+        return self.ng.next()
+    #@-node:AGP.20250415230112.841:next
+    #@+node:AGP.20250415230112.842:clear
+    def clear (self):
+    
+        self.tablist = []
+        self.prefix = None
+    #@-node:AGP.20250415230112.842:clear
+    #@-others
+#@-node:AGP.20250415230112.837:class Tracker (an iterator)
+#@+node:AGP.20250415230112.856:bufferCommandsClass
+#@+at 
+#@nonl
+# An Emacs instance does not have knowledge of what is considered a buffer in 
+# the environment.
+# 
+# The call to setBufferInteractionMethods calls the buffer configuration 
+# methods.
+#@-at
+#@@c
+
+class bufferCommandsClass (baseEditCommandsClass):
+
+    #@    @+others
+    #@+node:AGP.20250415230112.857: ctor (bufferCommandsClass)
+    def __init__ (self,c):
+        
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+        
+        self.fromName = '' # Saved name from getBufferName.
+        self.nameList = [] # [n: <headline>]
+        self.names = {}
+        self.tnodes = {} # Keys are n: <headline>, values are tnodes.
+        
+        try:
+            self.w = c.frame.body.bodyCtrl
+        except AttributeError:
+            self.w = None
+    #@-node:AGP.20250415230112.857: ctor (bufferCommandsClass)
+    #@+node:AGP.20250415230112.858: getPublicCommands
+    def getPublicCommands (self):
+    
+        return {
+        
+            # These do not seem useful.
+                # 'copy-to-buffer':               self.copyToBuffer,
+                # 'insert-to-buffer':             self.insertToBuffer,
+           
+            'append-to-buffer':             self.appendToBuffer,
+            'kill-buffer' :                 self.killBuffer,
+            'list-buffers' :                self.listBuffers,
+            'list-buffers-alphabetically':  self.listBuffersAlphabetically,
+            'prepend-to-buffer':            self.prependToBuffer,
+            'rename-buffer':                self.renameBuffer,
+            'switch-to-buffer':             self.switchToBuffer,
+        }
+    #@-node:AGP.20250415230112.858: getPublicCommands
+    #@+node:AGP.20250415230112.859:Entry points
+    #@+node:AGP.20250415230112.860:appendToBuffer
+    def appendToBuffer (self,event):
+        
+        '''Add the selected body text to the end of the body text of a named buffer (node).'''
+        
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+    
+        self.k.setLabelBlue('Append to buffer: ')
+        self.getBufferName(self.appendToBufferFinisher)
+    
+    def appendToBufferFinisher (self,name):
+    
+        c = self.c ; k = self.k ; w = self.w
+        s = g.app.gui.getSelectedText(w)
+        p = self.findBuffer(name)
+        if s and p:
+            c.beginUpdate()
+            try:
+                w = self.w
+                c.selectPosition(p)
+                self.beginCommand('append-to-buffer: %s' % p.headString())
+                w.insert('end',s)
+                w.mark_set('insert','end')
+                w.see('end')
+                self.endCommand()
+            finally:
+                c.endUpdate()
+                c.recolor_now()
+    #@-node:AGP.20250415230112.860:appendToBuffer
+    #@+node:AGP.20250415230112.861:copyToBuffer
+    def copyToBuffer (self,event):
+        
+        '''Add the selected body text to the end of the body text of a named buffer (node).'''
+        
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+    
+        self.k.setLabelBlue('Copy to buffer: ')
+        self.getBufferName(self.copyToBufferFinisher)
+    
+    def copyToBufferFinisher (self,event,name):
+    
+        c = self.c ; k = self.k ; w = self.w
+        s = g.app.gui.getSelectedText(w)
+        p = self.findBuffer(name)
+        if s and p:
+            c.beginUpdate()
+            try:
+                w = self.w
+                c.selectPosition(p)
+                self.beginCommand('copy-to-buffer: %s' % p.headString())
+                w.insert('end',s)
+                w.mark_set('insert','end')
+                w.see('end')
+                self.endCommand()
+            finally:
+                c.endUpdate()
+                c.recolor_now()
+    #@-node:AGP.20250415230112.861:copyToBuffer
+    #@+node:AGP.20250415230112.862:insertToBuffer
+    def insertToBuffer (self,event):
+        
+        '''Add the selected body text at the insert point of the body text of a named buffer (node).'''
+        
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+    
+        self.k.setLabelBlue('Insert to buffer: ')
+        self.getBufferName(self.insertToBufferFinisher)
+    
+    def insertToBufferFinisher (self,event,name):
+        
+        c = self.c ; k = self.k ; w = self.w
+        s = g.app.gui.getSelectedText(w)
+        p = self.findBuffer(name)
+        if s and p:
+            c.beginUpdate()
+            try:
+                w = self.w
+                c.selectPosition(p)
+                self.beginCommand('insert-to-buffer: %s' % p.headString())
+                w.insert('insert',s)
+                w.see('insert')
+                self.endCommand()
+            finally:
+                c.endUpdate()
+    #@-node:AGP.20250415230112.862:insertToBuffer
+    #@+node:AGP.20250415230112.863:killBuffer
+    def killBuffer (self,event):
+        
+        '''Delete a buffer (node) and all its descendants.'''
+        
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+    
+        self.k.setLabelBlue('Kill buffer: ')
+        self.getBufferName(self.killBufferFinisher)
+    
+    def killBufferFinisher (self,name):
+    
+        c = self.c ; p = self.findBuffer(name)
+        if p:
+            h = p.headString()
+            current = c.currentPosition()
+            c.selectPosition(p)
+            c.deleteOutline (op_name='kill-buffer: %s' % h)
+            c.selectPosition(current)
+            self.k.setLabelBlue('Killed buffer: %s' % h)
+    #@-node:AGP.20250415230112.863:killBuffer
+    #@+node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
+    def listBuffers (self,event):
+        
+        '''List all buffers (node headlines), in outline order.
+        Nodes with the same headline are disambiguated by giving their parent or child index.
+        '''
+        
+        self.computeData()
+        g.es('Buffers...')
+        for name in self.nameList:
+            g.es(name)
+            
+    def listBuffersAlphabetically (self,event):
+        
+        '''List all buffers (node headlines), in alphabetical order.
+        Nodes with the same headline are disambiguated by giving their parent or child index.'''
+        
+        self.computeData()
+        names = self.nameList[:] ; names.sort()
+        
+        g.es('Buffers...')
+        for name in names:
+            g.es(name)
+    #@-node:AGP.20250415230112.864:listBuffers & listBuffersAlphabetically
+    #@+node:AGP.20250415230112.865:prependToBuffer
+    def prependToBuffer (self,event):
+        
+        '''Add the selected body text to the start of the body text of a named buffer (node).'''
+        
+        w = self.editWidget(event) # Sets self.w
+        if not w: return
+    
+        self.k.setLabelBlue('Prepend to buffer: ')
+        self.getBufferName(self.prependToBufferFinisher)
+        
+    def prependToBufferFinisher (self,event,name):
+        
+        c = self.c ; k = self.k ; w = self.w
+        s = g.app.gui.getSelectedText(w)
+        p = self.findBuffer(name)
+        if s and p:
+            c.beginUpdate()
+            try:
+                w = self.w
+                c.selectPosition(p)
+                self.beginCommand('prepend-to-buffer: %s' % p.headString())
+                w.insert('1.0',s)
+                w.mark_set('insert','1.0')
+                w.see('1.0')
+                self.endCommand()
+            finally:
+                c.endUpdate()
+                c.recolor_now()
+    
+    #@-node:AGP.20250415230112.865:prependToBuffer
+    #@+node:AGP.20250415230112.866:renameBuffer
+    def renameBuffer (self,event):
+        
+        '''Rename a buffer, i.e., change a node's headline.'''
+        
+        self.k.setLabelBlue('Rename buffer from: ')
+        self.getBufferName(self.renameBufferFinisher1)
+        
+    def renameBufferFinisher1 (self,name):
+        
+        self.fromName = name
+        self.k.setLabelBlue('Rename buffer from: %s to: ' % (name))
+        self.getBufferName(self.renameBufferFinisher2)
+        
+    def renameBufferFinisher2 (self,name):
+        
+        c = self.c ; p = self.findBuffer(self.fromName)
+        if p:
+            c.endEditing()
+            c.beginUpdate()
+            c.setHeadString(p,name)
+            c.endUpdate()
+    #@-node:AGP.20250415230112.866:renameBuffer
+    #@+node:AGP.20250415230112.867:switchToBuffer
+    def switchToBuffer (self,event):
+        
+        '''Select a buffer (node) by its name (headline).'''
+    
+        self.k.setLabelBlue('Switch to buffer: ')
+        self.getBufferName(self.switchToBufferFinisher)
+        
+    def switchToBufferFinisher (self,name):
+        
+        c = self.c ; p = self.findBuffer(name)
+        if p:
+            c.beginUpdate()
+            try:
+                c.selectPosition(p)
+            finally:
+                c.endUpdate()
+    #@-node:AGP.20250415230112.867:switchToBuffer
+    #@-node:AGP.20250415230112.859:Entry points
+    #@+node:AGP.20250415230112.868:Utils
+    #@+node:AGP.20250415230112.869:computeData
+    def computeData (self):
+        
+        counts = {} ; self.nameList = []
+        self.names = {} ; self.tnodes = {}
+       
+        for p in self.c.allNodes_iter():
+            h = p.headString().strip()
+            t = p.v.t
+            n = counts.get(t,0) + 1
+            counts[t] = n
+            if n == 1: # Only make one entry per set of clones.
+                nameList = self.names.get(h,[])
+                if nameList:
+                    if p.parent():
+                        key = '%s, parent: %s' % (h,p.parent().headString())
+                    else:
+                        key = '%s, child index: %d' % (h,p.childIndex())
+                else:
+                    key = h
+                self.nameList.append(key)
+                self.tnodes[key] = t
+                nameList.append(key)
+                self.names[h] = nameList
+    #@-node:AGP.20250415230112.869:computeData
+    #@+node:AGP.20250415230112.870:findBuffer
+    def findBuffer (self,name):
+        
+        t = self.tnodes.get(name)
+    
+        for p in self.c.allNodes_iter():
+            if p.v.t == t:
+                return p
+               
+        g.trace("Can't happen",name)
+        return None
+    #@-node:AGP.20250415230112.870:findBuffer
+    #@+node:AGP.20250415230112.871:getBufferName
+    def getBufferName (self,finisher):
+        
+        '''Get a buffer name into k.arg and call k.setState(kind,n,handler).'''
+        
+        k = self.k ; c = k.c ; state = k.getState('getBufferName')
+        
+        if state == 0:
+            self.computeData()
+            self.getBufferNameFinisher = finisher
+            prefix = k.getLabel() ; event = None
+            k.getArg(event,'getBufferName',1,self.getBufferName,
+                prefix=prefix,tabList=self.nameList)
+        else:
+            k.resetLabel()
+            k.clearState()
+            finisher = self.getBufferNameFinisher
+            self.getBufferNameFinisher = None
+            finisher(k.arg)
+    #@-node:AGP.20250415230112.871:getBufferName
+    #@-node:AGP.20250415230112.868:Utils
+    #@-others
+#@-node:AGP.20250415230112.856:bufferCommandsClass
+#@+node:AGP.20250415230112.872:controlCommandsClass
+class controlCommandsClass (baseEditCommandsClass):
+    
+    #@    @+others
+    #@+node:AGP.20250415230112.873: ctor
+    def __init__ (self,c):
+    
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+        
+        self.payload = None
+    #@-node:AGP.20250415230112.873: ctor
+    #@+node:AGP.20250415230112.874: getPublicCommands
+    def getPublicCommands (self):
+        
+        k = self.c.k
+    
+        return {
+            'advertised-undo':              self.advertizedUndo,
+            'iconify-frame':                self.iconifyFrame, # Same as suspend.
+            'keyboard-quit':                k.keyboardQuit,
+            'save-buffers-kill-leo':        self.saveBuffersKillLeo,
+            'set-silent-mode':              self.setSilentMode,
+            'shell-command':                self.shellCommand,
+            'shell-command-on-region':      self.shellCommandOnRegion,
+            'suspend':                      self.suspend,
+        }
+    #@-node:AGP.20250415230112.874: getPublicCommands
+    #@+node:AGP.20250415230112.875:advertizedUndo
+    def advertizedUndo (self,event):
+        
+        '''Undo the previous command.'''
+    
+        self.c.undoer.undo()
+    #@-node:AGP.20250415230112.875:advertizedUndo
+    #@+node:AGP.20250415230112.876:executeSubprocess
+    def executeSubprocess (self,event,command,input):
+        
+        '''Execute a command in a separate process.'''
+        
+        k = self.k
+        w = self.editWidget(event)
+        if not w: return
+    
+        k.setLabelBlue('started  shell-command: %s' % command)
+        try:
+            ofile = os.tmpfile()
+            efile = os.tmpfile()
+            process = subprocess.Popen(command,bufsize=-1,
+                stdout = ofile.fileno(), stderr = ofile.fileno(),
+                stdin = subprocess.PIPE, shell = True)
+            if input: process.communicate(input)
+            process.wait()
+            efile.seek(0)
+            errinfo = efile.read()
+            if errinfo: w.insert('insert',errinfo)
+            ofile.seek(0)
+            okout = ofile.read()
+            if okout: w.insert('insert',okout)
+        except Exception, x:
+            w.insert('insert',x)
+            
+        k.setLabelGrey('finished shell-command: %s' % command)
+    #@-node:AGP.20250415230112.876:executeSubprocess
+    #@+node:AGP.20250415230112.877:setSilentMode
+    def setSilentMode (self,event=None):
+        
+        '''Set the mode to be run silently, without the minibuffer.
+        The only use for this command is to put the following in an @mode node::
+            
+            --> set-silent-mode'''
+        
+        self.c.k.silentMode = True
+    #@-node:AGP.20250415230112.877:setSilentMode
+    #@+node:AGP.20250415230112.878:shellCommand
+    def shellCommand (self,event):
+        
+        '''Execute a shell command.'''
+    
+        if subprocess:
+            k = self.k ; state = k.getState('shell-command')
+        
+            if state == 0:
+                k.setLabelBlue('shell-command: ',protect=True)
+                k.getArg(event,'shell-command',1,self.shellCommand)
+            else:
+                command = k.arg
+                k.commandName = 'shell-command: %s' % command
+                k.clearState()
+                self.executeSubprocess(event,command,input=None)
+        else:
+            k.setLabelGrey('can not execute shell-command: can not import subprocess')
+    #@-node:AGP.20250415230112.878:shellCommand
+    #@+node:AGP.20250415230112.879:shellCommandOnRegion
+    def shellCommandOnRegion (self,event):
+        
+        '''Execute a command taken from the selected text in a separate process.'''
+        
+        k = self.k
+        w = self.editWidget(event)
+        if not w: return
+    
+        if subprocess:
+            is1,is2 = None,None
+            try:
+                is1 = w.index('sel.first')
+                is2 = w.index('sel.last')
+            finally:
+                if is1:
+                    command = w.get(is1,is2)
+                    k.commandName = 'shell-command: %s' % command
+                    self.executeSubprocess(event,command,input=None)
+                else:
+                    k.clearState()
+                    k.resetLabel()
+        else:
+            k.setLabelGrey('can not execute shell-command: can not import subprocess')
+    #@-node:AGP.20250415230112.879:shellCommandOnRegion
+    #@+node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
+    def shutdown (self,event):
+        
+        '''Quit Leo, prompting to save any unsaved files first.'''
+        
+        g.app.onQuit()
+            
+    saveBuffersKillLeo = shutdown
+    #@-node:AGP.20250415230112.880:shutdown, saveBuffersKillEmacs & setShutdownHook
+    #@+node:AGP.20250415230112.881:suspend & iconifyFrame
+    def suspend (self,event):
+        
+        '''Minimize the present Leo window.'''
+    
+        w = self.editWidget(event)
+        if not w: return
+        w.winfo_toplevel().iconify()
+        
+    # Must be a separate function so that k.inverseCommandsDict will be a true inverse.
+        
+    def iconifyFrame (self,event):
+        
+        '''Minimize the present Leo window.'''
+    
+        self.suspend(event)
+    #@-node:AGP.20250415230112.881:suspend & iconifyFrame
+    #@-others
+#@-node:AGP.20250415230112.872:controlCommandsClass
+#@+node:AGP.20250415230112.882:debugCommandsClass
+class debugCommandsClass (baseEditCommandsClass):
+    
+    #@    @+others
+    #@+node:AGP.20250415230112.883: ctor
+    def __init__ (self,c):
+    
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+    #@-node:AGP.20250415230112.883: ctor
+    #@+node:AGP.20250415230112.884: getPublicCommands
+    def getPublicCommands (self):
+        
+        k = self
+    
+        return {
+            'collect-garbage':      self.collectGarbage,
+            'debug':                self.debug,
+            'disable-gc-trace':     self.disableGcTrace,
+            'dump-all-objects':     self.dumpAllObjects,
+            'dump-new-objects':     self.dumpNewObjects,
+            'enable-gc-trace':      self.enableGcTrace,
+            'free-tree-widgets':    self.freeTreeWidgets,
+            'print-focus':          self.printFocus,
+            'print-stats':          self.printStats,
+            'print-gc-summary':     self.printGcSummary,
+            'run-unit-tests':       self.runUnitTests,
+            'verbose-dump-objects': self.verboseDumpObjects,
+        }
+    #@-node:AGP.20250415230112.884: getPublicCommands
+    #@+node:AGP.20250415230112.885:collectGarbage
+    def collectGarbage (self,event=None):
+        
+        """Run Python's Gargabe Collector."""
+        
+        g.collectGarbage()
+    #@-node:AGP.20250415230112.885:collectGarbage
+    #@+node:AGP.20250415230112.886:debug
+    def debug (self,event=None,target = None):
+        
+        '''Start an external debugger in another process.'''
+    
+        c = self.c ; p = c.currentPosition()
+        pythonDir = g.os_path_dirname(sys.executable)
+        
+        #@    << find a debugger or return >>
+        #@+node:AGP.20250415230112.887:<< find a debugger or return >>
+        debuggers = (
+            c.config.getString('debugger_path'),
+            g.os_path_join(pythonDir,'scripts','_winpdb.py'),
+        )
+        
+        for debugger in debuggers:
+            if debugger:
+                debugger = g.os_path_abspath(debugger)
+                if g.os_path_exists(debugger):
+                    break
+                else:
+                    g.es('Debugger does not exist: %s' % (debugger),color='blue')
+        else:
+            g.es('No debugger found.')
+            return
+        #@-node:AGP.20250415230112.887:<< find a debugger or return >>
+        #@nl
+        #@    << find the target file >>
+        #@+node:AGP.20250415230112.888:<< find the target file >>
+        targets = (
+            target,
+            c.config.getString('debugger_force_taget'),
+            p.copy().anyAtFileNodeName(),
+            c.config.getString('debugger_default_target'),
+        )
+        
+        for target in targets:
+            if target:
+                target = g.os_path_abspath(target)
+                if g.os_path_exists(target):
+                    break
+                else:
+                    g.es('Debug target does not exist: %s' % (target),color='blue')
+        #@-node:AGP.20250415230112.888:<< find the target file >>
+        #@nl
+        
+        if target:
+            args = [sys.executable, debugger, '-t', target]
+        else:
+            args = [sys.executable, debugger, '-t']
+        
+        if 1: # Use present environment.
+            os.spawnv(os.P_NOWAIT, sys.executable, args)
+        else: # Use a pristine environment.
+            os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
+    #@-node:AGP.20250415230112.886:debug
+    #@+node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
+    def dumpAllObjects (self,event=None):
+        
+        '''Print a summary of all existing Python objects.'''
+        
+        old = g.app.trace_gc
+        g.app.trace_gc = True
+        g.printGcAll()
+        g.app.trace_gc = old
+        
+    def dumpNewObjects (self,event=None):
+        
+        '''Print a summary of all Python objects created
+        since the last time Python's Garbage collector was run.'''
+    
+        old = g.app.trace_gc
+        g.app.trace_gc = True
+        g.printGcObjects()
+        g.app.trace_gc = old
+        
+    def verboseDumpObjects (self,event=None):
+        
+        '''Print a more verbose listing of all existing Python objects.'''
+        
+        old = g.app.trace_gc
+        g.app.trace_gc = True
+        g.printGcVerbose()
+        g.app.trace_gc = old
+    #@-node:AGP.20250415230112.889:dumpAll/New/VerboseObjects
+    #@+node:AGP.20250415230112.890:enable/disableGcTrace
+    def disableGcTrace (self,event=None):
+        
+        '''Enable tracing of Python's Garbage Collector.'''
+        
+        g.app.trace_gc = False
+        
+    def enableGcTrace (self,event=None):
+        
+        '''Disable tracing of Python's Garbage Collector.'''
+        
+        g.app.trace_gc = True
+        g.app.trace_gc_inited = False
+        g.enable_gc_debug()
+    #@-node:AGP.20250415230112.890:enable/disableGcTrace
+    #@+node:AGP.20250415230112.891:freeTreeWidgets
+    def freeTreeWidgets (self,event=None):
+        
+        '''Free all widgets used in Leo's outline pane.'''
+        
+        c = self.c
+        
+        c.frame.tree.destroyWidgets()
+        c.redraw_now()
+    #@-node:AGP.20250415230112.891:freeTreeWidgets
+    #@+node:AGP.20250415230112.892:printFocus
+    # Doesn't work if the focus isn't in a pane with bindings!
+    
+    def printFocus (self,event=None):
+        
+        '''Print information about the requested focus (for debugging).'''
+        
+        c = self.c
+        
+        g.es_print('      hasFocusWidget: %s' % c.widget_name(c.hasFocusWidget))
+        g.es_print('requestedFocusWidget: %s' % c.widget_name(c.requestedFocusWidget))
+        g.es_print('           get_focus: %s' % c.widget_name(c.get_focus()))
+    #@-node:AGP.20250415230112.892:printFocus
+    #@+node:AGP.20250415230112.893:printGcSummary
+    def printGcSummary (self,event=None):
+        
+        
+        '''Print a brief summary of all Python objects.'''
+    
+        g.printGcSummary()
+    #@-node:AGP.20250415230112.893:printGcSummary
+    #@+node:AGP.20250415230112.894:printStats
+    def printStats (self,event=None):
+        
+        '''Print statistics about the objects that Leo is using.'''
+        
+        c = self.c
+        c.frame.tree.showStats()
+        self.dumpAllObjects()
+    #@-node:AGP.20250415230112.894:printStats
+    #@+node:AGP.20250415230112.895:runUnitTest
+    def runUnitTests (self,event=None):
+        
+        '''Run all unit tests contained in the presently selected outline.'''
+        
+        c = self.c
+    
+        leoTest.doTests(c,all=False)
+    #@-node:AGP.20250415230112.895:runUnitTest
+    #@-others
+#@-node:AGP.20250415230112.882:debugCommandsClass
 #@+node:AGP.20250415230112.1051:editFileCommandsClass
 class editFileCommandsClass (baseEditCommandsClass):
     
@@ -4829,7 +5025,6 @@ class helpCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
         
         return {
-            'help-for-minibuffer':      self.helpForMinibuffer,
             'help-for-command':         self.helpForCommand,
             'apropos-autocompletion':   self.aproposAutocompletion,
             'apropos-bindings':         self.aproposBindings,
@@ -4837,45 +5032,6 @@ class helpCommandsClass (baseEditCommandsClass):
             'python-help':              self.pythonHelp,
         }
     #@-node:AGP.20250415230112.1063:getPublicCommands (helpCommands)
-    #@+node:AGP.20250415230112.1064:helpForMinibuffer
-    def helpForMinibuffer (self,event=None):
-        
-        '''Print a messages telling you how to get started with Leo.'''
-    
-        # A bug in Leo: triple quotes puts indentation before each line.
-        c = self.c
-        s = '''
-    The mini-buffer is intended to be like the Emacs buffer:
-    
-    full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
-    full command name, then hit <Return> to execute the command. Tab completion
-    works, but not yet for file names.
-    
-    quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
-    defined in leoSettings.leo. It is useful for commonly-used commands.
-    
-    universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
-    count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
-    unfinished.
-    
-    keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
-    the focus in the body pane.
-    
-    Use the help-for-command command to see documentation for a particular command.
-    '''
-    
-        s = g.adjustTripleString(s,c.tab_width)
-            # Remove indentation from indentation of this function.
-        # s = s % (shortcuts[0],shortcuts[1],shortcuts[2],shortcuts[3])
-        
-        if not g.app.unitTesting:
-            g.es_print(s)
-    #@+node:AGP.20250415230112.1065:test_helpForMinibuffer
-    def test_help(self):
-        
-        c.helpCommands.helpForMinibuffer()
-    #@-node:AGP.20250415230112.1065:test_helpForMinibuffer
-    #@-node:AGP.20250415230112.1064:helpForMinibuffer
     #@+node:AGP.20250415230112.1066:helpForCommand
     def helpForCommand (self,event):
         
@@ -5185,7 +5341,6 @@ class helpCommandsClass (baseEditCommandsClass):
         c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
     
         if state == 0:
-            c.frame.minibufferWantsFocus()
             k.setLabelBlue('Python help: ',protect=True)
             k.getArg(event,tag,1,self.pythonHelp)
         else:
@@ -5228,7 +5383,6 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
             'enable-calltips':          k.autoCompleter.enableCalltips,
             'exit-named-mode':          k.exitNamedMode,
             'full-command':             k.fullCommand, # For menu.
-            'hide-mini-buffer':         k.hideMinibuffer,
             'mode-help':                k.modeHelp,
             'negative-argument':        k.negativeArgument,
             'number-command':           k.numberCommand,
@@ -5251,10 +5405,8 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
             'set-overwrite-state':      k.setOverwriteState,
             'show-calltips':            k.autoCompleter.showCalltips,
             'show-calltips-force':      k.autoCompleter.showCalltipsForce,
-            'show-mini-buffer':         k.showMinibuffer,
             'toggle-autocompleter':     k.autoCompleter.toggleAutocompleter,
             'toggle-calltips':          k.autoCompleter.toggleCalltips,
-            'toggle-mini-buffer':       k.toggleMinibuffer,
             'toggle-input-state':       k.toggleInputState,
             'universal-argument':       k.universalArgument,
         }
@@ -5547,199 +5699,6 @@ class killBufferCommandsClass (baseEditCommandsClass):
     #@-node:AGP.20250415230112.1093:zapToCharacter
     #@-others
 #@-node:AGP.20250415230112.1078:killBufferCommandsClass (add docstrings)
-#@+node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
-class leoCommandsClass (baseEditCommandsClass):
-    
-    #@    @+others
-    #@+node:AGP.20250415230112.1095: ctor
-    def __init__ (self,c):
-    
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@-node:AGP.20250415230112.1095: ctor
-    #@+node:AGP.20250415230112.1096:leoCommands.getPublicCommands
-    def getPublicCommands (self):
-        
-        '''(leoCommands) Return a dict of the 'legacy' Leo commands.'''
-        
-        k = self.k ; d2 = {}
-        
-        #@    << define dictionary d of names and Leo commands >>
-        #@+node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
-        c = self.c ; f = c.frame
-        
-        d = {
-            'abort-edit-headline':          f.abortEditLabelCommand,
-            'about-leo':                    c.about,
-            'add-comments':                 c.addComments,     
-            'beautify-all':                 c.beautifyAllPythonCode,
-            'beautify':                     c.beautifyPythonCode,
-            'cascade-windows':              f.cascade,
-            'clear-recent-files':           c.clearRecentFiles,
-            'close-window':                 c.close,
-            'contract-or-go-left':          c.contractNodeOrGoToParent,
-            'check-python-code':            c.checkPythonCode,
-            'check-all-python-code':        c.checkAllPythonCode,
-            'check-outline':                c.checkOutline,
-            'clear-recent-files':           c.clearRecentFiles,
-            'clone-node':                   c.clone,
-            'contract-node':                c.contractNode,
-            'contract-all':                 c.contractAllHeadlines,
-            'contract-parent':              c.contractParent,
-            'convert-all-blanks':           c.convertAllBlanks,
-            'convert-all-tabs':             c.convertAllTabs,
-            'convert-blanks':               c.convertBlanks,
-            'convert-tabs':                 c.convertTabs,
-            'copy-node':                    c.copyOutline,
-            'copy-text':                    f.copyText,
-            'cut-node':                     c.cutOutline,
-            'cut-text':                     f.cutText,
-            'de-hoist':                     c.dehoist,
-            'delete-comments':              c.deleteComments,
-            'delete-node':                  c.deleteOutline,
-            'demote':                       c.demote,
-            'dump-outline':                 c.dumpOutline,
-            'edit-headline':                c.editHeadline,
-            'end-edit-headline':            f.endEditLabelCommand,
-            'equal-sized-panes':            f.equalSizedPanes,
-            'execute-script':               c.executeScript,
-            'exit-leo':                     g.app.onQuit,
-            'expand-all':                   c.expandAllHeadlines,
-            'expand-next-level':            c.expandNextLevel,
-            'expand-node':                  c.expandNode,
-            'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
-            'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
-            'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
-            'expand-prev-level':            c.expandPrevLevel,
-            'expand-to-level-1':            c.expandLevel1,
-            'expand-to-level-2':            c.expandLevel2,
-            'expand-to-level-3':            c.expandLevel3,
-            'expand-to-level-4':            c.expandLevel4,
-            'expand-to-level-5':            c.expandLevel5,
-            'expand-to-level-6':            c.expandLevel6,
-            'expand-to-level-7':            c.expandLevel7,
-            'expand-to-level-8':            c.expandLevel8,
-            'expand-to-level-9':            c.expandLevel9,
-            'export-headlines':             c.exportHeadlines,
-            'extract':                      c.extract,
-            'extract-names':                c.extractSectionNames,
-            'extract-section':              c.extractSection,
-            'flatten-outline':              c.flattenOutline,
-            'go-back':                      c.goPrevVisitedNode,
-            'go-forward':                   c.goNextVisitedNode,
-            'goto-first-node':              c.goToFirstNode,
-            'goto-first-sibling':           c.goToFirstSibling,
-            'goto-last-node':               c.goToLastNode,
-            'goto-last-sibling':            c.goToLastSibling,
-            'goto-last-visible':            c.goToLastVisibleNode,
-            'goto-line-number':             c.goToLineNumber,
-            'goto-next-changed':            c.goToNextDirtyHeadline,
-            'goto-next-clone':              c.goToNextClone,
-            'goto-next-marked':             c.goToNextMarkedHeadline,
-            'goto-next-node':               c.selectThreadNext,
-            'goto-next-sibling':            c.goToNextSibling,
-            'goto-next-visible':            c.selectVisNext,
-            'goto-parent':                  c.goToParent,
-            'goto-prev-node':               c.selectThreadBack,
-            'goto-prev-sibling':            c.goToPrevSibling,
-            'goto-prev-visible':            c.selectVisBack,
-            'hide-invisibles':              c.hideInvisibles,
-            'hoist':                        c.hoist,
-            'import-at-file':               c.importAtFile,
-            'import-at-root':               c.importAtRoot,
-            'import-cweb-files':            c.importCWEBFiles,
-            'import-derived-file':          c.importDerivedFile,
-            'import-flattened-outline':     c.importFlattenedOutline,
-            'import-noweb-files':           c.importNowebFiles,
-            'indent-region':                c.indentBody,
-            'insert-node':                  c.insertHeadline,
-            'insert-body-time':             c.insertBodyTime,
-            'insert-headline-time':         f.insertHeadlineTime,
-            'mark':                         c.markHeadline,
-            'mark-changed-items':           c.markChangedHeadlines,
-            'mark-changed-roots':           c.markChangedRoots,
-            'mark-clones':                  c.markClones,
-            'mark-subheads':                c.markSubheads,
-            'match-brackets':               c.findMatchingBracket,
-            'minimize-all':                 f.minimizeAll,
-            'move-outline-down':            c.moveOutlineDown,
-            'move-outline-left':            c.moveOutlineLeft,
-            'move-outline-right':           c.moveOutlineRight,
-            'move-outline-up':              c.moveOutlineUp,
-            'new':                          c.new,
-            #'open-compare-window':          c.openCompareWindow,
-            'open-find-dialog':             c.showFindPanel, # Deprecated.
-            'open-leoDocs-leo':             c.leoDocumentation,
-            'open-leoPlugins-leo':          c.openLeoPlugins,
-            'open-leoSettings-leo':         c.openLeoSettings,
-            'open-scripts-leo':             c.openLeoScripts,
-            'open-myLeoSettings-leo':       c.openMyLeoSettings,
-            'open-online-home':             c.leoHome,
-            'open-online-tutorial':         c.leoTutorial,
-            'open-offline-tutorial':        f.leoHelp,
-            'open-outline':                 c.open,
-            'open-python-window':           c.openPythonWindow,
-            'open-users-guide':             c.leoUsersGuide,
-            #'open-with':                    c.openWith,
-            'outline-to-cweb':              c.outlineToCWEB,
-            'outline-to-noweb':             c.outlineToNoweb,
-            'paste-node':                   c.pasteOutline,
-            'paste-retaining-clones':       c.pasteOutlineRetainingClones,
-            'paste-text':                   f.pasteText,
-            'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
-            'pretty-print-python-code':     c.prettyPrintPythonCode,
-            'promote':                      c.promote,
-            'read-at-file-nodes':           c.readAtFileNodes,
-            'read-outline-only':            c.readOutlineOnly,
-            'redo':                         c.undoer.redo,
-            'reformat-paragraph':           c.reformatParagraph,
-            'remove-sentinels':             c.removeSentinels,
-            'resize-to-screen':             f.resizeToScreen,
-            'revert':                       c.revert,
-            'save-file':                    c.save,
-            'save-file-as':                 c.saveAs,
-            'save-file-to':                 c.saveTo,
-            'select-all':                   f.body.selectAllText,
-            'settings':                     c.preferences,
-            'set-colors':                   c.colorPanel,
-            'set-font':                     c.fontPanel,
-            'set-leo-id':                   g.app.askLeoID,
-            'show-invisibles':              c.showInvisibles,
-            'sort-children':                c.sortChildren,
-            'sort-siblings':                c.sortSiblings,
-            'tangle':                       c.tangle,
-            'tangle-all':                   c.tangleAll,
-            'tangle-marked':                c.tangleMarked,
-            'toggle-active-pane':           f.toggleActivePane,
-            'toggle-angle-brackets':        c.toggleAngleBrackets,
-            'toggle-invisibles':            c.toggleShowInvisibles,
-            'toggle-split-direction':       f.toggleSplitDirection,
-            'undo':                         c.undoer.undo,
-            'unindent-region':              c.dedentBody,
-            'unmark-all':                   c.unmarkAll,
-            'untangle':                     c.untangle,
-            'untangle-all':                 c.untangleAll,
-            'untangle-marked':              c.untangleMarked,
-            'weave':                        c.weave,
-            'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
-            'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
-            'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
-            'write-outline-only':           c.fileCommands.writeOutlineOnly,
-        }
-        #@-node:AGP.20250415230112.1097:<< define dictionary d of names and Leo commands >>
-        #@nl
-        
-        # Create a callback for each item in d.
-        keys = d.keys() ; keys.sort()
-        for name in keys:
-            f = d.get(name)
-            d2 [name] = f
-            k.inverseCommandsDict [f.__name__] = name
-            # g.trace('leoCommands %24s = %s' % (f.__name__,name))
-            
-        return d2
-    #@-node:AGP.20250415230112.1096:leoCommands.getPublicCommands
-    #@-others
-#@-node:AGP.20250415230112.1094:leoCommandsClass (add docstrings)
 #@+node:AGP.20250415230112.1098:macroCommandsClass
 class macroCommandsClass (baseEditCommandsClass):
 
@@ -6736,746 +6695,6 @@ class registerCommandsClass (baseEditCommandsClass):
     #@-node:AGP.20250415230112.1146:Entries...
     #@-others
 #@-node:AGP.20250415230112.1140:registerCommandsClass
-#@+node:AGP.20250415230112.1157:Search classes
-#@+node:AGP.20250415230112.1158:class minibufferFind( (the findHandler)
-class minibufferFind (baseEditCommandsClass):
-
-    '''An adapter class that implements minibuffer find commands using the (hidden) Find Tab.'''
-
-    #@    @+others
-    #@+node:AGP.20250415230112.1159: ctor (minibufferFind)
-    def __init__(self,c,finder):
-        
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-    
-        self.c = c
-        self.k = k = c.k
-        self.w = None
-        self.finder = finder
-        self.findTextList = []
-        self.changeTextList = []
-        
-        commandName = 'replace-string'
-        s = k.getShortcutForCommandName(commandName)
-        s = k.prettyPrintKey(s)
-        s = k.shortcutFromSetting(s)
-        self.replaceStringShortcut = s
-    #@-node:AGP.20250415230112.1159: ctor (minibufferFind)
-    #@+node:AGP.20250415230112.1160: Options
-    #@+node:AGP.20250415230112.1161:setFindScope
-    def setFindScope(self,where):
-        
-        '''Set the find-scope radio buttons.
-        
-        `where` must be in ('node-only','entire-outline','suboutline-only'). '''
-        
-        h = self.finder
-        
-        if where in ('node-only','entire-outline','suboutline-only'):
-            var = h.dict['radio-search-scope'].get()
-            if var:
-                h.dict["radio-search-scope"].set(where)
-        else:
-            g.trace('oops: bad `where` value: %s' % where)
-    #@-node:AGP.20250415230112.1161:setFindScope
-    #@+node:AGP.20250415230112.1162:setOption
-    def setOption (self, ivar, val):
-        
-        h = self.finder
-    
-        if ivar in h.intKeys:
-            if val is not None:
-                var = h.dict.get(ivar)
-                var.set(val)
-                # g.trace('%s = %s' % (ivar,val))
-    
-        elif not g.app.unitTesting:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:AGP.20250415230112.1162:setOption
-    #@+node:AGP.20250415230112.1163:getOption
-    def getOption (self,ivar,verbose=False):
-        
-        h = self.finder
-        
-        var = h.dict.get(ivar)
-        if var:
-            val = var.get()
-            verbose and g.trace('%s = %s' % (ivar,val))
-            return val
-        else:
-            g.trace('bad ivar name: %s' % ivar)
-            return None
-    #@-node:AGP.20250415230112.1163:getOption
-    #@+node:AGP.20250415230112.1164:showFindOptions
-    def showFindOptions (self):
-        
-        '''Show the present find options in the status line.'''
-        
-        frame = self.c.frame ; z = []
-        # Set the scope field.
-        head  = self.getOption('search_headline')
-        body  = self.getOption('search_body')
-        scope = self.getOption('radio-search-scope')
-        d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
-        scope = d.get(scope) or ''
-        head = g.choose(head,'head','')
-        body = g.choose(body,'body','')
-        sep = g.choose(head and body,'+','')
-    
-        frame.clearStatusLine()
-        s = '%s%s%s %s  ' % (head,sep,body,scope)
-        frame.putStatusLine(s,color='blue')
-    
-        # Set the type field.
-        script = self.getOption('script_search')
-        regex  = self.getOption('pattern_match')
-        change = self.getOption('script_change')
-        if script:
-            s1 = '*Script-find'
-            s2 = g.choose(change,'-change*','*')
-            z.append(s1+s2)
-        elif regex: z.append('regex')
-        
-        table = (
-            ('reverse',         'reverse'),
-            ('ignore_case',     'noCase'),
-            ('whole_word',      'word'),
-            ('wrap',            'wrap'),
-            ('mark_changes',    'markChg'),
-            ('mark_finds',      'markFnd'),
-        )
-            
-        for ivar,s in table:
-            val = self.getOption(ivar)
-            if val: z.append(s)
-    
-        frame.putStatusLine(' '.join(z))
-    #@-node:AGP.20250415230112.1164:showFindOptions
-    #@+node:AGP.20250415230112.1165:toggleOption
-    def toggleOption (self, ivar):
-        
-        h = self.finder
-    
-        if ivar in h.intKeys:
-            var = h.dict.get(ivar)
-            val = not var.get()
-            var.set(val)
-            # g.trace('%s = %s' % (ivar,val),var)
-        else:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@-node:AGP.20250415230112.1165:toggleOption
-    #@+node:AGP.20250415230112.1166:setupChangePattern
-    def setupChangePattern (self,pattern):
-        
-        h = self.finder ; t = h.change_ctrl
-        
-        s = g.toUnicode(pattern,g.app.tkEncoding)
-        
-        t.delete('1.0','end')
-        t.insert('1.0',s)
-        
-        h.update_ivars()
-    #@-node:AGP.20250415230112.1166:setupChangePattern
-    #@+node:AGP.20250415230112.1167:setupSearchPattern
-    def setupSearchPattern (self,pattern):
-        
-        h = self.finder ; t = h.find_ctrl
-        
-        s = g.toUnicode(pattern,g.app.tkEncoding)
-        
-        t.delete('1.0','end')
-        t.insert('1.0',s)
-        
-        h.update_ivars()
-    #@-node:AGP.20250415230112.1167:setupSearchPattern
-    #@-node:AGP.20250415230112.1160: Options
-    #@+node:AGP.20250415230112.1168:addChangeStringToLabel
-    def addChangeStringToLabel (self,protect=True):
-        
-        c = self.c ; k = c.k ; h = self.finder ; t = h.change_ctrl
-        
-        c.frame.log.selectTab('Find')
-        c.minibufferWantsFocusNow()
-        
-        s = t.get('1.0','end')
-    
-        while s.endswith('\n') or s.endswith('\r'):
-            s = s[:-1]
-    
-        k.extendLabel(s,select=True,protect=protect)
-    #@-node:AGP.20250415230112.1168:addChangeStringToLabel
-    #@+node:AGP.20250415230112.1169:addFindStringToLabel
-    def addFindStringToLabel (self,protect=True):
-        
-        c = self.c ; k = c.k ; h = self.finder ; t = h.find_ctrl
-        
-        c.frame.log.selectTab('Find')
-        c.minibufferWantsFocusNow()
-    
-        s = t.get('1.0','end')
-        while s.endswith('\n') or s.endswith('\r'):
-            s = s[:-1]
-    
-        k.extendLabel(s,select=True,protect=protect)
-    #@-node:AGP.20250415230112.1169:addFindStringToLabel
-    #@+node:AGP.20250415230112.1170:cloneFindAll
-    def cloneFindAll (self,event):
-    
-        c = self.c ; k = self.k ; tag = 'clone-find-all'
-        state = k.getState(tag)
-    
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w: return
-            self.setupArgs(forward=None,regexp=None,word=None)
-            k.setLabelBlue('Clone Find All: ',protect=True)
-            k.getArg(event,tag,1,self.cloneFindAll)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg,cloneFindAll=True)
-    #@-node:AGP.20250415230112.1170:cloneFindAll
-    #@+node:AGP.20250415230112.1171:findAgain
-    def findAgain (self,event):
-    
-        f = self.finder
-        
-        f.p = self.c.currentPosition()
-        f.v = self.finder.p.v
-    
-        # This handles the reverse option.
-        return f.findAgainCommand()
-    #@-node:AGP.20250415230112.1171:findAgain
-    #@+node:AGP.20250415230112.1172:findAll
-    def findAll (self,event):
-    
-        k = self.k ; state = k.getState('find-all')
-        if state == 0:
-            w = self.editWidget(event) # sets self.w
-            if not w: return
-            self.setupArgs(forward=True,regexp=False,word=True)
-            k.setLabelBlue('Find All: ',protect=True)
-            k.getArg(event,'find-all',1,self.findAll)
-        else:
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg,findAll=True)
-    #@-node:AGP.20250415230112.1172:findAll
-    #@+node:AGP.20250415230112.1173:generalChangeHelper
-    def generalChangeHelper (self,find_pattern,change_pattern):
-        
-        # g.trace(repr(change_pattern))
-        
-        c = self.c
-    
-        self.setupSearchPattern(find_pattern)
-        self.setupChangePattern(change_pattern)
-        c.widgetWantsFocusNow(self.w)
-    
-        self.finder.p = self.c.currentPosition()
-        self.finder.v = self.finder.p.v
-    
-        # This handles the reverse option.
-        self.finder.findNextCommand()
-    #@-node:AGP.20250415230112.1173:generalChangeHelper
-    #@+node:AGP.20250415230112.1174:generalSearchHelper
-    def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
-        
-        c = self.c
-        
-        self.setupSearchPattern(pattern)
-        c.widgetWantsFocusNow(self.w)
-    
-        self.finder.p = self.c.currentPosition()
-        self.finder.v = self.finder.p.v
-    
-        if findAll:
-             self.finder.findAllCommand()
-        elif cloneFindAll:
-             self.finder.cloneFindAllCommand()
-        else:
-            # This handles the reverse option.
-            self.finder.findNextCommand()
-    #@-node:AGP.20250415230112.1174:generalSearchHelper
-    #@+node:AGP.20250415230112.1175:lastStateHelper
-    def lastStateHelper (self):
-        
-        k = self.k
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-    #@-node:AGP.20250415230112.1175:lastStateHelper
-    #@+node:AGP.20250415230112.1176:replaceString
-    def replaceString (self,event):
-    
-        k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
-        pattern_match = self.getOption ('pattern_match')
-        prompt = 'Replace ' + g.choose(pattern_match,'Regex','String')
-        if state == 0:
-            self.setupArgs(forward=None,regexp=None,word=None)
-            prefix = '%s: ' % prompt
-            self.stateZeroHelper(event,tag,prefix,self.replaceString)
-        elif state == 1:
-            self._sString = k.arg
-            self.updateFindList(k.arg)
-            s = '%s: %s With: ' % (prompt,self._sString)
-            k.setLabelBlue(s,protect=True)
-            self.addChangeStringToLabel()
-            k.getArg(event,'replace-string',2,self.replaceString,completion=False,prefix=s)
-        elif state == 2:
-            self.updateChangeList(k.arg)
-            self.lastStateHelper()
-            self.generalChangeHelper(self._sString,k.arg)
-    #@-node:AGP.20250415230112.1176:replaceString
-    #@+node:AGP.20250415230112.1177:reSearchBackward/Forward
-    def reSearchBackward (self,event):
-    
-        k = self.k ; tag = 're-search-backward' ; state = k.getState(tag)
-        
-        if state == 0:
-            self.setupArgs(forward=False,regexp=True,word=None)
-            self.stateZeroHelper(
-                event,tag,'Regexp Search Backward:',self.reSearchBackward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
-            # Switch to the replace command.
-            k.setState('replace-string',1,self.replaceString)
-            self.replaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    
-    def reSearchForward (self,event):
-    
-        k = self.k ; tag = 're-search-forward' ; state = k.getState(tag)
-        if state == 0:
-            self.setupArgs(forward=True,regexp=True,word=None)
-            self.stateZeroHelper(
-                event,tag,'Regexp Search:',self.reSearchForward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
-            # Switch to the replace command.
-            k.setState('replace-string',1,self.replaceString)
-            self.replaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    #@-node:AGP.20250415230112.1177:reSearchBackward/Forward
-    #@+node:AGP.20250415230112.1178:seachForward/Backward
-    def searchBackward (self,event):
-    
-        k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
-    
-        if state == 0:
-            self.setupArgs(forward=False,regexp=False,word=False)
-            self.stateZeroHelper(
-                event,tag,'Search Backward: ',self.searchBackward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
-            # Switch to the replace command.
-            k.setState('replace-string',1,self.replaceString)
-            self.replaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    
-    def searchForward (self,event):
-    
-        k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
-    
-        if state == 0:
-            self.setupArgs(forward=True,regexp=False,word=False)
-            self.stateZeroHelper(
-                event,tag,'Search: ',self.searchForward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
-            # Switch to the replace command.
-            k.setState('replace-string',1,self.replaceString)
-            self.replaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    #@-node:AGP.20250415230112.1178:seachForward/Backward
-    #@+node:AGP.20250415230112.1179:searchWithPresentOptions
-    def searchWithPresentOptions (self,event):
-    
-        k = self.k ; tag = 'search-with-present-options'
-        state = k.getState(tag)
-    
-        if state == 0:
-            self.setupArgs(forward=None,regexp=None,word=None)
-            self.stateZeroHelper(
-                event,tag,'Search: ',self.searchWithPresentOptions,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
-            # Switch to the replace command.
-            k.setState('replace-string',1,self.replaceString)
-            self.replaceString(event=None)
-        else:
-            self.updateFindList(k.arg)
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            self.generalSearchHelper(k.arg)
-    #@-node:AGP.20250415230112.1179:searchWithPresentOptions
-    #@+node:AGP.20250415230112.1180:setupArgs
-    def setupArgs (self,forward=False,regexp=False,word=False):
-        
-        h = self.finder ; k = self.k
-        
-        if forward is None:
-            reverse = None
-        else:
-            reverse = not forward
-    
-        for ivar,val,in (
-            ('reverse', reverse),
-            ('pattern_match',regexp),
-            ('whole_word',word),
-        ):
-            if val is not None:
-                self.setOption(ivar,val)
-                
-        h.p = p = self.c.currentPosition()
-        h.v = p.v
-        h.update_ivars()
-        self.showFindOptions()
-    #@-node:AGP.20250415230112.1180:setupArgs
-    #@+node:AGP.20250415230112.1181:stateZeroHelper
-    def stateZeroHelper (self,event,tag,prefix,handler,escapes=[]):
-    
-        k = self.k
-        self.w = self.editWidget(event)
-        if not self.w: return
-    
-        k.setLabelBlue(prefix,protect=True)
-        self.addFindStringToLabel(protect=False)
-        
-        # g.trace(escapes,g.callers())
-        k.getArgEscapes = escapes
-        k.getArgEscape = None # k.getArg may set this.
-        k.getArg(event,tag,1,handler, # enter state 1
-            tabList=self.findTextList,completion=True,prefix=prefix)
-    #@-node:AGP.20250415230112.1181:stateZeroHelper
-    #@+node:AGP.20250415230112.1182:updateChange/FindList
-    def updateChangeList (self,s):
-    
-        if s not in self.changeTextList:
-            self.changeTextList.append(s)
-            
-    def updateFindList (self,s):
-    
-        if s not in self.findTextList:
-            self.findTextList.append(s)
-    #@-node:AGP.20250415230112.1182:updateChange/FindList
-    #@+node:AGP.20250415230112.1183:wordSearchBackward/Forward
-    def wordSearchBackward (self,event):
-    
-        k = self.k ; tag = 'word-search-backward' ; state = k.getState(tag)
-    
-        if state == 0:
-            self.setupArgs(forward=False,regexp=False,word=True)
-            self.stateZeroHelper(event,tag,'Word Search Backward: ',self.wordSearchBackward)
-        else:
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    
-    def wordSearchForward (self,event):
-    
-        k = self.k ; tag = 'word-search-forward' ; state = k.getState(tag)
-        
-        if state == 0:
-            self.setupArgs(forward=True,regexp=False,word=True)
-            self.stateZeroHelper(event,tag,'Word Search: ',self.wordSearchForward)
-        else:
-            self.lastStateHelper()
-            self.generalSearchHelper(k.arg)
-    #@-node:AGP.20250415230112.1183:wordSearchBackward/Forward
-    #@-others
-#@-node:AGP.20250415230112.1158:class minibufferFind( (the findHandler)
-#@+node:AGP.20250415230112.1184:class searchCommandsClass
-class searchCommandsClass (baseEditCommandsClass):
-    
-    '''Implements many kinds of searches.'''
-
-    #@    @+others
-    #@+node:AGP.20250415230112.1185: ctor (searchCommandsClass)
-    def __init__ (self,c):
-        
-        # g.trace('searchCommandsClass')
-    
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-        
-        self.finder = None
-        
-        #self.findTabHandler = None
-        #self.minibufferFindHandler = None
-        
-        try:
-            self.w = c.frame.body.bodyCtrl
-        except AttributeError:
-            self.w = None
-            
-        # For isearch commands.
-        #self.ifinder = leoFind.leoFind(c,title='ifinder')
-        #self.isearch_v = None # vnode of last isearch.
-        #self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
-        
-        self.ignoreCase = None
-        self.forward = None
-        self.regexp = None
-    #@-node:AGP.20250415230112.1185: ctor (searchCommandsClass)
-    #@+node:AGP.20250415230112.1186:init()
-    def init (self):    #agp
-        
-        #if self.finder == None:
-            #self.finder = g.app.gui.frame.searchbox#SearchBox(self.c)
-        
-        
-        
-        pass
-    #@nonl
-    #@-node:AGP.20250415230112.1186:init()
-    #@+node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
-    def getPublicCommands (self):
-        
-        return {
-            'clone-find-all':                       self.findTabCloneFindAll,#agp
-            'find-all':                    self.findTabFindAll,#agp
-            
-            # Thin wrappers on Find tab
-            'find-next':                    self.findTabFindNext,
-            'find-prev':                    self.findTabFindPrev,
-            'change-all':                   self.findTabChangeAll,
-            'find-tab-change-then-find':            self.findTabChangeThenFind,
-                        
-            #'hide-find-tab':                        self.hideFindTab,
-                
-            #'isearch-forward':                      self.isearchForward,
-            #'isearch-backward':                     self.isearchBackward,
-            #'isearch-forward-regexp':               self.isearchForwardRegexp,
-            #'isearch-backward-regexp':              self.isearchBackwardRegexp,
-            #'isearch-with-present-options':         self.isearchWithPresentOptions,
-                        
-            'open-find-tab':                        self.openFindTab,
-        
-            #'replace-string':                       self.replaceString,
-                        
-            #'re-search-forward':                    self.reSearchForward,
-            #'re-search-backward':                   self.reSearchBackward,
-    
-            #'search-again':                         self.findAgain,
-            # Uses existing search pattern.
-            
-            'search-forward':                       self.searchForward,
-            'search-backward':                      self.searchBackward,
-            'search-with-present-options':          self.searchWithPresentOptions,
-            # Prompts for search pattern.
-    
-            'set-find-everywhere':                  self.setFindScopeEveryWhere,
-            'set-find-node-only':                   self.setFindScopeNodeOnly,
-            'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
-            
-            'show-find-options':                    self.showFindOptions,
-    
-            'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
-            'toggle-find-in-body-option':           self.toggleSearchBodyOption,
-            'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
-            'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
-            'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
-            'toggle-find-regex-option':             self.toggleRegexOption,
-            'toggle-find-reverse-option':           self.toggleReverseOption,
-            'toggle-find-word-option':              self.toggleWholeWordOption,
-            'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
-            
-            'word-search-forward':                  self.wordSearchForward,
-            'word-search-backward':                 self.wordSearchBackward,
-        }
-    #@-node:AGP.20250415230112.1187:getPublicCommands (searchCommandsClass)
-    #@+node:AGP.20250415230112.1188:Top-level methods
-    #@+node:AGP.20250415230112.1189:Find Tab commands
-    # Just open the Find tab if it has never been opened.
-    # For minibuffer commands, it would be good to force the Find tab to be visible.
-    # However, this leads to unfortunate confusion when executed from a shortcut.
-    
-    def openFindTab(self,arg):
-        self.finder.SetFocus()
-    
-    def findTabFindNext(self,event=None): #agp
-        self.finder.findNextCommand()
-    
-    def findTabFindPrev(self,event=None): #agp
-        self.finder.findPrevCommand()
-    
-    def findTabFindAll(self,event=None):
-        '''Execute the 'Find All' command with the settings shown in the Find tab.'''
-        self.finder.findAllCommand()
-        
-    def findTabCloneFindAll (self,event=None):
-        '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
-        self.finder.CloneFindAllCommand()
-        
-    
-    def findTabChange(self,event=None):
-        '''Execute the 'Change' command with the settings shown in the Find tab.'''
-        self.finder.changeCommand()
-        
-    def findTabChangeAll(self,event=None):
-        '''Execute the 'Change All' command with the settings shown in the Find tab.'''
-        self.finder.changeAllCommand()
-        
-    
-    def findTabChangeThenFind(self,event=None):
-        '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
-        self.finder.changeThenFindCommand()
-            
-    #@-node:AGP.20250415230112.1189:Find Tab commands
-    #@+node:AGP.20250415230112.1190:getHandler
-    def getHandler(self,show=False):
-        
-        '''Return the minibuffer handler, creating it if necessary.'''
-        
-        c = self.c
-        
-        self.openFindTab(show=show)
-            # sets self.findTabHandler,
-            # but *not* minibufferFindHandler.
-        
-        if not self.minibufferFindHandler:
-            self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
-    
-        return self.minibufferFindHandler
-    #@-node:AGP.20250415230112.1190:getHandler
-    #@+node:AGP.20250415230112.1191:Find options wrappers
-    def setFindScopeEveryWhere (self, event):
-        '''Set the 'Entire Outline' radio button in the Find tab.'''
-        return self.setFindScope('entire-outline')
-    
-    def setFindScopeNodeOnly  (self, event):
-        '''Set the 'Node Only' radio button in the Find tab.'''
-        return self.setFindScope('node-only')
-    
-    def setFindScopeSuboutlineOnly (self, event):
-        '''Set the 'Suboutline Only' radio button in the Find tab.'''
-        return self.setFindScope('suboutline-only')
-        
-    def showFindOptions (self,event):
-        '''Show all Find options in the minibuffer label area.'''
-        self.getHandler().showFindOptions()
-    
-    def toggleIgnoreCaseOption     (self, event):
-        '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
-        return self.toggleOption('ignore_case')
-    
-    def toggleMarkChangesOption (self, event):
-        '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
-        return self.toggleOption('mark_changes')
-    def toggleMarkFindsOption (self, event):
-        '''Toggle the 'Mark Finds' checkbox in the Find tab.'''
-        return self.toggleOption('mark_finds')
-    def toggleRegexOption (self, event):
-        '''Toggle the 'Regexp' checkbox in the Find tab.'''
-        return self.toggleOption('pattern_match')
-    def toggleReverseOption        (self, event):
-        '''Toggle the 'Reverse' checkbox in the Find tab.'''
-        return self.toggleOption('reverse')
-    
-    def toggleSearchBodyOption (self, event):
-        '''Set the 'Search Body' checkbox in the Find tab.'''
-        return self.toggleOption('search_body')
-    
-    def toggleSearchHeadlineOption (self, event):
-        '''Toggle the 'Search Headline' checkbox in the Find tab.'''
-        return self.toggleOption('search_headline')
-    
-    def toggleWholeWordOption (self, event):
-        '''Toggle the 'Whole Word' checkbox in the Find tab.'''
-        return self.toggleOption('whole_word')
-    
-    def toggleWrapSearchOption (self, event):
-        '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
-        return self.toggleOption('wrap')
-        
-    def setFindScope (self, where):  self.getHandler().setFindScope(where)
-    def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
-    #@-node:AGP.20250415230112.1191:Find options wrappers
-    #@+node:AGP.20250415230112.1192:Find wrappers
-    def cloneFindAll (self,event):
-        '''Do search-with-present-options and print all matches in the log pane. It
-        also creates a node at the beginning of the outline containing clones of all
-        nodes containing the 'find' string. Only one clone is made of each node,
-        regardless of how many clones the node has, or of how many matches are found
-        in each node.'''
-        self.getHandler().cloneFindAll(event)
-    
-    def findAll            (self,event):
-        '''Do search-with-present-options and print all matches in the log pane.'''
-        self.getHandler().findAll(event)
-    
-    def replaceString      (self,event):
-        '''Prompts for a search string. Type <Return> to end the search string. The
-        command will then prompt for the replacement string. Typing a second
-        <Return> key will place both strings in the Find tab and executes a **find**
-        command, that is, the search-with-present-options command.'''
-        self.getHandler().replaceString(event)
-    
-    def reSearchBackward   (self,event):
-        '''Set the 'Regexp' checkbox to True and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
-        self.getHandler().reSearchBackward(event)
-    
-    def reSearchForward    (self,event):
-        '''Set the 'Regexp' checkbox to True, then do search-with-present-options.'''
-        self.getHandler().reSearchForward(event)
-    
-    def searchBackward     (self,event):
-        '''Set the 'Word Search' checkbox to False and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
-        self.getHandler().searchBackward(event)
-    
-    def searchForward      (self,event):
-        '''Set the 'Word Search' checkbox to False, then do search-with-present-options.'''
-        self.getHandler().searchForward(event)
-    
-    def wordSearchBackward (self,event):
-        '''Set the 'Word Search' checkbox to True, then do search-with-present-options.'''
-        self.getHandler().wordSearchBackward(event)
-    
-    def wordSearchForward  (self,event):
-        '''Set the Word Search' checkbox to True and the 'Reverse' checkbox to True,
-        then do search-with-present-options.'''
-        self.getHandler().wordSearchForward(event)
-    
-    def searchWithPresentOptions (self,event):
-        '''Prompts for a search string. Typing the <Return> key puts the search
-        string in the Find tab and executes a search based on all the settings in
-        the Find tab. Recommended as the default search command.'''
-        self.getHandler().searchWithPresentOptions(event)
-    #@-node:AGP.20250415230112.1192:Find wrappers
-    #@+node:AGP.20250415230112.1193:findAgain
-    def findAgain (self,event):
-    
-        '''The find-again command is the same as the find-tab-find-next command
-        if the search pattern in the Find tab is not '<find pattern here>'
-        Otherwise, the find-again is the same as the search-with-present-options command.'''
-        
-        h = self.getHandler()
-        
-        # h.findAgain returns False if there is no search pattern.
-        # In that case, we revert to search-with-present-options.
-        if not h.findAgain(event):
-            h.searchWithPresentOptions(event)
-    #@-node:AGP.20250415230112.1193:findAgain
-    #@-node:AGP.20250415230112.1188:Top-level methods
-    #@-others
-#@-node:AGP.20250415230112.1184:class searchCommandsClass
-#@-node:AGP.20250415230112.1157:Search classes
 #@+node:AGP.20250415230112.1194:Spell classes
 #@+others
 #@+node:AGP.20250415230112.1195:class spellCommandsClass
@@ -7528,7 +6747,6 @@ class spellCommandsClass (baseEditCommandsClass):
     #@-node:AGP.20250415230112.1198:openSpellTab
     #@+node:AGP.20250415230112.1199:commands...
     # Just open the Spell tab if it has never been opened.
-    # For minibuffer commands, we must also force the Spell tab to be visible.
     
     def find (self,event=None):
         '''Simulate pressing the 'Find' button in the Spell tab.'''
@@ -7780,22 +6998,22 @@ class AspellClass:
 #@<< define classesList >>
 #@+node:AGP.20250415230112.1209:<< define classesList >>
 classesList = [
-    ('abbrevCommands',      abbrevCommandsClass),
-    ('bufferCommands',      bufferCommandsClass),
+    #('abbrevCommands',      abbrevCommandsClass),
+    #('bufferCommands',      bufferCommandsClass),
     ('editCommands',        editCommandsClass),
-    ('controlCommands',     controlCommandsClass),
-    ('debugCommands',       debugCommandsClass),
-    ('editFileCommands',    editFileCommandsClass),
-    ('helpCommands',        helpCommandsClass),
-    ('keyHandlerCommands',  keyHandlerCommandsClass),
-    ('killBufferCommands',  killBufferCommandsClass),
+    #('controlCommands',     controlCommandsClass),
+    #('debugCommands',       debugCommandsClass),
+    #('editFileCommands',    editFileCommandsClass),
+    #('helpCommands',        helpCommandsClass),
+    #('keyHandlerCommands',  keyHandlerCommandsClass),
+    #('killBufferCommands',  killBufferCommandsClass),
     ('leoCommands',         leoCommandsClass),
-    ('macroCommands',       macroCommandsClass),
-    ('queryReplaceCommands',queryReplaceCommandsClass),
-    ('rectangleCommands',   rectangleCommandsClass),
-    ('registerCommands',    registerCommandsClass),
+    #('macroCommands',       macroCommandsClass),
+    #('queryReplaceCommands',queryReplaceCommandsClass),
+    #('rectangleCommands',   rectangleCommandsClass),
+    #('registerCommands',    registerCommandsClass),
     ('searchCommands',      searchCommandsClass),
-    ('spellCommands',       spellCommandsClass),
+    #('spellCommands',       spellCommandsClass),
 ]
 #@-node:AGP.20250415230112.1209:<< define classesList >>
 #@nl

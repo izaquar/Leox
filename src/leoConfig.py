@@ -4,47 +4,48 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-#@<< imports >>
-#@+node:AGP.20250415230112.719:<< imports >>
 import leoGlobals as g
 import leoGui
 
 import sys
-#@-node:AGP.20250415230112.719:<< imports >>
-#@nl
+import leo
+import leoNodes
 
-#@<< class parserBaseClass >>
-#@+node:AGP.20250415230112.720:<< class parserBaseClass >>
-class parserBaseClass:
+
+#@+others
+#@+node:AGP.20250415230112.720:class settingsTreeParser
+class settingsTreeParser:
     
-    """The base class for settings parsers."""
+    '''A class that inits settings found in an @settings tree. Used by read settings logic.'''
+
     
-    #@    << parserBaseClass data >>
-    #@+node:AGP.20250415230112.721:<< parserBaseClass data >>
     # These are the canonicalized names.  Case is ignored, as are '_' and '-' characters.
-    
+
     basic_types = [
         # Headlines have the form @kind name = var
         'bool','color','directory','int','ints',
         'float','path','ratio','shortcut','string','strings']
-    
+
     control_types = [
         'abbrev','font','if','ifgui','ifplatform','ignore','mode','page',
         'settings','shortcuts','config']
+
     
-    # Keys are settings names, values are (type,value) tuples.
-    settingsDict = {}
-    #@-node:AGP.20250415230112.721:<< parserBaseClass data >>
-    #@nl
     
     #@    @+others
-    #@+node:AGP.20250415230112.722: ctor (parserBaseClass)
-    def __init__ (self,c):
+    #@+node:AGP.20250415230112.722:__init__()
+    def __init__(self,vroot):
         
-        self.c = c
+        self.vroot = vroot
         self.recentFiles = [] # List of recent files.
-        self.shortcutsDict = {}
+        #self.shortcutsDict = {}
                 # Keys are cononicalized shortcut names, values are bunches.
+        
+        #self.shortcuts = {}
+        #self.settings = {}
+        
+        # Keys are settings names, values are (type,value) tuples.
+        self.settingsDict = {}
         
         # Keys are canonicalized names.
         self.dispatchDict = {
@@ -61,7 +62,7 @@ class parserBaseClass:
             'int':          self.doInt,
             'ints':         self.doInts,
             'float':        self.doFloat,
-            'mode':         self.doMode, # New in 4.4b1.
+            #'mode':         self.doMode, # New in 4.4b1.
             'path':         self.doPath,
             'page':         self.doPage,
             'ratio':        self.doRatio,
@@ -70,21 +71,7 @@ class parserBaseClass:
             'string':       self.doString,
             'strings':      self.doStrings,
         }
-    #@-node:AGP.20250415230112.722: ctor (parserBaseClass)
-    #@+node:AGP.20250415230112.723:createModeCommand
-    def createModeCommand (self,name,modeDict):
-    
-        commandName = 'enter-' + name
-        commandName = commandName.replace(' ','-')
-        
-        # g.trace(name,len(modeDict.keys()))
-            
-        # Save the info for k.finishCreate and k.makeAllBindings.
-        d = g.app.config.modeCommandsDict
-        
-        # New in 4.4.1 b2: silently allow redefinitions of modes.
-        d [commandName] = modeDict
-    #@-node:AGP.20250415230112.723:createModeCommand
+    #@-node:AGP.20250415230112.722:__init__()
     #@+node:AGP.20250415230112.724:error
     def error (self,s):
     
@@ -93,7 +80,7 @@ class parserBaseClass:
         # Does not work at present because we are using a null Gui.
         g.es(s,color="blue")
     #@-node:AGP.20250415230112.724:error
-    #@+node:AGP.20250415230112.725:kind handlers (parserBaseClass)
+    #@+node:AGP.20250415230112.725:kind handlers
     #@+node:AGP.20250415230112.726:doConfig
     def doConfig(self,p,kind,name,val):
         
@@ -144,7 +131,7 @@ class parserBaseClass:
         
         #print "Config",name,d
         
-        self.set(p,'config',name,d)
+        self.set('config',name,d)
     #@-node:AGP.20250415230112.726:doConfig
     #@+node:AGP.20250415230112.727:doAbbrev
     def doAbbrev (self,p,kind,name,val):
@@ -164,9 +151,9 @@ class parserBaseClass:
     def doBool (self,p,kind,name,val):
     
         if val in ('True','true','1'):
-            self.set(p,kind,name,True)
+            self.set(kind,name,True)
         elif val in ('False','false','0'):
-            self.set(p,kind,name,False)
+            self.set(kind,name,False)
         else:
             self.valueError(p,kind,name,val)
     #@-node:AGP.20250415230112.728:doBool
@@ -177,13 +164,13 @@ class parserBaseClass:
         val = val.lstrip('"').rstrip('"')
         val = val.lstrip("'").rstrip("'")
     
-        self.set(p,kind,name,val)
+        self.set(kind,name,val)
     #@-node:AGP.20250415230112.729:doColor
     #@+node:AGP.20250415230112.730:doDirectory & doPath
     def doDirectory (self,p,kind,name,val):
         
         # At present no checking is done.
-        self.set(p,kind,name,val)
+        self.set(kind,name,val)
     
     doPath = doDirectory
     #@-node:AGP.20250415230112.730:doDirectory & doPath
@@ -192,9 +179,9 @@ class parserBaseClass:
         
         try:
             val = float(val)
-            self.set(p,kind,name,val)
+            self.set(kind,name,val)
         except ValueError:
-            self.valueError(p,kind,name,val)
+            self.valueError(kind,name,val)
     #@-node:AGP.20250415230112.731:doFloat
     #@+node:AGP.20250415230112.732:doFont
     def doFont (self,p,kind,name,val):
@@ -207,7 +194,7 @@ class parserBaseClass:
             if data is not None:
                 name,val = data
                 setKind = key
-                self.set(p,setKind,name,val)
+                self.set(setKind,name,val)
     #@-node:AGP.20250415230112.732:doFont
     #@+node:AGP.20250415230112.733:doIf
     def doIf(self,p,kind,name,val):
@@ -260,7 +247,7 @@ class parserBaseClass:
         
         try:
             val = int(val)
-            self.set(p,kind,name,val)
+            self.set(kind,name,val)
         except ValueError:
             self.valueError(p,kind,name,val)
     #@-node:AGP.20250415230112.737:doInt
@@ -301,66 +288,8 @@ class parserBaseClass:
             # g.trace(repr(kind),repr(name),val)
     
             # At present no checking is done.
-            self.set(p,kind,name,val)
+            self.set(kind,name,val)
     #@-node:AGP.20250415230112.738:doInts
-    #@+node:AGP.20250415230112.739:doMode (ParserBaseClass)
-    def doMode(self,p,kind,name,val):
-        
-        '''Parse an @mode node and create the enter-<name>-mode command.'''
-        
-        c = self.c ; k = c.k
-        
-        # g.trace('%20s' % (name),c.fileName())
-        #@    << Compute modeName >>
-        #@+node:AGP.20250415230112.740:<< Compute modeName >>
-        name = name.strip().lower()
-        j = name.find(' ')
-        if j > -1: name = name[:j]
-        if name.endswith('mode'):
-            name = name[:-4].strip()
-        if name.endswith('-'):
-            name = name[:-1]
-        modeName = name + '-mode'
-        #@-node:AGP.20250415230112.740:<< Compute modeName >>
-        #@nl
-        
-        # Create a local shortcutsDict.
-        old_d = self.shortcutsDict
-        d = self.shortcutsDict = {}
-        
-        s = p.bodyString()
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine(line)
-                if not name:
-                    # An entry command: put it in the special *entry-commands* key.
-                    aList = d.get('*entry-commands*',[])
-                    aList.append(bunch.entryCommandName)
-                    d ['*entry-commands*'] = aList
-                elif bunch is not None:
-                    # A regular shortcut.
-                    bunch.val = k.strokeFromSetting(bunch.val)
-                    bunch.pane = modeName
-                    bunchList = d.get(name,[])
-                    # Important: use previous bindings if possible.
-                    key2,bunchList2 = c.config.getShortcut(name)
-                    bunchList3 = [b for b in bunchList2 if b.pane != modeName]
-                    if bunchList3:
-                        # g.trace('inheriting',[b.val for b in bunchList3])
-                        bunchList.extend(bunchList3)
-                    bunchList.append(bunch)
-                    d [name] = bunchList
-                    self.set(p,"shortcut",name,bunchList)
-                    self.setShortcut(name,bunchList)
-            
-        # Restore the global shortcutsDict.
-        self.shortcutsDict = old_d
-    
-        # Create the command, but not any bindings to it.
-        self.createModeCommand(modeName,d)
-    #@-node:AGP.20250415230112.739:doMode (ParserBaseClass)
     #@+node:AGP.20250415230112.741:doPage
     def doPage(self,p,kind,name,val):
     
@@ -372,37 +301,37 @@ class parserBaseClass:
         try:
             val = float(val)
             if 0.0 <= val <= 1.0:
-                self.set(p,kind,name,val)
+                self.set(kind,name,val)
             else:
                 self.valueError(p,kind,name,val)
         except ValueError:
             self.valueError(p,kind,name,val)
     #@-node:AGP.20250415230112.742:doRatio
-    #@+node:AGP.20250415230112.743:doShortcuts (ParserBaseClass)
+    #@+node:AGP.20250415230112.743:doShortcuts()
     def doShortcuts(self,p,kind,name,val,s=None):
         
         # g.trace(self.c.fileName(),name)
     
-        c = self.c ; d = self.shortcutsDict
+        #c = self.c
+        d = self.shortcutsDict
         if s is None: s = p.bodyString()
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
             if line and not g.match(line,0,'#'):
-                name,bunch = self.parseShortcutLine(line)
-                if bunch is not None:
-                    # A regular shortcut.
-                    bunchList = d.get(name,[])
-                    bunchList.append(bunch)
-                    d [name] = bunchList
-                    self.set(p,"shortcut",name,bunchList)
-                    self.setShortcut(name,bunchList)
-    #@-node:AGP.20250415230112.743:doShortcuts (ParserBaseClass)
+                #print "doshorcut",name,val,
+                name,val = self.parseShortcutLine(line)
+                #print name,val
+                if val is not None:
+                    d [name] = val
+                    self.set("shortcut",name,val)
+                    self.setShortcut(name,val)
+    #@-node:AGP.20250415230112.743:doShortcuts()
     #@+node:AGP.20250415230112.744:doString
     def doString (self,p,kind,name,val):
         
         # At present no checking is done.
-        self.set(p,kind,name,val)
+        self.set(kind,name,val)
     #@-node:AGP.20250415230112.744:doString
     #@+node:AGP.20250415230112.745:doStrings
     def doStrings (self,p,kind,name,val):
@@ -424,9 +353,9 @@ class parserBaseClass:
             # g.trace(repr(kind),repr(name),val)
     
             # At present no checking is done.
-            self.set(p,kind,name,val)
+            self.set(kind,name,val)
     #@-node:AGP.20250415230112.745:doStrings
-    #@-node:AGP.20250415230112.725:kind handlers (parserBaseClass)
+    #@-node:AGP.20250415230112.725:kind handlers
     #@+node:AGP.20250415230112.746:munge
     def munge(self,s):
     
@@ -583,7 +512,7 @@ class parserBaseClass:
                 val = val[:i].strip()
     
         # g.trace(pane,name,val,s)
-        return name,g.bunch(nextMode=nextMode,pane=pane,val=val)
+        return name,val
     #@-node:AGP.20250415230112.753:parseShortcutLine (g.app.config)
     #@+node:AGP.20250415230112.754:parseAbbrevLine (g.app.config)
     def parseAbbrevLine (self,s):
@@ -611,42 +540,34 @@ class parserBaseClass:
         else:   return None,None
     #@-node:AGP.20250415230112.754:parseAbbrevLine (g.app.config)
     #@-node:AGP.20250415230112.748:parsers
-    #@+node:AGP.20250415230112.755:set (parseBaseClass)
-    def set (self,p,kind,name,val):
+    #@+node:AGP.20250415230112.755:set()
+    def set(self,kind,name,val):
         
         """Init the setting for name to val."""
         
-        c = self.c ; key = self.munge(name)
-        # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
-        d = self.settingsDict
-        bunch = d.get(key)
-        if bunch:
-            # g.trace(key,bunch.val,bunch.path)
-            path = bunch.path
-            if g.os_path_abspath(c.mFileName) != g.os_path_abspath(path):
-                g.es("over-riding setting: %s from %s" % (name,path))
-    
-        # N.B.  We can't use c here: it may be destroyed!
-        d [key] = g.Bunch(path=c.mFileName,kind=kind,val=val,tag='setting')
-    #@-node:AGP.20250415230112.755:set (parseBaseClass)
-    #@+node:AGP.20250415230112.756:setShortcut (ParserBaseClass)
-    def setShortcut (self,name,bunch):
+        #print "parser set",kind,name,val
+        #print "set()",name,val
+        self.settingsDict[name] = val
+    #@-node:AGP.20250415230112.755:set()
+    #@+node:AGP.20250415230112.756:setShortcut()
+    def setShortcut (self,name,val):
         
-        c = self.c
+        #c = self.c
         
         # None is a valid value for val.
-        key = c.frame.menu.canonicalizeMenuName(name)
+        key = name.lower()
         rawKey = key.replace('&','')
-        self.set(c,rawKey,"shortcut",bunch)
-        
+        self.set(rawKey,"shortcut",val)
+        #print "setShortcut",rawKey,val
         # g.trace(bunch.pane,rawKey,bunch.val)
-    #@-node:AGP.20250415230112.756:setShortcut (ParserBaseClass)
-    #@+node:AGP.20250415230112.757:traverse (parserBaseClass)
-    def traverse (self):
+    #@-node:AGP.20250415230112.756:setShortcut()
+    #@+node:AGP.20250415230112.757:traverse()
+    def traverse(self):
         
-        c = self.c
+        #c = self.c
         
-        p = g.app.config.settingsRoot(c)
+        p = g.app.config.settingsRoot(self.vroot)
+        
         if not p:
             # g.trace('no settings tree for %s' % c)
             return None
@@ -654,6 +575,7 @@ class parserBaseClass:
         self.settingsDict = {}
         self.shortcutsDict = {}
         after = p.nodeAfterTree()
+        
         while p and p != after:
             result = self.visitNode(p)
             # g.trace(result,p.headString())
@@ -666,7 +588,7 @@ class parserBaseClass:
                 p.moveToThreadNext()
                 
         return self.settingsDict
-    #@-node:AGP.20250415230112.757:traverse (parserBaseClass)
+    #@-node:AGP.20250415230112.757:traverse()
     #@+node:AGP.20250415230112.758:valueError
     def valueError (self,p,kind,name,val):
         
@@ -674,16 +596,43 @@ class parserBaseClass:
         
         self.error("%s is not a valid %s for %s" % (val,kind,name))
     #@-node:AGP.20250415230112.758:valueError
-    #@+node:AGP.20250415230112.759:visitNode (must be overwritten in subclasses)
+    #@+node:AGP.20250415230112.812:visitNode()
     def visitNode (self,p):
         
-        self.oops()
-    #@-node:AGP.20250415230112.759:visitNode (must be overwritten in subclasses)
+        """Init any settings found in node p."""
+        
+        # g.trace(p.headString())
+        
+        munge = g.app.config.munge
+    
+        kind,name,val = self.parseHeadline(p.headString())
+        kind = munge(kind)
+        
+        if kind == "settings":
+            pass
+        elif kind not in self.control_types and val in (u'None',u'none','None','none','',None):
+            # None is valid for all data types.
+            #print "visit1",p,kind,name,val
+            self.set(kind,name,None)
+            
+        elif kind in self.control_types or kind in self.basic_types:
+            f = self.dispatchDict.get(kind)
+            try:
+                #print "visit2",p,kind,name,val
+                return f(p,kind,name,val)
+            except TypeError:
+                g.es_exception()
+                print "*** no handler",kind
+        elif name:
+            # self.error("unknown type %s for setting %s" % (kind,name))
+            # Just assume the type is a string.
+            #print "visit3",p,kind,name,val
+            self.set(kind,name,val)
+        
+        return None
+    #@-node:AGP.20250415230112.812:visitNode()
     #@-others
-#@-node:AGP.20250415230112.720:<< class parserBaseClass >>
-#@nl
-
-#@+others
+#@-node:AGP.20250415230112.720:class settingsTreeParser
 #@+node:AGP.20250415230112.760:class configClass
 class configClass:
     """A class to manage configuration settings."""
@@ -813,9 +762,8 @@ class configClass:
     #@-node:AGP.20250415230112.761:<<  class data >>
     #@nl
     #@    @+others
-    #@+node:AGP.20250415230112.765:Birth... (g.app.config)
-    #@+node:AGP.20250415230112.766:ctor (configClass)
-    def __init__ (self):
+    #@+node:AGP.20250415230112.766:__init__()
+    def __init__(self):
         
         self.configsExist = False # True when we successfully open a setting file.
         self.defaultFont = None # Set in gui.getDefaultConfigFont.
@@ -838,7 +786,9 @@ class configClass:
         self.initIvarsFromSettings()
         self.initSettingsFiles()
         self.initRecentFiles()
-    #@-node:AGP.20250415230112.766:ctor (configClass)
+        
+        self.settings = {}
+    #@-node:AGP.20250415230112.766:__init__()
     #@+node:AGP.20250415230112.767:initDicts
     def initDicts (self):
         
@@ -846,60 +796,25 @@ class configClass:
         self.dictList = [self.defaultsDict]
     
         for key,kind,val in self.defaultsData:
-            self.defaultsDict[self.munge(key)] = g.Bunch(
-                setting=key,kind=kind,val=val,tag='defaults')
+            self.defaultsDict[key] = val
             
         for key,kind,val in self.ivarsData:
-            self.ivarsDict[self.munge(key)] = g.Bunch(
-                ivar=key,kind=kind,val=val,tag='ivars')
+            self.ivarsDict[key] = val
     
         for key,kind,val in self.encodingIvarsData:
-            self.encodingIvarsDict[self.munge(key)] = g.Bunch(
-                ivar=key,kind=kind,encoding=val,tag='encodings')
+            self.encodingIvarsDict[key] = val
     #@-node:AGP.20250415230112.767:initDicts
-    #@+node:AGP.20250415230112.768:initIvarsFromSettings & helpers
+    #@+node:AGP.20250415230112.768:initIvarsFromSettings()
     def initIvarsFromSettings (self):
         
         for ivar in self.encodingIvarsDict.keys():
             if ivar != '_hash':
-                self.initEncoding(ivar)
+                setattr(self,ivar,self.encodingIvarsDict.get(ivar))
             
         for ivar in self.ivarsDict.keys():
             if ivar != '_hash':
-                self.initIvar(ivar)
-    #@+node:AGP.20250415230112.769:initEncoding
-    def initEncoding (self,key):
-        
-        '''Init g.app.config encoding ivars during initialization.'''
-        
-        # N.B. The key is munged.
-        bunch = self.encodingIvarsDict.get(key)
-        encoding = bunch.encoding
-        ivar = bunch.ivar
-        # g.trace('g.app.config',ivar,encoding)
-        setattr(self,ivar,encoding)
-     
-        if encoding and not g.isValidEncoding(encoding):
-            g.es("g.app.config: bad encoding: %s: %s" % (ivar,encoding))
-    #@-node:AGP.20250415230112.769:initEncoding
-    #@+node:AGP.20250415230112.770:initIvar
-    def initIvar(self,key):
-        
-        '''Init g.app.config ivars during initialization.
-        
-        This does NOT init the corresponding commander ivars.
-        
-        Such initing must be done in setIvarsFromSettings.'''
-        
-        # N.B. The key is munged.
-        bunch = self.ivarsDict.get(key)
-        ivar = bunch.ivar # The actual name of the ivar.
-        val = bunch.val
-    
-        # g.trace('g.app.config',ivar,key,val)
-        setattr(self,ivar,val)
-    #@-node:AGP.20250415230112.770:initIvar
-    #@-node:AGP.20250415230112.768:initIvarsFromSettings & helpers
+                setattr(self,ivar,self.ivarsDict.get(ivar))
+    #@-node:AGP.20250415230112.768:initIvarsFromSettings()
     #@+node:AGP.20250415230112.771:initRecentFiles
     def initRecentFiles (self):
     
@@ -914,10 +829,10 @@ class configClass:
         mySettingsFile = 'myLeoSettings.leo'
         
         for ivar,theDir,fileName in (
-            ('globalConfigFile',    g.app.globalConfigDir,  settingsFile),
-            ('homeFile',            g.app.homeDir,          settingsFile),
-            ('myGlobalConfigFile',  g.app.globalConfigDir,  mySettingsFile),
-            ('myHomeConfigFile',    g.app.homeDir,          mySettingsFile),
+            ('globalConfigFile',    leo.configDir,  settingsFile),
+            ('homeFile',            leo.homeDir,          settingsFile),
+            ('myGlobalConfigFile',  leo.configDir,  mySettingsFile),
+            ('myHomeConfigFile',    leo.homeDir,          mySettingsFile),
         ):
             # The same file may be assigned to multiple ivars:
             # readSettingsFiles checks for such duplications.
@@ -926,14 +841,7 @@ class configClass:
                 setattr(self,ivar,path)
             else:
                 setattr(self,ivar,None)
-        if 0:
-            g.trace('global file:',self.globalConfigFile)
-            g.trace('home file:',self.homeFile)
-            g.trace('myGlobal file:',self.myGlobalConfigFile)
-            g.trace('myHome file:',self.myHomeConfigFile)
-    #@nonl
     #@-node:AGP.20250415230112.772:initSettingsFiles
-    #@-node:AGP.20250415230112.765:Birth... (g.app.config)
     #@+node:AGP.20250415230112.773:Getters... (g.app.config)
     #@+node:AGP.20250415230112.774:canonicalizeSettingName (munge)
     def canonicalizeSettingName (self,name):
@@ -950,15 +858,15 @@ class configClass:
     munge = canonicalizeSettingName
     #@-node:AGP.20250415230112.774:canonicalizeSettingName (munge)
     #@+node:AGP.20250415230112.775:config.findSettingsPosition
-    def findSettingsPosition (self,c,setting):
+    def findSettingsPosition (self,vroot,setting):
         
         """Return the position for the setting in the @settings tree for c."""
         
         munge = self.munge
         
-        root = self.settingsRoot(c)
+        root = self.settingsRoot(vroot)
         if not root:
-            return c.nullPosition()
+            return leoNodes.nullPosition()
             
         setting = munge(setting)
             
@@ -967,126 +875,39 @@ class configClass:
             if h == setting:
                 return p.copy()
         
-        return c.nullPosition()
+        return leoNodes.nullPosition()
     #@-node:AGP.20250415230112.775:config.findSettingsPosition
-    #@+node:AGP.20250415230112.776:get & allies (g.app.config)
-    def get (self,c,setting,kind):
+    #@+node:AGP.20250415230112.776:get()
+    def get (self,setting,kind):
         
-        """Get the setting and make sure its type matches the expected type."""
-        
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            if d:
-                val,junk = self.getValFromDict(d,setting,kind)
-                if val is not None:
-                    # g.trace(c.shortFileName(),setting,val)
-                    return val
-                    
-        for d in self.localOptionsList:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                kind = d.get('_hash','<no hash>')
-                # g.trace(kind,setting,val)
-                return val
-    
-        for d in self.dictList:
-            val,junk = self.getValFromDict(d,setting,kind)
-            if val is not None:
-                kind = d.get('_hash','<no hash>')
-                # g.trace(kind,setting,val)
-                return val
-    
-        return None
-    #@+node:AGP.20250415230112.777:getValFromDict
-    def getValFromDict (self,d,setting,requestedType,warn=True):
-        
-        '''Look up the setting in d. If warn is True, warn if the requested type
-        does not (loosely) match the actual type.
-        returns (val,exists)'''
-    
-        bunch = d.get(self.munge(setting))
-        if not bunch: return None,False
-    
-        # g.trace(setting,requestedType,bunch.toString())
-        val = bunch.val
-        if not self.typesMatch(bunch.kind,requestedType):
-            # New in 4.4: make sure the types match.
-            # A serious warning: one setting may have destroyed another!
-            # Important: this is not a complete test of conflicting settings:
-            # The warning is given only if the code tries to access the setting.
-            if warn:
-                s = (
-                    'Warning: ignoring %s:%s not %s\n' +
-                    'There may be conflicting settings!')
-                g.es_print(s % (bunch.kind,setting,requestedType),color='red')
-                # g.trace(g.callers())
-            return None, False
-        elif val in (u'None',u'none','None','none','',None):
-            return None, True # Exists, but is None
-        else:
-            # g.trace(setting,val)
-            return val, True
-    #@-node:AGP.20250415230112.777:getValFromDict
-    #@+node:AGP.20250415230112.778:typesMatch
-    def typesMatch (self,type1,type2):
-        
-        '''
-        Return True if type1, the actual type, matches type2, the requeseted type.
-        
-        The following equivalences are allowed:
-    
-        - None matches anything.
-        - An actual type of string or strings matches anything.
-        - Shortcut matches shortcuts.
-        '''
-    
-        shortcuts = ('shortcut','shortcuts',)
-        
-        return (
-            type1 == None or type2 == None or
-            type1.startswith('string') or
-            type1 == 'int' and type2 == 'size' or
-            (type1 in shortcuts and type2 in shortcuts) or
-            type1 == type2
-        )
-    #@-node:AGP.20250415230112.778:typesMatch
-    #@-node:AGP.20250415230112.776:get & allies (g.app.config)
-    #@+node:AGP.20250415230112.779:exists (g.app.config)
-    def exists (self,c,setting,kind):
+        """Get the setting"""
+        #print "getcfg",setting,kind
+        return self.settings.get(setting,None)
+    #@-node:AGP.20250415230112.776:get()
+    #@+node:AGP.20250415230112.779:exists()
+    def exists (self,setting,kind):
         
         '''Return true if a setting of the given kind exists, even if it is None.'''
     
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            if d:
-                junk,found = self.getValFromDict(d,setting,kind)
-                if found: return True
-                    
-        for d in self.localOptionsList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
+        if setting in self.settings.keys():
+            return True
     
-        for d in self.dictList:
-            junk,found = self.getValFromDict(d,setting,kind)
-            if found: return True
-    
-        # g.trace('does not exist',setting,kind)
         return False
-    #@-node:AGP.20250415230112.779:exists (g.app.config)
+    #@-node:AGP.20250415230112.779:exists()
     #@+node:AGP.20250415230112.780:getAbbrevDict
-    def getAbbrevDict (self,c):
+    def getAbbrevDict(self):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        d = self.get(c,'abbrev','abbrev')
+        d = self.get('abbrev','abbrev')
         return d or {}
     #@-node:AGP.20250415230112.780:getAbbrevDict
     #@+node:AGP.20250415230112.781:getBool
-    def getBool (self,c,setting,default=None):
+    def getBool(self,setting,default=None):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        val = self.get(c,setting,"bool")
+        val = self.get(setting,"bool")
         
         if val in (True,False):
             return val
@@ -1094,18 +915,18 @@ class configClass:
             return default
     #@-node:AGP.20250415230112.781:getBool
     #@+node:AGP.20250415230112.782:getColor
-    def getColor (self,c,setting):
+    def getColor(self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        return self.get(c,setting,"color")
+        return self.get(setting,"color")
     #@-node:AGP.20250415230112.782:getColor
     #@+node:AGP.20250415230112.783:getDirectory
-    def getDirectory (self,c,setting):
+    def getDirectory (self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        theDir = self.getString(c,setting)
+        theDir = self.getString(setting)
     
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
              return theDir
@@ -1113,11 +934,11 @@ class configClass:
             return None
     #@-node:AGP.20250415230112.783:getDirectory
     #@+node:AGP.20250415230112.784:getFloat
-    def getFloat (self,c,setting):
+    def getFloat (self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        val = self.get(c,setting,"float")
+        val = self.get(setting,"float")
         try:
             val = float(val)
             return val
@@ -1152,11 +973,11 @@ class configClass:
         return g.app.gui.getFontFromParams(family,size,slant,weight)
     #@-node:AGP.20250415230112.785:getFontFromParams (config)
     #@+node:AGP.20250415230112.786:getInt
-    def getInt (self,c,setting):
+    def getInt (self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        val = self.get(c,setting,"int")
+        val = self.get(setting,"int")
         try:
             val = int(val)
             return val
@@ -1164,21 +985,21 @@ class configClass:
             return None
     #@-node:AGP.20250415230112.786:getInt
     #@+node:AGP.20250415230112.787:getLanguage
-    def getLanguage (self,c,setting):
+    def getLanguage (self,setting):
         
         """Return the setting whose value should be a language known to Leo."""
         
-        language = self.getString(c,setting)
+        language = self.getString(setting)
         # g.trace(setting,language)
         
         return language
     #@-node:AGP.20250415230112.787:getLanguage
     #@+node:AGP.20250415230112.788:getRatio
-    def getRatio (self,c,setting):
+    def getRatio (self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
         
-        val = self.get(c,setting,"ratio")
+        val = self.get(setting,"ratio")
         try:
             val = float(val)
             if 0.0 <= val <= 1.0:
@@ -1193,28 +1014,24 @@ class configClass:
     
         return self.recentFiles
     #@-node:AGP.20250415230112.789:getRecentFiles
-    #@+node:AGP.20250415230112.790:getShortcut (config)
-    def getShortcut (self,c,shortcutName):
+    #@+node:AGP.20250415230112.790:getShortcut()
+    def getShortcut (self,shortcutName):
         
         '''Return rawKey,accel for shortcutName'''
         
-        key = c.frame.menu.canonicalizeMenuName(shortcutName)
+        key = shortcutName.lower()
         key = key.replace('&','') # Allow '&' in names.
-        
-        bunchList = self.get(c,key,"shortcut")
-        if bunchList:
-            bunchList = [bunch for bunch in bunchList
-                if bunch.val and bunch.val.lower() != 'none']
-            return key,bunchList
-        else:
-            return key,[]
-    #@-node:AGP.20250415230112.790:getShortcut (config)
+        sc = self.get(key,"shortcut")
+        #print "getShortcut",shortcutName,key,sc
+        return key,sc
+    
+    #@-node:AGP.20250415230112.790:getShortcut()
     #@+node:AGP.20250415230112.791:getString
-    def getString (self,c,setting):
+    def getString(self,setting):
         
         """Search all dictionaries for the setting & check it's type"""
     
-        return self.get(c,setting,"string")
+        return self.get(setting,"string")
     #@-node:AGP.20250415230112.791:getString
     #@+node:AGP.20250415230112.792:setCommandsIvars
     # Sets ivars of c that can be overridden by leoConfig.txt
@@ -1233,60 +1050,39 @@ class configClass:
         )
         
         for setting,ivar,theType in data:
-            val = g.app.config.get(c,setting,theType)
+            val = g.app.config.get(setting,theType)
+            
+            print "setcivars",setting,val
             if val is None:
                 if not hasattr(c,setting):
                     setattr(c,setting,None)
                     # g.trace(setting,None)
             else:
+                
                 setattr(c,setting,val)
                 # g.trace(setting,val)
     #@-node:AGP.20250415230112.792:setCommandsIvars
     #@+node:AGP.20250415230112.793:settingsRoot
-    def settingsRoot (self,c):
-        
-        # g.trace(c,c.rootPosition())
-    
-        for p in c.allNodes_iter():
+    def settingsRoot (self,v):
+        for p in leoNodes.position(v).all_iter():
             if p.headString().rstrip() == "@settings":
                 return p.copy()
         else:
-            return c.nullPosition()
+            return leoNodes.nullPosition()
     #@-node:AGP.20250415230112.793:settingsRoot
     #@-node:AGP.20250415230112.773:Getters... (g.app.config)
     #@+node:AGP.20250415230112.794:Setters (g.app.config)
-    #@+node:AGP.20250415230112.795:set (g.app.config)
-    def set (self,c,setting,kind,val):
+    #@+node:AGP.20250415230112.795:set()
+    def set (self,setting,kind,val):
         
         '''Set the setting.  Not called during initialization.'''
-        
-        # if kind.startwith('setting'): g.trace(val)
+        self.settings[setting] = val
     
-        found = False ;  key = self.munge(setting)
-        if c:
-            d = self.localOptionsDict.get(c.hash())
-            if d: found = True
-    
-        if not found:
-            theHash = c.hash()
-            for d in self.localOptionsList:
-                hash2 = d.get('_hash')
-                if theHash == hash2:
-                    found = True ; break
-    
-        if not found:
-            d = self.dictList [0]
-    
-        d[key] = g.Bunch(setting=setting,kind=kind,val=val,tag='setting')
-    
-        if 0:
-            dkind = d.get('_hash','<no hash: %s>' % c.hash())
-            g.trace(dkind,setting,kind,val)
-    #@-node:AGP.20250415230112.795:set (g.app.config)
+    #@-node:AGP.20250415230112.795:set()
     #@+node:AGP.20250415230112.796:setString
     def setString (self,c,setting,val):
         
-        self.set(c,setting,"string",val)
+        self.set(setting,"string",val)
     #@-node:AGP.20250415230112.796:setString
     #@+node:AGP.20250415230112.797:setIvarsFromSettings (g.app.config)
     def setIvarsFromSettings (self,c):
@@ -1303,17 +1099,15 @@ class configClass:
         d = self.ivarsDict
         for key in d:
             if key != '_hash':
-                bunch = d.get(key)
-                if bunch:
-                    ivar = bunch.ivar # The actual name of the ivar.
-                    kind = bunch.kind
-                    val = self.get(c,key,kind) # Don't use bunch.val!
-                    if c:
-                        # g.trace("%20s %s = %s" % (g.shortFileName(c.mFileName),ivar,val))
-                        setattr(c,ivar,val)
-                    else:
-                        # g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
-                        setattr(self,ivar,val)
+                val = self.get(key,"")
+                #print key,ivar,val
+                    
+                if c:
+                    #print "setcivars",key,val
+                    setattr(c,key,val)
+                else:
+                    #print "setselfivars",key,val
+                    setattr(self,key,val)
     #@-node:AGP.20250415230112.797:setIvarsFromSettings (g.app.config)
     #@+node:AGP.20250415230112.798:appendToRecentFiles (g.app.config)
     def appendToRecentFiles (self,files):
@@ -1334,132 +1128,74 @@ class configClass:
     
             self.recentFiles.append(name)
     #@-node:AGP.20250415230112.798:appendToRecentFiles (g.app.config)
+    #@+node:AGP.20260221193141:setRecentFiles (c.configSettings)
+    def setRecentFiles (self,files):
+        
+        '''Update the recent files list.'''
+    
+        # Append the files to the global list.
+        self.appendToRecentFiles(files)
+    #@-node:AGP.20260221193141:setRecentFiles (c.configSettings)
     #@-node:AGP.20250415230112.794:Setters (g.app.config)
     #@+node:AGP.20250415230112.799:Scanning @settings (g.app.config)
-    #@+node:AGP.20250415230112.800:g.app.config.openSettingsFile
-    def openSettingsFile (self,path):
-        
-        try:
-            # Open the file in binary mode to allow 0x1a in bodies & headlines.
-            theFile = open(path,'rb')
-        except IOError:
-            g.es("can not open: " + path, color="blue")
-            return None
-            
-        # Similar to g.openWithFileName except it uses a null gui.
-        # Changing g.app.gui here is a major hack.
-        oldGui = g.app.gui
-        g.app.gui = leoGui.nullGui("nullGui")
-        c,frame = g.app.newLeoCommanderAndFrame(path,updateRecentFiles=False)
-        frame.log.enable(False)
-        c.setLog()
-        g.app.lockLog()
-        ok = frame.c.fileCommands.open(
-            theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
-        g.app.unlockLog()
-        frame.openDirectory = g.os_path_dirname(path)
-        g.app.gui = oldGui
-        return ok and c
-    #@-node:AGP.20250415230112.800:g.app.config.openSettingsFile
-    #@+node:AGP.20250415230112.801:g.app.config.readSettingsFiles
+    #@+node:AGP.20250415230112.801:readSettingsFiles()
     def readSettingsFiles (self,fileName,verbose=True):
             
-        seen = []
         self.write_recent_files_as_needed = False # Will be set later.
-        #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
-        #@+node:AGP.20250415230112.802:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        # This can't be done in initSettingsFiles because the local directory does not exits.
-        localDirectory = g.os_path_dirname(fileName)
-        
-        #  Set the local leoSettings.leo file.
-        localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
-        if not g.os_path_exists(localConfigFile):
-            localConfigFile = None
-        
-        # Set the local myLeoSetting.leo file.
-        myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
-        if not g.os_path_exists(myLocalConfigFile):
-            myLocalConfigFile = None
-        #@nonl
-        #@-node:AGP.20250415230112.802:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        #@nl
     
-        # Init settings from leoSettings.leo and myLeoSettings.leo files.
-        for path,localFlag in (
-            (self.globalConfigFile,False),
-            #(self.homeFile,False),
-            #(localConfigFile,False),
-            #(self.myGlobalConfigFile,False),
-            #(self.myHomeConfigFile,False),
-            #(myLocalConfigFile,False),
-            #(fileName,True),
-        ):
-            if path and path.lower() not in seen:
-                seen.append(path.lower())
-                if verbose:
-                    g.es_print('reading settings in %s' % path)
-                c = self.openSettingsFile(path)
-                if c:
-                    self.updateSettings(c,localFlag)
-                    g.app.destroyWindow(c.frame)
-                    self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
-        
+        if verbose:
+            leo.log('reading settings in %s' % fileName)
+        #c = self.openSettingsFile(path)
+        leofile = leo.LEOFILE()
+        vroot = leofile.load(fileName)
+        if vroot:
+            d = self.readSettings(vroot)
+            if d:
+                self.settings.update(d)
         
         
         # Read all .leoRecentFiles.txt files.
         # The order of files in this list affects the order of the recent files list.
-        seen = []
-        localConfigPath = g.os_path_dirname(localConfigFile)
-        for path in (
-            g.app.homeDir,
-            g.app.globalConfigDir,
-            localConfigPath,
-        ):
-            if path and path not in seen:
-                ok = self.readRecentFilesFile(path)
-                if ok: seen.append(path)
-        if not seen and self.write_recent_files_as_needed:
-            self.createRecentFiles()
+        
+        #localConfigPath = g.os_path_dirname(localConfigFile)
+        #for path in (
+            #g.app.homeDir,
+            #g.app.globalConfigDir,
+            #localConfigPath,
+        #):
+        #    if path:
+        #        ok = self.readRecentFilesFile(path)
+                
+        #if self.write_recent_files_as_needed:
+        #    self.createRecentFiles()
     
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@-node:AGP.20250415230112.801:g.app.config.readSettingsFiles
-    #@+node:AGP.20250415230112.803:g.app.config.readSettings
+    #@-node:AGP.20250415230112.801:readSettingsFiles()
+    #@+node:AGP.20250415230112.803:readSettings()
     # Called to read all leoSettings.leo files.
     # Also called when opening an .leo file to read @settings tree.
     
-    def readSettings (self,c):
+    def readSettings (self,vroot):
         
         """Read settings from a file that may contain an @settings tree."""
-        
-        # g.trace(c.fileName())
-        
-        # Create a settings dict for c for set()
-        if c and self.localOptionsDict.get(c.hash()) is None:
-            self.localOptionsDict[c.hash()] = {}
     
-        parser = settingsTreeParser(c)
+        parser = settingsTreeParser(vroot)
         d = parser.traverse()
+        
+        
     
         return d
-    #@-node:AGP.20250415230112.803:g.app.config.readSettings
-    #@+node:AGP.20250415230112.804:g.app.config.updateSettings
-    def updateSettings (self,c,localFlag):
+    #@-node:AGP.20250415230112.803:readSettings()
+    #@+node:AGP.20250415230112.804:updateSettings()
+    def updateSettings (self,vroot,localFlag):
     
-        d = self.readSettings(c)
+        d = self.readSettings(vroot)
         
         if d:
-            d['_hash'] = theHash = c.hash()
-            if localFlag:
-                self.localOptionsDict[theHash] = d
-            else:
-                self.localOptionsList.insert(0,d)
-                
-        if 0: # Good trace.
-            if localFlag:
-                g.trace(c.fileName())
-                g.trace(d and d.keys())
-    #@-node:AGP.20250415230112.804:g.app.config.updateSettings
+            self.settings.update(d)
+    
+    #@-node:AGP.20250415230112.804:updateSettings()
     #@-node:AGP.20250415230112.799:Scanning @settings (g.app.config)
     #@+node:AGP.20250415230112.805:Reading and writing .leoRecentFiles.txt (g.app.config)
     #@+node:AGP.20250415230112.806:createRecentFiles
@@ -1500,7 +1236,7 @@ class configClass:
         return ok
     #@nonl
     #@-node:AGP.20250415230112.807:readRecentFilesFile
-    #@+node:AGP.20250415230112.808:writeRecentFilesFile & helper
+    #@+node:AGP.20250415230112.808:writeRecentFilesFile()
     def writeRecentFilesFile (self,c):
         
         '''Write the appropriate .leoRecentFiles.txt file.'''
@@ -1526,7 +1262,8 @@ class configClass:
         else:
             # g.trace('----- not found: %s' % g.os_path_join(localPath,tag))
             return
-    #@+node:AGP.20250415230112.809:writeRecentFilesFileHelper
+    #@-node:AGP.20250415230112.808:writeRecentFilesFile()
+    #@+node:AGP.20250415230112.809:writeRecentFilesFileHelper()
     def writeRecentFilesFileHelper (self,fileName):
         # g.trace(fileName)
         
@@ -1562,60 +1299,16 @@ class configClass:
         
         if theFile:
             theFile.close()
-    #@-node:AGP.20250415230112.809:writeRecentFilesFileHelper
-    #@-node:AGP.20250415230112.808:writeRecentFilesFile & helper
+    #@-node:AGP.20250415230112.809:writeRecentFilesFileHelper()
     #@-node:AGP.20250415230112.805:Reading and writing .leoRecentFiles.txt (g.app.config)
+    #@+node:AGP.20251210181936:canonicalizeMenuName()
+    def canonicalizeMenuName (self,name):
+        
+        return ''.join([ch for ch in name.lower() if ch.isalnum()])
+    #@nonl
+    #@-node:AGP.20251210181936:canonicalizeMenuName()
     #@-others
 #@-node:AGP.20250415230112.760:class configClass
-#@+node:AGP.20250415230112.810:class settingsTreeParser (parserBaseClass)
-class settingsTreeParser (parserBaseClass):
-    
-    '''A class that inits settings found in an @settings tree.
-    
-    Used by read settings logic.'''
-    
-    #@    @+others
-    #@+node:AGP.20250415230112.811:ctor
-    def __init__ (self,c):
-    
-        # Init the base class.
-        parserBaseClass.__init__(self,c)
-    #@-node:AGP.20250415230112.811:ctor
-    #@+node:AGP.20250415230112.812:visitNode (settingsTreeParser)
-    def visitNode (self,p):
-        
-        """Init any settings found in node p."""
-        
-        # g.trace(p.headString())
-        
-        munge = g.app.config.munge
-    
-        kind,name,val = self.parseHeadline(p.headString())
-        kind = munge(kind)
-        
-        if kind == "settings":
-            pass
-        elif kind not in self.control_types and val in (u'None',u'none','None','none','',None):
-            # None is valid for all data types.
-            self.set(p,kind,name,None)
-            
-        elif kind in self.control_types or kind in self.basic_types:
-            f = self.dispatchDict.get(kind)
-            try:
-                
-                return f(p,kind,name,val)
-            except TypeError:
-                g.es_exception()
-                print "*** no handler",kind
-        elif name:
-            # self.error("unknown type %s for setting %s" % (kind,name))
-            # Just assume the type is a string.
-            self.set(p,kind,name,val)
-        
-        return None
-    #@-node:AGP.20250415230112.812:visitNode (settingsTreeParser)
-    #@-others
-#@-node:AGP.20250415230112.810:class settingsTreeParser (parserBaseClass)
 #@-others
 #@-node:AGP.20250415230112.718:@thin leoConfig.py
 #@-leo

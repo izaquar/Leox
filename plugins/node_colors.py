@@ -14,7 +14,8 @@
 #@+node:<< imports >>
 import leoGlobals as g
 import leoPlugins
-import leoTkinterTree
+#import leoTkinterTree
+
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #import Tkinter as Tk
@@ -128,7 +129,6 @@ def init():
 #@-node:init
 #@+node:onCreate
 def onCreate (tag,key):
-
     c = key.get('c')
 
     rcController(c)

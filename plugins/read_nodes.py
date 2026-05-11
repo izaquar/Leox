@@ -347,11 +347,11 @@ def insert_read_only_node (c,v,name):
             fin = file(name,"r")  # local file
         
         new = fin.read()
-        g.es("reading " + name)
+        g.es("@read: " + name)
         fin.close()
     except IOError,msg:
         # g.es("error reading %s: %s" % (name, msg))
-        g.es("error reading " + name,color="red")
+        g.es("@read: error reading " + name,color="red")
         c.setBodyString(v,"") # Clear the body text.
         return False # not changed
     
@@ -394,8 +394,7 @@ def insert_read_only_node (c,v,name):
 #@-node:insert_read_only_node (FTP version)
 #@+node:on_open
 #  scan the outline and process @read nodes.
-def on_open (tag,keywords):
-
+def on_open(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
