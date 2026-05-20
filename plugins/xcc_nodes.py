@@ -1449,8 +1449,11 @@ class controllerClass:
                     cc.uptick = 0
                     g.es(".",newline=False)
                 return
+            
+            
             if process.Close():
                 ProcessClass.List = [] #reset
+                cc.RUNNING = False  #job is finished
             else:
                 
                 ProcessClass.List.pop(0)
@@ -1458,9 +1461,11 @@ class controllerClass:
                     if not ProcessClass.List[0].Open():
                         ProcessClass.List = [] #reset
                 else:
+                    print "UpdateXCC():",len(cc.XCCNODES)
                     g.es("ok",color = "blue")
                     bstamp = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
                     SetXccKey(cc.SELECTED_NODE,"bstamp",bstamp)
+                    
                     if len(cc.XCCNODES) > 0:
                         #run the the first xcc node
                         xccnode = cc.XCCNODES.pop(0)
@@ -1600,8 +1605,9 @@ class controllerClass:
     def cSelect(self,node=None):
         
         cc = self
-    
+        
         if node:
+            
             cc.Config.Hide()
             cc.CHILD_NODE = node
             cc.CHILD_DICT = cc.cGetDict()
@@ -1609,6 +1615,7 @@ class controllerClass:
             
             if cc.DocEdit.visible:
                 cc.DocEdit.LoadFromNode()
+            
             
             if cc.LOCATE_CHILD:
                 #print "cSelect():"
@@ -1944,6 +1951,7 @@ class controllerClass:
             g.es("ok",color = "blue")
             bstamp = g.app.leoID+"."+time.strftime("%Y%m%d%H%M%S",time.localtime())
             SetXccKey(cc.SELECTED_NODE,"bstamp",bstamp)
+            cc.RUNNING = False  #job is finished
         return True
     
     
@@ -1983,18 +1991,22 @@ class controllerClass:
         #run the the first xcc node
         xccnode = XCCNODES.pop(0)
         cc.sSelect(xccnode)
+        cc.RUNNING = True
+        
         try:
             if not cc.sRun():
                 #abort
                 ProcessClass.List = []
                 cc.XCCNODES = []
+                cc.RUNNING = False
+                
         except Exception:
             #abort
             ProcessClass.List = []
             cc.XCCNODES = []
             g.es_exception()
             
-        cc.RUNNING = True
+        
                 
         
     #@nonl
@@ -5626,8 +5638,8 @@ class BreakbarClass(Tk.Text):
         
         opt = {
             'bd':body["bd"],
-            'bg':bgcolor,
-            'fg':fgcolor,
+            'bg':shade(0.3),
+            'fg':shade(0.02),
             'relief':'flat',
             'setgrid':0,
             'font':cc.LeoFont,
@@ -5643,8 +5655,8 @@ class BreakbarClass(Tk.Text):
         opt['name']='sidebar'
         Tk.Text.__init__(self, bparent,**opt)
         
-        opt['bg'] = shade(0.08)
-        opt['fg'] = shade(0.4)
+        opt['bg'] = shade(0.02)
+        opt['fg'] = shade(0.3)
         
         opt['name']='sidebar2'
         self.source_bar = Tk.Text(bparent, **opt)
@@ -5665,12 +5677,12 @@ class BreakbarClass(Tk.Text):
         del opt['name']
         del opt['state']
         
-        opt['bg'] = shade(0.1)
-        opt['fg'] = shade(0.5)
+        opt['bg'] = shade(0.3)
+        opt['fg'] = shade(0.02)
         self.hdr_side = Tk.Text(head_frame, **opt)
         
-        opt['bg'] = shade(0.08)
-        opt['fg'] = shade(0.4)
+        opt['bg'] = shade(0.02)
+        opt['fg'] = shade(0.3)
         self.src_side = Tk.Text(head_frame,  **opt)
             
         self.hdr_side.pack(side="left")
@@ -6095,12 +6107,12 @@ class BreakbarClass(Tk.Text):
             
             #print locator.FOUND_BODY_HDR_LINE ,locator.FOUND_HEAD_HDR_LINE
             
-            if show_header_line:
+            if 1:#show_header_line:
                 #print "pack header"
                 hdr_bar.pack(side='left',fill="y") #header
             
             #print locator.FOUND_BODY_SRC_LINE, locator.FOUND_HEAD_SRC_LINE
-            if show_source_line:
+            if 1:#show_source_line:
                 #print "pack src"
                 src_bar.pack(side='left',fill="y")
                 
@@ -6124,10 +6136,10 @@ class BreakbarClass(Tk.Text):
             
             
             
-            if show_header_line:
+            if 1:#show_header_line:
                 hdr_side.pack(side="left")
                 
-            if show_source_line:
+            if 1:#show_source_line:
                 #self.src_line.pack_propagate(0)
                 src_side.pack(side="left")
             
@@ -6241,8 +6253,9 @@ class BreakbarClass(Tk.Text):
         
         if loc.CURRENT_RULE == "doc":
             display.insert("insert",loc.DocName())
-            
-        display.tag_config("marking",foreground=g.theme['keyword'])#"#7575e5")
+        
+        shade = g.theme['shade']
+        display.tag_config("marking",foreground= shade(0.6,fg=g.theme['keyword']) )#"#7575e5")
         display["state"] = 'disabled'
     
     
@@ -6312,7 +6325,7 @@ class BreakbarClass(Tk.Text):
             
             #print body_line,hdr_line,src_line
             #print bhl,bsl
-            
+            print "lw",type(bhl),type(bsl)
             for i in range(len(lines)):
                 if i == len(lines)-1:
                     nl = ""
@@ -6336,10 +6349,13 @@ class BreakbarClass(Tk.Text):
                         bsl += 1
             
                     
-                  
-            bhlw = max( bhlw, len(str(bhl)) )
-            bslw = max( bslw, len(str(bsl)) )
-            
+            if bhl:
+                bhlw = max( bhlw, len(str(bhl)) ) 
+            if bsl:
+                bslw = max( bslw, len(str(bsl)) ) 
+        
+        #bhlw +=1
+        #bslw +=1
         
         hdr_bar.config(width = bhlw)
         src_bar.config(width = bslw)
@@ -6960,7 +6976,7 @@ class OUTPUT:
             if line_filter:
                 l = line_filter(l)
             #print ts + l + es
-            
+            l = l.encode('utf-8')
             w( ts + l + es )
             
         

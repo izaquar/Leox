@@ -1,0 +1,1 @@
+powershell -Command "$s=New-Object -ComObject WScript.Shell; $o=$s.CreateShortcut('%USERPROFILE%\Desktop\Leox.lnk'); $o.TargetPath='%~dp0Python27win64\python.exe'; $o.Arguments='%~dp0src\leo.py'; $o.IconLocation='"%~dp0icons\LeoxApp.ico"'; $o.Save()"

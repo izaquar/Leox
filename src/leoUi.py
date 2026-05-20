@@ -4253,7 +4253,7 @@ class leoTree(Tk.Text):
         
         text.tag_add('icon',"%i.%i" % (nline,nim-1), linend)
         
-        text.insert("end",v.headString())
+        text.insert("end",v.headString()+"\n")
         text.tag_add('head',"%i.%i" % (nline,nim), linend)
         
         if v == self.current_v and text == self:
@@ -4264,8 +4264,8 @@ class leoTree(Tk.Text):
                 self.yview_scroll(nline, 'units')
                 #self.see("insert")
         
-        text.mark_set("%i" % id(v),"%i.0" % nline)
-        text.insert("%i.end" % nline,"\n")
+        #text.mark_set("%i" % id(v),"%i.0" % nline)
+        #text.insert("%i.end" % nline,"\n")
         
         self.colorizer.colorize_headline(position(v),text,nline,scan_parents=single)
         
